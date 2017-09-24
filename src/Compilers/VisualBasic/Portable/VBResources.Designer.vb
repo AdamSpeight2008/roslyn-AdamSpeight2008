@@ -12046,6 +12046,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Guid Literals.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_GuidLiterals() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_GuidLiterals", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to implementing read-only or write-only property with read-write property.
         '''</summary>
         Friend ReadOnly Property FEATURE_ImplementingReadonlyOrWriteonlyPropertyWithReadwrite() As String
