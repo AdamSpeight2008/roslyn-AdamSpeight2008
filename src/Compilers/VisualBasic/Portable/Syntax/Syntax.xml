@@ -8887,6 +8887,21 @@ Unify Enum declarations with other block type declarations.
     <!--********************
       -  Guid Literal Tokens
       **********************-->
+    <enumeration name="GuidFormat">
+            <description>Represents one of allowed Guid Formats.</description>
+      <lm-equiv name="GuidFormat"></lm-equiv>
+      <native-equiv name="guidFormat"></native-equiv>
+      <native-equiv name="GuidFormat.Opcodes"></native-equiv>
+      <enumerators>
+        <enumerator name="None" />
+        <enumerator name="B"><description>B  {00000000-0000-0000-0000-000000000000}</description></enumerator>
+        <enumerator name="D"><description>D  00000000-0000-0000-0000-000000000000</description></enumerator>
+        <enumerator name="N"><description>N  00000000000000000000000000000000</description></enumerator>
+        <enumerator name="P"><description>P  (00000000-0000-0000-0000-000000000000)</description></enumerator>
+        <enumerator name="X"><description>X  {0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}}</description></enumerator>
+     </enumerators>
+    </enumeration>
+      
     <enumeration name="GuidKind">
       <description>
         Represents one of the type characters or literal suffixes of VB. Used to describe
@@ -8932,19 +8947,7 @@ Unify Enum declarations with other block type declarations.
       </enumerators>
     </enumeration>
     
-    <node-structure name="GuidLiteral" parent="SyntaxToken">
-      <description>
-        Represents literal character data in interpolated string expression.
-      </description>
-
-      <node-kind name="GuidLiteral" />
-
-      <field name="Prefix" type="GuidLiteral_PrefixSyntax">
-        <description>The text.</description>
-      </field>
-    </node-structure>
-    
-    <node-structure name="GuidLiteral_PrefixSyntax" parent="SyntaxToken">
+        <node-structure name="GuidLiteral_PrefixSyntax" parent="SyntaxToken">
       <description>
         Represents literal character data in interpolated string expression.
       </description>
@@ -8952,87 +8955,33 @@ Unify Enum declarations with other block type declarations.
       <node-kind name="GuidLiteral_Prefix" />
 
     </node-structure>
-    
-    <node-structure name="GuidLiteral_Token" parent="SyntaxToken" abstract="true">
+    <node-structure name="GuidLiteral" parent="SyntaxToken">
       <description>
         Represents literal character data in interpolated string expression.
       </description>
 
-      <!--<node-kind name="GuidLiteral_Token" />-->
+      <node-kind name="GuidLiteral" />
 
-      <!--<field name="GuidKind" type="GuidKind">
-        <description>The Kind of Guid Token.</description>
+      <!--<field name="Prefix" type="SyntaxToken">
+        <description>The text.</description>
       </field>-->
     </node-structure>
 
-    <node-structure name="GuidLiteral_Hex" parent="GuidLiteral_Token">
-      <description>
-        Represents a HexDecimal Digit.
-      </description>
-      <node-kind name="GuidLiteral_Hex" />-->
-    </node-structure>
+    <node-structure name="GuidLiteral_Token" parent="SyntaxToken" >
+      <field name="GuidKind" type="GuidKind" />
+      <description>Represents literal character data in interpolated string expression.</description>
+
+      <node-kind name="GuidLiteral_Hex">       <description>Represents a HexDecimal Digit.</description></node-kind>
+      <node-kind name="GuidLiteral_Comma">     <description>Represents a Opening Bracket (eg ',').</description></node-kind>
+      <node-kind name="GuidLiteral_Bo">        <description>Represents a Opening Bracket (eg '{').</description></node-kind>
+      <node-kind name="GuidLiteral_Bc">        <description>Represents a Closing Bracket (eg '}').</description></node-kind>
+      <node-kind name="GuidLiteral_Po">        <description>Represents an Opening Parenthesis (eg '(').</description></node-kind>
+      <node-kind name="GuidLiteral_Pc">        <description>Represents an Closing Parenthesis (eg ')').</description></node-kind>
+      <node-kind name="GuidLiteral_Hypen">     <description>Represents an Hypen (eg '-'). </description></node-kind>
+      <node-kind name="GuidLiteral_X">         <description>Represents an hex prefix's X (eg 'X' or 'x').</description></node-kind>
+      <node-kind name="GuidLiteral_HexPrefix"> <description>Represents an hex prefix (eg '0X' or '0x').</description></node-kind>
+      <node-kind name="GuidLiteral_HexValue">  <description>Represents an hex value.</description></node-kind>
     
-    <node-structure name="GuidLiteral_Comma" parent="GuidLiteral_Token">
-      <description>
-        Represents a Opening Bracket (eg ',').
-      </description>
-      <node-kind name="GuidLiteral_Comma" />-->
-    </node-structure>
-
-    <node-structure name="GuidLiteral_Bo" parent="GuidLiteral_Token">
-      <description>
-        Represents a Opening Bracket (eg '{').
-      </description>
-      <node-kind name="GuidLiteral_Bo" />-->
-    </node-structure>
-
-    <node-structure name="GuidLiteral_Bc" parent="GuidLiteral_Token">
-      <description>
-        Represents a Closing Bracket (eg '}').
-      </description>
-      <node-kind name="GuidLiteral_Bc" />-->
-    </node-structure>
-
-    <node-structure name="GuidLiteral_Po" parent="GuidLiteral_Token">
-      <description>
-        Represents an Opening Parenthesis (eg '(').
-      </description>
-      <node-kind name="GuidLiteral_Po" />-->
-    </node-structure>
-
-   <node-structure name="GuidLiteral_Pc" parent="GuidLiteral_Token">
-      <description>
-        Represents an Closing Parenthesis (eg ')').
-      </description>
-     <node-kind name="GuidLiteral_Pc" />-->
-   </node-structure>
-
-    <node-structure name="GuidLiteral_Hypen" parent="GuidLiteral_Token">
-      <description>
-        Represents an Hypen (eg '-').
-      </description>
-      <node-kind name="GuidLiteral_Hypen" />
-    </node-structure>
-
-    <node-structure name="GuidLiteral_X" parent="GuidLiteral_Token">
-      <description>
-        Represents an hex prefix's X (eg 'X' or 'x').
-      </description>
-      <node-kind name="GuidLiteral_X" />-->
-    </node-structure>
-    
-    <node-structure name="GuidLiteral_HexPrefix" parent="GuidLiteral_Token">
-      <description>
-        Represents an hex prefix (eg '0X' or '0x').
-      </description>
-      <node-kind name="GuidLiteral_HexPrefix" />-->
-    </node-structure>
-
-    <node-structure name="GuidLiteral_HexValue" parent="GuidLiteral_Token">
-      <description>
-        Represents an hex value.
-      </description>
-      <node-kind name="GuidLiteral_HexValue" />-->
     </node-structure>
     <!--********************
       -  Identifier

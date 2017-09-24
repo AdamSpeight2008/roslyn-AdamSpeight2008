@@ -193,6 +193,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         TypeAsValueExpression
         InterpolatedStringExpression
         Interpolation
+        GuidLiteral
+        GuidLiteralPrefix
+        GuidLiteralGuid
+        GuidLiteral_Part
+        GuidLiteral_Bo
+        GuidLiteral_Bc
+        GuidLiteral_Po
+        GuidLiteral_Pc
+        GuidLiteral_Comma
+        GuidLiteral_Hypen
+        GuidLiteral_Hex
+        GuidLiteral_HexPrefix
+        GuidLiteral_X
+        GuidLiteral_HexValue
     End Enum
 
 
@@ -9716,6 +9730,545 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
     End Class
 
+    Friend NotInheritable Partial Class BoundGuidLiteral
+        Inherits BoundNode
+
+        Public Sub New(syntax As SyntaxNode, prefix As BoundGuidLiteralPrefix, guid As BoundGuidLiteralGuid, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.GuidLiteral, syntax, hasErrors OrElse prefix.NonNullAndHasErrors() OrElse guid.NonNullAndHasErrors())
+
+            Debug.Assert(prefix IsNot Nothing, "Field 'prefix' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._Prefix = prefix
+            Me._Guid = guid
+        End Sub
+
+
+        Private ReadOnly _Prefix As BoundGuidLiteralPrefix
+        Public ReadOnly Property Prefix As BoundGuidLiteralPrefix
+            Get
+                Return _Prefix
+            End Get
+        End Property
+
+        Private ReadOnly _Guid As BoundGuidLiteralGuid
+        Public ReadOnly Property Guid As BoundGuidLiteralGuid
+            Get
+                Return _Guid
+            End Get
+        End Property
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral(Me)
+        End Function
+
+        Public Function Update(prefix As BoundGuidLiteralPrefix, guid As BoundGuidLiteralGuid) As BoundGuidLiteral
+            If prefix IsNot Me.Prefix OrElse guid IsNot Me.Guid Then
+                Dim result = New BoundGuidLiteral(Me.Syntax, prefix, guid, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteralPrefix
+        Inherits BoundNode
+
+        Public Sub New(syntax As SyntaxNode, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteralPrefix, syntax, hasErrors)
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode)
+            MyBase.New(BoundKind.GuidLiteralPrefix, syntax)
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteralPrefix(Me)
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteralGuid
+        Inherits BoundNode
+
+        Public Sub New(syntax As SyntaxNode, guidFormat As GuidFormat, guidParts As ImmutableArray(Of BoundGuidLiteral_Part), Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.GuidLiteralGuid, syntax, hasErrors OrElse guidParts.NonNullAndHasErrors())
+
+            Debug.Assert(guidFormat IsNot Nothing, "Field 'guidFormat' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(Not (guidParts.IsDefault), "Field 'guidParts' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._GuidFormat = guidFormat
+            Me._GuidParts = guidParts
+        End Sub
+
+
+        Private ReadOnly _GuidFormat As GuidFormat
+        Public ReadOnly Property GuidFormat As GuidFormat
+            Get
+                Return _GuidFormat
+            End Get
+        End Property
+
+        Private ReadOnly _GuidParts As ImmutableArray(Of BoundGuidLiteral_Part)
+        Public ReadOnly Property GuidParts As ImmutableArray(Of BoundGuidLiteral_Part)
+            Get
+                Return _GuidParts
+            End Get
+        End Property
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteralGuid(Me)
+        End Function
+
+        Public Function Update(guidFormat As GuidFormat, guidParts As ImmutableArray(Of BoundGuidLiteral_Part)) As BoundGuidLiteralGuid
+            If guidFormat IsNot Me.GuidFormat OrElse guidParts <> Me.GuidParts Then
+                Dim result = New BoundGuidLiteralGuid(Me.Syntax, guidFormat, guidParts, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend Partial Class BoundGuidLiteral_Part
+        Inherits BoundNode
+
+        Protected Sub New(kind As BoundKind, syntax as SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(kind, syntax, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._GuidKind = guidKind
+        End Sub
+
+        Protected Sub New(kind As BoundKind, syntax as SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(kind, syntax)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._GuidKind = guidKind
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Part, syntax, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._GuidKind = guidKind
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Part, syntax)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._GuidKind = guidKind
+        End Sub
+
+
+        Private ReadOnly _GuidKind As GuidFormat
+        Public ReadOnly Property GuidKind As GuidFormat
+            Get
+                Return _GuidKind
+            End Get
+        End Property
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Part(Me)
+        End Function
+
+        Public Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Part
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Part(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_Bo
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Bo, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Bo, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Bo(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Bo
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Bo(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_Bc
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Bc, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Bc, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Bc(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Bc
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Bc(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_Po
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Po, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Po, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Po(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Po
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Po(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_Pc
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Pc, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Pc, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Pc(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Pc
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Pc(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_Comma
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Comma, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Comma, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Comma(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Comma
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Comma(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_Hypen
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Hypen, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Hypen, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Hypen(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Hypen
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Hypen(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_Hex
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_Hex, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_Hex, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_Hex(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_Hex
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_Hex(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_HexPrefix
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_HexPrefix, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_HexPrefix, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_HexPrefix(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_HexPrefix
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_HexPrefix(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_X
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat, hasErrors As Boolean)
+            MyBase.New(BoundKind.GuidLiteral_X, syntax, guidKind, hasErrors)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+        Public Sub New(syntax As SyntaxNode, guidKind As GuidFormat)
+            MyBase.New(BoundKind.GuidLiteral_X, syntax, guidKind)
+
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+        End Sub
+
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_X(Me)
+        End Function
+
+        Public Shadows Function Update(guidKind As GuidFormat) As BoundGuidLiteral_X
+            If guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_X(Me.Syntax, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
+    Friend NotInheritable Partial Class BoundGuidLiteral_HexValue
+        Inherits BoundGuidLiteral_Part
+
+        Public Sub New(syntax As SyntaxNode, hasPrefix As Boolean, digits As ImmutableArray(Of BoundGuidLiteral_Hex), guidKind As GuidFormat, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.GuidLiteral_HexValue, syntax, guidKind, hasErrors OrElse digits.NonNullAndHasErrors())
+
+            Debug.Assert(Not (digits.IsDefault), "Field 'digits' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+            Debug.Assert(guidKind IsNot Nothing, "Field 'guidKind' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
+
+            Me._HasPrefix = hasPrefix
+            Me._Digits = digits
+        End Sub
+
+
+        Private ReadOnly _HasPrefix As Boolean
+        Public ReadOnly Property HasPrefix As Boolean
+            Get
+                Return _HasPrefix
+            End Get
+        End Property
+
+        Private ReadOnly _Digits As ImmutableArray(Of BoundGuidLiteral_Hex)
+        Public ReadOnly Property Digits As ImmutableArray(Of BoundGuidLiteral_Hex)
+            Get
+                Return _Digits
+            End Get
+        End Property
+
+        Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
+            Return visitor.VisitGuidLiteral_HexValue(Me)
+        End Function
+
+        Public Function Update(hasPrefix As Boolean, digits As ImmutableArray(Of BoundGuidLiteral_Hex), guidKind As GuidFormat) As BoundGuidLiteral_HexValue
+            If hasPrefix <> Me.HasPrefix OrElse digits <> Me.Digits OrElse guidKind IsNot Me.GuidKind Then
+                Dim result = New BoundGuidLiteral_HexValue(Me.Syntax, hasPrefix, digits, guidKind, Me.HasErrors)
+                
+                If Me.WasCompilerGenerated Then
+                    result.SetWasCompilerGenerated()
+                End If
+                
+                Return result
+            End If
+            Return Me
+        End Function
+    End Class
+
     Friend MustInherit Partial Class BoundTreeVisitor(Of A,R)
 
         <MethodImpl(MethodImplOptions.NoInlining)>
@@ -10071,6 +10624,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return VisitInterpolatedStringExpression(CType(node, BoundInterpolatedStringExpression), arg)
                 Case BoundKind.Interpolation: 
                     Return VisitInterpolation(CType(node, BoundInterpolation), arg)
+                Case BoundKind.GuidLiteral: 
+                    Return VisitGuidLiteral(CType(node, BoundGuidLiteral), arg)
+                Case BoundKind.GuidLiteralPrefix: 
+                    Return VisitGuidLiteralPrefix(CType(node, BoundGuidLiteralPrefix), arg)
+                Case BoundKind.GuidLiteralGuid: 
+                    Return VisitGuidLiteralGuid(CType(node, BoundGuidLiteralGuid), arg)
+                Case BoundKind.GuidLiteral_Part: 
+                    Return VisitGuidLiteral_Part(CType(node, BoundGuidLiteral_Part), arg)
+                Case BoundKind.GuidLiteral_Bo: 
+                    Return VisitGuidLiteral_Bo(CType(node, BoundGuidLiteral_Bo), arg)
+                Case BoundKind.GuidLiteral_Bc: 
+                    Return VisitGuidLiteral_Bc(CType(node, BoundGuidLiteral_Bc), arg)
+                Case BoundKind.GuidLiteral_Po: 
+                    Return VisitGuidLiteral_Po(CType(node, BoundGuidLiteral_Po), arg)
+                Case BoundKind.GuidLiteral_Pc: 
+                    Return VisitGuidLiteral_Pc(CType(node, BoundGuidLiteral_Pc), arg)
+                Case BoundKind.GuidLiteral_Comma: 
+                    Return VisitGuidLiteral_Comma(CType(node, BoundGuidLiteral_Comma), arg)
+                Case BoundKind.GuidLiteral_Hypen: 
+                    Return VisitGuidLiteral_Hypen(CType(node, BoundGuidLiteral_Hypen), arg)
+                Case BoundKind.GuidLiteral_Hex: 
+                    Return VisitGuidLiteral_Hex(CType(node, BoundGuidLiteral_Hex), arg)
+                Case BoundKind.GuidLiteral_HexPrefix: 
+                    Return VisitGuidLiteral_HexPrefix(CType(node, BoundGuidLiteral_HexPrefix), arg)
+                Case BoundKind.GuidLiteral_X: 
+                    Return VisitGuidLiteral_X(CType(node, BoundGuidLiteral_X), arg)
+                Case BoundKind.GuidLiteral_HexValue: 
+                    Return VisitGuidLiteral_HexValue(CType(node, BoundGuidLiteral_HexValue), arg)
             End Select
             Return DefaultVisit(node, arg)
         End Function
@@ -10778,6 +11359,62 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.DefaultVisit(node, arg)
         End Function
 
+        Public Overridable Function VisitGuidLiteral(node As BoundGuidLiteral, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteralPrefix(node As BoundGuidLiteralPrefix, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteralGuid(node As BoundGuidLiteralGuid, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Part(node As BoundGuidLiteral_Part, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Bo(node As BoundGuidLiteral_Bo, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Bc(node As BoundGuidLiteral_Bc, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Po(node As BoundGuidLiteral_Po, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Pc(node As BoundGuidLiteral_Pc, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Comma(node As BoundGuidLiteral_Comma, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Hypen(node As BoundGuidLiteral_Hypen, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Hex(node As BoundGuidLiteral_Hex, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_HexPrefix(node As BoundGuidLiteral_HexPrefix, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_X(node As BoundGuidLiteral_X, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_HexValue(node As BoundGuidLiteral_HexValue, arg As A) As R
+            Return Me.DefaultVisit(node, arg)
+        End Function
+
     End Class
 
     Friend MustInherit Partial Class BoundTreeVisitor
@@ -11478,6 +12115,62 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overridable Function VisitInterpolation(node As BoundInterpolation) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral(node As BoundGuidLiteral) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteralPrefix(node As BoundGuidLiteralPrefix) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteralGuid(node As BoundGuidLiteralGuid) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Part(node As BoundGuidLiteral_Part) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Bo(node As BoundGuidLiteral_Bo) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Bc(node As BoundGuidLiteral_Bc) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Po(node As BoundGuidLiteral_Po) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Pc(node As BoundGuidLiteral_Pc) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Comma(node As BoundGuidLiteral_Comma) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Hypen(node As BoundGuidLiteral_Hypen) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_Hex(node As BoundGuidLiteral_Hex) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_HexPrefix(node As BoundGuidLiteral_HexPrefix) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_X(node As BoundGuidLiteral_X) As BoundNode
+            Return Me.DefaultVisit(node)
+        End Function
+
+        Public Overridable Function VisitGuidLiteral_HexValue(node As BoundGuidLiteral_HexValue) As BoundNode
             Return Me.DefaultVisit(node)
         End Function
 
@@ -12425,6 +13118,66 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.Visit(node.Expression)
             Me.Visit(node.AlignmentOpt)
             Me.Visit(node.FormatStringOpt)
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral(node as BoundGuidLiteral) As BoundNode
+            Me.Visit(node.Prefix)
+            Me.Visit(node.Guid)
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteralPrefix(node as BoundGuidLiteralPrefix) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteralGuid(node as BoundGuidLiteralGuid) As BoundNode
+            Me.VisitList(node.GuidParts)
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Part(node as BoundGuidLiteral_Part) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Bo(node as BoundGuidLiteral_Bo) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Bc(node as BoundGuidLiteral_Bc) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Po(node as BoundGuidLiteral_Po) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Pc(node as BoundGuidLiteral_Pc) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Comma(node as BoundGuidLiteral_Comma) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Hypen(node as BoundGuidLiteral_Hypen) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Hex(node as BoundGuidLiteral_Hex) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_HexPrefix(node as BoundGuidLiteral_HexPrefix) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_X(node as BoundGuidLiteral_X) As BoundNode
+            Return Nothing
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_HexValue(node as BoundGuidLiteral_HexValue) As BoundNode
+            Me.VisitList(node.Digits)
             Return Nothing
         End Function
 
@@ -13514,6 +14267,66 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim alignmentOpt As BoundExpression = DirectCast(Me.Visit(node.AlignmentOpt), BoundExpression)
             Dim formatStringOpt As BoundLiteral = DirectCast(Me.Visit(node.FormatStringOpt), BoundLiteral)
             Return node.Update(expression, alignmentOpt, formatStringOpt)
+        End Function
+
+        Public Overrides Function VisitGuidLiteral(node As BoundGuidLiteral) As BoundNode
+            Dim prefix As BoundGuidLiteralPrefix = DirectCast(Me.Visit(node.Prefix), BoundGuidLiteralPrefix)
+            Dim guid As BoundGuidLiteralGuid = DirectCast(Me.Visit(node.Guid), BoundGuidLiteralGuid)
+            Return node.Update(prefix, guid)
+        End Function
+
+        Public Overrides Function VisitGuidLiteralPrefix(node As BoundGuidLiteralPrefix) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteralGuid(node As BoundGuidLiteralGuid) As BoundNode
+            Dim guidParts As ImmutableArray(Of BoundGuidLiteral_Part) = Me.VisitList(node.GuidParts)
+            Return node.Update(node.GuidFormat, guidParts)
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Part(node As BoundGuidLiteral_Part) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Bo(node As BoundGuidLiteral_Bo) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Bc(node As BoundGuidLiteral_Bc) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Po(node As BoundGuidLiteral_Po) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Pc(node As BoundGuidLiteral_Pc) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Comma(node As BoundGuidLiteral_Comma) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Hypen(node As BoundGuidLiteral_Hypen) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Hex(node As BoundGuidLiteral_Hex) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_HexPrefix(node As BoundGuidLiteral_HexPrefix) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_X(node As BoundGuidLiteral_X) As BoundNode
+            Return node
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_HexValue(node As BoundGuidLiteral_HexValue) As BoundNode
+            Dim digits As ImmutableArray(Of BoundGuidLiteral_Hex) = Me.VisitList(node.Digits)
+            Return node.Update(node.HasPrefix, digits, node.GuidKind)
         End Function
 
     End Class
@@ -14966,6 +15779,92 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 New TreeDumperNode("expression", Nothing, new TreeDumperNode() { Visit(node.Expression, Nothing) }),
                 New TreeDumperNode("alignmentOpt", Nothing, new TreeDumperNode() { Visit(node.AlignmentOpt, Nothing) }),
                 New TreeDumperNode("formatStringOpt", Nothing, new TreeDumperNode() { Visit(node.FormatStringOpt, Nothing) })
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral(node As BoundGuidLiteral, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("prefix", Nothing, new TreeDumperNode() { Visit(node.Prefix, Nothing) }),
+                New TreeDumperNode("guid", Nothing, new TreeDumperNode() { Visit(node.Guid, Nothing) })
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteralPrefix(node As BoundGuidLiteralPrefix, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteralPrefix", Nothing, Array.Empty(Of TreeDumperNode)())
+        End Function
+
+        Public Overrides Function VisitGuidLiteralGuid(node As BoundGuidLiteralGuid, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteralGuid", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidFormat", node.GuidFormat, Nothing),
+                New TreeDumperNode("guidParts", Nothing, From x In node.GuidParts Select Visit(x, Nothing))
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Part(node As BoundGuidLiteral_Part, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Part", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Bo(node As BoundGuidLiteral_Bo, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Bo", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Bc(node As BoundGuidLiteral_Bc, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Bc", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Po(node As BoundGuidLiteral_Po, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Po", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Pc(node As BoundGuidLiteral_Pc, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Pc", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Comma(node As BoundGuidLiteral_Comma, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Comma", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Hypen(node As BoundGuidLiteral_Hypen, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Hypen", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_Hex(node As BoundGuidLiteral_Hex, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_Hex", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_HexPrefix(node As BoundGuidLiteral_HexPrefix, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_HexPrefix", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_X(node As BoundGuidLiteral_X, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_X", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
+            })
+        End Function
+
+        Public Overrides Function VisitGuidLiteral_HexValue(node As BoundGuidLiteral_HexValue, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidLiteral_HexValue", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("hasPrefix", node.HasPrefix, Nothing),
+                New TreeDumperNode("digits", Nothing, From x In node.Digits Select Visit(x, Nothing)),
+                New TreeDumperNode("guidKind", node.GuidKind, Nothing)
             })
         End Function
 

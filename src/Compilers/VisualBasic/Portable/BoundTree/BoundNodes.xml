@@ -1914,4 +1914,41 @@
     <Field Name="FormatStringOpt" Type="BoundLiteral" Null="allow"/>
   </Node>
 
+  <Node Name="BoundGuidLiteral" Base="BoundNode">
+    <Field Name="Prefix" Type="BoundGuidLiteralPrefix" Null="disallow"/>
+    <Field Name="Guid" Type="BoundGuidLiteralGuid" Null="allow"/>
+  </Node>
+  <Node Name="BoundGuidLiteralPrefix" Base="BoundNode">
+    <!--<Field Name="Prefix" Type="BoundGuidLiteralPrefix" Null="disallow"/>
+    <Field Name="Guid" Type="BoundGuidLiteralGuid" Null="allow"/>-->
+  </Node>
+  <Node Name="BoundGuidLiteralGuid" Base="BoundNode">
+    <Field Name="GuidFormat" Type="GuidFormat" Null="disallow"/>
+    <Field Name="GuidParts" Type="ImmutableArray(Of BoundGuidLiteral_Part)" Null="disallow"/>
+  </Node>
+  <Node Name="BoundGuidLiteral_Part" Base="BoundNode">
+    <Field Name="GuidKind" Type="GuidFormat" Null="disallow"/>
+  </Node>
+  <Node Name="BoundGuidLiteral_Bo" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_Bc" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_Po" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_Pc" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_Comma" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_Hypen" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_Hex" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_HexPrefix" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_X" Base="BoundGuidLiteral_Part">
+  </Node>
+  <Node Name="BoundGuidLiteral_HexValue" Base="BoundGuidLiteral_Part">
+    <Field Name="HasPrefix" Type="Boolean" Null="Allow" />
+    <Field Name="Digits" Type="ImmutableArray(Of BoundGuidLiteral_Hex)" Null="Disallow" />
+  </Node>
 </Tree>
