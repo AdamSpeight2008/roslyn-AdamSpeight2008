@@ -1241,7 +1241,7 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Method" />
         <native-equiv name="Statement.Opcodes.ProcedureBody" />
       </node-kind>
-      
+
       <child name="SubOrFunctionStatement" order="10">
         <description>The "Sub" or "Function" statement that begins the block.</description>
         <kind name="SubStatement" node-kind="SubBlock"/>
@@ -1534,7 +1534,7 @@ Unify Enum declarations with other block type declarations.
         <kind name ="SubKeyword" node-kind="SubStatement" />
         <kind name ="FunctionKeyword" node-kind="FunctionStatement" />
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the method being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1587,7 +1587,7 @@ Unify Enum declarations with other block type declarations.
           The "Sub" keyword.
         </description>
       </child>
-      
+
       <child name="NewKeyword" kind="NewKeyword" order="20">
         <description>The "New" keyword in the constructor declaration.</description>
         <lm-equiv name="NewKeyword"></lm-equiv>
@@ -1624,7 +1624,7 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="StringMode"></lm-equiv>
         <native-equiv name="StringMode"></native-equiv>
       </child>
-      
+
       <child name="SubOrFunctionKeyword" order="10">
         <description>
           The "Sub" or "Function" keyword.
@@ -1632,7 +1632,7 @@ Unify Enum declarations with other block type declarations.
         <kind name ="SubKeyword" node-kind="DeclareSubStatement" />
         <kind name ="FunctionKeyword" node-kind="DeclareFunctionStatement" />
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the method being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1699,7 +1699,7 @@ Unify Enum declarations with other block type declarations.
         <kind name ="SubKeyword" node-kind="DelegateSubStatement" />
         <kind name ="FunctionKeyword" node-kind="DelegateFunctionStatement" />
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the delegate being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1744,7 +1744,7 @@ Unify Enum declarations with other block type declarations.
           The "Event" keyword that introduces this event declaration.
         </description>
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the event being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1781,13 +1781,13 @@ Unify Enum declarations with other block type declarations.
         <lm-equiv name="Operator" />
         <native-equiv name="Statements.Opcodes.OperatorDeclaration" />
       </node-kind>
-      
+
       <child name="OperatorKeyword" kind="OperatorKeyword" order="10">
         <description>
           The "Operator" keyword that introduces this operator declaration.
         </description>
       </child>
-      
+
       <child name="OperatorToken"  kind="CTypeKeyword|IsTrueKeyword|IsFalseKeyword|NotKeyword|PlusToken|MinusToken|AsteriskToken|SlashToken|CaretToken|BackslashToken|AmpersandToken|LessThanLessThanToken|GreaterThanGreaterThanToken|ModKeyword|OrKeyword|XorKeyword|AndKeyword|LikeKeyword|EqualsToken|LessThanGreaterThanToken|LessThanToken|LessThanEqualsToken|GreaterThanEqualsToken|GreaterThanToken" order="20">
         <description>The operator being defined.</description>
         <lm-equiv name="Operator"></lm-equiv>
@@ -1829,7 +1829,7 @@ Unify Enum declarations with other block type declarations.
           The "Property" keyword that introduces this property declaration.
         </description>
       </child>
-      
+
       <child name="Identifier" kind="IdentifierToken" order="20">
         <description>The name of the property being declared.</description>
         <lm-equiv name="Name"></lm-equiv>
@@ -1881,7 +1881,7 @@ Unify Enum declarations with other block type declarations.
       <node-kind name="RaiseEventAccessorStatement">
         <lm-equiv name="Statement.Opcodes.RaiseEventDeclaration" />
       </node-kind>
-    
+
       <child name="AccessorKeyword" order="10">
         <description>
           The "Get", "Set", "AddHandler", "RemoveHandler", or "RaiseEvent" keyword that introduces this accessor declaration.
@@ -5052,13 +5052,13 @@ Unify Enum declarations with other block type declarations.
       <child name="Arguments" optional="false" list="true" optional-elements="false" separator-kind="CommaToken" separator-name="CommaTokens" kind="@SimpleArgumentSyntax">
         <description>The list of tuple arguments.</description>
       </child>
-      
+
       <child name="CloseParenToken" kind="CloseParenToken">
         <description>The ")" token</description>
       </child>
     </node-structure>
 
-      <!--****************
+    <!--****************
       -  TupleType
       ******************-->
     <node-structure name="TupleTypeSyntax" parent="TypeSyntax">
@@ -5075,7 +5075,7 @@ Unify Enum declarations with other block type declarations.
       <child name="Elements" optional="false" list="true" optional-elements="false" separator-kind="CommaToken" separator-name="CommaTokens" kind="@TupleElementSyntax">
         <description>The list of tuple elements.</description>
       </child>
-      
+
       <child name="CloseParenToken" kind="CloseParenToken">
         <description>The ")" token</description>
       </child>
@@ -5120,7 +5120,7 @@ Unify Enum declarations with other block type declarations.
         <description>A simple "As" clause specifying the type of the tuple element.</description>
       </child>
     </node-structure>
-    
+
     <!--****************
       -  SpecialInstance
       ******************-->
@@ -8883,106 +8883,8 @@ Unify Enum declarations with other block type declarations.
         <description>The text.</description>
       </field>
     </node-structure>
-    
-    <!--********************
-      -  Guid Literal Tokens
-      **********************-->
-    <enumeration name="GuidFormat">
-            <description>Represents one of allowed Guid Formats.</description>
-      <lm-equiv name="GuidFormat"></lm-equiv>
-      <native-equiv name="guidFormat"></native-equiv>
-      <native-equiv name="GuidFormat.Opcodes"></native-equiv>
-      <enumerators>
-        <enumerator name="None" />
-        <enumerator name="B"><description>B  {00000000-0000-0000-0000-000000000000}</description></enumerator>
-        <enumerator name="D"><description>D  00000000-0000-0000-0000-000000000000</description></enumerator>
-        <enumerator name="N"><description>N  00000000000000000000000000000000</description></enumerator>
-        <enumerator name="P"><description>P  (00000000-0000-0000-0000-000000000000)</description></enumerator>
-        <enumerator name="X"><description>X  {0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}}</description></enumerator>
-     </enumerators>
-    </enumeration>
-      
-    <enumeration name="GuidKind">
-      <description>
-        Represents one of the type characters or literal suffixes of VB. Used to describe
-        a) the type character suffixes that can be placed on identifiers, and
-        b) the suffixes that can be placed on integer literals.
-      </description>
-      <lm-equiv name="GuidKind"></lm-equiv>
-      <native-equiv name="guidKind"></native-equiv>
-      <native-equiv name="GuidKind.Opcodes"></native-equiv>
 
-      <enumerators>
-        <enumerator name="None" />
-        <enumerator name="Bo">
-          <description>The "{" guid literal character."</description>
-        </enumerator>
-        <enumerator name="Bc">
-          <description>The "}" guid literal character."</description>
-        </enumerator>
-        <enumerator name="Po">
-          <description>The "(" guid literal character."</description>
-        </enumerator>
-        <enumerator name="Pc">
-          <description>The ")" guid literal character."</description>
-        </enumerator>
-        <enumerator name="Comma">
-          <description>The "," guid literal character."</description>
-        </enumerator>
-        <enumerator name="Hypen">
-          <description>The "-" guid literal character."</description>
-        </enumerator>
-        <enumerator name="Hex">
-          <description>An HexDecimal guid literal character."</description>
-        </enumerator>
-        <enumerator name="X">
-          <description>The "X" guid literal character."</description>
-        </enumerator>
-        <enumerator name="HexPrefix">
-          <description>The "0x" guid literal character."</description>
-        </enumerator>
-        <enumerator name="HexValue">
-          <description>The "0x0000" guid literal character."</description>
-        </enumerator>
-      </enumerators>
-    </enumeration>
-    
-        <node-structure name="GuidLiteral_PrefixSyntax" parent="SyntaxToken">
-      <description>
-        Represents literal character data in interpolated string expression.
-      </description>
 
-      <node-kind name="GuidLiteral_Prefix" />
-
-    </node-structure>
-    <node-structure name="GuidLiteral" parent="SyntaxToken">
-      <description>
-        Represents literal character data in interpolated string expression.
-      </description>
-
-      <node-kind name="GuidLiteral" />
-
-      <!--<field name="Prefix" type="SyntaxToken">
-        <description>The text.</description>
-      </field>-->
-    </node-structure>
-
-    <node-structure name="GuidLiteral_Token" parent="SyntaxToken" >
-      <field name="GuidKind" type="GuidKind" />
-      <description>Represents literal character data in interpolated string expression.</description>
-
-      <node-kind name="GuidLiteral_Hex">       <description>Represents a HexDecimal Digit.</description></node-kind>
-      <node-kind name="GuidLiteral_Comma">     <description>Represents a Opening Bracket (eg ',').</description></node-kind>
-      <node-kind name="GuidLiteral_Bo">        <description>Represents a Opening Bracket (eg '{').</description></node-kind>
-      <node-kind name="GuidLiteral_Bc">        <description>Represents a Closing Bracket (eg '}').</description></node-kind>
-      <node-kind name="GuidLiteral_Po">        <description>Represents an Opening Parenthesis (eg '(').</description></node-kind>
-      <node-kind name="GuidLiteral_Pc">        <description>Represents an Closing Parenthesis (eg ')').</description></node-kind>
-      <node-kind name="GuidLiteral_Hypen">     <description>Represents an Hypen (eg '-'). </description></node-kind>
-      <node-kind name="GuidLiteral_X">         <description>Represents an hex prefix's X (eg 'X' or 'x').</description></node-kind>
-      <node-kind name="GuidLiteral_HexPrefix"> <description>Represents an hex prefix (eg '0X' or '0x').</description></node-kind>
-      <node-kind name="GuidLiteral_HexValue">  <description>Represents an hex value.</description></node-kind>
-    
-    </node-structure>
     <!--********************
       -  Identifier
       **********************-->
@@ -9656,5 +9558,136 @@ Unify Enum declarations with other block type declarations.
       </description>
       <node-kind name="BadDirectiveTrivia"></node-kind>
     </node-structure>
+
+    <!--********************
+      -  Guid Literal Tokens
+      **********************-->
+
+    <enumeration name="Guid_Format">
+      <description>Represents one of allowed Guid Formats.</description>
+      <lm-equiv name="GuidFormat"></lm-equiv>
+      <native-equiv name="guidFormat"></native-equiv>
+      <native-equiv name="GuidFormat.Opcodes"></native-equiv>
+      <enumerators>
+        <enumerator name="None" />
+        <enumerator name="B">
+          <description>B  {00000000-0000-0000-0000-000000000000}</description>
+        </enumerator>
+        <enumerator name="D">
+          <description>D  00000000-0000-0000-0000-000000000000</description>
+        </enumerator>
+        <enumerator name="N">
+          <description>N  00000000000000000000000000000000</description>
+        </enumerator>
+        <enumerator name="P">
+          <description>P  (00000000-0000-0000-0000-000000000000)</description>
+        </enumerator>
+        <enumerator name="X">
+          <description>X  {0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}}</description>
+        </enumerator>
+      </enumerators>
+    </enumeration>
+
+    <enumeration name="Guid_Seperator">
+      <description>Represents one of allowed Guid Seperators.</description>
+      <lm-equiv name="Guid_Seperator"></lm-equiv>
+      <native-equiv name="guid_Seperator"></native-equiv>
+      <native-equiv name="Guid_Seperator.Opcodes"></native-equiv>
+      <enumerators>
+        <enumerator name="None"/>
+        <enumerator name="Hypen">
+          <description>-</description>
+        </enumerator>
+        <enumerator name="Comma">
+          <description>,</description>
+        </enumerator>
+      </enumerators>
+    </enumeration>
+
+    <enumeration name="Guid_Opening">
+      <description>Represents one of allowed Guid Openings.</description>
+      <lm-equiv name="Guid_Seperator"></lm-equiv>
+      <native-equiv name="guid_Opening"></native-equiv>
+      <native-equiv name="Guid_Opening.Opcodes"></native-equiv>
+      <enumerators>
+        <enumerator name="None"/>
+        <enumerator name="Bo">
+          <description>{</description>
+        </enumerator>
+        <enumerator name="Po">
+          <description>(</description>
+        </enumerator>
+      </enumerators>
+    </enumeration>
+
+    <enumeration name="Guid_Closing">
+      <description>Represents one of allowed Guid Closing.</description>
+      <lm-equiv name="Guid_Seperator"></lm-equiv>
+      <native-equiv name="guid_Closing"></native-equiv>
+      <native-equiv name="Guid_Closing.Opcodes"></native-equiv>
+      <enumerators>
+        <enumerator name="None"/>
+        <enumerator name="Bc">
+          <description>}</description>
+        </enumerator>
+        <enumerator name="Pc">
+          <description>)</description>
+        </enumerator>
+      </enumerators>
+    </enumeration>
+
+    <node-structure name="Guid_PrefixSyntax" parent ="SyntaxToken">
+      <description>Represents the Guid literal prefix. (ie ~)</description>
+      <node-kind name="Guid_Prefix"/>
+    </node-structure>
+
+    <node-structure name="Guid_LiteralSyntax" parent="VisualBasicSyntaxNode">
+      <description>Represents the Guid literal. (ie ~)</description>
+      <node-kind name="Guid_Literal" />
+      <child name="Prefix" kind="Guid_Prefix" />
+      <child name="Guid"   kind="Guid_Section" />
+    </node-structure>
+
+    <node-structure name="Guid_SectionSyntax" parent="VisualBasicSyntaxNode">
+      <description>Represents a guid section, consisting of format and optional block.</description>
+      <node-kind name="Guid_Section" />
+      <field name="Format" type="Guid_Format" />
+      <child name="Block"  kind="Guid_Block"  optional="true"/>
+    </node-structure>
+
+    <node-structure name="Guid_BlockSyntax" parent="VisualBasicSyntaxNode">
+      <description>Represents a guid block.</description>
+      <node-kind name="Guid_Block"/>
+      <field name="Opening"  type="Guid_Opening" optional="true"/>
+      <child name="Contents" kind="Guid_BlockContent" list="true"/>
+      <field name="Closing"  type="Guid_Closing" optional="true"/>
+    </node-structure>
+
+    <node-structure name="Guid_BlockContentSyntax" parent="VisualBasicSyntaxNode">
+      <description>Represents a guid block content.</description>
+      <node-kind name="Guid_BlockContent"/>
+      <child name="InnerBlock" kind="Guid_Block"     optional="true"/>
+      <field name="Seperator"  type="Guid_Seperator" optional="true"/>
+      <child name="HexDigits"  kind="Guid_HexDigits"  optional="true"/>
+    </node-structure>
+
+    <node-structure name="Guid_HexDigitsSyntax" parent="VisualBasicSyntaxNode" >
+      <description>Represents a Guid Hex Value. (ie 0xFEDC FEDC)</description>
+      <node-kind name="Guid_HexDigits"/>
+      <child name="Prefix" kind="Guid_HexPrefixToken" optional="true"/>
+      <child name="Digits" kind="Guid_HexDigit"  list="true"/>
+    </node-structure>
+
+    <node-structure name="Guid_HexDigitSyntax"  parent="VisualBasicSyntaxNode">
+      <description>Represents a Guid Hex digit. (ie 0-9A-Fa-f)</description>
+      <node-kind name="Guid_HexDigit"/>
+      <child name="Value" kind="EmptyToken"/>
+    </node-structure>
+
+    <node-structure name="Guid_HexPrefixToken" parent="SyntaxToken">
+      <description>Represents the Guid Hex Prefix. (ie 0x)</description>
+      <node-kind name="Guid_HexPrefixToken"/>
+    </node-structure>
+
   </definitions>
 </define-parse-tree>

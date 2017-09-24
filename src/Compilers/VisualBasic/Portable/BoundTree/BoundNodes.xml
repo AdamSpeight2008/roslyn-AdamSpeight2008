@@ -1914,20 +1914,20 @@
     <Field Name="FormatStringOpt" Type="BoundLiteral" Null="allow"/>
   </Node>
 
-  <Node Name="BoundGuidLiteral" Base="BoundNode">
+  <!--<Node Name="BoundGuidLiteral" Base="BoundNode">
     <Field Name="Prefix" Type="BoundGuidLiteralPrefix" Null="disallow"/>
     <Field Name="Guid" Type="BoundGuidLiteralGuid" Null="allow"/>
   </Node>
   <Node Name="BoundGuidLiteralPrefix" Base="BoundNode">
-    <!--<Field Name="Prefix" Type="BoundGuidLiteralPrefix" Null="disallow"/>
-    <Field Name="Guid" Type="BoundGuidLiteralGuid" Null="allow"/>-->
+    --><!--<Field Name="Prefix" Type="BoundGuidLiteralPrefix" Null="disallow"/>
+    <Field Name="Guid" Type="BoundGuidLiteralGuid" Null="allow"/>--><!--
   </Node>
   <Node Name="BoundGuidLiteralGuid" Base="BoundNode">
-    <Field Name="GuidFormat" Type="GuidFormat" Null="disallow"/>
+    <Field Name="GuidFormat" Type="GuidFormat" Null="allow"/>
     <Field Name="GuidParts" Type="ImmutableArray(Of BoundGuidLiteral_Part)" Null="disallow"/>
   </Node>
   <Node Name="BoundGuidLiteral_Part" Base="BoundNode">
-    <Field Name="GuidKind" Type="GuidFormat" Null="disallow"/>
+    <Field Name="GuidKind" Type="GuidKind"  Override="true" Null="allow"/>
   </Node>
   <Node Name="BoundGuidLiteral_Bo" Base="BoundGuidLiteral_Part">
   </Node>
@@ -1950,5 +1950,5 @@
   <Node Name="BoundGuidLiteral_HexValue" Base="BoundGuidLiteral_Part">
     <Field Name="HasPrefix" Type="Boolean" Null="Allow" />
     <Field Name="Digits" Type="ImmutableArray(Of BoundGuidLiteral_Hex)" Null="Disallow" />
-  </Node>
+  </Node>-->
 </Tree>
