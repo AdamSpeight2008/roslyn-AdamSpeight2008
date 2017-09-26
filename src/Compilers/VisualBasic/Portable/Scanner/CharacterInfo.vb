@@ -126,7 +126,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_C As Char = ChrW(s_fullwidth + AscW("C"c)) REM Ｃ
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_P As Char = ChrW(s_fullwidth + AscW("P"c)) REM Ｐ
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_M As Char = ChrW(s_fullwidth + AscW("M"c)) REM Ｍ
-        Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_G As Char = ChrW(s_fullwidth + AscW("G"c)) REM 
+        Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_G As Char = ChrW(s_fullwidth + AscW("G"c)) REM Ｇ 
 
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_B As Char = ChrW(s_fullwidth + AscW("b"c))   REM ｂ
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_H As Char = ChrW(s_fullwidth + AscW("h"c))   REM ｈ
@@ -137,7 +137,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_C As Char = ChrW(s_fullwidth + AscW("c"c))   REM ｃ
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_P As Char = ChrW(s_fullwidth + AscW("p"c))   REM ｐ
         Friend Const FULLWIDTH_LATIN_SMALL_LETTER_M As Char = ChrW(s_fullwidth + AscW("m"c))   REM ｍ
-        Friend Const FULLWIDTH_LATIN_SMALL_LETTER_G As Char = ChrW(s_fullwidth + AscW("g"c))   REM 
+        Friend Const FULLWIDTH_LATIN_SMALL_LETTER_G As Char = ChrW(s_fullwidth + AscW("g"c))   REM ｇ 
 
         Friend Const FULLWIDTH_LEFT_PARENTHESIS_STRING As String = FULLWIDTH_LEFT_PARENTHESIS
         Friend Const FULLWIDTH_RIGHT_PARENTHESIS_STRING As String = ChrW(s_fullwidth + AscW(")"c))
@@ -258,11 +258,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Friend Shared Function BeginsBaseLiteral(c As Char) As Boolean
-            Return (c = "H"c Or c = "O"c Or c = "B"c Or c = "G"c Or c = "h"c Or c = "o"c Or c = "b"c Or c = "g"c) OrElse
-                    (IsFullWidth(c) AndAlso (c = FULLWIDTH_LATIN_CAPITAL_LETTER_H Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_O Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_B Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_G Or
-                                             c = FULLWIDTH_LATIN_SMALL_LETTER_H Or c = FULLWIDTH_LATIN_SMALL_LETTER_O Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_B Or c = FULLWIDTH_LATIN_SMALL_LETTER_G))
+            Return (c = "H"c Or c = "O"c Or c = "B"c Or c = "h"c Or c="G"c Or c = "o"c Or c = "b"c Or c="g"c) OrElse
+                    (IsFullWidth(c) AndAlso (BeginsBaseLiteral_Hex(c) OrElse BeginsBaseLiteral_Oct(c) OrElse BeginsBaseLiteral_Bin(c)))
         End Function
 
+        Private Shared Function BeginsBaseLiteral_Hex(c As Char) As Boolean
+            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_H Or c = FULLWIDTH_LATIN_SMALL_LETTER_H
+        End Function
+
+        Private Shared Function BeginsBaseLiteral_Oct(c As Char) As Boolean
+            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_O Or c = FULLWIDTH_LATIN_SMALL_LETTER_O
+        End Function
+
+        Private Shared Function BeginsBaseLiteral_Bin(c As Char) As Boolean
+            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_B Or c = FULLWIDTH_LATIN_SMALL_LETTER_B
+        End Function
+        Private Shared Function BeginsBaseLiteral_Guid(c As Char) As Boolean
+            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_G Or c = FULLWIDTH_LATIN_SMALL_LETTER_G
+        End Function
         Private Shared ReadOnly s_isIDChar As Boolean() =
         {
             False, False, False, False, False, False, False, False, False, False,
