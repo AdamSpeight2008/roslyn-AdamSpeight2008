@@ -117,7 +117,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Const FULLWIDTH_COMMA As Char = ChrW(s_fullwidth + AscW(","c))                  REM ，
         Friend Const FULLWIDTH_PERCENT_SIGN As Char = ChrW(s_fullwidth + AscW("%"c))           REM ％
 
-        Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_B As Char = ChrW(s_fullwidth + AscW("B"c)) REM Ｂ
+        Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_B As Char = "Ｂ"c 'ChrW(s_fullwidth + AscW("B"c)) REM Ｂ
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_H As Char = ChrW(s_fullwidth + AscW("H"c)) REM Ｈ
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_O As Char = ChrW(s_fullwidth + AscW("O"c)) REM Ｏ
         Friend Const FULLWIDTH_LATIN_CAPITAL_LETTER_E As Char = ChrW(s_fullwidth + AscW("E"c)) REM Ｅ
@@ -227,9 +227,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <param name="c">The Unicode character.</param>
         ''' <returns>A boolean value set to True if character can be part of a valid start character in an identifier.</returns>
-        Public Shared Function IsIdentifierStartCharacter(
-            c As Char
-        ) As Boolean
+        Public Shared Function IsIdentifierStartCharacter(c As Char) As Boolean
             'TODO: make easy cases fast (or check if they already are)
             Dim CharacterProperties As UnicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c)
 
@@ -239,43 +237,52 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ' TODO: replace CByte with something faster.
-        Friend Shared Function IntegralLiteralCharacterValue(
-            Digit As Char
-        ) As Byte
-            If IsFullWidth(Digit) Then
-                Digit = MakeHalfWidth(Digit)
-            End If
+        Friend Shared Function IntegralLiteralCharacterValue(Digit As Char) As Byte
+            If IsFullWidth(Digit) Then Digit = MakeHalfWidth(Digit)
             Dim u As Integer = AscW(Digit)
-
-            If IsDecimalDigit(Digit) Then
-                Return CByte(u - AscW("0"c))
-            ElseIf Digit >= "A"c AndAlso Digit <= "F"c Then
-                Return CByte(u + (10 - AscW("A"c)))
-            Else
-                Debug.Assert(Digit >= "a"c AndAlso Digit <= "f"c, "Surprising digit.")
-                Return CByte(u + (10 - AscW("a"c)))
-            End If
+            If IsDecimalDigit(Digit) Then Return CByte(u - AscW("0"c))
+            If IsBetween(Digit, "A"c, "F"c) Then Return CByte(u + (10 - AscW("A"c)))
+            Debug.Assert(Digit >= "a"c AndAlso Digit <= "f"c, "Surprising digit.")
+            Return CByte(u + (10 - AscW("a"c)))
         End Function
 
-        Friend Shared Function BeginsBaseLiteral(c As Char) As Boolean
-            Return (c = "H"c Or c = "O"c Or c = "B"c Or c = "h"c Or c="G"c Or c = "o"c Or c = "b"c Or c="g"c) OrElse
-                    (IsFullWidth(c) AndAlso (BeginsBaseLiteral_Hex(c) OrElse BeginsBaseLiteral_Oct(c) OrElse BeginsBaseLiteral_Bin(c)))
+        Private Shared Function IsBetween(ch As Char, lc As Char, uc As Char) As Boolean
+            Return (lc <= ch) And (ch <= lc)
+        End Function
+
+        Friend Shared Function BeginsBaseLiteral(ch As Char) As Boolean
+            Select Case ch
+                Case "H"c, "H"c, "O"c, "B"c, "h"c, "G"c, "o"c, "b"c, "g"c
+                    Return True
+                Case Else
+                    If Not IsFullWidth(ch) Then Return False
+                    Select Case True
+                        Case BeginsBaseLiteral_Hex(ch),
+                             BeginsBaseLiteral_Oct(ch),
+                             BeginsBaseLiteral_Bin(ch),
+                             BeginsBaseLiteral_Guid(ch)
+                            Return True
+                    End Select
+            End Select
+            Return False
         End Function
 
         Private Shared Function BeginsBaseLiteral_Hex(c As Char) As Boolean
-            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_H Or c = FULLWIDTH_LATIN_SMALL_LETTER_H
+            Return (c = FULLWIDTH_LATIN_CAPITAL_LETTER_H) Or (c = FULLWIDTH_LATIN_SMALL_LETTER_H)
         End Function
 
         Private Shared Function BeginsBaseLiteral_Oct(c As Char) As Boolean
-            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_O Or c = FULLWIDTH_LATIN_SMALL_LETTER_O
+            Return (c = FULLWIDTH_LATIN_CAPITAL_LETTER_O) Or (c = FULLWIDTH_LATIN_SMALL_LETTER_O)
         End Function
 
         Private Shared Function BeginsBaseLiteral_Bin(c As Char) As Boolean
-            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_B Or c = FULLWIDTH_LATIN_SMALL_LETTER_B
+            Return (c = FULLWIDTH_LATIN_CAPITAL_LETTER_B) Or (c = FULLWIDTH_LATIN_SMALL_LETTER_B)
         End Function
+
         Private Shared Function BeginsBaseLiteral_Guid(c As Char) As Boolean
-            Return c = FULLWIDTH_LATIN_CAPITAL_LETTER_G Or c = FULLWIDTH_LATIN_SMALL_LETTER_G
+            Return (c = FULLWIDTH_LATIN_CAPITAL_LETTER_G) Or (c = FULLWIDTH_LATIN_SMALL_LETTER_G)
         End Function
+
         Private Shared ReadOnly s_isIDChar As Boolean() =
         {
             False, False, False, False, False, False, False, False, False, False,
@@ -326,10 +333,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="c">The Unicode character.</param>
         ''' <returns>A boolean value set to True if character can be part of a valid identifier.</returns>
         Public Shared Function IsIdentifierPartCharacter(c As Char) As Boolean
-            If c < ChrW(128) Then
-                Return IsNarrowIdentifierCharacter(Convert.ToUInt16(c))
-            End If
-
+            If c < ChrW(128) Then Return IsNarrowIdentifierCharacter(Convert.ToUInt16(c))
             Return IsWideIdentifierCharacter(c)
         End Function
 
@@ -339,21 +343,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">The identifier name.</param>
         ''' <returns>A boolean value set to True if name is valid identifier.</returns>
         Public Shared Function IsValidIdentifier(name As String) As Boolean
-            If String.IsNullOrEmpty(name) Then
-                Return False
-            End If
-
-            If Not IsIdentifierStartCharacter(name(0)) Then
-                Return False
-            End If
+            If String.IsNullOrEmpty(name) OrElse Not IsIdentifierStartCharacter(name(0)) Then Return False
 
             Dim nameLength As Integer = name.Length
-            For i As Integer = 1 To nameLength - 1 ' NB: start at 1
-                If Not IsIdentifierPartCharacter(name(i)) Then
-                    Return False
-                End If
+            For i = 1 To nameLength - 1 ' NB: start at 1
+                If Not IsIdentifierPartCharacter(name(i)) Then Return False
             Next
-
             Return True
         End Function
 
@@ -363,9 +358,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="text">The text representing the original identifier.  This can be in full width or half width Unicode form.  </param>
         ''' <returns>A string representing the text in a half width Unicode form.</returns>
         Public Shared Function MakeHalfWidthIdentifier(text As String) As String
-            If text Is Nothing Then
-                Return text
-            End If
+            If text Is Nothing Then Return text
 
             Dim characters As Char() = Nothing
             For i = 0 To text.Length - 1
@@ -390,10 +383,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim CharacterProperties As UnicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c)
 
             Return IsPropAlphaNumeric(CharacterProperties) OrElse
-                IsPropLetterDigit(CharacterProperties) OrElse
-                IsPropConnectorPunctuation(CharacterProperties) OrElse
-                IsPropCombining(CharacterProperties) OrElse
-                IsPropOtherFormat(CharacterProperties)
+                   IsPropLetterDigit(CharacterProperties) OrElse
+                   IsPropConnectorPunctuation(CharacterProperties) OrElse
+                   IsPropCombining(CharacterProperties) OrElse
+                   IsPropOtherFormat(CharacterProperties)
         End Function
 
         Friend Shared Function BeginsExponent(c As Char) As Boolean
@@ -401,38 +394,37 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Friend Shared Function IsBinaryDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "1"c) Or
-                   (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_ONE)
+            Return IsBetween(c, "0"c, "1"c) Or IsBetween(c, FULLWIDTH_DIGIT_ZERO, FULLWIDTH_DIGIT_ONE)
         End Function
 
         Friend Shared Function IsOctalDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "7"c) Or
-                   (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_SEVEN)
+            Return IsBetween(c, "0"c, "7"c) Or IsBetween(c, FULLWIDTH_DIGIT_ZERO, FULLWIDTH_DIGIT_SEVEN)
         End Function
 
         Friend Shared Function IsDecimalDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "9"c) Or
-                   (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_NINE)
+            Return IsBetween(c, "0"c, "9"c) Or IsBetween(c, FULLWIDTH_DIGIT_ZERO, FULLWIDTH_DIGIT_NINE)
+        End Function
+
+        Private Shared Function IsHexDigit_Letter(c As Char) As Boolean
+            Return IsBetween(c, "a"c, "f"c) OrElse IsBetween(c, "A"c, "F"c) OrElse
+                   IsBetween(c, FULLWIDTH_LATIN_SMALL_LETTER_A, FULLWIDTH_LATIN_SMALL_LETTER_F) OrElse
+                   IsBetween(c, FULLWIDTH_LATIN_CAPITAL_LETTER_A, FULLWIDTH_LATIN_CAPITAL_LETTER_F)
         End Function
 
         Friend Shared Function IsHexDigit(c As Char) As Boolean
-            Return IsDecimalDigit(c) OrElse
-                    (c >= "a"c And c <= "f"c) OrElse
-                    (c >= "A"c And c <= "F"c) OrElse
-                    (c >= FULLWIDTH_LATIN_SMALL_LETTER_A And c <= FULLWIDTH_LATIN_SMALL_LETTER_F) OrElse
-                    (c >= FULLWIDTH_LATIN_CAPITAL_LETTER_A And c <= FULLWIDTH_LATIN_CAPITAL_LETTER_F)
+            Return IsDecimalDigit(c) OrElse IsHexDigit_Letter(c)
         End Function
 
         Friend Shared Function IsDateSeparatorCharacter(c As Char) As Boolean
             Return c = "/"c Or c = "-"c Or c = FULLWIDTH_SOLIDUS Or c = FULLWIDTH_HYPHEN_MINUS
         End Function
 
-        Friend Shared ReadOnly DaysToMonth365() As Integer = New Integer(13 - 1) {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365}
-        Friend Shared ReadOnly DaysToMonth366() As Integer = New Integer(13 - 1) {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}
+        Friend Shared ReadOnly DaysToMonth365 As Integer() = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365}
+        Friend Shared ReadOnly DaysToMonth366 As Integer() = {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}
 
         Friend Shared Function IsLetterC(ch As Char) As Boolean
-            Return _
-                ch = "c"c Or ch = "C"c Or ch = FULLWIDTH_LATIN_CAPITAL_LETTER_C Or ch = FULLWIDTH_LATIN_SMALL_LETTER_C
+            Return (ch = "c"c) Or (ch = "C"c) Or
+                   (ch = FULLWIDTH_LATIN_CAPITAL_LETTER_C) Or (ch = FULLWIDTH_LATIN_SMALL_LETTER_C)
         End Function
 
         ''' <summary>
@@ -452,9 +444,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(IsHalfWidth(one))
             Debug.Assert(IsHalfWidth(another))
 
-            If IsFullWidth(ch) Then
-                ch = MakeHalfWidth(ch)
-            End If
+            If IsFullWidth(ch) Then ch = MakeHalfWidth(ch)
             Return ch = one Or ch = another
         End Function
 
@@ -476,7 +466,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend Shared Function IsPropCombining(CharacterProperties As UnicodeCategory) As Boolean
             Return CharacterProperties >= UnicodeCategory.NonSpacingMark AndAlso
-                CharacterProperties <= UnicodeCategory.EnclosingMark
+                   CharacterProperties <= UnicodeCategory.EnclosingMark
         End Function
 
         Friend Shared Function IsConnectorPunctuation(c As Char) As Boolean
@@ -504,12 +494,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Friend Shared Function ReturnFullWidthOrSelf(c As Char) As Char
-            If IsHalfWidth(c) Then
-                Return MakeFullWidth(c)
-            End If
-
-            Return c
+            Return If(IsHalfWidth(c), MakeFullWidth(c), c)
         End Function
+
     End Class
 
 End Namespace

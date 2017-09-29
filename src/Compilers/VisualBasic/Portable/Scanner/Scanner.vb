@@ -1749,22 +1749,22 @@ FullWidthRepeat:
 
         'End Function
 
-        Private Function Scan_GuidLiteral(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)) As SyntaxToken
-            Dim here = 0, ch As Char = Nothing
-            Dim prefix As SyntaxToken = Nothing
-            Dim body As SyntaxToken = Nothing
-            If TryGet(here, ch) AndAlso ch = "&"c Then
-                If TryGet(here + 1, ch) AndAlso (ch = "g"c OrElse ch = "G"c) Then
-                    prefix = SyntaxToken.Create(SyntaxKind.GuidLiteralPrefix)
-                    body = Scan_Guid_Body(here + 2, precedingTrivia)
-                    Return Nothing ' MakeGuid_Literal(prefix, body, precedingTrivia)
-                Else
-                    Return MakeBadToken(precedingTrivia, here, ERRID.ERR_IllegalChar)
-                End If
-            Else
-                Return MakeBadToken(precedingTrivia, here, ERRID.ERR_IllegalChar)
-            End If
-        End Function
+        'Private Function Scan_GuidLiteral(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)) As SyntaxToken
+        '    Dim here = 0, ch As Char = Nothing
+        '    Dim prefix As SyntaxToken = Nothing
+        '    Dim body As SyntaxToken = Nothing
+        '    If TryGet(here, ch) AndAlso ch = "&"c Then
+        '        If TryGet(here + 1, ch) AndAlso (ch = "g"c OrElse ch = "G"c) Then
+        '            prefix = SyntaxToken.Create(SyntaxKind.GuidLiteralPrefix)
+        '            body = Scan_Guid_Body(here + 2, precedingTrivia)
+        '            Return Nothing ' MakeGuid_Literal(prefix, body, precedingTrivia)
+        '        Else
+        '            Return MakeBadToken(precedingTrivia, here, ERRID.ERR_IllegalChar)
+        '        End If
+        '    Else
+        '        Return MakeBadToken(precedingTrivia, here, ERRID.ERR_IllegalChar)
+        '    End If
+        'End Function
 
 
         Private Function ScanNumericLiteral(precedingTrivia As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)) As SyntaxToken
@@ -1792,8 +1792,8 @@ FullWidthRepeat:
 
 FullWidthRepeat:
                 Select Case ch
-                    Case "G"c, "g"c
-                        Return Scan_GuidLiteral(precedingTrivia)
+                    'Case "G"c, "g"c
+                    '    Return Scan_GuidLiteral(precedingTrivia)
                     Case "H"c, "h"c
                         Here += 1
                         IntegerLiteralStart = Here

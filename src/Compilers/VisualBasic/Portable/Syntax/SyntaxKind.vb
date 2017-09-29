@@ -3199,18 +3199,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
-        GuidLiteral = 793
-        'GuidLiteral_Prefix = 794
-        'GuidLiteral_Token = 795
-        'GuidLiteral_Bo = 796
-        'GuidLiteral_Bc = 797
-        'GuidLiteral_Po = 798
-        'GuidLiteral_X = 799
-        'GuidLiteral_HexPrefix = 800
-        'GuidLiteral_Hex = 801
-        'GuidLiteral_HexValue = 802
-        'GuidLiteral_Comma = 803
-        'GuidLiteral_Hypen = 804
-
+        GuidLiteralExpression = 793
+        GuidLiteralToken = 794
+        GuidPartKindToken = 795
     End Enum
 End Namespace
