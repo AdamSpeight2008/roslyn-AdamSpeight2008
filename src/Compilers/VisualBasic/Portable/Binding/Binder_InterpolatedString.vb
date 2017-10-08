@@ -46,14 +46,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 If alignmentOpt.IsConstant AndAlso alignmentOpt.ConstantValueOpt.IsIntegral Then
 
+                    Const FrameworkLimit As Int64 = 1_000_000
                     Dim constantValue = alignmentOpt.ConstantValueOpt
 
                     If constantValue.IsNegativeNumeric Then
-                        If constantValue.Int64Value < -Short.MaxValue Then
+                        If constantValue.Int64Value < -FrameworkLimit OrElse constantValue.Int64Value < -Short.MaxValue Then
                             ReportDiagnostic(diagnostics, syntax.AlignmentClause.Value, ERRID.ERR_InterpolationAlignmentOutOfRange)
                         End If
                     Else
-                        If constantValue.UInt64Value > Short.MaxValue Then
+                        If constantValue.Int64Value > FrameworkLimit OrElse constantValue.UInt64Value > Short.MaxValue Then
                             ReportDiagnostic(diagnostics, syntax.AlignmentClause.Value, ERRID.ERR_InterpolationAlignmentOutOfRange)
                         End If
                     End If
