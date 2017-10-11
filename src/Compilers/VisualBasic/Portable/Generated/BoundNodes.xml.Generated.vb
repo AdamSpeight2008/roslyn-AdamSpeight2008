@@ -194,7 +194,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         InterpolatedStringExpression
         Interpolation
         GuidLiteral
-        GuidPartKind
+        GuidPartToken
     End Enum
 
 
@@ -9723,19 +9723,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend NotInheritable Partial Class BoundGuidLiteral
         Inherits BoundExpression
 
-        Public Sub New(syntax As SyntaxNode, format As GuidFormat, parts As ImmutableArray(Of BoundGuidPartKind), type As TypeSymbol, Optional hasErrors As Boolean = False)
-            MyBase.New(BoundKind.GuidLiteral, syntax, type, hasErrors OrElse parts.NonNullAndHasErrors())
+        Public Sub New(syntax As SyntaxNode, format As GuidFormat, body As BoundGuidPartToken, type As TypeSymbol, Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.GuidLiteral, syntax, type, hasErrors OrElse body.NonNullAndHasErrors())
 
-            Debug.Assert(Not (parts.IsDefault), "Field 'parts' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
             Debug.Assert(type IsNot Nothing, "Field 'type' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
 
             Me._Format = format
-            Me._Parts = parts
-
-            Validate()
-        End Sub
-
-        Private Partial Sub Validate()
+            Me._Body = body
         End Sub
 
 
@@ -9746,10 +9740,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        Private ReadOnly _Parts As ImmutableArray(Of BoundGuidPartKind)
-        Public ReadOnly Property Parts As ImmutableArray(Of BoundGuidPartKind)
+        Private ReadOnly _Body As BoundGuidPartToken
+        Public ReadOnly Property Body As BoundGuidPartToken
             Get
-                Return _Parts
+                Return _Body
             End Get
         End Property
 
@@ -9757,9 +9751,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return visitor.VisitGuidLiteral(Me)
         End Function
 
-        Public Function Update(format As GuidFormat, parts As ImmutableArray(Of BoundGuidPartKind), type As TypeSymbol) As BoundGuidLiteral
-            If format <> Me.Format OrElse parts <> Me.Parts OrElse type IsNot Me.Type Then
-                Dim result = New BoundGuidLiteral(Me.Syntax, format, parts, type, Me.HasErrors)
+        Public Function Update(format As GuidFormat, body As BoundGuidPartToken, type As TypeSymbol) As BoundGuidLiteral
+            If format <> Me.Format OrElse body IsNot Me.Body OrElse type IsNot Me.Type Then
+                Dim result = New BoundGuidLiteral(Me.Syntax, format, body, type, Me.HasErrors)
                 
                 If Me.WasCompilerGenerated Then
                     result.SetWasCompilerGenerated()
@@ -9771,17 +9765,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
     End Class
 
-    Friend NotInheritable Partial Class BoundGuidPartKind
+    Friend NotInheritable Partial Class BoundGuidPartToken
         Inherits BoundNode
 
-        Public Sub New(syntax As SyntaxNode, partKind As GuidPartKind, hasErrors As Boolean)
-            MyBase.New(BoundKind.GuidPartKind, syntax, hasErrors)
+        Public Sub New(syntax As SyntaxNode, partKind As GuidPartKind, inner As ImmutableArray(Of BoundGuidPartToken), Optional hasErrors As Boolean = False)
+            MyBase.New(BoundKind.GuidPartToken, syntax, hasErrors OrElse inner.NonNullAndHasErrors())
             Me._PartKind = partKind
+            Me._Inner = inner
+
+            Validate()
         End Sub
 
-        Public Sub New(syntax As SyntaxNode, partKind As GuidPartKind)
-            MyBase.New(BoundKind.GuidPartKind, syntax)
-            Me._PartKind = partKind
+        Private Partial Sub Validate()
         End Sub
 
 
@@ -9792,13 +9787,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
+        Private ReadOnly _Inner As ImmutableArray(Of BoundGuidPartToken)
+        Public ReadOnly Property Inner As ImmutableArray(Of BoundGuidPartToken)
+            Get
+                Return _Inner
+            End Get
+        End Property
+
         Public Overrides Function Accept(visitor as BoundTreeVisitor) As BoundNode
-            Return visitor.VisitGuidPartKind(Me)
+            Return visitor.VisitGuidPartToken(Me)
         End Function
 
-        Public Function Update(partKind As GuidPartKind) As BoundGuidPartKind
-            If partKind <> Me.PartKind Then
-                Dim result = New BoundGuidPartKind(Me.Syntax, partKind, Me.HasErrors)
+        Public Function Update(partKind As GuidPartKind, inner As ImmutableArray(Of BoundGuidPartToken)) As BoundGuidPartToken
+            If partKind <> Me.PartKind OrElse inner <> Me.Inner Then
+                Dim result = New BoundGuidPartToken(Me.Syntax, partKind, inner, Me.HasErrors)
                 
                 If Me.WasCompilerGenerated Then
                     result.SetWasCompilerGenerated()
@@ -10167,8 +10169,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Return VisitInterpolation(CType(node, BoundInterpolation), arg)
                 Case BoundKind.GuidLiteral: 
                     Return VisitGuidLiteral(CType(node, BoundGuidLiteral), arg)
-                Case BoundKind.GuidPartKind: 
-                    Return VisitGuidPartKind(CType(node, BoundGuidPartKind), arg)
+                Case BoundKind.GuidPartToken: 
+                    Return VisitGuidPartToken(CType(node, BoundGuidPartToken), arg)
             End Select
             Return DefaultVisit(node, arg)
         End Function
@@ -10880,7 +10882,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.DefaultVisit(node, arg)
         End Function
 
-        Public Overridable Function VisitGuidPartKind(node As BoundGuidPartKind, arg As A) As R
+        Public Overridable Function VisitGuidPartToken(node As BoundGuidPartToken, arg As A) As R
             Return Me.DefaultVisit(node, arg)
         End Function
 
@@ -11591,7 +11593,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.DefaultVisit(node)
         End Function
 
-        Public Overridable Function VisitGuidPartKind(node As BoundGuidPartKind) As BoundNode
+        Public Overridable Function VisitGuidPartToken(node As BoundGuidPartToken) As BoundNode
             Return Me.DefaultVisit(node)
         End Function
 
@@ -12543,11 +12545,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitGuidLiteral(node as BoundGuidLiteral) As BoundNode
-            Me.VisitList(node.Parts)
+            Me.Visit(node.Body)
             Return Nothing
         End Function
 
-        Public Overrides Function VisitGuidPartKind(node as BoundGuidPartKind) As BoundNode
+        Public Overrides Function VisitGuidPartToken(node as BoundGuidPartToken) As BoundNode
+            Me.VisitList(node.Inner)
             Return Nothing
         End Function
 
@@ -13640,13 +13643,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitGuidLiteral(node As BoundGuidLiteral) As BoundNode
-            Dim parts As ImmutableArray(Of BoundGuidPartKind) = Me.VisitList(node.Parts)
+            Dim body As BoundGuidPartToken = DirectCast(Me.Visit(node.Body), BoundGuidPartToken)
             Dim type as TypeSymbol = Me.VisitType(node.Type)
-            Return node.Update(node.Format, parts, type)
+            Return node.Update(node.Format, body, type)
         End Function
 
-        Public Overrides Function VisitGuidPartKind(node As BoundGuidPartKind) As BoundNode
-            Return node
+        Public Overrides Function VisitGuidPartToken(node As BoundGuidPartToken) As BoundNode
+            Dim inner As ImmutableArray(Of BoundGuidPartToken) = Me.VisitList(node.Inner)
+            Return node.Update(node.PartKind, inner)
         End Function
 
     End Class
@@ -15105,14 +15109,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitGuidLiteral(node As BoundGuidLiteral, arg As Object) As TreeDumperNode
             Return New TreeDumperNode("guidLiteral", Nothing, New TreeDumperNode() {
                 New TreeDumperNode("format", node.Format, Nothing),
-                New TreeDumperNode("parts", Nothing, From x In node.Parts Select Visit(x, Nothing)),
+                New TreeDumperNode("body", Nothing, new TreeDumperNode() { Visit(node.Body, Nothing) }),
                 New TreeDumperNode("type", node.Type, Nothing)
             })
         End Function
 
-        Public Overrides Function VisitGuidPartKind(node As BoundGuidPartKind, arg As Object) As TreeDumperNode
-            Return New TreeDumperNode("guidPartKind", Nothing, New TreeDumperNode() {
-                New TreeDumperNode("partKind", node.PartKind, Nothing)
+        Public Overrides Function VisitGuidPartToken(node As BoundGuidPartToken, arg As Object) As TreeDumperNode
+            Return New TreeDumperNode("guidPartToken", Nothing, New TreeDumperNode() {
+                New TreeDumperNode("partKind", node.PartKind, Nothing),
+                New TreeDumperNode("inner", Nothing, From x In node.Inner Select Visit(x, Nothing))
             })
         End Function
 

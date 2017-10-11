@@ -75,7 +75,7 @@ namespace BoundTreeGenerator
                     _valueTypes.Add("Char", true);
                     break;
             }
-
+            //_valueTypes.Add("Enum", true);
             _valueTypes.Add("Int8", true);
             _valueTypes.Add("Int16", true);
             _valueTypes.Add("Int32", true);

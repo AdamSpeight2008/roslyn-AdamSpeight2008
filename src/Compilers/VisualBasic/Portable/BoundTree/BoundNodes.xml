@@ -37,7 +37,6 @@
     <ValueType Name="GuidFormat"/>
     <ValueType Name="GuidPartKind"/>
 
-
   <AbstractNode Name="BoundExpression" Base="BoundNode">
     <Field Name="Type" Type="TypeSymbol" Null="allow"/>
   </AbstractNode>
@@ -1917,17 +1916,22 @@
     <Field Name="FormatStringOpt" Type="BoundLiteral" Null="allow"/>
   </Node>
 
-  <Node Name="BoundGuidLiteral" Base="BoundExpression" HasValidate="true">
+  <Node Name="BoundGuidLiteral" Base="BoundExpression">
      <!-- Type is required for this node type; may not be null -->
     <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
    <Field Name="Format" Type="GuidFormat" Null="allow" />
-    <Field Name="Parts" Type="ImmutableArray(Of BoundGuidPartKind)" />
+    <Field Name="Body" Type="BoundGuidPartToken" Null="allow" />
  </Node>
   
-  <Node Name="BoundGuidPartKind" Base="BoundNode">
+  <Node Name="BoundGuidPartToken" Base="BoundNode" HasValidate="true">
       <!-- Type is required for this node type; may not be null -->
     <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
    <Field Name="PartKind" Type="GuidPartKind"  Null="allow"/>
+    <Field Name="Inner" Type="ImmutableArray(Of BoundGuidPartToken)" Null="allow"/>
   </Node>
-
+  <!--<Node Name="BoundGuidPartsListToken" Base="BoundNode">
+    --><!-- Type is required for this node type; may not be null --><!--
+    <Field Name="Type" Type="TypeSymbol" Override="true" Null="disallow"/>
+    <Field Name="Tokens" Type="ImmutableArray(Of BoundGuidPartToken)" Null="allow"/>
+  </Node>-->
 </Tree>

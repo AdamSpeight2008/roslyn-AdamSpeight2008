@@ -138,7 +138,7 @@ Public Class ParseTree
             Return Enumerations(enumString)
         End If
 
-        ReportError(referencingElement, "{0} is not a valid field type. You should add a node-kind entry in the syntax.xml.", enumString)
+        ReportError(referencingElement, $"{NameOf(ParseEnumType)}: {enumString} is not a valid field type. You should add a node-kind entry in the syntax.xml.")
         Return Nothing
     End Function
 
@@ -475,6 +475,7 @@ Public Class ParseNodeField
                     Return SimpleType.TextSpan
                 Case "nodekind"
                     Return SimpleType.NodeKind
+
                 Case Else
                     Return ParseTree.ParseEnumType(FieldTypeId, Element)
             End Select

@@ -184,14 +184,20 @@ Public MustInherit Class WriteUtils
     ' Get the type reference for a field property
     Protected Function FieldTypeRef(nodeField As ParseNodeField) As String
         Dim fieldType As Object = nodeField.FieldType
-        If TypeOf fieldType Is SimpleType Then
-            Return SimpleTypeName(CType(fieldType, SimpleType))
-        ElseIf TypeOf fieldType Is ParseEnumeration Then
-            Return EnumerationTypeName(CType(fieldType, ParseEnumeration))
-        End If
+        If fieldType IsNot Nothing Then
+            If TypeOf fieldType Is SimpleType Then
+                Return SimpleTypeName(CType(fieldType, SimpleType))
+            ElseIf TypeOf fieldType Is ParseEnumeration Then
+                Return EnumerationTypeName(CType(fieldType, ParseEnumeration))
+            End If
 
-        nodeField.ParseTree.ReportError(nodeField.Element, "Bad type for field")
-        Return "UNKNOWNTYPE"
+            nodeField.ParseTree.ReportError(nodeField.Element, "Bad type for field")
+            Throw New NotSupportedException("Not supported field type: " & fieldType.ToString)
+            Return "UNKNOWNTYPE"
+        Else
+
+            Throw New ArgumentNullException($"{NameOf(fieldType)} is nothing {nodeField.ToString}")
+        End If
     End Function
 
     ' Get the type reference for a child property

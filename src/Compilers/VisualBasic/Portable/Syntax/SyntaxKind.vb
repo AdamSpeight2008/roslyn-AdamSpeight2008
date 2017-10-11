@@ -3201,6 +3201,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         GuidLiteralExpression = 793
         GuidLiteralToken = 794
-        GuidPartKindToken = 795
+        GuidPartToken = 795
     End Enum
 End Namespace

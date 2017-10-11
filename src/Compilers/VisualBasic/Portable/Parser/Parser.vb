@@ -5621,6 +5621,7 @@ checkNullable:
             Return result
         End Function
 
+
         Private Function GetTokenAsAssemblyOrModuleKeyword(token As SyntaxToken) As KeywordSyntax
             If token.Kind = SyntaxKind.ModuleKeyword Then
                 Return DirectCast(token, KeywordSyntax)

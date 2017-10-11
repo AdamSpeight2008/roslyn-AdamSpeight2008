@@ -9598,35 +9598,37 @@ Unify Enum declarations with other block type declarations.
       <native-equiv name="GuidPartKind"></native-equiv>
       <enumerators>
         <enumerator name="None" value="0"/>
-        <enumerator name="OpeningBrace">
-          <description>{</description>
-        </enumerator>
-        <enumerator name="OpeningBracket">
-          <description>(</description>
-        </enumerator>
-        <enumerator name="ClosingBrace">
-          <description>}</description>
-        </enumerator>
-        <enumerator name="ClosingBracket">
-          <description>)</description>
-        </enumerator>
-        <enumerator name="HexPrefix">
-          <description>0x</description>
-        </enumerator>
-        <enumerator name="HexDigit">
-          <description>A Hexadecimal digit.{</description>
-        </enumerator>
-        <enumerator name="Hypen">
-          <description>-</description>
-        </enumerator>
-        <enumerator name="Comma">
-          <description>-</description>
-        </enumerator>
-        <enumerator name="Unknown"></enumerator>
+        <enumerator name="GuidLiteral"/>
+        <emumeratot name="GuidContent" />
+        <enumerator name="GuidLiteralPrefix"/>
+        <enumerator name="Repeat"/>
+        <enumerator name="HexDigit"/>
+        <enumerator name="HexDigits"/>
+        <enumerator name="HexPrefix"/>
+        <enumerator name="PrefixedHex"/>
+        <enumerator name="Hypen"/>
+        <enumerator name="Comma"/>
+        <enumerator name="Bo"/>
+        <enumerator name="Bc"/>
+        <enumerator name="Po"/>
+        <enumerator name="Pc"/>
+        <enumerator name="XChar"/>
+        <enumerator name="_SV"/>
+        <enumerator name="CSV"/>
+        <enumerator name="HSV"/>
+        <enumerator name="Guid_N"/>
+        <enumerator name="Guid_X"/>
+        <enumerator name="Guid_P"/>
+        <enumerator name="Guid_B"/>
+        <enumerator name="Guid_D"/>
+        <enumerator name="Guid_U"/>
+        <enumerator name="Unknown"/>
+              <enumerator name="Xa"/>
       </enumerators>
     </enumeration>
 
-    <node-structure name="GuidLiteralTokenSyntax" parent="SyntaxToken">
+
+    <node-structure name="GuidLiteralTokenSyntax" parent="VisualBasicSyntaxNode">
       <description>Represents an string literal token.</description>
       <native-equiv name="GuidLiteralExpression" />
       <node-kind name="GuidLiteralToken">
@@ -9634,17 +9636,18 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name="tokens.tkGuidCon" />
       </node-kind>
       <field name="Format" type="GuidFormat" />
-      <Field name="GuidTokens"  type="SyntaxList(Of GuidPartKindTokenSyntax)" list="true" />
+      <child name="Body" kind="GuidPartToken" />
     </node-structure>
 
-    <node-structure name="GuidPartKindTokenSyntax" parent="SyntaxToken">
+    <node-structure name="GuidPartTokenSyntax" parent="VisualBasicSyntaxNode">
       <description>Represents token withing the Guid literal.</description>
-      <native-equiv name="GuidPartKindToken" />
-      <node-kind name="GuidPartKindToken">
-              <lm-equiv name="TokenKind.GuidPartKindToken" />
+      <native-equiv name="GuidPartToken" />
+      <node-kind name="GuidPartToken">
+        <lm-equiv name="TokenKind.GuidPartToken" />
         <native-equiv name="tokens.tkGuidCon" />
       </node-kind>
       <field name="GuidPartKind" type="GuidPartKind" />
+      <child name="Inner" kind="GuidPartToken" list="true"  />
     </node-structure>
 
   </definitions>

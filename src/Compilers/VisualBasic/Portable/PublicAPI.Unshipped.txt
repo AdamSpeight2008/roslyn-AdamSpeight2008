@@ -7,25 +7,41 @@ Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat.N = 3 -> Microsoft.CodeAnal
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat.None = 0 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat.P = 4 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat.X = 5 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax.AddBodyTokens(ParamArray items As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax()) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax.Body() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax.Format() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax.Update(body As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax.WithBody(body As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.ClosingBrace = 3 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.ClosingBracket = 4 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.Comma = 8 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.GuidLiteralPrefix = 10 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.HexDigit = 6 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.HexPrefix = 5 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.Hypen = 7 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.None = 0 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.OpeningBrace = 1 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
 Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.OpeningBracket = 2 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
-Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.Unknown = 9 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.Unknown = 11 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind.XCharacter = 9 -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax.GuidPartKind() -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind
+Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax.WithInner(ParamArray Inner As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax()) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.GuidLiteralExpression = 793 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.GuidLiteralToken = 794 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
-Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.GuidPartKindToken = 795 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
+Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.GuidPartToken = 795 -> Microsoft.CodeAnalysis.VisualBasic.SyntaxKind
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetConversion(conversionExpression As Microsoft.CodeAnalysis.Semantics.IConversionExpression) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetInConversion(argument As Microsoft.CodeAnalysis.Semantics.IArgument) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
 Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetOutConversion(argument As Microsoft.CodeAnalysis.Semantics.IArgument) -> Microsoft.CodeAnalysis.VisualBasic.Conversion
-Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.GuidLiteralExpression(token As Microsoft.CodeAnalysis.SyntaxToken) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.LiteralExpressionSyntax
-Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.GuidLiteralToken(leadingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList, text As String, format As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat, trailingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList) -> Microsoft.CodeAnalysis.SyntaxToken
-Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.GuidLiteralToken(text As String, format As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidFormat) -> Microsoft.CodeAnalysis.SyntaxToken
-Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.GuidPartKindToken(leadingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList, text As String, guidPartKind As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind, trailingTrivia As Microsoft.CodeAnalysis.SyntaxTriviaList) -> Microsoft.CodeAnalysis.SyntaxToken
-Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.GuidPartKindToken(text As String, guidPartKind As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartKind) -> Microsoft.CodeAnalysis.SyntaxToken
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitGuidLiteralToken(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult).VisitGuidPartToken(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax) -> TResult
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitGuidLiteralToken(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax) -> Void
+Overridable Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor.VisitGuidPartToken(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax.Accept(Of TResult)(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor(Of TResult)) -> TResult
+Overrides Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax.Accept(visitor As Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxVisitor) -> Void
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitGuidLiteralToken(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidLiteralTokenSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
+Overrides Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxRewriter.VisitGuidPartToken(node As Microsoft.CodeAnalysis.VisualBasic.Syntax.GuidPartTokenSyntax) -> Microsoft.CodeAnalysis.SyntaxNode
