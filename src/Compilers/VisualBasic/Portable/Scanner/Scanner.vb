@@ -403,6 +403,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 #Region "Buffer helpers"
 
+        Private Function TryGet(<Out> ch As Char) As Boolean
+            Dim ok = CanGet()
+            ch = If(ok, Peek(), Nothing)
+            Return ok
+        End Function
+
+        Private Function TryGet(here As Integer, <Out> ch As Char) As Boolean
+            Dim ok = CanGet(here)
+            ch = If(ok, Peek(here), Nothing)
+            Return ok
+        End Function
+
         Private Function NextAre(chars As String) As Boolean
             Return NextAre(0, chars)
         End Function
@@ -2325,14 +2337,12 @@ FullWidthRepeat2:
                 ' // Check AM/PM
 
                 If CanGet(Here) Then
-                    If Peek(Here) = "A"c OrElse Peek(Here) = FULLWIDTH_LATIN_CAPITAL_LETTER_A OrElse
-                        Peek(Here) = "a"c OrElse Peek(Here) = FULLWIDTH_LATIN_SMALL_LETTER_A Then
+                    If IsLetterA(Peek(Here)) Then
 
                         HaveAM = True
                         Here += 1
 
-                    ElseIf Peek(Here) = "P"c OrElse Peek(Here) = FULLWIDTH_LATIN_CAPITAL_LETTER_P OrElse
-                           Peek(Here) = "p"c OrElse Peek(Here) = FULLWIDTH_LATIN_SMALL_LETTER_P Then
+                    ElseIf IsLetterP(Peek(Here)) Then
 
                         HavePM = True
                         Here += 1
@@ -2340,8 +2350,7 @@ FullWidthRepeat2:
                     End If
 
                     If CanGet(Here) AndAlso (HaveAM OrElse HavePM) Then
-                        If Peek(Here) = "M"c OrElse Peek(Here) = FULLWIDTH_LATIN_CAPITAL_LETTER_M OrElse
-                           Peek(Here) = "m"c OrElse Peek(Here) = FULLWIDTH_LATIN_SMALL_LETTER_M Then
+                        If IsLetterM(Peek(Here)) Then
 
                             Here = GetWhitespaceLength(Here + 1)
 

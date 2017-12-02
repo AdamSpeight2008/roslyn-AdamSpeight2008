@@ -260,6 +260,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     (IsFullWidth(c) AndAlso (c = FULLWIDTH_LATIN_CAPITAL_LETTER_H Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_O Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_B Or c = FULLWIDTH_LATIN_SMALL_LETTER_H Or c = FULLWIDTH_LATIN_SMALL_LETTER_O Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_B))
         End Function
 
+
         Private Shared ReadOnly s_isIDChar As Boolean() =
         {
             False, False, False, False, False, False, False, False, False, False,
@@ -380,31 +381,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 IsPropOtherFormat(CharacterProperties)
         End Function
 
+        Friend Shared Function IsBetween(ch As Char, x As Char, y As Char) As Boolean
+            Return (ch >= x) And (ch <= y)
+        End Function
+
         Friend Shared Function BeginsExponent(c As Char) As Boolean
-            Return c = "E"c Or c = "e"c Or c = FULLWIDTH_LATIN_CAPITAL_LETTER_E Or c = FULLWIDTH_LATIN_SMALL_LETTER_E
+            Return (c = "E"c Or c = "e"c) OrElse (c = FULLWIDTH_LATIN_CAPITAL_LETTER_E Or c = FULLWIDTH_LATIN_SMALL_LETTER_E)
         End Function
 
         Friend Shared Function IsBinaryDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "1"c) Or
-                   (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_ONE)
+            Return IsBetween(c, "0"c, "1"c) OrElse IsBetween(c, FULLWIDTH_DIGIT_ZERO, FULLWIDTH_DIGIT_ONE)
         End Function
 
         Friend Shared Function IsOctalDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "7"c) Or
-                   (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_SEVEN)
+            Return IsBetween(c, "0"c, "7"c) OrElse IsBetween(c, FULLWIDTH_DIGIT_ZERO, FULLWIDTH_DIGIT_SEVEN)
         End Function
 
         Friend Shared Function IsDecimalDigit(c As Char) As Boolean
-            Return (c >= "0"c And c <= "9"c) Or
-                   (c >= FULLWIDTH_DIGIT_ZERO And c <= FULLWIDTH_DIGIT_NINE)
+            Return IsBetween(c, "0"c, "9"c) OrElse IsBetween(c, FULLWIDTH_DIGIT_ZERO, FULLWIDTH_DIGIT_NINE)
         End Function
 
         Friend Shared Function IsHexDigit(c As Char) As Boolean
             Return IsDecimalDigit(c) OrElse
-                    (c >= "a"c And c <= "f"c) OrElse
-                    (c >= "A"c And c <= "F"c) OrElse
-                    (c >= FULLWIDTH_LATIN_SMALL_LETTER_A And c <= FULLWIDTH_LATIN_SMALL_LETTER_F) OrElse
-                    (c >= FULLWIDTH_LATIN_CAPITAL_LETTER_A And c <= FULLWIDTH_LATIN_CAPITAL_LETTER_F)
+                   IsBetween(c, "a"c, "f"c) OrElse
+                   IsBetween(c, "A"c, "F"c) OrElse
+                   IsBetween(c, FULLWIDTH_LATIN_SMALL_LETTER_A, FULLWIDTH_LATIN_SMALL_LETTER_F) OrElse
+                   IsBetween(c, FULLWIDTH_LATIN_CAPITAL_LETTER_A, FULLWIDTH_LATIN_CAPITAL_LETTER_F)
         End Function
 
         Friend Shared Function IsDateSeparatorCharacter(c As Char) As Boolean
@@ -415,8 +417,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Shared ReadOnly DaysToMonth366() As Integer = New Integer(13 - 1) {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}
 
         Friend Shared Function IsLetterC(ch As Char) As Boolean
-            Return _
-                ch = "c"c Or ch = "C"c Or ch = FULLWIDTH_LATIN_CAPITAL_LETTER_C Or ch = FULLWIDTH_LATIN_SMALL_LETTER_C
+            Return (ch = "c"c Or ch = "C"c) OrElse (ch = FULLWIDTH_LATIN_CAPITAL_LETTER_C Or ch = FULLWIDTH_LATIN_SMALL_LETTER_C)
+        End Function
+
+        Friend Shared Function IsLetterA(ch As Char) As Boolean
+            Return (ch = "A"c Or ch = "a"c) OrElse (ch = FULLWIDTH_LATIN_CAPITAL_LETTER_A Or ch = FULLWIDTH_LATIN_SMALL_LETTER_A)
+        End Function
+
+        Friend Shared Function IsLetterP(ch As Char) As Boolean
+            Return (ch = "P"c Or ch = "p"c) OrElse (ch = FULLWIDTH_LATIN_CAPITAL_LETTER_P Or ch = FULLWIDTH_LATIN_SMALL_LETTER_P)
+        End Function
+
+        Friend Shared Function IsLetterM(ch As Char) As Boolean
+            Return (ch = "M"c Or ch = "m"c) OrElse (ch = FULLWIDTH_LATIN_CAPITAL_LETTER_M Or ch = FULLWIDTH_LATIN_SMALL_LETTER_M)
         End Function
 
         ''' <summary>
