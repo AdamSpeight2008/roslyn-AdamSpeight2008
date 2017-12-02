@@ -403,13 +403,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 #Region "Buffer helpers"
 
-        Private Function TryGet(<Out> ch As Char) As Boolean
-            Dim ok = CanGet()
-            ch = If(ok, Peek(), Nothing)
-            Return ok
+        Private Function TryGet(<Out> ByRef ch As Char) As Boolean
+            Return TryGet(0, ch)
         End Function
 
-        Private Function TryGet(here As Integer, <Out> ch As Char) As Boolean
+        Private Function TryGet(here As Integer, <Out> ByRef ch As Char) As Boolean
             Dim ok = CanGet(here)
             ch = If(ok, Peek(here), Nothing)
             Return ok
@@ -430,7 +428,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function NextIs(offset As Integer, c As Char) As Boolean
-            Return CanGet(offset) AndAlso (Peek(offset) = c)
+            Dim ch As Char
+            Return TryGet(offset, ch) And ch = c
         End Function
 
         Private Function CanGet() As Boolean
@@ -612,27 +611,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
 #Region "Trivia"
 
+        Private Function ExceptForThese(ch As Char) As Boolean
+            Return ch <> "'"c AndAlso ch <> "_"c AndAlso ch <> "R"c AndAlso
+                   ch <> "r"c AndAlso ch <> "<"c AndAlso ch <> "="c AndAlso ch <> ">"c
+        End Function
+
+
         ''' <summary>
         ''' Consumes all trivia until a nontrivia char is found
         ''' </summary>
         Friend Function ScanMultilineTrivia() As CoreInternalSyntax.SyntaxList(Of VisualBasicSyntaxNode)
-            If Not CanGet() Then
-                Return Nothing
-            End If
-
-            Dim ch = Peek()
+            Dim ch As Char
+            If Not TryGet(ch) Then Return Nothing
 
             ' optimization for a common case
-            ' the ASCII range between ': and ~ , with exception of except "'", "_" and R cannot start trivia
-            If ch > ":"c AndAlso
-               ch <= "~"c AndAlso
-               ch <> "'"c AndAlso
-               ch <> "_"c AndAlso
-               ch <> "R"c AndAlso
-               ch <> "r"c AndAlso
-               ch <> "<"c AndAlso
-               ch <> "="c AndAlso
-               ch <> ">"c Then
+            ' the ASCII range between ';' and '~' (Inclusive,Inclusive), with the exception of except "'", "_" and R cannot start trivia
+            If IsBetween(ch, ";"c, "~"c) AndAlso ExceptForThese(ch) Then
                 Return Nothing
             End If
 
@@ -703,34 +697,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         ' All conflict markers consist of the same character repeated seven times.  If it Is
-        ' a <<<<<<< Or >>>>>>> marker then it Is also followed by a space.
+        ' a <<<<<<< or >>>>>>> marker then it Is also followed by a space.
         Private Shared ReadOnly s_conflictMarkerLength As Integer = "<<<<<<<".Length
 
+        Private Function IsStartOfPossibleConflictMarker(ch As Char) As Boolean
+            Return (ch = "<"c) OrElse (ch = ">"c) OrElse (ch = "="c)
+        End Function
+
         Private Function IsConflictMarkerTrivia() As Boolean
-            If CanGet() Then
-                Dim ch = Peek()
+            Dim ch As Char
+            If TryGet(ch) AndAlso IsStartOfPossibleConflictMarker(ch) Then
+                Dim position = _lineBufferOffset
+                Dim text = _buffer
 
-                If ch = "<"c OrElse ch = ">"c OrElse ch = "="c Then
-                    Dim position = _lineBufferOffset
-                    Dim text = _buffer
+                If position = 0 OrElse SyntaxFacts.IsNewLine(text(position - 1)) Then
+                    Dim firstCh = _buffer(position)
 
-                    If position = 0 OrElse SyntaxFacts.IsNewLine(text(position - 1)) Then
-                        Dim firstCh = _buffer(position)
-
-                        If (position + s_conflictMarkerLength) <= text.Length Then
-                            For i = 0 To s_conflictMarkerLength - 1
-                                If text(position + i) <> firstCh Then
-                                    Return False
-                                End If
-                            Next
-
-                            If firstCh = "="c Then
-                                Return True
+                    If (position + s_conflictMarkerLength) <= text.Length Then
+                        For i = 0 To s_conflictMarkerLength - 1
+                            If text(position + i) <> firstCh Then
+                                Return False
                             End If
+                        Next
 
-                            Return (position + s_conflictMarkerLength) < text.Length AndAlso
-                                   text(position + s_conflictMarkerLength) = " "c
+                        If firstCh = "="c Then
+                            Return True
                         End If
+
+                        Return (position + s_conflictMarkerLength) < text.Length AndAlso
+                                               text(position + s_conflictMarkerLength) = " "c
                     End If
                 End If
             End If
@@ -802,7 +797,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             trivia = DirectCast(trivia.SetDiagnostics({ErrorFactory.ErrorInfo(ERRID.ERR_Merge_conflict_marker_encountered)}), SyntaxTrivia)
             tList.Add(trivia)
         End Sub
-
         ' check for '''(~')
         Private Function StartsXmlDoc(Here As Integer) As Boolean
             Return _options.DocumentationMode >= DocumentationMode.Parse AndAlso
@@ -815,11 +809,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         ' check for #
         Private Function StartsDirective(Here As Integer) As Boolean
-            If CanGet(Here) Then
-                Dim ch = Peek(Here)
-                Return IsHash(ch)
-            End If
-            Return False
+            Dim ch As Char
+            Return TryGet(Here, ch) AndAlso IsHash(ch)
         End Function
 
         Private Function IsAtNewLine() As Boolean
