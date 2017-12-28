@@ -9114,6 +9114,21 @@
         <target state="translated">Název souboru {0} je prázdný, obsahuje neplatné znaky, má specifikaci jednotky bez absolutní cesty nebo je moc dlouhý.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_MissingFlagsAttributeOnEnum">
+        <source>Enum '{0}' requires &lt;Flags&gt; attribute.</source>
+        <target state="new">Enum '{0}' requires &lt;Flags&gt; attribute.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FEATURE_EnumFlagOperators">
+        <source>Enum Flag Operators</source>
+        <target state="new">Enum Flag Operators</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_MissingEnumFlag">
+        <source>Missing Enum Flag.</source>
+        <target state="new">Missing Enum Flag.</target>
+        <note />
+      </trans-unit>
     </body>
   </file>
 </xliff>
