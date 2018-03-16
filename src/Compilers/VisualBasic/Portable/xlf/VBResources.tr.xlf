@@ -9129,6 +9129,11 @@
         <target state="new">Missing Enum Flag.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_ExpectedParenthesizedExpression">
+        <source>Expected Parenthesized Expression.</source>
+        <target state="new">Expected Parenthesized Expression.</target>
+        <note />
+      </trans-unit>
     </body>
   </file>
 </xliff>
