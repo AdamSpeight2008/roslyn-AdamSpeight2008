@@ -1160,6 +1160,10 @@ Partial Public Class GeneratedTests
             return InternalSyntax.SyntaxFactory.RangeArgument(GenerateGreenKeywordEventContainer(), new InternalSyntax.KeywordSyntax(SyntaxKind.ToKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateGreenOutArgument() As InternalSyntax.OutArgumentSyntax
+            return InternalSyntax.SyntaxFactory.OutArgument(new InternalSyntax.KeywordSyntax(SyntaxKind.OutKeyword, String.Empty, Nothing, Nothing), GenerateGreenKeywordEventContainer(), Nothing)
+        End Function
+
         Private Shared Function GenerateGreenQueryExpression() As InternalSyntax.QueryExpressionSyntax
             return InternalSyntax.SyntaxFactory.QueryExpression(GenerateGreenFromClause())
         End Function
@@ -3264,6 +3268,12 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenRangeArgument()
             dim objectUnderTest = GenerateGreenRangeArgument()
+            AttachAndCheckDiagnostics(objectUnderTest)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenOutArgument()
+            dim objectUnderTest = GenerateGreenOutArgument()
             AttachAndCheckDiagnostics(objectUnderTest)
         End Sub
 
@@ -6141,6 +6151,14 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestGreenOutArgumentRewriter()
+            dim oldNode = GenerateGreenOutArgument()
+            Dim rewriter = New GreenIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
         Public Sub TestGreenQueryExpressionRewriter()
             dim oldNode = GenerateGreenQueryExpression()
             Dim rewriter = New GreenIdentityRewriter()
@@ -8781,6 +8799,13 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestGreenRangeArgumentVisitor()
             Dim oldNode = GenerateGreenRangeArgument()
+            Dim visitor = New GreenNodeVisitor()
+            visitor.Visit(oldNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestGreenOutArgumentVisitor()
+            Dim oldNode = GenerateGreenOutArgument()
             Dim visitor = New GreenNodeVisitor()
             visitor.Visit(oldNode)
         End Sub
@@ -16375,6 +16400,27 @@ Partial Public Class GeneratedTests
             return SyntaxFactory.RangeArgument(GenerateRedKeywordEventContainer(), SyntaxFactory.Token(SyntaxKind.ToKeyword), GenerateRedKeywordEventContainer())
         End Function
 
+        Private Shared Function GenerateRedOutArgument() As OutArgumentSyntax
+            Dim exceptionTest as boolean = false
+            Try
+            SyntaxFactory.OutArgument(SyntaxFactory.Token(SyntaxKind.OutKeyword), Nothing, Nothing)
+            catch e as ArgumentNullException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            Try
+            SyntaxFactory.OutArgument(SyntaxFactory.Token(SyntaxKind.ExternalSourceKeyword), GenerateRedKeywordEventContainer(), Nothing)
+            catch e as ArgumentException
+            exceptionTest = true
+            End Try
+            Debug.Assert(exceptionTest)
+            exceptionTest = false
+
+            return SyntaxFactory.OutArgument(SyntaxFactory.Token(SyntaxKind.OutKeyword), GenerateRedKeywordEventContainer(), Nothing)
+        End Function
+
         Private Shared Function GenerateRedQueryExpression() As QueryExpressionSyntax
             Dim exceptionTest as boolean = false
             return SyntaxFactory.QueryExpression(SyntaxFactory.SingletonList(Of QueryClauseSyntax)(GenerateRedFromClause()))
@@ -21064,6 +21110,15 @@ Partial Public Class GeneratedTests
         End Sub
 
         <Fact>
+        Public Sub TestRedOutArgument()
+            dim objectUnderTest = GenerateRedOutArgument()
+            Assert.NotNull(objectUnderTest.outKeyword)
+            Assert.NotNull(objectUnderTest.expression)
+            Dim withObj = objectUnderTest.WithOutKeyword(objectUnderTest.OutKeyword).WithExpression(objectUnderTest.Expression).WithUnderlyingType(objectUnderTest.UnderlyingType)
+            Assert.Equal(withobj, objectUnderTest)
+        End Sub
+
+        <Fact>
         Public Sub TestRedQueryExpression()
             dim objectUnderTest = GenerateRedQueryExpression()
             Assert.NotNull(objectUnderTest.clauses)
@@ -24195,6 +24250,14 @@ Partial Public Class GeneratedTests
         <Fact>
         Public Sub TestRedRangeArgumentRewriter()
             dim oldNode = GenerateRedRangeArgument()
+            Dim rewriter = New RedIdentityRewriter()
+            Dim newNode = rewriter.Visit(oldNode)
+            Assert.Equal(oldNode, newNode)
+        End Sub
+
+        <Fact>
+        Public Sub TestRedOutArgumentRewriter()
+            dim oldNode = GenerateRedOutArgument()
             Dim rewriter = New RedIdentityRewriter()
             Dim newNode = rewriter.Visit(oldNode)
             Assert.Equal(oldNode, newNode)

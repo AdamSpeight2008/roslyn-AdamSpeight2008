@@ -24801,6 +24801,159 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     End Class
 
     ''' <summary>
+    ''' Represents an out argument, such as "out x As int"
+    ''' </summary>
+    Friend NotInheritable Class OutArgumentSyntax
+        Inherits ArgumentSyntax
+
+        Friend ReadOnly _outKeyword as KeywordSyntax
+        Friend ReadOnly _expression as ExpressionSyntax
+        Friend ReadOnly _underlyingType as AsClauseSyntax
+
+        Friend Sub New(ByVal kind As SyntaxKind, outKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, underlyingType As AsClauseSyntax)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(outKeyword)
+            Me._outKeyword = outKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+            If underlyingType IsNot Nothing Then
+                AdjustFlagsAndWidth(underlyingType)
+                Me._underlyingType = underlyingType
+            End If
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, outKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, underlyingType As AsClauseSyntax, context As ISyntaxFactoryContext)
+            MyBase.New(kind)
+            MyBase._slotCount = 3
+            Me.SetFactoryContext(context)
+
+            AdjustFlagsAndWidth(outKeyword)
+            Me._outKeyword = outKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+            If underlyingType IsNot Nothing Then
+                AdjustFlagsAndWidth(underlyingType)
+                Me._underlyingType = underlyingType
+            End If
+
+        End Sub
+
+        Friend Sub New(ByVal kind As SyntaxKind, ByVal errors as DiagnosticInfo(), ByVal annotations as SyntaxAnnotation(), outKeyword As InternalSyntax.KeywordSyntax, expression As ExpressionSyntax, underlyingType As AsClauseSyntax)
+            MyBase.New(kind, errors, annotations)
+            MyBase._slotCount = 3
+
+            AdjustFlagsAndWidth(outKeyword)
+            Me._outKeyword = outKeyword
+            AdjustFlagsAndWidth(expression)
+            Me._expression = expression
+            If underlyingType IsNot Nothing Then
+                AdjustFlagsAndWidth(underlyingType)
+                Me._underlyingType = underlyingType
+            End If
+
+        End Sub
+
+        Friend Sub New(reader as ObjectReader)
+          MyBase.New(reader)
+            MyBase._slotCount = 3
+          Dim _outKeyword = DirectCast(reader.ReadValue(), KeywordSyntax)
+          If _outKeyword isnot Nothing 
+             AdjustFlagsAndWidth(_outKeyword)
+             Me._outKeyword = _outKeyword
+          End If
+          Dim _expression = DirectCast(reader.ReadValue(), ExpressionSyntax)
+          If _expression isnot Nothing 
+             AdjustFlagsAndWidth(_expression)
+             Me._expression = _expression
+          End If
+          Dim _underlyingType = DirectCast(reader.ReadValue(), AsClauseSyntax)
+          If _underlyingType isnot Nothing 
+             AdjustFlagsAndWidth(_underlyingType)
+             Me._underlyingType = _underlyingType
+          End If
+        End Sub
+        Friend Shared CreateInstance As Func(Of ObjectReader, Object) = Function(o) New OutArgumentSyntax(o)
+
+
+        Friend Overrides Sub WriteTo(writer as ObjectWriter)
+          MyBase.WriteTo(writer)
+          writer.WriteValue(Me._outKeyword)
+          writer.WriteValue(Me._expression)
+          writer.WriteValue(Me._underlyingType)
+        End Sub
+
+        Shared Sub New()
+          ObjectBinder.RegisterTypeReader(GetType(OutArgumentSyntax), Function(r) New OutArgumentSyntax(r))
+        End Sub
+
+        Friend Overrides Function CreateRed(ByVal parent As SyntaxNode, ByVal startLocation As Integer) As SyntaxNode
+            Return new Microsoft.CodeAnalysis.VisualBasic.Syntax.OutArgumentSyntax(Me, parent, startLocation)
+        End Function
+
+        ''' <summary>
+        ''' The "Out" keyword.
+        ''' </summary>
+        Friend  ReadOnly Property OutKeyword As InternalSyntax.KeywordSyntax
+            Get
+                Return Me._outKeyword
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' The expression that is the argument.
+        ''' </summary>
+        Friend  ReadOnly Property Expression As InternalSyntax.ExpressionSyntax
+            Get
+                Return Me._expression
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Optional "As XXX" clause describing the underlying type of the enumeration. If
+        ''' no As clause was specified, Nothing is returned.
+        ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
+        Friend  ReadOnly Property UnderlyingType As InternalSyntax.AsClauseSyntax
+            Get
+                Return Me._underlyingType
+            End Get
+        End Property
+
+        Friend Overrides Function GetSlot(i as Integer) as GreenNode
+            Select case i
+                Case 0
+                    Return Me._outKeyword
+                Case 1
+                    Return Me._expression
+                Case 2
+                    Return Me._underlyingType
+                Case Else
+                     Debug.Assert(false, "child index out of range")
+                     Return Nothing
+            End Select
+        End Function
+
+
+        Friend Overrides Function SetDiagnostics(ByVal newErrors As DiagnosticInfo()) As GreenNode
+            Return new OutArgumentSyntax(Me.Kind, newErrors, GetAnnotations, _outKeyword, _expression, _underlyingType)
+        End Function
+
+        Friend Overrides Function SetAnnotations(ByVal annotations As SyntaxAnnotation()) As GreenNode
+            Return new OutArgumentSyntax(Me.Kind, GetDiagnostics, annotations, _outKeyword, _expression, _underlyingType)
+        End Function
+
+        Public Overrides Function Accept(ByVal visitor As VisualBasicSyntaxVisitor) As VisualBasicSyntaxNode
+            Return visitor.VisitOutArgument(Me)
+        End Function
+
+    End Class
+
+    ''' <summary>
     ''' This class represents a query expression. A query expression is composed of one
     ''' or more query operators in a row. The first query operator must be a From or
     ''' Aggregate.
@@ -37377,6 +37530,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Debug.Assert(node IsNot Nothing)
             Return VisitArgument(node)
         End Function
+        Public Overridable Function VisitOutArgument(ByVal node As OutArgumentSyntax) As VisualBasicSyntaxNode
+            Debug.Assert(node IsNot Nothing)
+            Return VisitArgument(node)
+        End Function
         Public Overridable Function VisitQueryExpression(ByVal node As QueryExpressionSyntax) As VisualBasicSyntaxNode
             Debug.Assert(node IsNot Nothing)
             Return VisitExpression(node)
@@ -40600,6 +40757,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
         End Function
 
+        Public Overrides Function VisitOutArgument(ByVal node As OutArgumentSyntax) As VisualBasicSyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newOutKeyword = DirectCast(Visit(node.OutKeyword), KeywordSyntax)
+            If node._outKeyword IsNot newOutKeyword Then anyChanges = True
+            Dim newExpression = DirectCast(Visit(node._expression), ExpressionSyntax)
+            If node._expression IsNot newExpression Then anyChanges = True
+            Dim newUnderlyingType = DirectCast(Visit(node._underlyingType), AsClauseSyntax)
+            If node._underlyingType IsNot newUnderlyingType Then anyChanges = True
+
+            If anyChanges Then
+                Return New OutArgumentSyntax(node.Kind, node.GetDiagnostics, node.GetAnnotations, newOutKeyword, newExpression, newUnderlyingType)
+            Else
+                Return node
+            End If
+        End Function
+
         Public Overrides Function VisitQueryExpression(ByVal node As QueryExpressionSyntax) As VisualBasicSyntaxNode
             Dim anyChanges As Boolean = False
 
@@ -42130,6 +42304,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
               GetType(SimpleArgumentSyntax),
               GetType(NameColonEqualsSyntax),
               GetType(RangeArgumentSyntax),
+              GetType(OutArgumentSyntax),
               GetType(QueryExpressionSyntax),
               GetType(QueryClauseSyntax),
               GetType(CollectionRangeVariableSyntax),
@@ -52025,6 +52200,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New RangeArgumentSyntax(SyntaxKind.RangeArgument, lowerBound, toKeyword, upperBound)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an out argument, such as "out x As int"
+        ''' </summary>
+        ''' <param name="outKeyword">
+        ''' The "Out" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression that is the argument.
+        ''' </param>
+        ''' <param name="underlyingType">
+        ''' Optional "As XXX" clause describing the underlying type of the enumeration. If
+        ''' no As clause was specified, Nothing is returned.
+        ''' </param>
+        Friend Shared Function OutArgument(outKeyword As KeywordSyntax, expression As ExpressionSyntax, underlyingType As AsClauseSyntax) As OutArgumentSyntax
+            Debug.Assert(outKeyword IsNot Nothing AndAlso outKeyword.Kind = SyntaxKind.OutKeyword)
+            Debug.Assert(expression IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.OutArgument, outKeyword, expression, underlyingType, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, OutArgumentSyntax)
+            End If
+
+            Dim result = New OutArgumentSyntax(SyntaxKind.OutArgument, outKeyword, expression, underlyingType)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If
@@ -64101,6 +64308,38 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim result = New RangeArgumentSyntax(SyntaxKind.RangeArgument, lowerBound, toKeyword, upperBound, _factoryContext)
+            If hash >= 0 Then
+                SyntaxNodeCache.AddNode(result, hash)
+            End If
+
+            Return result
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an out argument, such as "out x As int"
+        ''' </summary>
+        ''' <param name="outKeyword">
+        ''' The "Out" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression that is the argument.
+        ''' </param>
+        ''' <param name="underlyingType">
+        ''' Optional "As XXX" clause describing the underlying type of the enumeration. If
+        ''' no As clause was specified, Nothing is returned.
+        ''' </param>
+        Friend Function OutArgument(outKeyword As KeywordSyntax, expression As ExpressionSyntax, underlyingType As AsClauseSyntax) As OutArgumentSyntax
+            Debug.Assert(outKeyword IsNot Nothing AndAlso outKeyword.Kind = SyntaxKind.OutKeyword)
+            Debug.Assert(expression IsNot Nothing)
+
+            Dim hash As Integer
+            Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.OutArgument, outKeyword, expression, underlyingType, _factoryContext, hash)
+            If cached IsNot Nothing Then
+                Return DirectCast(cached, OutArgumentSyntax)
+            End If
+
+            Dim result = New OutArgumentSyntax(SyntaxKind.OutArgument, outKeyword, expression, underlyingType, _factoryContext)
             If hash >= 0 Then
                 SyntaxNodeCache.AddNode(result, hash)
             End If

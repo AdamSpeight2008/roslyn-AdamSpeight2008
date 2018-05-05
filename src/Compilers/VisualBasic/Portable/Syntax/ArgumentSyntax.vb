@@ -77,4 +77,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
     End Class
 
+    Partial Public Class OutArgumentSyntax
+        Public NotOverridable Overrides ReadOnly Property IsNamed As Boolean
+            Get
+                Return False
+            End Get
+        End Property
+        Public Overrides Function GetExpression() As ExpressionSyntax
+            Return Me.Expression
+        End Function
+    End Class
+
 End Namespace

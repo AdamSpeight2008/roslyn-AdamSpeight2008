@@ -1396,6 +1396,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim seenNames As Boolean = False
 
             Do
+                Dim isOut As Boolean = False
+                Dim outkeyword As KeywordSyntax = Nothing
+                If TryTokenAsContextualKeyword(CurrentToken, outkeyword) Then
+                    If outkeyword.Text.ToLowerInvariant = "out" Then
+                        isOut = True
+                    Else
+                        outkeyword = Nothing
+                    End If
+
+                End If
+
                 Dim isNamed As Boolean = False
                 If (CurrentToken.Kind = SyntaxKind.IdentifierToken OrElse CurrentToken.IsKeyword()) AndAlso
                     PeekToken(1).Kind = SyntaxKind.ColonEqualsToken Then
@@ -1433,8 +1444,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
                     Exit Do
 
+                ElseIf isOut Then
+                    Dim argument = ParseOutArgument(outKeyword)
+                    If argument Is Nothing Then GoTo ReparseAsArgument
+                    arguments.Add(argument)
+
                 Else
-                    Dim argument = ParseArgument(RedimOrNewParent)
+ReparseAsArgument:
+                        Dim argument = ParseArgument(RedimOrNewParent)
                     argument = ReportNonTrailingNamedArgumentIfNeeded(argument, seenNames, allowNonTrailingNamedArguments)
                     arguments.Add(argument)
                 End If
@@ -1547,13 +1564,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Argument* .Parser::ParseArgument( [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseArgument(Optional RedimOrNewParent As Boolean = False) As ArgumentSyntax
-            Dim argument As ArgumentSyntax
+            Dim argument As ArgumentSyntax = Nothing
 
             Dim value As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceNone)
-
-            If value.ContainsDiagnostics Then
-                value = ResyncAt(value, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
-            End If
+                If value.ContainsDiagnostics Then
+                    value = ResyncAt(value, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
+                End If
 
             If RedimOrNewParent AndAlso CurrentToken.Kind = SyntaxKind.ToKeyword Then
                 Dim toKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
@@ -1567,6 +1583,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 argument = SyntaxFactory.RangeArgument(lowerBound, toKeyword, value)
             Else
                 argument = SyntaxFactory.SimpleArgument(Nothing, value)
+                End If
+
+                Return argument
+        End Function
+
+        Function ParseOutArgument(outKeyword As KeywordSyntax) As ArgumentSyntax
+            Dim argument As ArgumentSyntax = Nothing
+            Dim optionalAsClause As SimpleAsClauseSyntax = Nothing
+            If PeekNextToken().Kind = SyntaxKind.IdentifierToken Then
+                GetNextToken()
+                Dim value As ExpressionSyntax = ParseExpressionCore(OperatorPrecedence.PrecedenceNone)
+                Dim asKeyword As KeywordSyntax = Nothing
+                If TryGetToken(SyntaxKind.AsKeyword, asKeyword) Then
+                    Dim typeName = ParseGeneralType()
+                    optionalAsClause = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
+                End If
+                argument = SyntaxFactory.OutArgument(outKeyword, value, optionalAsClause)
             End If
 
             Return argument

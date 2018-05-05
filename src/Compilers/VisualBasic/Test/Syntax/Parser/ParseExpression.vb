@@ -527,6 +527,17 @@ ToString]]>.Value)
         Assert.Equal(SyntaxKind.InvocationExpression, expr.Kind)
     End Sub
 
+    <Theory(DisplayName:="OutArguments")>
+    <InlineData("Boo(Out x)")>
+    <InlineData("Boo(Out)")>
+    <InlineData("Boo(Out Out As Integer)")>
+    <InlineData("Boo(Out Out As IEnumerable(Of Char))")>
+    Public Sub ParseOutExpression(arg As String)
+        Dim expr = ParseExpression(arg)
+        Assert.Equal(SyntaxKind.InvocationExpression, expr.Kind)
+
+    End Sub
+
 
     <Fact>
     Public Sub FromQueryClause()

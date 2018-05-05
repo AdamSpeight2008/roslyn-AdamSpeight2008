@@ -212,6 +212,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Or"
         Case SyntaxKind.OrElseKeyword
             Return "OrElse"
+        Case SyntaxKind.OutKeyword
+            Return "Out"
         Case SyntaxKind.OverloadsKeyword
             Return "Overloads"
         Case SyntaxKind.OverridableKeyword

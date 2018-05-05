@@ -509,6 +509,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overridable Function VisitRangeArgument(ByVal node As RangeArgumentSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
+        Public Overridable Function VisitOutArgument(ByVal node As OutArgumentSyntax) As TResult
+            Return Me.DefaultVisit(node)
+        End Function
         Public Overridable Function VisitQueryExpression(ByVal node As QueryExpressionSyntax) As TResult
             Return Me.DefaultVisit(node)
         End Function
@@ -1242,6 +1245,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitRangeArgument(ByVal node As RangeArgumentSyntax)
+            Me.DefaultVisit(node): Return
+        End Sub
+        Public Overridable Sub VisitOutArgument(ByVal node As OutArgumentSyntax)
             Me.DefaultVisit(node): Return
         End Sub
         Public Overridable Sub VisitQueryExpression(ByVal node As QueryExpressionSyntax)
@@ -4340,6 +4346,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If anyChanges Then
                 Return New RangeArgumentSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newLowerBound, newToKeyword, newUpperBound)
+            Else
+                Return node
+            End If
+        End Function
+
+        Public Overrides Function VisitOutArgument(ByVal node As OutArgumentSyntax) As SyntaxNode
+            Dim anyChanges As Boolean = False
+
+            Dim newOutKeyword = DirectCast(VisitToken(node.OutKeyword).Node, InternalSyntax.KeywordSyntax)
+            If node.OutKeyword.Node IsNot newOutKeyword Then anyChanges = True
+            Dim newExpression = DirectCast(Visit(node.Expression), ExpressionSyntax)
+            If node.Expression IsNot newExpression Then anyChanges = True
+            Dim newUnderlyingType = DirectCast(Visit(node.UnderlyingType), AsClauseSyntax)
+            If node.UnderlyingType IsNot newUnderlyingType Then anyChanges = True
+
+            If anyChanges Then
+                Return New OutArgumentSyntax(node.Kind, node.Green.GetDiagnostics, node.Green.GetAnnotations, newOutKeyword, newExpression, newUnderlyingType)
             Else
                 Return node
             End If
@@ -37430,6 +37453,167 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
         ''' <summary>
+        ''' Represents an out argument, such as "out x As int"
+        ''' </summary>
+        ''' <param name="outKeyword">
+        ''' The "Out" keyword.
+        ''' </param>
+        ''' <param name="expression">
+        ''' The expression that is the argument.
+        ''' </param>
+        ''' <param name="underlyingType">
+        ''' Optional "As XXX" clause describing the underlying type of the enumeration. If
+        ''' no As clause was specified, Nothing is returned.
+        ''' </param>
+        Public Shared Function OutArgument(outKeyword As SyntaxToken, expression As ExpressionSyntax, underlyingType As AsClauseSyntax) As OutArgumentSyntax
+            Select Case outKeyword.Kind()
+                Case SyntaxKind.OutKeyword
+                Case Else
+                    Throw new ArgumentException("outKeyword")
+             End Select
+            if expression Is Nothing Then
+                Throw New ArgumentNullException(NameOf(expression))
+            End If
+            Select Case expression.Kind()
+                Case SyntaxKind.KeywordEventContainer,
+                     SyntaxKind.WithEventsEventContainer,
+                     SyntaxKind.WithEventsPropertyEventContainer,
+                     SyntaxKind.IdentifierLabel,
+                     SyntaxKind.NumericLabel,
+                     SyntaxKind.NextLabel,
+                     SyntaxKind.MidExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.TrueLiteralExpression,
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.StringLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.ParenthesizedExpression,
+                     SyntaxKind.TupleExpression,
+                     SyntaxKind.TupleType,
+                     SyntaxKind.MeExpression,
+                     SyntaxKind.MyBaseExpression,
+                     SyntaxKind.MyClassExpression,
+                     SyntaxKind.GetTypeExpression,
+                     SyntaxKind.TypeOfIsExpression,
+                     SyntaxKind.TypeOfIsNotExpression,
+                     SyntaxKind.GetXmlNamespaceExpression,
+                     SyntaxKind.SimpleMemberAccessExpression,
+                     SyntaxKind.DictionaryAccessExpression,
+                     SyntaxKind.XmlElementAccessExpression,
+                     SyntaxKind.XmlDescendantAccessExpression,
+                     SyntaxKind.XmlAttributeAccessExpression,
+                     SyntaxKind.InvocationExpression,
+                     SyntaxKind.ObjectCreationExpression,
+                     SyntaxKind.AnonymousObjectCreationExpression,
+                     SyntaxKind.ArrayCreationExpression,
+                     SyntaxKind.CollectionInitializer,
+                     SyntaxKind.CTypeExpression,
+                     SyntaxKind.DirectCastExpression,
+                     SyntaxKind.TryCastExpression,
+                     SyntaxKind.PredefinedCastExpression,
+                     SyntaxKind.AddExpression,
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.IsExpression,
+                     SyntaxKind.IsNotExpression,
+                     SyntaxKind.LikeExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.UnaryPlusExpression,
+                     SyntaxKind.UnaryMinusExpression,
+                     SyntaxKind.NotExpression,
+                     SyntaxKind.AddressOfExpression,
+                     SyntaxKind.BinaryConditionalExpression,
+                     SyntaxKind.TernaryConditionalExpression,
+                     SyntaxKind.SingleLineFunctionLambdaExpression,
+                     SyntaxKind.SingleLineSubLambdaExpression,
+                     SyntaxKind.MultiLineFunctionLambdaExpression,
+                     SyntaxKind.MultiLineSubLambdaExpression,
+                     SyntaxKind.QueryExpression,
+                     SyntaxKind.FunctionAggregation,
+                     SyntaxKind.GroupAggregation,
+                     SyntaxKind.XmlDocument,
+                     SyntaxKind.XmlElement,
+                     SyntaxKind.XmlText,
+                     SyntaxKind.XmlElementStartTag,
+                     SyntaxKind.XmlElementEndTag,
+                     SyntaxKind.XmlEmptyElement,
+                     SyntaxKind.XmlAttribute,
+                     SyntaxKind.XmlString,
+                     SyntaxKind.XmlPrefixName,
+                     SyntaxKind.XmlName,
+                     SyntaxKind.XmlBracketedName,
+                     SyntaxKind.XmlComment,
+                     SyntaxKind.XmlProcessingInstruction,
+                     SyntaxKind.XmlCDataSection,
+                     SyntaxKind.XmlEmbeddedExpression,
+                     SyntaxKind.ArrayType,
+                     SyntaxKind.NullableType,
+                     SyntaxKind.PredefinedType,
+                     SyntaxKind.IdentifierName,
+                     SyntaxKind.GenericName,
+                     SyntaxKind.QualifiedName,
+                     SyntaxKind.GlobalName,
+                     SyntaxKind.CrefOperatorReference,
+                     SyntaxKind.QualifiedCrefOperatorReference,
+                     SyntaxKind.AwaitExpression,
+                     SyntaxKind.XmlCrefAttribute,
+                     SyntaxKind.XmlNameAttribute,
+                     SyntaxKind.ConditionalAccessExpression,
+                     SyntaxKind.NameOfExpression,
+                     SyntaxKind.InterpolatedStringExpression
+                Case Else
+                    Throw new ArgumentException("expression")
+             End Select
+            Return New OutArgumentSyntax(SyntaxKind.OutArgument, Nothing, Nothing, DirectCast(outKeyword.Node, InternalSyntax.KeywordSyntax), expression, underlyingType)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an out argument, such as "out x As int"
+        ''' </summary>
+        ''' <param name="expression">
+        ''' The expression that is the argument.
+        ''' </param>
+        ''' <param name="underlyingType">
+        ''' Optional "As XXX" clause describing the underlying type of the enumeration. If
+        ''' no As clause was specified, Nothing is returned.
+        ''' </param>
+        Public Shared Function OutArgument(expression As ExpressionSyntax, underlyingType As AsClauseSyntax) As OutArgumentSyntax
+            Return SyntaxFactory.OutArgument(SyntaxFactory.Token(SyntaxKind.OutKeyword), expression, underlyingType)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents an out argument, such as "out x As int"
+        ''' </summary>
+        ''' <param name="expression">
+        ''' The expression that is the argument.
+        ''' </param>
+        Public Shared Function OutArgument(expression As ExpressionSyntax) As OutArgumentSyntax
+            Return SyntaxFactory.OutArgument(SyntaxFactory.Token(SyntaxKind.OutKeyword), expression, Nothing)
+        End Function
+
+
+        ''' <summary>
         ''' This class represents a query expression. A query expression is composed of one
         ''' or more query operators in a row. The first query operator must be a From or
         ''' Aggregate.
@@ -45088,6 +45272,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 SyntaxKind.OptionalKeyword,
                 SyntaxKind.OrKeyword,
                 SyntaxKind.OrElseKeyword,
+                SyntaxKind.OutKeyword,
                 SyntaxKind.OverloadsKeyword,
                 SyntaxKind.OverridableKeyword,
                 SyntaxKind.OverridesKeyword,
@@ -45550,6 +45735,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return "Or"
         Case SyntaxKind.OrElseKeyword
             Return "OrElse"
+        Case SyntaxKind.OutKeyword
+            Return "Out"
         Case SyntaxKind.OverloadsKeyword
             Return "Overloads"
         Case SyntaxKind.OverridableKeyword

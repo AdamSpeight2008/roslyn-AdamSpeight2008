@@ -3199,5 +3199,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ConflictMarkerTrivia = 792
 
+        ''' <summary>
+        ''' Represents a range argument, such as "0 to 5", used in array bounds. The
+        ''' "Value" property represents the upper bound of the range.
+        ''' </summary>
+        OutArgument = 794                      ' RangeArgumentSyntax : ArgumentSyntax
+
     End Enum
 End Namespace

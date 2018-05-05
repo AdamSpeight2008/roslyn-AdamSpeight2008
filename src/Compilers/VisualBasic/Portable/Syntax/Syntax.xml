@@ -6300,6 +6300,45 @@ Unify Enum declarations with other block type declarations.
 
     </node-structure>
 
+    <!--********************
+      -  OutArgumentNode
+      **********************-->
+    <node-structure name="OutArgumentSyntax" parent="ArgumentSyntax">
+
+            <description>
+        Represents an out argument, such as "out x As int"
+      </description>
+      <lm-equiv name="OutArgumentNode"></lm-equiv>
+      <native-equiv name="OutArgument"></native-equiv>
+
+      <node-kind name="OutArgument">
+        <lm-equiv name="Out" />
+        <lm-equiv name="Out" />
+        <native-equiv name="" />
+      </node-kind>
+
+      <child name="OutKeyword" kind="OutKeyword">
+        <description>
+          The "Out" keyword.
+        </description>
+        <lm-equiv name="OutKeyword"></lm-equiv>
+        <native-equiv name="To"></native-equiv>
+      </child>
+
+      <child name="Expression" kind="@ExpressionSyntax">
+        <description>The expression that is the argument.</description>
+        <lm-equiv name="Value"></lm-equiv>
+        <native-equiv name="Value"></native-equiv>
+      </child>
+    
+      <child name="UnderlyingType" optional="true" kind="@AsClauseSyntax">
+        <description>Optional "As XXX" clause describing the underlying type of the enumeration. If no As clause was specified, Nothing is returned.</description>
+        <lm-equiv name="UnderlyingType"></lm-equiv>
+        <native-equiv name="UnderlyingRepresentation"></native-equiv>
+      </child>
+
+    </node-structure>
+    
     <!-- ************************************************************************************************** -->
     <!-- **  QUERY (LINQ) EXPRESSIONS                                                                    ** -->
     <!-- ************************************************************************************************** -->
@@ -8188,6 +8227,10 @@ Unify Enum declarations with other block type declarations.
       </node-kind>
       <node-kind name="OrElseKeyword" token-text="OrElse">
         <lm-equiv name="OrElseKeyword" />
+        <native-equiv name="" />
+      </node-kind>
+            <node-kind name="OutKeyword" token-text="Out">
+        <lm-equiv name="OutKeyword" />
         <native-equiv name="" />
       </node-kind>
       <node-kind name="OverloadsKeyword" token-text="Overloads">
