@@ -3060,6 +3060,14 @@ ProduceBoundNode:
                                 argumentNamesBuilder.Add(Nothing)
                                 argumentNamesLocationsBuilder.Add(Nothing)
                             End If
+                        Case SyntaxKind.OutArgument
+                            Dim outArgument = DirectCast(argumentSyntax, OutArgumentSyntax)
+                            CheckOutArgument(outArgument, diagnostics)
+                            boundArgumentsBuilder.Add(BindValue(outArgument.Expression, diagnostics))
+                            If argumentNamesBuilder IsNot Nothing Then
+                                argumentNamesBuilder.Add(Nothing)
+                                argumentNamesLocationsBuilder.Add(Nothing)
+                            End If
 
                         Case Else
                             Throw ExceptionUtilities.UnexpectedValue(argumentSyntax.Kind)

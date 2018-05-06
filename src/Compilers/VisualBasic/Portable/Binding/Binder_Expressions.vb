@@ -4307,6 +4307,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Sub
 
+        Private Sub CheckOutArgument(rangeArgument As OutArgumentSyntax, diagnostics As DiagnosticBag)
+            'rangeArgument.
+            'Dim lowerBound = BindValue(rangeArgument.LowerBound, diagnostics)
+
+            '' This check was moved from the parser to the binder.  For backwards compatibility with Dev10, the constant must
+            '' be integral.  This seems a bit inconsistent because the range argument allows (0 to 5.0) but not (0.0 to 5.0)
+            'Dim lowerBoundConstantValueOpt As ConstantValue = lowerBound.ConstantValueOpt
+
+            'If lowerBoundConstantValueOpt Is Nothing OrElse Not lowerBoundConstantValueOpt.IsIntegral OrElse Not lowerBoundConstantValueOpt.IsDefaultValue Then
+            '    ReportDiagnostic(diagnostics, rangeArgument.LowerBound, ERRID.ERR_OnlyNullLowerBound)
+            'End If
+        End Sub
+
+
         ''' <summary>
         ''' Bind the array bounds and return the sizes for each dimension.
         ''' </summary>
