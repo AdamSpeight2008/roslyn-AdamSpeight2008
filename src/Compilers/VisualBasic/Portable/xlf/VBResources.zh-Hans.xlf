@@ -345,6 +345,11 @@
 </target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_DefaultOptionalParameter">
+        <source>Default Optional Parameter</source>
+        <target state="new">Default Optional Parameter</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Trees0">
         <source>trees({0})</source>
         <target state="translated">树({0})</target>

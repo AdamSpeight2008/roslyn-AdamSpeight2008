@@ -2022,6 +2022,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_LeadingDigitSeparator
         FEATURE_PrivateProtected
         FEATURE_InterpolatedStrings
+        FEATURE_DefaultOptionalParameter
         FEATURE_UnconstrainedTypeParameterInConditional
         FEATURE_CommentsAfterLineContinuation
     End Enum

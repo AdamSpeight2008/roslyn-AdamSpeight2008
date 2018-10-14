@@ -12063,6 +12063,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Default Optional Parameter.
+        '''</summary>
+        Friend ReadOnly Property FEATURE_DefaultOptionalParameter() As String
+            Get
+                Return ResourceManager.GetString("FEATURE_DefaultOptionalParameter", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to comments after line continuation.
         '''</summary>
         Friend ReadOnly Property FEATURE_CommentsAfterLineContinuation() As String
