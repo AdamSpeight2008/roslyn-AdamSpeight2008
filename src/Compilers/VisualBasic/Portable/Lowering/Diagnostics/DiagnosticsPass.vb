@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private ReadOnly _diagnostics As DiagnosticBag
         Private ReadOnly _compilation As VisualBasicCompilation
         Private _containingSymbol As MethodSymbol
-        Private _withExpressionPlaceholderMap As Dictionary(Of BoundValuePlaceholderBase, BoundWithStatement)
+        Private _withExpressionPlaceholderMap As PooledObjects.PooledDictionary(Of BoundValuePlaceholderBase, BoundWithStatement)
         Private _expressionsBeingVisited As Stack(Of BoundExpression)
         Private _insideNameof As Boolean = False
 
@@ -29,12 +29,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Shared Sub IssueDiagnostics(node As BoundNode, diagnostics As DiagnosticBag, containingSymbol As MethodSymbol)
             Debug.Assert(node IsNot Nothing)
             Debug.Assert(containingSymbol IsNot Nothing)
-
+            Dim diagnosticPass As DiagnosticsPass = Nothing
             Try
-                Dim diagnosticPass As New DiagnosticsPass(containingSymbol.DeclaringCompilation, diagnostics, containingSymbol)
+                diagnosticPass = New DiagnosticsPass(containingSymbol.DeclaringCompilation, diagnostics, containingSymbol)
                 diagnosticPass.Visit(node)
             Catch ex As CancelledByStackGuardException
                 ex.AddAnError(diagnostics)
+            Finally
+                diagnosticPass?._withExpressionPlaceholderMap?.Free()
+                diagnosticPass._expressionTreePlaceholders?.free()
             End Try
         End Sub
 
@@ -165,7 +168,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If info IsNot Nothing AndAlso info.ExpressionIsAccessedFromNestedLambda Then
                 If _withExpressionPlaceholderMap Is Nothing Then
-                    _withExpressionPlaceholderMap = New Dictionary(Of BoundValuePlaceholderBase, BoundWithStatement)()
+                    _withExpressionPlaceholderMap = PooledObjects.PooledDictionary(Of BoundValuePlaceholderBase, BoundWithStatement).GetInstance()
                     _expressionsBeingVisited = New Stack(Of BoundExpression)()
                 End If
 

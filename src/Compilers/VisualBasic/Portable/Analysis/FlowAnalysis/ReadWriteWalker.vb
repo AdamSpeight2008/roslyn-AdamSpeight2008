@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports SymbolHashSet = Microsoft.CodeAnalysis.PooledObjects.PooledObject(Of System.Collections.Generic.HashSet(Of Microsoft.CodeAnalysis.VisualBasic.Symbol))
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' <summary>
@@ -31,13 +32,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             With walker
                 Try
                     If .Analyze() Then
-                        readInside = ._readInside.AsImmutableOrEmpty
-                        writtenInside = ._writtenInside.AsImmutableOrEmpty
-                        readOutside = ._readOutside.AsImmutableOrEmpty
-                        writtenOutside = ._writtenOutside.AsImmutableOrEmpty
-                        captured = ._captured.AsImmutableOrEmpty
-                        capturedInside = ._capturedInside.AsImmutableOrEmpty
-                        capturedOutside = ._capturedOutside.AsImmutableOrEmpty
+                        readInside = ._read.Inside.Value.AsImmutableOrEmpty
+                        readOutside = ._read.Outside.Value.AsImmutableOrEmpty
+                        writtenInside = ._written.Inside.Value.AsImmutableOrEmpty
+                        writtenOutside = ._written.Outside.Value.AsImmutableOrEmpty
+                        captured = ._captured.Yes.Value.AsImmutableOrEmpty
+                        capturedInside = ._captured.Inside.Value.AsImmutableOrEmpty
+                        capturedOutside = ._captured.Outside.Value.AsImmutableOrEmpty
                     Else
                         Dim empty = ImmutableArray(Of Symbol).Empty
                         readInside = empty
@@ -54,23 +55,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End With
         End Sub
         Protected Overrides Sub Free()
-            _readInside?.Free()
-            _writtenInside?.Free()
-            _readOutside?.Free()
-            _writtenOutside?.Free()
-            _captured?.Free()
-            _capturedInside?.Free()
-            _capturedOutside?.Free()
+            _read.Inside?.Free()
+            _read.Outside?.Free()
+            _written.Inside?.Free()
+            _written.Outside?.Free()
+            _captured.Yes?.Free()
+            _captured.Inside?.Free()
+            _captured.Outside?.Free()
             MyBase.Free()
         End Sub
 
-        Private ReadOnly _readInside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _writtenInside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _readOutside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _writtenOutside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _captured As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _capturedInside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
-        Private ReadOnly _capturedOutside As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _read As (Inside As SymbolHashSet, Outside As SymbolHashSet) = (Pools.SymbolPool.GetInstance, Pools.SymbolPool.GetInstance)
+        Private ReadOnly _written As (Inside As SymbolHashSet, Outside As SymbolHashSet) = (Pools.SymbolPool.GetInstance, Pools.SymbolPool.GetInstance)
+        Private ReadOnly _captured As (Yes As SymbolHashSet, Inside As SymbolHashSet, Outside As SymbolHashSet) =
+            (Pools.SymbolPool.GetInstance, Pools.SymbolPool.GetInstance, Pools.SymbolPool.GetInstance)
 
         Private _currentMethodOrLambda As Symbol
         Private _currentQueryLambda As BoundQueryLambda
@@ -81,9 +79,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Else
                 Select Case _regionPlace
                     Case RegionPlace.Before, RegionPlace.After
-                        _readOutside.Add(variable)
+                        _read.Outside.Value.Add(variable)
                     Case RegionPlace.Inside
-                        _readInside.Add(variable)
+                        _read.Inside.Value.Add(variable)
                     Case Else
                         Throw ExceptionUtilities.UnexpectedValue(_regionPlace)
                 End Select
@@ -98,9 +96,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Else
                 Select Case _regionPlace
                     Case RegionPlace.Before, RegionPlace.After
-                        _writtenOutside.Add(variable)
+                        _written.Outside.Value.Add(variable)
                     Case RegionPlace.Inside
-                        _writtenInside.Add(variable)
+                        _written.Inside.Value.Add(variable)
                     Case Else
                         Throw ExceptionUtilities.UnexpectedValue(_regionPlace)
                 End Select
@@ -112,11 +110,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' range variables are only returned in the captured set if inside the region
         Private Sub NoteCaptured(variable As Symbol)
             If _regionPlace = RegionPlace.Inside Then
-                _capturedInside.Add(variable)
-                _captured.Add(variable)
+                _captured.Inside.Value.Add(variable)
+                _captured.Yes.Value.Add(variable)
             ElseIf variable.Kind <> SymbolKind.RangeVariable Then
-                _capturedOutside.Add(variable)
-                _captured.Add(variable)
+                _captured.Outside.Value.Add(variable)
+                _captured.Yes.Value.Add(variable)
             End If
         End Sub
 
@@ -131,11 +129,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Private Sub NoteReceiverRead(fieldAccess As BoundFieldAccess)
-            NoteReceiverReadOrWritten(fieldAccess, _readInside)
+            NoteReceiverReadOrWritten(fieldAccess, _read.Inside.Value)
         End Sub
 
         Private Sub NoteReceiverWritten(fieldAccess As BoundFieldAccess)
-            NoteReceiverReadOrWritten(fieldAccess, _writtenInside)
+            NoteReceiverReadOrWritten(fieldAccess, _written.Inside.Value)
         End Sub
 
         Private Sub NoteReceiverReadOrWritten(fieldAccess As BoundFieldAccess, readOrWritten As HashSet(Of Symbol))

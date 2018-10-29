@@ -21,7 +21,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Inherits DataFlowAnalysis
 
         Private ReadOnly _context As RegionAnalysisContext
-        Private _unassignedVariables As PooledHashSet(Of Symbol)
+        Private _unassignedVariables As PooledObject(Of HashSet(Of Symbol))
 #Region "ImutableArray(Of ISymbol)"
         Private _variablesDeclared As ImmutableArray(Of ISymbol)
         Private _dataFlowsIn As ImmutableArray(Of ISymbol)
@@ -57,10 +57,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        Private ReadOnly Property UnassignedVariables As PooledObjects.PooledHashSet(Of Symbol)
+        Private ReadOnly Property UnassignedVariables As PooledObject(Of HashSet(Of Symbol))
             Get
                 If _unassignedVariables Is Nothing Then
-                    Dim result As PooledHashSet(Of Symbol) = If(Me._context.Failed, PooledObjects.PooledHashSet(Of Symbol).GetInstance,
+                    Dim result As PooledObject(Of HashSet(Of Symbol)) = If(Me._context.Failed, PooledObjects.Pools.SymbolPool.GetInstance,
                                     UnassignedVariablesWalker.Analyze(_context.AnalysisInfo))
                     Interlocked.CompareExchange(_unassignedVariables, result, Nothing)
                 End If
@@ -76,7 +76,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 If _dataFlowsIn.IsDefault Then
                     Me._succeeded = Not Me._context.Failed
                     Dim result = If(Me._context.Failed, ImmutableArray(Of ISymbol).Empty,
-                                    Normalize(DataFlowsInWalker.Analyze(_context.AnalysisInfo, _context.RegionInfo, UnassignedVariables, _succeeded, _invalidRegionDetected)))
+                                    Normalize(DataFlowsInWalker.Analyze(_context.AnalysisInfo, _context.RegionInfo, UnassignedVariables.Value, _succeeded, _invalidRegionDetected)))
                     ImmutableInterlocked.InterlockedCompareExchange(_dataFlowsIn, result, Nothing)
                 End If
                 Return _dataFlowsIn
@@ -94,7 +94,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     If Me._context.Failed Then
                         result = ImmutableArray(Of ISymbol).Empty
                     Else
-                        Dim preNormalised = DataFlowsOutWalker.Analyze(_context.AnalysisInfo, _context.RegionInfo, UnassignedVariables.ToImmutableArrayOrEmpty, _dataFlowsIn)
+                        Dim preNormalised = DataFlowsOutWalker.Analyze(_context.AnalysisInfo, _context.RegionInfo, UnassignedVariables.Value.ToImmutableArrayOrEmpty, _dataFlowsIn)
                         result = Normalize(preNormalised)
                     End If
                     ImmutableInterlocked.InterlockedCompareExchange(_dataFlowsOut, result, Nothing)
@@ -260,7 +260,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Friend Function Normalize(data As IEnumerable(Of Symbol)) As ImmutableArray(Of ISymbol)
             Dim builder = ArrayBuilder(Of Symbol).GetInstance()
-            builder.AddRange(data.Where(Function(s) s.CanBeReferencedByName))
+            Dim results = data.Where(Function(s) s.CanBeReferencedByName)
+            builder.AddRange(results)
             builder.Sort(LexicalOrderSymbolComparer.Instance)
             Return builder.ToImmutableAndFree().As(Of ISymbol)()
         End Function

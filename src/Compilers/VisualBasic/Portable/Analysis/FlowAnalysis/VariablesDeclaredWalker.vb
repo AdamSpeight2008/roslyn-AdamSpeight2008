@@ -15,14 +15,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo, region As FlowAnalysisRegionInfo) As IEnumerable(Of Symbol)
             Dim walker = New VariablesDeclaredWalker(info, region)
             Try
-                Return If(walker.Analyze(), walker._variablesDeclared.ToImmutableArrayOrEmpty, SpecializedCollections.EmptyEnumerable(Of Symbol)())
+                Return If(walker.Analyze(), walker._variablesDeclared.Value.ToImmutableArrayOrEmpty, SpecializedCollections.EmptyEnumerable(Of Symbol)())
             Finally
                 walker.Free()
             End Try
         End Function
 
-        Private ReadOnly _variablesDeclared As PooledObjects.PooledHashSet(Of Symbol) = PooledObjects.PooledHashSet(Of Symbol).GetInstance
-
+        Private ReadOnly _variablesDeclared As PooledObjects.PooledObject(Of HashSet(Of Symbol)) = PooledObjects.Pools.SymbolPool.GetInstance
         Protected Overrides Sub Free()
             _variablesDeclared?.Free()
             MyBase.Free()
@@ -39,7 +38,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitLocalDeclaration(node As BoundLocalDeclaration) As BoundNode
             If IsInside Then
-                _variablesDeclared.Add(node.LocalSymbol)
+                _variablesDeclared.Value.Add(node.LocalSymbol)
             End If
             Return MyBase.VisitLocalDeclaration(node)
         End Function
@@ -47,7 +46,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Overrides Sub VisitForStatementVariableDeclaration(node As BoundForStatement)
             If IsInside AndAlso
                     node.DeclaredOrInferredLocalOpt IsNot Nothing Then
-                _variablesDeclared.Add(node.DeclaredOrInferredLocalOpt)
+                _variablesDeclared.Value.Add(node.DeclaredOrInferredLocalOpt)
             End If
             MyBase.VisitForStatementVariableDeclaration(node)
         End Sub
@@ -55,7 +54,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Function VisitLambda(node As BoundLambda) As BoundNode
             If IsInside Then
                 For Each parameter In node.LambdaSymbol.Parameters
-                    _variablesDeclared.Add(parameter)
+                    _variablesDeclared.Value.Add(parameter)
                 Next
             End If
 
@@ -67,7 +66,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If Not node.WasCompilerGenerated AndAlso node.RangeVariables.Length > 0 AndAlso IsInside Then
                 Debug.Assert(node.RangeVariables.Length = 1)
-                _variablesDeclared.Add(node.RangeVariables(0))
+                _variablesDeclared.Value.Add(node.RangeVariables(0))
             End If
 
             Return Nothing
@@ -75,7 +74,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitRangeVariableAssignment(node As BoundRangeVariableAssignment) As BoundNode
             If Not node.WasCompilerGenerated AndAlso IsInside Then
-                _variablesDeclared.Add(node.RangeVariable)
+                _variablesDeclared.Value.Add(node.RangeVariable)
             End If
 
             MyBase.VisitRangeVariableAssignment(node)
@@ -85,7 +84,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Overrides Sub VisitCatchBlock(catchBlock As BoundCatchBlock, ByRef finallyState As LocalState)
             If IsInsideRegion(catchBlock.Syntax.Span) Then
                 If catchBlock.LocalOpt IsNot Nothing Then
-                    _variablesDeclared.Add(catchBlock.LocalOpt)
+                    _variablesDeclared.Value.Add(catchBlock.LocalOpt)
                 End If
 
             End If

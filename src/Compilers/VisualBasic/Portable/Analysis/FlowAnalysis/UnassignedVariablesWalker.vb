@@ -20,16 +20,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             MyBase.New(info, suppressConstExpressionsSupport:=False, trackStructsWithIntrinsicTypedFields:=True)
         End Sub
 
-        Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo) As PooledObjects.PooledHashSet(Of Symbol)
+        Friend Overloads Shared Function Analyze(info As FlowAnalysisInfo) As PooledObjects.PooledObject(Of HashSet(Of Symbol))
             Dim walker As New UnassignedVariablesWalker(info)
             Try
-                Return If(walker.Analyze(), walker._result, PooledObjects.PooledHashSet(Of Symbol).GetInstance)
+                Return If(walker.Analyze(), walker._result, PooledObjects.Pools.SymbolPool.GetInstance)
             Finally
                 walker.Free()
             End Try
         End Function
 
-        Private ReadOnly _result As PooledObjects.PooledHashSet(Of Symbol) = PooledObjects.PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _result As PooledObjects.PooledObject(Of HashSet(Of Symbol)) = PooledObjects.Pools.SymbolPool.GetInstance
 
         Protected Overrides Sub ReportUnassigned(
                                                  local As Symbol,
@@ -48,11 +48,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Debug.Assert(TypeOf sym IsNot AmbiguousLocalsPseudoSymbol)
 
                 If sym IsNot Nothing Then
-                    _result.Add(sym)
+                    _result.Value.Add(sym)
                 End If
 
             Else
-                _result.Add(local)
+                _result.Value.Add(local)
             End If
 
             MyBase.ReportUnassigned(local, node, rwContext, slot, boundFieldAccess)

@@ -9,7 +9,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Partial Friend Class DiagnosticsPass
 
-        Private ReadOnly _expressionTreePlaceholders As New HashSet(Of BoundNode)(ReferenceEqualityComparer.Instance)
+        ' TODO: Make Pooled
+        Private ReadOnly _expressionTreePlaceholders As PooledObjects.PooledObject(Of HashSet(Of BoundNode)) = PooledObjects.Pools.BoundNodePool.GetInstance
+        'Private ReadOnly _expressionTreePlaceholders As New HashSet(Of BoundNode)(ReferenceEqualityComparer.Instance)
 
         Public Overrides Function VisitObjectCreationExpression(node As BoundObjectCreationExpression) As BoundNode
             If Me.IsInExpressionLambda Then
@@ -116,7 +118,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Me.Visit(placeholder)
 
             ' Initializers cannot reference placeholder
-            Me._expressionTreePlaceholders.Add(placeholder)
+            Me._expressionTreePlaceholders.Value.Add(placeholder)
 
             For Each initializer In node.Initializers
                 ' Ignore assignments in object initializers, only reference the value
@@ -126,13 +128,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Me.Visit(assignment.Right)
             Next
 
-            Me._expressionTreePlaceholders.Remove(placeholder)
+            Me._expressionTreePlaceholders.Value.Remove(placeholder)
 
             Return Nothing
         End Function
 
         Public Overrides Function VisitWithLValueExpressionPlaceholder(node As BoundWithLValueExpressionPlaceholder) As BoundNode
-            If Me._expressionTreePlaceholders.Contains(node) Then
+            If Me._expressionTreePlaceholders.Value.Contains(node) Then
                 GenerateExpressionTreeNotSupportedDiagnostic(node)
             End If
 

@@ -48,45 +48,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public ReadOnly Property ElementInitType As NamedTypeSymbol
             Get
-                If _elementInitType Is Nothing Then
-                    _elementInitType = Me._factory.WellKnownType(WellKnownType.System_Linq_Expressions_ElementInit)
-                End If
+                _elementInitType = If(_elementInitType, Me._factory.WellKnownType(WellKnownType.System_Linq_Expressions_ElementInit))
                 Return _elementInitType
             End Get
         End Property
 
         Public ReadOnly Property MemberBindingType As NamedTypeSymbol
             Get
-                If _memberBindingType Is Nothing Then
-                    _memberBindingType = Me._factory.WellKnownType(WellKnownType.System_Linq_Expressions_MemberBinding)
-                End If
+                _memberBindingType = If(_memberBindingType, Me._factory.WellKnownType(WellKnownType.System_Linq_Expressions_MemberBinding))
                 Return _memberBindingType
             End Get
         End Property
 
         Public ReadOnly Property MemberInfoType As NamedTypeSymbol
             Get
-                If _memberInfoType Is Nothing Then
-                    _memberInfoType = Me._factory.WellKnownType(WellKnownType.System_Reflection_MemberInfo)
-                End If
+                _memberInfoType = If(_memberInfoType, Me._factory.WellKnownType(WellKnownType.System_Reflection_MemberInfo))
                 Return _memberInfoType
             End Get
         End Property
 
         Public ReadOnly Property Int32Type As NamedTypeSymbol
             Get
-                If _int32Type Is Nothing Then
-                    _int32Type = _factory.SpecialType(SpecialType.System_Int32)
-                End If
+                _int32Type = If(_int32Type, _factory.SpecialType(SpecialType.System_Int32))
                 Return _int32Type
             End Get
         End Property
 
         Public ReadOnly Property ObjectType As NamedTypeSymbol
             Get
-                If _objectType Is Nothing Then
-                    _objectType = _factory.SpecialType(SpecialType.System_Object)
-                End If
+                _objectType = If(_objectType, _factory.SpecialType(SpecialType.System_Object))
                 Return _objectType
             End Get
         End Property
@@ -126,53 +116,55 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
 
         Private Function TranslateLambdaBody(block As BoundBlock) As BoundExpression
-            ' VB expression trees can be only one statement. Similar analysis is performed 
-            ' in DiagnosticsPass, but it does not take into account how the statements
-            ' are rewritten, so here we recheck lowered lambda bodies as well.
+            With block
+                ' VB expression trees can be only one statement. Similar analysis is performed 
+                ' in DiagnosticsPass, but it does not take into account how the statements
+                ' are rewritten, so here we recheck lowered lambda bodies as well.
 
-            ' There might be a sequence point at the beginning.
-            ' There may be a label and return statement at the end also but the expression tree ignores that.
-            Debug.Assert(block.Statements(0).Kind <> BoundKind.SequencePoint)
-            Debug.Assert(block.Statements.Length = 1 OrElse
-                         (block.Statements.Length = 2 AndAlso
-                          block.Statements(1).Kind = BoundKind.ReturnStatement AndAlso
-                          DirectCast(block.Statements(1), BoundReturnStatement).ExpressionOpt Is Nothing) OrElse
-                         (block.Statements.Length = 3 AndAlso
-                          block.Statements(1).Kind = BoundKind.LabelStatement AndAlso
-                          block.Statements(2).Kind = BoundKind.ReturnStatement))
+                ' There might be a sequence point at the beginning.
+                ' There may be a label and return statement at the end also but the expression tree ignores that.
+                Debug.Assert(.Statements(0).Kind <> BoundKind.SequencePoint)
+                Debug.Assert(.Statements.Length = 1 OrElse
+                             (.Statements.Length = 2 AndAlso
+                              .Statements(1).Kind = BoundKind.ReturnStatement AndAlso
+                              DirectCast(.Statements(1), BoundReturnStatement).ExpressionOpt Is Nothing) OrElse
+                              (.Statements.Length = 3 AndAlso
+                               .Statements(1).Kind = BoundKind.LabelStatement AndAlso
+                               .Statements(2).Kind = BoundKind.ReturnStatement))
 
-            ' The only local should be the Function Value. We'll ignore that.
-            Debug.Assert(block.Locals.IsEmpty OrElse
-                         (block.Locals.Length = 1 AndAlso block.Locals(0).IsFunctionValue))
+                ' The only local should be the Function Value. We'll ignore that.
+                Debug.Assert(.Locals.IsEmpty OrElse
+                             (.Locals.Length = 1 AndAlso .Locals(0).IsFunctionValue))
 
-            ' We only need to generate expression tree for the first statement.
-            Dim stmt = block.Statements(0)
+                ' We only need to generate expression tree for the first statement.
+                Dim stmt = .Statements(0)
 
 lSelect:
-            Select Case stmt.Kind
-                Case BoundKind.ReturnStatement
-                    ' The Return statement is not directly expressed in the expression tree, just the expression being returned.
-                    Dim expression As BoundExpression = (DirectCast(stmt, BoundReturnStatement)).ExpressionOpt
-                    If expression IsNot Nothing Then
-                        Return Visit(expression)
-                    End If
+                    Select Case stmt.Kind
+                        Case BoundKind.ReturnStatement
+                            ' The Return statement is not directly expressed in the expression tree, just the expression being returned.
+                            Dim expression As BoundExpression = (DirectCast(stmt, BoundReturnStatement)).ExpressionOpt
+                            If expression IsNot Nothing Then
+                                Return Visit(expression)
+                            End If
                 ' Otherwise fall through and generate an error
 
-                Case BoundKind.ExpressionStatement
-                    Return Visit((DirectCast(stmt, BoundExpressionStatement)).Expression)
+                        Case BoundKind.ExpressionStatement
+                            Return Visit((DirectCast(stmt, BoundExpressionStatement)).Expression)
 
-                Case BoundKind.Block
-                    Dim innerBlock = DirectCast(stmt, BoundBlock)
-                    If innerBlock.Locals.IsEmpty AndAlso innerBlock.Statements.Length = 1 Then
-                        stmt = innerBlock.Statements(0)
-                        GoTo lSelect
-                    End If
+                        Case BoundKind.Block
+                            Dim innerBlock = DirectCast(stmt, BoundBlock)
+                            If innerBlock.Locals.IsEmpty AndAlso innerBlock.Statements.Length = 1 Then
+                                stmt = innerBlock.Statements(0)
+                                GoTo lSelect
+                            End If
 
-            End Select
+                    End Select
 
-            ' all the rest is not supported 
-            Debug.Assert(False)
-            Return GenerateDiagnosticAndReturnDummyExpression(ERRID.ERR_StatementLambdaInExpressionTree, block)
+                    ' all the rest is not supported 
+                    Debug.Assert(False)
+                    Return GenerateDiagnosticAndReturnDummyExpression(ERRID.ERR_StatementLambdaInExpressionTree, block)
+                End With
         End Function
 
         Private Function GenerateDiagnosticAndReturnDummyExpression(code As ERRID, node As BoundNode, ParamArray args As Object()) As BoundExpression
@@ -817,7 +809,7 @@ lSelect:
         Private Function GetExprFactoryMethodGroup(methodName As String, typeArgs As ImmutableArray(Of TypeSymbol)) As BoundMethodGroup
             Dim group As BoundMethodGroup = Nothing
             Dim result = LookupResult.GetInstance()
-
+            ' TODO: Make pooled
             Dim useSiteDiagnostics As HashSet(Of DiagnosticInfo) = Nothing
             _binder.LookupMember(result,
                                  Me._expressionType,

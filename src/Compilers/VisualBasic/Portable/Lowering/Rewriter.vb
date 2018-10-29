@@ -11,22 +11,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend NotInheritable Class Rewriter
 
         Public Shared Function LowerBodyOrInitializer(
-            method As MethodSymbol,
-            methodOrdinal As Integer,
-            body As BoundBlock,
-            previousSubmissionFields As SynthesizedSubmissionFields,
-            compilationState As TypeCompilationState,
-            instrumentForDynamicAnalysis As Boolean,
-            <Out> ByRef dynamicAnalysisSpans As ImmutableArray(Of SourceSpan),
-            debugDocumentProvider As DebugDocumentProvider,
-            diagnostics As DiagnosticBag,
-            ByRef lazyVariableSlotAllocator As VariableSlotAllocator,
-            lambdaDebugInfoBuilder As ArrayBuilder(Of LambdaDebugInfo),
-            closureDebugInfoBuilder As ArrayBuilder(Of ClosureDebugInfo),
-            ByRef delegateRelaxationIdDispenser As Integer,
-            <Out> ByRef stateMachineTypeOpt As StateMachineTypeSymbol,
-            allowOmissionOfConditionalCalls As Boolean,
-            isBodySynthesized As Boolean) As BoundBlock
+                method As MethodSymbol,
+                methodOrdinal As Integer,
+                body As BoundBlock,
+                previousSubmissionFields As SynthesizedSubmissionFields,
+                compilationState As TypeCompilationState,
+                instrumentForDynamicAnalysis As Boolean,
+    <Out> ByRef dynamicAnalysisSpans As ImmutableArray(Of SourceSpan),
+                debugDocumentProvider As DebugDocumentProvider,
+                diagnostics As DiagnosticBag,
+          ByRef lazyVariableSlotAllocator As VariableSlotAllocator,
+                lambdaDebugInfoBuilder As ArrayBuilder(Of LambdaDebugInfo),
+                closureDebugInfoBuilder As ArrayBuilder(Of ClosureDebugInfo),
+          ByRef delegateRelaxationIdDispenser As Integer,
+    <Out> ByRef stateMachineTypeOpt As StateMachineTypeSymbol,
+                allowOmissionOfConditionalCalls As Boolean,
+                isBodySynthesized As Boolean
+              ) As BoundBlock
 
             Debug.Assert(Not body.HasErrors)
             Debug.Assert(compilationState.ModuleBuilderOpt IsNot Nothing)
