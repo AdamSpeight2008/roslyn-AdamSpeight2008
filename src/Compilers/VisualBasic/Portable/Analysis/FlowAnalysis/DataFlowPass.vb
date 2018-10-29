@@ -71,7 +71,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Variables that were initialized or written anywhere.
         ''' </summary>
-        Private ReadOnly _writtenVariables As PooledHashSet(Of Symbol) = PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _writtenVariables As PooledObject(Of HashSet(Of Symbol)) = Pools.SymbolPool.GetInstance
 
         ''' <summary> 
         ''' A mapping from local variables to the index of their slot in a flow analysis local state. 
@@ -203,7 +203,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' we shouldn't report such locals as unused because they were not explicitly declared
             ' by the user in the code
             If Not local.IsFunctionValue AndAlso Not String.IsNullOrEmpty(local.Name) Then
-                If _writtenVariables.Contains(local) Then
+                If _writtenVariables.Value.Contains(local) Then
                     If local.IsConst Then
                         diagnostics.Add(ERRID.WRN_UnusedLocalConst, local.Locations(0), If(local.Name, "dummy"))
                     End If
@@ -285,7 +285,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Overridable Sub NoteWrite(variable As Symbol, value As BoundExpression)
             If variable IsNot Nothing Then
-                _writtenVariables.Add(variable)
+                _writtenVariables.Value.Add(variable)
                 Dim local = TryCast(variable, LocalSymbol)
                 If value IsNot Nothing AndAlso (local IsNot Nothing AndAlso Not local.IsConst AndAlso local.Type.IsReferenceType OrElse value.HasErrors) Then
                     ' We duplicate Dev10's behavior here.  The reasoning is, I would guess, that otherwise unread

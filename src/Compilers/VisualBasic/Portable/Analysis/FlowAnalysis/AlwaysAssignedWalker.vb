@@ -30,7 +30,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private _endOfRegionState As LocalState
-        Private ReadOnly _labelsInside As PooledObjects.PooledHashSet(Of LabelSymbol) = PooledObjects.PooledHashSet(Of LabelSymbol).GetInstance
+        Private ReadOnly _labelsInside As PooledObjects.PooledObject(Of HashSet(Of LabelSymbol)) = PooledObjects.Pools.LabelSymbolPool.GetInstance
 
         Protected Overrides Sub Free()
             MyBase.Free()
@@ -75,7 +75,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(Not _endOfRegionState.Assigned.IsNull)
 
             For Each branch In PendingBranches
-                If IsInsideRegion(branch.Branch.Syntax.Span) AndAlso Not _labelsInside.Contains(branch.Label) Then
+                If IsInsideRegion(branch.Branch.Syntax.Span) AndAlso Not _labelsInside.Value.Contains(branch.Label) Then
                     IntersectWith(_endOfRegionState, branch.State)
                 End If
             Next
@@ -85,7 +85,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides Function VisitLabelStatement(node As BoundLabelStatement) As BoundNode
             If node.Syntax IsNot Nothing AndAlso IsInsideRegion(node.Syntax.Span) Then
-                _labelsInside.Add(node.Label)
+                _labelsInside.Value.Add(node.Label)
             End If
 
             Return MyBase.VisitLabelStatement(node)

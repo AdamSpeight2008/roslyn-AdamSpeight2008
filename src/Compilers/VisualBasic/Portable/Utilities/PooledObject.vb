@@ -47,10 +47,16 @@
         Private f0 As Func(Of HashSet(Of VisualBasic.Symbol)) = Function() New HashSet(Of VisualBasic.Symbol)()
         Friend ReadOnly Property SymbolPool As Pool(Of HashSet(Of VisualBasic.Symbol)) =
             Pool(Of HashSet(Of VisualBasic.Symbol)).Make(f0, 64, Sub(v) v.Clear())
-        Private f1 As Func(Of HashSet(Of VisualBasic.BoundNode)) = Function() New HashSet(Of VisualBasic.BoundNode)(ReferenceEqualityComparer.Instance)
 
+        Private f1 As Func(Of HashSet(Of VisualBasic.BoundNode)) = Function() New HashSet(Of VisualBasic.BoundNode)(ReferenceEqualityComparer.Instance)
         Friend ReadOnly Property BoundNodePool As Pool(Of HashSet(Of VisualBasic.BoundNode)) =
             Pool(Of HashSet(Of VisualBasic.BoundNode)).Make(f1, 64, Sub(v) v.Clear())
+
+        Private f2 As Func(Of HashSet(Of VisualBasic.Symbols.LabelSymbol)) = Function() New HashSet(Of VisualBasic.Symbols.LabelSymbol)()
+        Friend ReadOnly Property LabelSymbolPool As Pool(Of HashSet(Of VisualBasic.Symbols.LabelSymbol)) =
+            Pool(Of HashSet(Of VisualBasic.Symbols.LabelSymbol)).Make(f2, 16, Sub(v) v.Clear())
+
+
     End Module
 
 End Namespace

@@ -2,6 +2,7 @@
 
 Imports System.Collections.Generic
 Imports System.Collections.Immutable
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -20,10 +21,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private ReadOnly _dataFlowsIn As ImmutableArray(Of ISymbol)
         Private ReadOnly _originalUnassigned As ImmutableArray(Of Symbol)
-        Private ReadOnly _dataFlowsOut As PooledObjects.PooledHashSet(Of Symbol)
+        Private ReadOnly _dataFlowsOut As PooledObject(Of HashSet(Of Symbol))
 #If DEBUG Then
         ' we'd like to ensure that only variables get returned in DataFlowsOut that were assigned to inside the region.
-        Private ReadOnly _assignedInside As PooledObjects.PooledHashSet(Of Symbol) = PooledObjects.PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _assignedInside As PooledObject(Of HashSet(Of Symbol)) = Pools.SymbolPool.GetInstance
 #End If
 
         Public ReadOnly Property DataFlowsOut As Immutable.ImmutableHashSet(Of Symbol)
@@ -31,7 +32,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 If _dataFlowsOut Is Nothing Then
                     Return Immutable.ImmutableHashSet(Of Symbol).Empty
                 Else
-                    Return _dataFlowsOut.ToImmutableHashSet
+                    Return _dataFlowsOut.Value.ToImmutableHashSet
                 End If
             End Get
         End Property
@@ -47,7 +48,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             MyBase.New(info, region, unassignedVariables, trackUnassignments:=True, trackStructsWithIntrinsicTypedFields:=True)
             _dataFlowsIn = dataFlowsIn
             _originalUnassigned = originalUnassigned
-            _dataFlowsOut = PooledObjects.PooledHashSet(Of Symbol).GetInstance
+            _dataFlowsOut = Pools.SymbolPool.GetInstance
         End Sub
 
         Protected Overrides Sub Free()
@@ -76,10 +77,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim walker As New DataFlowsOutWalker(info, region, unassignedWithoutStatic.ToImmutableArrayOrEmpty, unassignedVariables, dataFlowsIn)
             Try
                 Dim success = walker.Analyze
-                Dim result = walker.dataFlowsOut
+                Dim result = walker.DataFlowsOut
 #If DEBUG Then
                 ' Assert that DataFlowsOut only contains variables that were assigned to inside the region
-                Debug.Assert(Not success OrElse Not result.Any(Function(variable) Not walker._assignedInside.Contains(variable)))
+                Debug.Assert(Not success OrElse Not result.Any(Function(variable) Not walker._assignedInside.Value.Contains(variable)))
 #End If
 
                 Return If(success, result, Immutable.ImmutableHashSet(Of Symbol).Empty)
@@ -97,7 +98,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim slot As Integer = Me.GetOrCreateSlot(variable)
                 If Not Me.State.IsAssigned(slot) AndAlso variable.Kind <> SymbolKind.RangeVariable AndAlso
                         (variable.Kind <> SymbolKind.Local OrElse Not DirectCast(variable, LocalSymbol).IsStatic) Then
-                    _dataFlowsOut.Add(variable)
+                    _dataFlowsOut.Value.Add(variable)
                 End If
             Next
 
@@ -115,7 +116,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Dim symbol = GetNodeSymbol(node)
                     If symbol IsNot Nothing Then
 #If DEBUG Then
-                        _assignedInside.Add(symbol)
+                        _assignedInside.Value.Add(symbol)
 #End If
                     End If
                 End If
@@ -139,7 +140,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                                     Dim exprIdentifier = DirectCast(variableBySlot(slot).Symbol, ParameterSymbol)
                                     If exprIdentifier IsNot Nothing AndAlso exprIdentifier.IsByRef Then
-                                        _dataFlowsOut.Add(exprIdentifier)
+                                        _dataFlowsOut.Value.Add(exprIdentifier)
                                     End If
                                 End If
                             End If
@@ -155,7 +156,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                     Dim slot As Integer = slots(0)
                                     If slot >= SlotKind.FirstAvailable Then
                                         Debug.Assert(locSymbol Is variableBySlot(slot).Symbol)
-                                        _dataFlowsOut.Add(variableBySlot(slot).Symbol)
+                                        _dataFlowsOut.Value.Add(variableBySlot(slot).Symbol)
                                     End If
                                 End If
 
@@ -178,7 +179,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Debug.Assert(local.Kind <> SymbolKind.Field OrElse boundFieldAccess IsNot Nothing)
 
-            If Not _dataFlowsOut.Contains(local) AndAlso (local.Kind <> SymbolKind.RangeVariable) AndAlso Not IsInside Then
+            If Not _dataFlowsOut.Value.Contains(local) AndAlso (local.Kind <> SymbolKind.RangeVariable) AndAlso Not IsInside Then
                 If local.Kind = SymbolKind.Field Then
                     Dim sym As Symbol = GetNodeSymbol(boundFieldAccess)
 
@@ -187,11 +188,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Debug.Assert(Not TypeOf sym Is AmbiguousLocalsPseudoSymbol)
 
                     If sym IsNot Nothing Then
-                        _dataFlowsOut.Add(sym)
+                        _dataFlowsOut.Value.Add(sym)
                     End If
 
                 Else
-                    _dataFlowsOut.Add(local)
+                    _dataFlowsOut.Value.Add(local)
                 End If
             End If
 
@@ -199,7 +200,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Protected Overrides Sub ReportUnassignedByRefParameter(parameter As ParameterSymbol)
-            _dataFlowsOut.Add(parameter)
+            _dataFlowsOut.Value.Add(parameter)
 
             MyBase.ReportUnassignedByRefParameter(parameter)
         End Sub
@@ -213,9 +214,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim isStaticLocal = (variable.Kind = SymbolKind.Local) AndAlso DirectCast(variable, LocalSymbol).IsStatic
 
                 If IsInside AndAlso (isByRefParameter OrElse isStaticLocal AndAlso WasUsedBeforeAssignment(variable)) Then
-                    _dataFlowsOut.Add(variable)
+                    _dataFlowsOut.Value.Add(variable)
 #If DEBUG Then
-                    _assignedInside.Add(variable)
+                    _assignedInside.Value.Add(variable)
 #End If
                 End If
             End If

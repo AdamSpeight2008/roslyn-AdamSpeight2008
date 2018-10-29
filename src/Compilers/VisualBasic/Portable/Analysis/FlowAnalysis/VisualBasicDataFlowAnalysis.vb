@@ -60,7 +60,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private ReadOnly Property UnassignedVariables As PooledObject(Of HashSet(Of Symbol))
             Get
                 If _unassignedVariables Is Nothing Then
-                    Dim result As PooledObject(Of HashSet(Of Symbol)) = If(Me._context.Failed, PooledObjects.Pools.SymbolPool.GetInstance,
+                    Dim result = If(Me._context.Failed, PooledObjects.Pools.SymbolPool.GetInstance,
                                     UnassignedVariablesWalker.Analyze(_context.AnalysisInfo))
                     Interlocked.CompareExchange(_unassignedVariables, result, Nothing)
                 End If

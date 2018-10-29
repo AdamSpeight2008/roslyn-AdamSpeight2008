@@ -1,6 +1,7 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Collections.Generic
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -17,7 +18,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Class DataFlowsInWalker
         Inherits AbstractRegionDataFlowPass
 
-        Private ReadOnly _dataFlowsIn As PooledObjects.PooledHashSet(Of Symbol) = PooledObjects.PooledHashSet(Of Symbol).GetInstance
+        Private ReadOnly _dataFlowsIn As PooledObject(Of HashSet(Of Symbol)) = PooledObjects.Pools.SymbolPool.GetInstance
 
         ' TODO: normalize the result by removing variables that are unassigned in an unmodified flow analysis.
         Private Sub New(
@@ -53,7 +54,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Try
                 succeeded = walker.Analyze() AndAlso Not walker.InvalidRegionDetected
                 invalidRegionDetected = walker.InvalidRegionDetected
-                Return If(succeeded, walker._dataFlowsIn.ToImmutableArrayOrEmpty, Immutable.ImmutableArray(Of Symbol).Empty)
+                Return If(succeeded, walker._dataFlowsIn.Value.ToImmutableArrayOrEmpty, Immutable.ImmutableArray(Of Symbol).Empty)
             Finally
                 unassignedWithoutStatic?.Free()
                 walker.Free()
@@ -71,7 +72,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Overrides Sub EnterRegion()
             SetState(ResetState(State))
-            _dataFlowsIn.Clear()
+            _dataFlowsIn.Value.Clear()
             MyBase.EnterRegion()
         End Sub
 
@@ -96,7 +97,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If Not node.WasCompilerGenerated AndAlso IsInside AndAlso
                Not IsInsideRegion(node.RangeVariable.Syntax.Span) Then
 
-                _dataFlowsIn.Add(node.RangeVariable)
+                _dataFlowsIn.Value.Add(node.RangeVariable)
             End If
 
             Return Nothing
@@ -140,11 +141,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Debug.Assert(TypeOf sym IsNot AmbiguousLocalsPseudoSymbol)
 
                     If sym IsNot Nothing Then
-                        _dataFlowsIn.Add(sym)
+                        _dataFlowsIn.Value.Add(sym)
                     End If
 
                 Else
-                    _dataFlowsIn.Add(local)
+                    _dataFlowsIn.Value.Add(local)
                 End If
             End If
 

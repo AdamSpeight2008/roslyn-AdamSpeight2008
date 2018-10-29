@@ -52,7 +52,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private ReadOnly _labels As PooledDictionary(Of LabelSymbol, LabelStateAndNesting) = PooledDictionary(Of LabelSymbol, LabelStateAndNesting).GetInstance
 
         ''' <summary> All of the labels seen so far in this forward scan of the body </summary>
-        Private _labelsSeen As PooledHashSet(Of LabelSymbol) = PooledHashSet(Of LabelSymbol).GetInstance
+        Private _labelsSeen As PooledObject(Of HashSet(Of LabelSymbol)) = Pools.LabelSymbolPool.GetInstance
 
         Private _placeholderReplacementMap As PooledDictionary(Of BoundValuePlaceholderBase, BoundExpression)
 
@@ -209,7 +209,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim oldPending As SavedPending = SavePending()
             Visit(_methodOrInitializerMainNode)
             RestorePending(oldPending)
-            _labelsSeen.Clear()
+            _labelsSeen.Value.Clear()
 
             ' if we are tracking regions, we must have left the region by now;
             ' otherwise the region was erroneous which must have been detected earlier
@@ -516,14 +516,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Class SavedPending
             Public ReadOnly PendingBranches As ArrayBuilder(Of PendingBranch)
-            Public ReadOnly LabelsSeen As PooledHashSet(Of LabelSymbol)
+            Public ReadOnly LabelsSeen As PooledObject(Of HashSet(Of LabelSymbol))
 
-            Public Sub New(ByRef _pendingBranches As ArrayBuilder(Of PendingBranch), ByRef _labelsSeen As PooledHashSet(Of LabelSymbol))
+            Public Sub New(ByRef _pendingBranches As ArrayBuilder(Of PendingBranch), ByRef _labelsSeen As PooledObject(Of HashSet(Of LabelSymbol)))
                 PendingBranches = _pendingBranches
                 LabelsSeen = _labelsSeen
 
                 _pendingBranches = ArrayBuilder(Of PendingBranch).GetInstance()
-                _labelsSeen = PooledHashSet(Of LabelSymbol).GetInstance
+                _labelsSeen = Pools.LabelSymbolPool.GetInstance
             End Sub
         End Class
 
@@ -548,7 +548,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <param name="oldPending">The old pending branches/labels, which are to be merged with the current ones</param>
         Protected Sub RestorePending(oldPending As SavedPending, Optional mergeLabelsSeen As Boolean = False)
-            If ResolveBranches(_labelsSeen) Then
+            If ResolveBranches(_labelsSeen.Value) Then
                 backwardBranchChanged = True
             End If
 
@@ -559,7 +559,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ' So there is no need to save the labels seen between the calls.  If there were such a need, we would
             ' do "this.labelsSeen.UnionWith(oldPending.LabelsSeen);" instead of the following assignment
             If mergeLabelsSeen Then
-                _labelsSeen.AddAll(oldPending.LabelsSeen)
+                _labelsSeen.Value.AddAll(oldPending.LabelsSeen.Value)
             Else
                 _labelsSeen = oldPending.LabelsSeen
             End If
@@ -2506,7 +2506,7 @@ EnteredRegion:
             Dim _state As LocalState = LabelState(label)
             IntersectWith(State, _state)
             _labels(label) = New LabelStateAndNesting(node, State.Clone(), _nesting)
-            _labelsSeen.Add(label)
+            _labelsSeen.Value.Add(label)
             Return Nothing
         End Function
 
