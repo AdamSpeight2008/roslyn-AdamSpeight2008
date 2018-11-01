@@ -50,10 +50,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Function IsInsideRegion(span As TextSpan) As Boolean
             ' Ensuring this method only being used in region analysis
             Debug.Assert(_firstInRegion IsNot Nothing)
-            If span.Length = 0 Then
-                Return _region.Contains(span.Start)
-            End If
-            Return _region.Contains(span)
+            Return If(span.Length = 0, _region.Contains(span.Start), _region.Contains(span)
         End Function
 
         ''' <summary>

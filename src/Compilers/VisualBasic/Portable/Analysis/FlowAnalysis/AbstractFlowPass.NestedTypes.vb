@@ -29,21 +29,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Public Function IsPrefixedBy(other As ArrayBuilder(Of Integer), ignoreLast As Boolean) As Boolean
                 Dim count As Integer = other.Count
-                If ignoreLast Then
-                    count -= 1
-                End If
+                If ignoreLast Then count -= 1
 
-                If count <= _path.Length Then
-                    For i = 0 To count - 1
-                        If _path(i) <> other(i) Then
-                            Return False
-                        End If
-                    Next
+                If count > _path.Length Then Return False
+                For i = 0 To count - 1
+                    If _path(i) <> other(i) Then Return False
+                Next
 
-                    Return True
-                End If
-
-                Return False
+                Return True
             End Function
 
             Private Sub New(builder As ArrayBuilder(Of Integer))
