@@ -6,9 +6,9 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend MustInherit Class BoundNode
-        Protected Friend  ReadOnly _kind As BoundKind
+        Private ReadOnly _kind As BoundKind
         Private _attributes As BoundNodeAttributes
-         Protected Friend  ReadOnly _syntax As SyntaxNode
+        Private ReadOnly _syntax As SyntaxNode
 
         <Flags()>
         Private Enum BoundNodeAttributes As Byte
