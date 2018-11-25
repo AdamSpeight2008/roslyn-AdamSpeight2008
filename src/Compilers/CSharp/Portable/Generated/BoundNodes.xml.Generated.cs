@@ -176,15 +176,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ConstructorMethodBody,
     }
 
-
-
-
-
-
-
-
-
-
     internal abstract partial class BoundInitializer : BoundNode
     {
         protected BoundInitializer(BoundKind kind, SyntaxNode syntax, bool hasErrors)
@@ -204,10 +195,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundEqualsValue(BoundKind kind, SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(kind, syntax, hasErrors)
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.Value = value;
         }
@@ -216,6 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<LocalSymbol> Locals { get; }
 
         public BoundExpression Value { get; }
+
     }
 
     internal sealed partial class BoundFieldEqualsValue : BoundEqualsValue
@@ -223,16 +213,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundFieldEqualsValue(SyntaxNode syntax, FieldSymbol field, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(BoundKind.FieldEqualsValue, syntax, locals, value, hasErrors || value.HasErrors())
         {
-
             Debug.Assert(field != null, "Field 'field' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Field = field;
         }
 
 
         public FieldSymbol Field { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -256,16 +245,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPropertyEqualsValue(SyntaxNode syntax, PropertySymbol property, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(BoundKind.PropertyEqualsValue, syntax, locals, value, hasErrors || value.HasErrors())
         {
-
             Debug.Assert(property != null, "Field 'property' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Property = property;
         }
 
 
         public PropertySymbol Property { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -289,16 +277,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundParameterEqualsValue(SyntaxNode syntax, ParameterSymbol parameter, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(BoundKind.ParameterEqualsValue, syntax, locals, value, hasErrors || value.HasErrors())
         {
-
             Debug.Assert(parameter != null, "Field 'parameter' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Parameter = parameter;
         }
 
 
         public ParameterSymbol Parameter { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -322,14 +309,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundGlobalStatementInitializer(SyntaxNode syntax, BoundStatement statement, bool hasErrors = false)
             : base(BoundKind.GlobalStatementInitializer, syntax, hasErrors || statement.HasErrors())
         {
-
             Debug.Assert(statement != null, "Field 'statement' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Statement = statement;
         }
 
 
         public BoundStatement Statement { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -364,6 +350,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
         public TypeSymbol Type { get; }
+
     }
 
     internal abstract partial class BoundValuePlaceholderBase : BoundExpression
@@ -371,17 +358,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundValuePlaceholderBase(BoundKind kind, SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(kind, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         protected BoundValuePlaceholderBase(BoundKind kind, SyntaxNode syntax, TypeSymbol type)
             : base(kind, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
     }
@@ -391,23 +374,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDeconstructValuePlaceholder(SyntaxNode syntax, uint valEscape, TypeSymbol type, bool hasErrors)
             : base(BoundKind.DeconstructValuePlaceholder, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ValEscape = valEscape;
         }
 
         public BoundDeconstructValuePlaceholder(SyntaxNode syntax, uint valEscape, TypeSymbol type)
             : base(BoundKind.DeconstructValuePlaceholder, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ValEscape = valEscape;
         }
 
 
         public uint ValEscape { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -431,17 +411,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTupleOperandPlaceholder(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.TupleOperandPlaceholder, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundTupleOperandPlaceholder(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.TupleOperandPlaceholder, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -479,6 +455,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public RefKind RefKind { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitDup(this);
@@ -501,14 +478,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPassByCopy(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PassByCopy, syntax, type, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
         }
 
 
         public BoundExpression Expression { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -532,10 +508,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBadExpression(SyntaxNode syntax, LookupResultKind resultKind, ImmutableArray<Symbol> symbols, ImmutableArray<BoundExpression> childBoundNodes, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.BadExpression, syntax, type, hasErrors || childBoundNodes.HasErrors())
         {
-
             Debug.Assert(!symbols.IsDefault, "Field 'symbols' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!childBoundNodes.IsDefault, "Field 'childBoundNodes' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this._ResultKind = resultKind;
             this.Symbols = symbols;
             this.ChildBoundNodes = childBoundNodes;
@@ -548,6 +522,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<Symbol> Symbols { get; }
 
         public ImmutableArray<BoundExpression> ChildBoundNodes { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -571,14 +546,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBadStatement(SyntaxNode syntax, ImmutableArray<BoundNode> childBoundNodes, bool hasErrors = false)
             : base(BoundKind.BadStatement, syntax, hasErrors || childBoundNodes.HasErrors())
         {
-
             Debug.Assert(!childBoundNodes.IsDefault, "Field 'childBoundNodes' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ChildBoundNodes = childBoundNodes;
         }
 
 
         public ImmutableArray<BoundNode> ChildBoundNodes { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -602,9 +576,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeExpression(SyntaxNode syntax, AliasSymbol aliasOpt, bool inferredType, BoundTypeExpression boundContainingTypeOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TypeExpression, syntax, type, hasErrors || boundContainingTypeOpt.HasErrors())
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.AliasOpt = aliasOpt;
             this.InferredType = inferredType;
             this.BoundContainingTypeOpt = boundContainingTypeOpt;
@@ -616,6 +588,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool InferredType { get; }
 
         public BoundTypeExpression BoundContainingTypeOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -639,23 +612,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeOrValueExpression(SyntaxNode syntax, BoundTypeOrValueData data, TypeSymbol type, bool hasErrors)
             : base(BoundKind.TypeOrValueExpression, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Data = data;
         }
 
         public BoundTypeOrValueExpression(SyntaxNode syntax, BoundTypeOrValueData data, TypeSymbol type)
             : base(BoundKind.TypeOrValueExpression, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Data = data;
         }
 
 
         public BoundTypeOrValueData Data { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -679,9 +649,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundNamespaceExpression(SyntaxNode syntax, NamespaceSymbol namespaceSymbol, AliasSymbol aliasOpt, bool hasErrors)
             : base(BoundKind.NamespaceExpression, syntax, null, hasErrors)
         {
-
             Debug.Assert(namespaceSymbol != null, "Field 'namespaceSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.NamespaceSymbol = namespaceSymbol;
             this.AliasOpt = aliasOpt;
         }
@@ -689,9 +657,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundNamespaceExpression(SyntaxNode syntax, NamespaceSymbol namespaceSymbol, AliasSymbol aliasOpt)
             : base(BoundKind.NamespaceExpression, syntax, null)
         {
-
             Debug.Assert(namespaceSymbol != null, "Field 'namespaceSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.NamespaceSymbol = namespaceSymbol;
             this.AliasOpt = aliasOpt;
         }
@@ -700,6 +666,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public NamespaceSymbol NamespaceSymbol { get; }
 
         public AliasSymbol AliasOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -723,10 +690,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundUnaryOperator(SyntaxNode syntax, UnaryOperatorKind operatorKind, BoundExpression operand, ConstantValue constantValueOpt, MethodSymbol methodOpt, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.UnaryOperator, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.OperatorKind = operatorKind;
             this.Operand = operand;
             this.ConstantValueOpt = constantValueOpt;
@@ -745,6 +710,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -768,10 +734,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundIncrementOperator(SyntaxNode syntax, UnaryOperatorKind operatorKind, BoundExpression operand, MethodSymbol methodOpt, Conversion operandConversion, Conversion resultConversion, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IncrementOperator, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.OperatorKind = operatorKind;
             this.Operand = operand;
             this.MethodOpt = methodOpt;
@@ -793,6 +757,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -816,10 +781,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundAddressOfOperator(SyntaxNode syntax, BoundExpression operand, bool isManaged, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AddressOfOperator, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
             this.IsManaged = isManaged;
         }
@@ -828,6 +791,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Operand { get; }
 
         public bool IsManaged { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -851,15 +815,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPointerIndirectionOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PointerIndirectionOperator, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
         }
 
 
         public BoundExpression Operand { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -883,11 +846,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPointerElementAccess(SyntaxNode syntax, BoundExpression expression, BoundExpression index, bool @checked, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PointerElementAccess, syntax, type, hasErrors || expression.HasErrors() || index.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(index != null, "Field 'index' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
             this.Index = index;
             this.Checked = @checked;
@@ -899,6 +860,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Index { get; }
 
         public bool Checked { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -922,10 +884,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundRefTypeOperator(SyntaxNode syntax, BoundExpression operand, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.RefTypeOperator, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
             this.GetTypeFromHandle = getTypeFromHandle;
         }
@@ -934,6 +894,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Operand { get; }
 
         public MethodSymbol GetTypeFromHandle { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -957,15 +918,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMakeRefOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.MakeRefOperator, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
         }
 
 
         public BoundExpression Operand { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -989,15 +949,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundRefValueOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.RefValueOperator, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
         }
 
 
         public BoundExpression Operand { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1021,11 +980,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBinaryOperator(SyntaxNode syntax, BinaryOperatorKind operatorKind, BoundExpression left, BoundExpression right, ConstantValue constantValueOpt, MethodSymbol methodOpt, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.BinaryOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
-
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(right != null, "Field 'right' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.OperatorKind = operatorKind;
             this.Left = left;
             this.Right = right;
@@ -1047,6 +1004,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1070,14 +1028,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTupleBinaryOperator(SyntaxNode syntax, BoundExpression left, BoundExpression right, BoundExpression convertedLeft, BoundExpression convertedRight, BinaryOperatorKind operatorKind, TupleBinaryOperatorInfo.Multiple operators, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TupleBinaryOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors() || convertedLeft.HasErrors() || convertedRight.HasErrors())
         {
-
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(right != null, "Field 'right' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(convertedLeft != null, "Field 'convertedLeft' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(convertedRight != null, "Field 'convertedRight' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(operators != null, "Field 'operators' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Left = left;
             this.Right = right;
             this.ConvertedLeft = convertedLeft;
@@ -1098,6 +1054,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BinaryOperatorKind OperatorKind { get; }
 
         public TupleBinaryOperatorInfo.Multiple Operators { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1121,14 +1078,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundUserDefinedConditionalLogicalOperator(SyntaxNode syntax, BinaryOperatorKind operatorKind, BoundExpression left, BoundExpression right, MethodSymbol logicalOperator, MethodSymbol trueOperator, MethodSymbol falseOperator, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.UserDefinedConditionalLogicalOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
-
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(right != null, "Field 'right' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(logicalOperator != null, "Field 'logicalOperator' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(trueOperator != null, "Field 'trueOperator' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(falseOperator != null, "Field 'falseOperator' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.OperatorKind = operatorKind;
             this.Left = left;
             this.Right = right;
@@ -1154,6 +1109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitUserDefinedConditionalLogicalOperator(this);
@@ -1176,11 +1132,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundCompoundAssignmentOperator(SyntaxNode syntax, BinaryOperatorSignature @operator, BoundExpression left, BoundExpression right, Conversion leftConversion, Conversion finalConversion, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.CompoundAssignmentOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
-
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(right != null, "Field 'right' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operator = @operator;
             this.Left = left;
             this.Right = right;
@@ -1202,6 +1156,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1225,9 +1180,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundAssignmentOperator(SyntaxNode syntax, BoundExpression left, BoundExpression right, bool isRef, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AssignmentOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
-
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Left = left;
             this.Right = right;
             this.IsRef = isRef;
@@ -1239,6 +1192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Right { get; }
 
         public bool IsRef { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1262,11 +1216,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDeconstructionAssignmentOperator(SyntaxNode syntax, BoundTupleExpression left, BoundConversion right, bool isUsed, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DeconstructionAssignmentOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
-
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(right != null, "Field 'right' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Left = left;
             this.Right = right;
             this.IsUsed = isUsed;
@@ -1278,6 +1230,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConversion Right { get; }
 
         public bool IsUsed { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1301,10 +1254,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundNullCoalescingOperator(SyntaxNode syntax, BoundExpression leftOperand, BoundExpression rightOperand, Conversion leftConversion, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NullCoalescingOperator, syntax, type, hasErrors || leftOperand.HasErrors() || rightOperand.HasErrors())
         {
-
             Debug.Assert(leftOperand != null, "Field 'leftOperand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(rightOperand != null, "Field 'rightOperand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LeftOperand = leftOperand;
             this.RightOperand = rightOperand;
             this.LeftConversion = leftConversion;
@@ -1316,6 +1267,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression RightOperand { get; }
 
         public Conversion LeftConversion { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1339,12 +1291,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConditionalOperator(SyntaxNode syntax, bool isRef, BoundExpression condition, BoundExpression consequence, BoundExpression alternative, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConditionalOperator, syntax, type, hasErrors || condition.HasErrors() || consequence.HasErrors() || alternative.HasErrors())
         {
-
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(consequence != null, "Field 'consequence' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(alternative != null, "Field 'alternative' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.IsRef = isRef;
             this.Condition = condition;
             this.Consequence = consequence;
@@ -1362,6 +1312,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Alternative { get; }
 
         public ConstantValue ConstantValueOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1385,11 +1336,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundArrayAccess(SyntaxNode syntax, BoundExpression expression, ImmutableArray<BoundExpression> indices, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArrayAccess, syntax, type, hasErrors || expression.HasErrors() || indices.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!indices.IsDefault, "Field 'indices' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
             this.Indices = indices;
         }
@@ -1398,6 +1347,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Expression { get; }
 
         public ImmutableArray<BoundExpression> Indices { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1421,15 +1371,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundArrayLength(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArrayLength, syntax, type, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
         }
 
 
         public BoundExpression Expression { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1453,10 +1402,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundAwaitExpression(SyntaxNode syntax, BoundExpression expression, MethodSymbol getAwaiter, PropertySymbol isCompleted, MethodSymbol getResult, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AwaitExpression, syntax, type, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
             this.GetAwaiter = getAwaiter;
             this.IsCompleted = isCompleted;
@@ -1471,6 +1418,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public PropertySymbol IsCompleted { get; }
 
         public MethodSymbol GetResult { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1494,23 +1442,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundTypeOf(BoundKind kind, SyntaxNode syntax, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors)
             : base(kind, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.GetTypeFromHandle = getTypeFromHandle;
         }
 
         protected BoundTypeOf(BoundKind kind, SyntaxNode syntax, MethodSymbol getTypeFromHandle, TypeSymbol type)
             : base(kind, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.GetTypeFromHandle = getTypeFromHandle;
         }
 
 
         public MethodSymbol GetTypeFromHandle { get; }
+
     }
 
     internal sealed partial class BoundTypeOfOperator : BoundTypeOf
@@ -1518,15 +1463,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeOfOperator(SyntaxNode syntax, BoundTypeExpression sourceType, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TypeOfOperator, syntax, getTypeFromHandle, type, hasErrors || sourceType.HasErrors())
         {
-
             Debug.Assert(sourceType != null, "Field 'sourceType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.SourceType = sourceType;
         }
 
 
         public BoundTypeExpression SourceType { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1550,25 +1494,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMethodDefIndex(SyntaxNode syntax, MethodSymbol method, TypeSymbol type, bool hasErrors)
             : base(BoundKind.MethodDefIndex, syntax, type, hasErrors)
         {
-
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Method = method;
         }
 
         public BoundMethodDefIndex(SyntaxNode syntax, MethodSymbol method, TypeSymbol type)
             : base(BoundKind.MethodDefIndex, syntax, type)
         {
-
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Method = method;
         }
 
 
         public MethodSymbol Method { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1592,17 +1533,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMaximumMethodDefIndex(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.MaximumMethodDefIndex, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundMaximumMethodDefIndex(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.MaximumMethodDefIndex, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -1628,23 +1565,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundInstrumentationPayloadRoot(SyntaxNode syntax, int analysisKind, TypeSymbol type, bool hasErrors)
             : base(BoundKind.InstrumentationPayloadRoot, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.AnalysisKind = analysisKind;
         }
 
         public BoundInstrumentationPayloadRoot(SyntaxNode syntax, int analysisKind, TypeSymbol type)
             : base(BoundKind.InstrumentationPayloadRoot, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.AnalysisKind = analysisKind;
         }
 
 
         public int AnalysisKind { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1668,17 +1602,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundModuleVersionId(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ModuleVersionId, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundModuleVersionId(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.ModuleVersionId, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -1704,17 +1634,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundModuleVersionIdString(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ModuleVersionIdString, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundModuleVersionIdString(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.ModuleVersionIdString, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -1740,25 +1666,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundSourceDocumentIndex(SyntaxNode syntax, Cci.DebugSourceDocument document, TypeSymbol type, bool hasErrors)
             : base(BoundKind.SourceDocumentIndex, syntax, type, hasErrors)
         {
-
             Debug.Assert(document != null, "Field 'document' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Document = document;
         }
 
         public BoundSourceDocumentIndex(SyntaxNode syntax, Cci.DebugSourceDocument document, TypeSymbol type)
             : base(BoundKind.SourceDocumentIndex, syntax, type)
         {
-
             Debug.Assert(document != null, "Field 'document' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Document = document;
         }
 
 
         public Cci.DebugSourceDocument Document { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1782,10 +1705,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMethodInfo(SyntaxNode syntax, MethodSymbol method, MethodSymbol getMethodFromHandle, TypeSymbol type, bool hasErrors)
             : base(BoundKind.MethodInfo, syntax, type, hasErrors)
         {
-
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Method = method;
             this.GetMethodFromHandle = getMethodFromHandle;
         }
@@ -1793,10 +1714,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMethodInfo(SyntaxNode syntax, MethodSymbol method, MethodSymbol getMethodFromHandle, TypeSymbol type)
             : base(BoundKind.MethodInfo, syntax, type)
         {
-
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Method = method;
             this.GetMethodFromHandle = getMethodFromHandle;
         }
@@ -1805,6 +1724,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public MethodSymbol Method { get; }
 
         public MethodSymbol GetMethodFromHandle { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1828,10 +1748,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundFieldInfo(SyntaxNode syntax, FieldSymbol field, MethodSymbol getFieldFromHandle, TypeSymbol type, bool hasErrors)
             : base(BoundKind.FieldInfo, syntax, type, hasErrors)
         {
-
             Debug.Assert(field != null, "Field 'field' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Field = field;
             this.GetFieldFromHandle = getFieldFromHandle;
         }
@@ -1839,10 +1757,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundFieldInfo(SyntaxNode syntax, FieldSymbol field, MethodSymbol getFieldFromHandle, TypeSymbol type)
             : base(BoundKind.FieldInfo, syntax, type)
         {
-
             Debug.Assert(field != null, "Field 'field' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Field = field;
             this.GetFieldFromHandle = getFieldFromHandle;
         }
@@ -1851,6 +1767,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public FieldSymbol Field { get; }
 
         public MethodSymbol GetFieldFromHandle { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1886,6 +1803,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public ConstantValue ConstantValueOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitDefaultExpression(this);
@@ -1908,11 +1826,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundIsOperator(SyntaxNode syntax, BoundExpression operand, BoundTypeExpression targetType, Conversion conversion, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IsOperator, syntax, type, hasErrors || operand.HasErrors() || targetType.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(targetType != null, "Field 'targetType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
             this.TargetType = targetType;
             this.Conversion = conversion;
@@ -1924,6 +1840,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeExpression TargetType { get; }
 
         public Conversion Conversion { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1947,11 +1864,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundAsOperator(SyntaxNode syntax, BoundExpression operand, BoundTypeExpression targetType, Conversion conversion, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AsOperator, syntax, type, hasErrors || operand.HasErrors() || targetType.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(targetType != null, "Field 'targetType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
             this.TargetType = targetType;
             this.Conversion = conversion;
@@ -1963,6 +1878,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeExpression TargetType { get; }
 
         public Conversion Conversion { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -1986,10 +1902,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundSizeOfOperator(SyntaxNode syntax, BoundTypeExpression sourceType, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.SizeOfOperator, syntax, type, hasErrors || sourceType.HasErrors())
         {
-
             Debug.Assert(sourceType != null, "Field 'sourceType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.SourceType = sourceType;
             this.ConstantValueOpt = constantValueOpt;
         }
@@ -1998,6 +1912,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeExpression SourceType { get; }
 
         public ConstantValue ConstantValueOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2021,10 +1936,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConversion(SyntaxNode syntax, BoundExpression operand, Conversion conversion, bool isBaseConversion, bool @checked, bool explicitCastInCode, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Conversion, syntax, type, hasErrors || operand.HasErrors())
         {
-
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Operand = operand;
             this.Conversion = conversion;
             this.IsBaseConversion = isBaseConversion;
@@ -2045,6 +1958,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ExplicitCastInCode { get; }
 
         public ConstantValue ConstantValueOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2068,17 +1982,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundArgList(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ArgList, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundArgList(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.ArgList, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -2104,9 +2014,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundArgListOperator(SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, ImmutableArray<RefKind> argumentRefKindsOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArgListOperator, syntax, type, hasErrors || arguments.HasErrors())
         {
-
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Arguments = arguments;
             this.ArgumentRefKindsOpt = argumentRefKindsOpt;
         }
@@ -2115,6 +2023,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<BoundExpression> Arguments { get; }
 
         public ImmutableArray<RefKind> ArgumentRefKindsOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2138,11 +2047,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundFixedLocalCollectionInitializer(SyntaxNode syntax, TypeSymbol elementPointerType, Conversion elementPointerTypeConversion, BoundExpression expression, MethodSymbol getPinnableOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.FixedLocalCollectionInitializer, syntax, type, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(elementPointerType != null, "Field 'elementPointerType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ElementPointerType = elementPointerType;
             this.ElementPointerTypeConversion = elementPointerTypeConversion;
             this.Expression = expression;
@@ -2157,6 +2064,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Expression { get; }
 
         public MethodSymbol GetPinnableOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2200,6 +2108,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundStatement StatementOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitSequencePoint(this);
@@ -2222,14 +2131,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundSequencePointExpression(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.SequencePointExpression, syntax, type, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
         }
 
 
         public BoundExpression Expression { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2262,6 +2170,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public TextSpan Span { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitSequencePointWithSpan(this);
@@ -2284,11 +2193,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBlock(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<LocalFunctionSymbol> localFunctions, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.Block, syntax, statements, hasErrors || statements.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!localFunctions.IsDefault, "Field 'localFunctions' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.LocalFunctions = localFunctions;
         }
@@ -2297,6 +2204,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<LocalSymbol> Locals { get; }
 
         public ImmutableArray<LocalFunctionSymbol> LocalFunctions { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2320,15 +2228,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundScope(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.Scope, syntax, statements, hasErrors || statements.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
         }
 
 
         public ImmutableArray<LocalSymbol> Locals { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2352,10 +2259,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundStateMachineScope(SyntaxNode syntax, ImmutableArray<StateMachineFieldSymbol> fields, BoundStatement statement, bool hasErrors = false)
             : base(BoundKind.StateMachineScope, syntax, hasErrors || statement.HasErrors())
         {
-
             Debug.Assert(!fields.IsDefault, "Field 'fields' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(statement != null, "Field 'statement' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Fields = fields;
             this.Statement = statement;
         }
@@ -2364,6 +2269,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<StateMachineFieldSymbol> Fields { get; }
 
         public BoundStatement Statement { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2387,10 +2293,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLocalDeclaration(SyntaxNode syntax, LocalSymbol localSymbol, BoundTypeExpression declaredType, BoundExpression initializerOpt, ImmutableArray<BoundExpression> argumentsOpt, bool hasErrors = false)
             : base(BoundKind.LocalDeclaration, syntax, hasErrors || declaredType.HasErrors() || initializerOpt.HasErrors() || argumentsOpt.HasErrors())
         {
-
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(declaredType != null, "Field 'declaredType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LocalSymbol = localSymbol;
             this.DeclaredType = declaredType;
             this.InitializerOpt = initializerOpt;
@@ -2405,6 +2309,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression InitializerOpt { get; }
 
         public ImmutableArray<BoundExpression> ArgumentsOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2428,14 +2333,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMultipleLocalDeclarations(SyntaxNode syntax, ImmutableArray<BoundLocalDeclaration> localDeclarations, bool hasErrors = false)
             : base(BoundKind.MultipleLocalDeclarations, syntax, hasErrors || localDeclarations.HasErrors())
         {
-
             Debug.Assert(!localDeclarations.IsDefault, "Field 'localDeclarations' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LocalDeclarations = localDeclarations;
         }
 
 
         public ImmutableArray<BoundLocalDeclaration> LocalDeclarations { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2459,9 +2363,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLocalFunctionStatement(SyntaxNode syntax, LocalFunctionSymbol symbol, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
             : base(BoundKind.LocalFunctionStatement, syntax, hasErrors || blockBody.HasErrors() || expressionBody.HasErrors())
         {
-
             Debug.Assert(symbol != null, "Field 'symbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Symbol = symbol;
             this.BlockBody = blockBody;
             this.ExpressionBody = expressionBody;
@@ -2473,6 +2375,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBlock BlockBody { get; }
 
         public BoundBlock ExpressionBody { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2496,12 +2399,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundSequence(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundExpression> sideEffects, BoundExpression value, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Sequence, syntax, type, hasErrors || sideEffects.HasErrors() || value.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!sideEffects.IsDefault, "Field 'sideEffects' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.SideEffects = sideEffects;
             this.Value = value;
@@ -2513,6 +2414,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<BoundExpression> SideEffects { get; }
 
         public BoundExpression Value { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2548,6 +2450,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public NoOpStatementFlavor Flavor { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitNoOpStatement(this);
@@ -2579,6 +2482,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundExpression ExpressionOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitReturnStatement(this);
@@ -2601,14 +2505,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundYieldReturnStatement(SyntaxNode syntax, BoundExpression expression, bool hasErrors = false)
             : base(BoundKind.YieldReturnStatement, syntax, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
         }
 
 
         public BoundExpression Expression { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2657,6 +2560,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundExpression ExpressionOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitThrowStatement(this);
@@ -2679,14 +2583,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpressionStatement(SyntaxNode syntax, BoundExpression expression, bool hasErrors = false)
             : base(BoundKind.ExpressionStatement, syntax, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
         }
 
 
         public BoundExpression Expression { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2710,13 +2613,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundSwitchStatement(SyntaxNode syntax, BoundStatement loweredPreambleOpt, BoundExpression expression, LabelSymbol constantTargetOpt, ImmutableArray<LocalSymbol> innerLocals, ImmutableArray<LocalFunctionSymbol> innerLocalFunctions, ImmutableArray<BoundSwitchSection> switchSections, GeneratedLabelSymbol breakLabel, MethodSymbol stringEquality, bool hasErrors = false)
             : base(BoundKind.SwitchStatement, syntax, hasErrors || loweredPreambleOpt.HasErrors() || expression.HasErrors() || switchSections.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!innerLocals.IsDefault, "Field 'innerLocals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!innerLocalFunctions.IsDefault, "Field 'innerLocalFunctions' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!switchSections.IsDefault, "Field 'switchSections' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LoweredPreambleOpt = loweredPreambleOpt;
             this.Expression = expression;
             this.ConstantTargetOpt = constantTargetOpt;
@@ -2744,6 +2645,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public MethodSymbol StringEquality { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitSwitchStatement(this);
@@ -2766,11 +2668,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundSwitchSection(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundSwitchLabel> switchLabels, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.SwitchSection, syntax, statements, hasErrors || switchLabels.HasErrors() || statements.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!switchLabels.IsDefault, "Field 'switchLabels' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.SwitchLabels = switchLabels;
         }
@@ -2779,6 +2679,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<LocalSymbol> Locals { get; }
 
         public ImmutableArray<BoundSwitchLabel> SwitchLabels { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2802,9 +2703,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundSwitchLabel(SyntaxNode syntax, LabelSymbol label, BoundExpression expressionOpt, ConstantValue constantValueOpt, bool hasErrors = false)
             : base(BoundKind.SwitchLabel, syntax, hasErrors || expressionOpt.HasErrors())
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
             this.ExpressionOpt = expressionOpt;
             this.ConstantValueOpt = constantValueOpt;
@@ -2816,6 +2715,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression ExpressionOpt { get; }
 
         public ConstantValue ConstantValueOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2839,23 +2739,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBreakStatement(SyntaxNode syntax, GeneratedLabelSymbol label, bool hasErrors)
             : base(BoundKind.BreakStatement, syntax, hasErrors)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
         public BoundBreakStatement(SyntaxNode syntax, GeneratedLabelSymbol label)
             : base(BoundKind.BreakStatement, syntax)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
 
         public GeneratedLabelSymbol Label { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2879,23 +2776,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundContinueStatement(SyntaxNode syntax, GeneratedLabelSymbol label, bool hasErrors)
             : base(BoundKind.ContinueStatement, syntax, hasErrors)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
         public BoundContinueStatement(SyntaxNode syntax, GeneratedLabelSymbol label)
             : base(BoundKind.ContinueStatement, syntax)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
 
         public GeneratedLabelSymbol Label { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -2919,14 +2813,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPatternSwitchStatement(SyntaxNode syntax, BoundExpression expression, bool someLabelAlwaysMatches, ImmutableArray<LocalSymbol> innerLocals, ImmutableArray<LocalFunctionSymbol> innerLocalFunctions, ImmutableArray<BoundPatternSwitchSection> switchSections, BoundPatternSwitchLabel defaultLabel, GeneratedLabelSymbol breakLabel, PatternSwitchBinder binder, bool isComplete, bool hasErrors = false)
             : base(BoundKind.PatternSwitchStatement, syntax, hasErrors || expression.HasErrors() || switchSections.HasErrors() || defaultLabel.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!innerLocals.IsDefault, "Field 'innerLocals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!innerLocalFunctions.IsDefault, "Field 'innerLocalFunctions' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!switchSections.IsDefault, "Field 'switchSections' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(binder != null, "Field 'binder' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
             this.SomeLabelAlwaysMatches = someLabelAlwaysMatches;
             this.InnerLocals = innerLocals;
@@ -2957,6 +2849,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public bool IsComplete { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitPatternSwitchStatement(this);
@@ -2979,11 +2872,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPatternSwitchSection(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundPatternSwitchLabel> switchLabels, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.PatternSwitchSection, syntax, statements, hasErrors || switchLabels.HasErrors() || statements.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!switchLabels.IsDefault, "Field 'switchLabels' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.SwitchLabels = switchLabels;
         }
@@ -2992,6 +2883,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<LocalSymbol> Locals { get; }
 
         public ImmutableArray<BoundPatternSwitchLabel> SwitchLabels { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3015,10 +2907,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPatternSwitchLabel(SyntaxNode syntax, LabelSymbol label, BoundPattern pattern, BoundExpression guard, bool isReachable, bool hasErrors = false)
             : base(BoundKind.PatternSwitchLabel, syntax, hasErrors || pattern.HasErrors() || guard.HasErrors())
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(pattern != null, "Field 'pattern' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
             this.Pattern = pattern;
             this.Guard = guard;
@@ -3033,6 +2923,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Guard { get; }
 
         public bool IsReachable { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3056,10 +2947,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundIfStatement(SyntaxNode syntax, BoundExpression condition, BoundStatement consequence, BoundStatement alternativeOpt, bool hasErrors = false)
             : base(BoundKind.IfStatement, syntax, hasErrors || condition.HasErrors() || consequence.HasErrors() || alternativeOpt.HasErrors())
         {
-
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(consequence != null, "Field 'consequence' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Condition = condition;
             this.Consequence = consequence;
             this.AlternativeOpt = alternativeOpt;
@@ -3071,6 +2960,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundStatement Consequence { get; }
 
         public BoundStatement AlternativeOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3094,10 +2984,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundLoopStatement(BoundKind kind, SyntaxNode syntax, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors)
             : base(kind, syntax, hasErrors)
         {
-
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(continueLabel != null, "Field 'continueLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.BreakLabel = breakLabel;
             this.ContinueLabel = continueLabel;
         }
@@ -3105,10 +2993,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundLoopStatement(BoundKind kind, SyntaxNode syntax, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel)
             : base(kind, syntax)
         {
-
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(continueLabel != null, "Field 'continueLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.BreakLabel = breakLabel;
             this.ContinueLabel = continueLabel;
         }
@@ -3117,6 +3003,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public GeneratedLabelSymbol BreakLabel { get; }
 
         public GeneratedLabelSymbol ContinueLabel { get; }
+
     }
 
     internal sealed partial class BoundDoStatement : BoundLoopStatement
@@ -3124,13 +3011,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDoStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression condition, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.DoStatement, syntax, breakLabel, continueLabel, hasErrors || condition.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(continueLabel != null, "Field 'continueLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.Condition = condition;
             this.Body = body;
@@ -3142,6 +3027,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Condition { get; }
 
         public BoundStatement Body { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3165,13 +3051,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundWhileStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression condition, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.WhileStatement, syntax, breakLabel, continueLabel, hasErrors || condition.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(continueLabel != null, "Field 'continueLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.Condition = condition;
             this.Body = body;
@@ -3183,6 +3067,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Condition { get; }
 
         public BoundStatement Body { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3206,13 +3091,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundForStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> outerLocals, BoundStatement initializer, ImmutableArray<LocalSymbol> innerLocals, BoundExpression condition, BoundStatement increment, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.ForStatement, syntax, breakLabel, continueLabel, hasErrors || initializer.HasErrors() || condition.HasErrors() || increment.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(!outerLocals.IsDefault, "Field 'outerLocals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!innerLocals.IsDefault, "Field 'innerLocals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(continueLabel != null, "Field 'continueLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.OuterLocals = outerLocals;
             this.Initializer = initializer;
             this.InnerLocals = innerLocals;
@@ -3233,6 +3116,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundStatement Increment { get; }
 
         public BoundStatement Body { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3256,14 +3140,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundForEachStatement(SyntaxNode syntax, ForEachEnumeratorInfo enumeratorInfoOpt, Conversion elementConversion, BoundTypeExpression iterationVariableType, ImmutableArray<LocalSymbol> iterationVariables, BoundExpression iterationErrorExpressionOpt, BoundExpression expression, BoundForEachDeconstructStep deconstructionOpt, BoundStatement body, bool @checked, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.ForEachStatement, syntax, breakLabel, continueLabel, hasErrors || iterationVariableType.HasErrors() || iterationErrorExpressionOpt.HasErrors() || expression.HasErrors() || deconstructionOpt.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(iterationVariableType != null, "Field 'iterationVariableType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!iterationVariables.IsDefault, "Field 'iterationVariables' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(continueLabel != null, "Field 'continueLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.EnumeratorInfoOpt = enumeratorInfoOpt;
             this.ElementConversion = elementConversion;
             this.IterationVariableType = iterationVariableType;
@@ -3294,6 +3176,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public bool Checked { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitForEachStatement(this);
@@ -3316,10 +3199,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundForEachDeconstructStep(SyntaxNode syntax, BoundDeconstructionAssignmentOperator deconstructionAssignment, BoundDeconstructValuePlaceholder targetPlaceholder, bool hasErrors = false)
             : base(BoundKind.ForEachDeconstructStep, syntax, hasErrors || deconstructionAssignment.HasErrors() || targetPlaceholder.HasErrors())
         {
-
             Debug.Assert(deconstructionAssignment != null, "Field 'deconstructionAssignment' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(targetPlaceholder != null, "Field 'targetPlaceholder' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.DeconstructionAssignment = deconstructionAssignment;
             this.TargetPlaceholder = targetPlaceholder;
         }
@@ -3328,6 +3209,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDeconstructionAssignmentOperator DeconstructionAssignment { get; }
 
         public BoundDeconstructValuePlaceholder TargetPlaceholder { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3351,10 +3233,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundUsingStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundMultipleLocalDeclarations declarationsOpt, BoundExpression expressionOpt, Conversion iDisposableConversion, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.UsingStatement, syntax, hasErrors || declarationsOpt.HasErrors() || expressionOpt.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.DeclarationsOpt = declarationsOpt;
             this.ExpressionOpt = expressionOpt;
@@ -3372,6 +3252,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public Conversion IDisposableConversion { get; }
 
         public BoundStatement Body { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3395,11 +3276,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundFixedStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundMultipleLocalDeclarations declarations, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.FixedStatement, syntax, hasErrors || declarations.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(declarations != null, "Field 'declarations' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.Declarations = declarations;
             this.Body = body;
@@ -3411,6 +3290,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMultipleLocalDeclarations Declarations { get; }
 
         public BoundStatement Body { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3434,10 +3314,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLockStatement(SyntaxNode syntax, BoundExpression argument, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.LockStatement, syntax, hasErrors || argument.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(argument != null, "Field 'argument' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Argument = argument;
             this.Body = body;
         }
@@ -3446,6 +3324,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Argument { get; }
 
         public BoundStatement Body { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3469,10 +3348,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTryStatement(SyntaxNode syntax, BoundBlock tryBlock, ImmutableArray<BoundCatchBlock> catchBlocks, BoundBlock finallyBlockOpt, bool preferFaultHandler, bool hasErrors = false)
             : base(BoundKind.TryStatement, syntax, hasErrors || tryBlock.HasErrors() || catchBlocks.HasErrors() || finallyBlockOpt.HasErrors())
         {
-
             Debug.Assert(tryBlock != null, "Field 'tryBlock' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!catchBlocks.IsDefault, "Field 'catchBlocks' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.TryBlock = tryBlock;
             this.CatchBlocks = catchBlocks;
             this.FinallyBlockOpt = finallyBlockOpt;
@@ -3487,6 +3364,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBlock FinallyBlockOpt { get; }
 
         public bool PreferFaultHandler { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3510,10 +3388,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundCatchBlock(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression exceptionSourceOpt, TypeSymbol exceptionTypeOpt, BoundExpression exceptionFilterOpt, BoundBlock body, bool isSynthesizedAsyncCatchAll, bool hasErrors = false)
             : base(BoundKind.CatchBlock, syntax, hasErrors || exceptionSourceOpt.HasErrors() || exceptionFilterOpt.HasErrors() || body.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.ExceptionSourceOpt = exceptionSourceOpt;
             this.ExceptionTypeOpt = exceptionTypeOpt;
@@ -3534,6 +3410,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBlock Body { get; }
 
         public bool IsSynthesizedAsyncCatchAll { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3569,6 +3446,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public ConstantValue ConstantValueOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitLiteral(this);
@@ -3591,17 +3469,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundThisReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ThisReference, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundThisReference(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.ThisReference, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -3627,17 +3501,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPreviousSubmissionReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.PreviousSubmissionReference, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundPreviousSubmissionReference(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.PreviousSubmissionReference, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -3663,17 +3533,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundHostObjectMemberReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.HostObjectMemberReference, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundHostObjectMemberReference(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.HostObjectMemberReference, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -3729,10 +3595,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLocal(SyntaxNode syntax, LocalSymbol localSymbol, bool isDeclaration, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Local, syntax, type, hasErrors)
         {
-
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LocalSymbol = localSymbol;
             this.IsDeclaration = isDeclaration;
             this.ConstantValueOpt = constantValueOpt;
@@ -3741,10 +3605,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLocal(SyntaxNode syntax, LocalSymbol localSymbol, bool isDeclaration, ConstantValue constantValueOpt, TypeSymbol type)
             : base(BoundKind.Local, syntax, type)
         {
-
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LocalSymbol = localSymbol;
             this.IsDeclaration = isDeclaration;
             this.ConstantValueOpt = constantValueOpt;
@@ -3756,6 +3618,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool IsDeclaration { get; }
 
         public ConstantValue ConstantValueOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3779,11 +3642,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPseudoVariable(SyntaxNode syntax, LocalSymbol localSymbol, PseudoVariableExpressions emitExpressions, TypeSymbol type, bool hasErrors)
             : base(BoundKind.PseudoVariable, syntax, type, hasErrors)
         {
-
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(emitExpressions != null, "Field 'emitExpressions' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LocalSymbol = localSymbol;
             this.EmitExpressions = emitExpressions;
         }
@@ -3791,11 +3652,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPseudoVariable(SyntaxNode syntax, LocalSymbol localSymbol, PseudoVariableExpressions emitExpressions, TypeSymbol type)
             : base(BoundKind.PseudoVariable, syntax, type)
         {
-
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(emitExpressions != null, "Field 'emitExpressions' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.LocalSymbol = localSymbol;
             this.EmitExpressions = emitExpressions;
         }
@@ -3804,6 +3663,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public LocalSymbol LocalSymbol { get; }
 
         public PseudoVariableExpressions EmitExpressions { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3827,11 +3687,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundRangeVariable(SyntaxNode syntax, RangeVariableSymbol rangeVariableSymbol, BoundExpression value, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.RangeVariable, syntax, type, hasErrors || value.HasErrors())
         {
-
             Debug.Assert(rangeVariableSymbol != null, "Field 'rangeVariableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.RangeVariableSymbol = rangeVariableSymbol;
             this.Value = value;
         }
@@ -3840,6 +3698,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public RangeVariableSymbol RangeVariableSymbol { get; }
 
         public BoundExpression Value { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3863,25 +3722,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundParameter(SyntaxNode syntax, ParameterSymbol parameterSymbol, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Parameter, syntax, type, hasErrors)
         {
-
             Debug.Assert(parameterSymbol != null, "Field 'parameterSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ParameterSymbol = parameterSymbol;
         }
 
         public BoundParameter(SyntaxNode syntax, ParameterSymbol parameterSymbol, TypeSymbol type)
             : base(BoundKind.Parameter, syntax, type)
         {
-
             Debug.Assert(parameterSymbol != null, "Field 'parameterSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ParameterSymbol = parameterSymbol;
         }
 
 
         public ParameterSymbol ParameterSymbol { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3905,23 +3761,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLabelStatement(SyntaxNode syntax, LabelSymbol label, bool hasErrors)
             : base(BoundKind.LabelStatement, syntax, hasErrors)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
         public BoundLabelStatement(SyntaxNode syntax, LabelSymbol label)
             : base(BoundKind.LabelStatement, syntax)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
 
         public LabelSymbol Label { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3945,9 +3798,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundGotoStatement(SyntaxNode syntax, LabelSymbol label, BoundExpression caseExpressionOpt, BoundLabel labelExpressionOpt, bool hasErrors = false)
             : base(BoundKind.GotoStatement, syntax, hasErrors || caseExpressionOpt.HasErrors() || labelExpressionOpt.HasErrors())
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
             this.CaseExpressionOpt = caseExpressionOpt;
             this.LabelExpressionOpt = labelExpressionOpt;
@@ -3959,6 +3810,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression CaseExpressionOpt { get; }
 
         public BoundLabel LabelExpressionOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -3982,10 +3834,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLabeledStatement(SyntaxNode syntax, LabelSymbol label, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.LabeledStatement, syntax, hasErrors || body.HasErrors())
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
             this.Body = body;
         }
@@ -3994,6 +3844,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public LabelSymbol Label { get; }
 
         public BoundStatement Body { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4017,23 +3868,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLabel(SyntaxNode syntax, LabelSymbol label, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Label, syntax, type, hasErrors)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
         public BoundLabel(SyntaxNode syntax, LabelSymbol label, TypeSymbol type)
             : base(BoundKind.Label, syntax, type)
         {
-
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Label = label;
         }
 
 
         public LabelSymbol Label { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4057,23 +3905,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundStatementList(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(kind, syntax, hasErrors)
         {
-
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Statements = statements;
         }
 
         public BoundStatementList(SyntaxNode syntax, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.StatementList, syntax, hasErrors || statements.HasErrors())
         {
-
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Statements = statements;
         }
 
 
         public ImmutableArray<BoundStatement> Statements { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4097,10 +3942,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConditionalGoto(SyntaxNode syntax, BoundExpression condition, bool jumpIfTrue, LabelSymbol label, bool hasErrors = false)
             : base(BoundKind.ConditionalGoto, syntax, hasErrors || condition.HasErrors())
         {
-
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Condition = condition;
             this.JumpIfTrue = jumpIfTrue;
             this.Label = label;
@@ -4112,6 +3955,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool JumpIfTrue { get; }
 
         public LabelSymbol Label { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4144,6 +3988,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
     }
 
     internal sealed partial class BoundDynamicMemberAccess : BoundExpression
@@ -4151,11 +3996,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDynamicMemberAccess(SyntaxNode syntax, BoundExpression receiver, ImmutableArray<TypeSymbol> typeArgumentsOpt, string name, bool invoked, bool indexed, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicMemberAccess, syntax, type, hasErrors || receiver.HasErrors())
         {
-
             Debug.Assert(receiver != null, "Field 'receiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(name != null, "Field 'name' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Receiver = receiver;
             this.TypeArgumentsOpt = typeArgumentsOpt;
             this.Name = name;
@@ -4173,6 +4016,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Invoked { get; }
 
         public bool Indexed { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4196,12 +4040,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDynamicInvocation(SyntaxNode syntax, BoundExpression expression, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicInvocation, syntax, type, hasErrors || expression.HasErrors() || arguments.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!applicableMethods.IsDefault, "Field 'applicableMethods' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
             this.Arguments = arguments;
             this.ArgumentNamesOpt = argumentNamesOpt;
@@ -4219,6 +4061,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<RefKind> ArgumentRefKindsOpt { get; }
 
         public ImmutableArray<MethodSymbol> ApplicableMethods { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4242,11 +4085,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConditionalAccess(SyntaxNode syntax, BoundExpression receiver, BoundExpression accessExpression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConditionalAccess, syntax, type, hasErrors || receiver.HasErrors() || accessExpression.HasErrors())
         {
-
             Debug.Assert(receiver != null, "Field 'receiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(accessExpression != null, "Field 'accessExpression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Receiver = receiver;
             this.AccessExpression = accessExpression;
         }
@@ -4255,6 +4096,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Receiver { get; }
 
         public BoundExpression AccessExpression { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4278,11 +4120,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLoweredConditionalAccess(SyntaxNode syntax, BoundExpression receiver, MethodSymbol hasValueMethodOpt, BoundExpression whenNotNull, BoundExpression whenNullOpt, int id, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.LoweredConditionalAccess, syntax, type, hasErrors || receiver.HasErrors() || whenNotNull.HasErrors() || whenNullOpt.HasErrors())
         {
-
             Debug.Assert(receiver != null, "Field 'receiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(whenNotNull != null, "Field 'whenNotNull' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Receiver = receiver;
             this.HasValueMethodOpt = hasValueMethodOpt;
             this.WhenNotNull = whenNotNull;
@@ -4300,6 +4140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression WhenNullOpt { get; }
 
         public int Id { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4323,23 +4164,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConditionalReceiver(SyntaxNode syntax, int id, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ConditionalReceiver, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Id = id;
         }
 
         public BoundConditionalReceiver(SyntaxNode syntax, int id, TypeSymbol type)
             : base(BoundKind.ConditionalReceiver, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Id = id;
         }
 
 
         public int Id { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4363,11 +4201,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundComplexConditionalReceiver(SyntaxNode syntax, BoundExpression valueTypeReceiver, BoundExpression referenceTypeReceiver, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ComplexConditionalReceiver, syntax, type, hasErrors || valueTypeReceiver.HasErrors() || referenceTypeReceiver.HasErrors())
         {
-
             Debug.Assert(valueTypeReceiver != null, "Field 'valueTypeReceiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(referenceTypeReceiver != null, "Field 'referenceTypeReceiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ValueTypeReceiver = valueTypeReceiver;
             this.ReferenceTypeReceiver = referenceTypeReceiver;
         }
@@ -4376,6 +4212,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression ValueTypeReceiver { get; }
 
         public BoundExpression ReferenceTypeReceiver { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4399,10 +4236,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundMethodGroup(SyntaxNode syntax, ImmutableArray<TypeSymbol> typeArgumentsOpt, string name, ImmutableArray<MethodSymbol> methods, Symbol lookupSymbolOpt, DiagnosticInfo lookupError, BoundMethodGroupFlags flags, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
             : base(BoundKind.MethodGroup, syntax, receiverOpt, resultKind, hasErrors || receiverOpt.HasErrors())
         {
-
             Debug.Assert(name != null, "Field 'name' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!methods.IsDefault, "Field 'methods' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.TypeArgumentsOpt = typeArgumentsOpt;
             this.Name = name;
             this.Methods = methods;
@@ -4423,6 +4258,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public DiagnosticInfo LookupError { get; }
 
         public BoundMethodGroupFlags Flags { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4446,14 +4282,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPropertyGroup(SyntaxNode syntax, ImmutableArray<PropertySymbol> properties, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
             : base(BoundKind.PropertyGroup, syntax, receiverOpt, resultKind, hasErrors || receiverOpt.HasErrors())
         {
-
             Debug.Assert(!properties.IsDefault, "Field 'properties' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Properties = properties;
         }
 
 
         public ImmutableArray<PropertySymbol> Properties { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4477,11 +4312,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundCall(SyntaxNode syntax, BoundExpression receiverOpt, MethodSymbol method, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool isDelegateCall, bool expanded, bool invokedAsExtensionMethod, ImmutableArray<int> argsToParamsOpt, LookupResultKind resultKind, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Call, syntax, type, hasErrors || receiverOpt.HasErrors() || arguments.HasErrors())
         {
-
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ReceiverOpt = receiverOpt;
             this.Method = method;
             this.Arguments = arguments;
@@ -4519,6 +4352,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public Binder BinderOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitCall(this);
@@ -4541,11 +4375,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundEventAssignmentOperator(SyntaxNode syntax, EventSymbol @event, bool isAddition, bool isDynamic, BoundExpression receiverOpt, BoundExpression argument, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.EventAssignmentOperator, syntax, type, hasErrors || receiverOpt.HasErrors() || argument.HasErrors())
         {
-
             Debug.Assert(@event != null, "Field '@event' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(argument != null, "Field 'argument' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Event = @event;
             this.IsAddition = isAddition;
             this.IsDynamic = isDynamic;
@@ -4563,6 +4395,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression ReceiverOpt { get; }
 
         public BoundExpression Argument { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4586,11 +4419,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundAttribute(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<BoundExpression> constructorArguments, ImmutableArray<string> constructorArgumentNamesOpt, ImmutableArray<BoundExpression> namedArguments, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Attribute, syntax, type, hasErrors || constructorArguments.HasErrors() || namedArguments.HasErrors())
         {
-
             Debug.Assert(!constructorArguments.IsDefault, "Field 'constructorArguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!namedArguments.IsDefault, "Field 'namedArguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Constructor = constructor;
             this.ConstructorArguments = constructorArguments;
             this.ConstructorArgumentNamesOpt = constructorArgumentNamesOpt;
@@ -4609,6 +4440,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4632,12 +4464,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundObjectCreationExpression(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<MethodSymbol> constructorsGroup, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, ConstantValue constantValueOpt, BoundObjectInitializerExpressionBase initializerExpressionOpt, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ObjectCreationExpression, syntax, type, hasErrors || arguments.HasErrors() || initializerExpressionOpt.HasErrors())
         {
-
             Debug.Assert(constructor != null, "Field 'constructor' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!constructorsGroup.IsDefault, "Field 'constructorsGroup' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Constructor = constructor;
             this.ConstructorsGroup = constructorsGroup;
             this.Arguments = arguments;
@@ -4671,6 +4501,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public Binder BinderOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitObjectCreationExpression(this);
@@ -4693,14 +4524,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundTupleExpression(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
             : base(kind, syntax, type, hasErrors)
         {
-
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Arguments = arguments;
         }
 
 
         public ImmutableArray<BoundExpression> Arguments { get; }
+
     }
 
     internal sealed partial class BoundTupleLiteral : BoundTupleExpression
@@ -4708,9 +4538,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTupleLiteral(SyntaxNode syntax, ImmutableArray<string> argumentNamesOpt, ImmutableArray<bool> inferredNamesOpt, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TupleLiteral, syntax, arguments, type, hasErrors || arguments.HasErrors())
         {
-
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ArgumentNamesOpt = argumentNamesOpt;
             this.InferredNamesOpt = inferredNamesOpt;
         }
@@ -4719,6 +4547,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<string> ArgumentNamesOpt { get; }
 
         public ImmutableArray<bool> InferredNamesOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4742,15 +4571,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConvertedTupleLiteral(SyntaxNode syntax, TypeSymbol naturalTypeOpt, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConvertedTupleLiteral, syntax, arguments, type, hasErrors || arguments.HasErrors())
         {
-
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.NaturalTypeOpt = naturalTypeOpt;
         }
 
 
         public TypeSymbol NaturalTypeOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4774,12 +4602,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDynamicObjectCreationExpression(SyntaxNode syntax, string name, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, BoundObjectInitializerExpressionBase initializerExpressionOpt, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicObjectCreationExpression, syntax, type, hasErrors || arguments.HasErrors() || initializerExpressionOpt.HasErrors())
         {
-
             Debug.Assert(name != null, "Field 'name' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!applicableMethods.IsDefault, "Field 'applicableMethods' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Name = name;
             this.Arguments = arguments;
             this.ArgumentNamesOpt = argumentNamesOpt;
@@ -4800,6 +4626,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundObjectInitializerExpressionBase InitializerExpressionOpt { get; }
 
         public ImmutableArray<MethodSymbol> ApplicableMethods { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4823,9 +4650,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundNoPiaObjectCreationExpression(SyntaxNode syntax, string guidString, BoundObjectInitializerExpressionBase initializerExpressionOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NoPiaObjectCreationExpression, syntax, type, hasErrors || initializerExpressionOpt.HasErrors())
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.GuidString = guidString;
             this.InitializerExpressionOpt = initializerExpressionOpt;
         }
@@ -4834,6 +4659,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string GuidString { get; }
 
         public BoundObjectInitializerExpressionBase InitializerExpressionOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -4857,15 +4683,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundObjectInitializerExpressionBase(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
             : base(kind, syntax, type, hasErrors)
         {
-
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Initializers = initializers;
         }
 
 
         public ImmutableArray<BoundExpression> Initializers { get; }
+
     }
 
     internal sealed partial class BoundObjectInitializerExpression : BoundObjectInitializerExpressionBase
@@ -4873,10 +4698,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundObjectInitializerExpression(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ObjectInitializerExpression, syntax, initializers, type, hasErrors || initializers.HasErrors())
         {
-
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -4902,11 +4725,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundObjectInitializerMember(SyntaxNode syntax, Symbol memberSymbol, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, LookupResultKind resultKind, TypeSymbol receiverType, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ObjectInitializerMember, syntax, type, hasErrors || arguments.HasErrors())
         {
-
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(receiverType != null, "Field 'receiverType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.MemberSymbol = memberSymbol;
             this.Arguments = arguments;
             this.ArgumentNamesOpt = argumentNamesOpt;
@@ -4938,6 +4759,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public Binder BinderOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitObjectInitializerMember(this);
@@ -4960,11 +4782,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDynamicObjectInitializerMember(SyntaxNode syntax, string memberName, TypeSymbol receiverType, TypeSymbol type, bool hasErrors)
             : base(BoundKind.DynamicObjectInitializerMember, syntax, type, hasErrors)
         {
-
             Debug.Assert(memberName != null, "Field 'memberName' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(receiverType != null, "Field 'receiverType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.MemberName = memberName;
             this.ReceiverType = receiverType;
         }
@@ -4972,11 +4792,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDynamicObjectInitializerMember(SyntaxNode syntax, string memberName, TypeSymbol receiverType, TypeSymbol type)
             : base(BoundKind.DynamicObjectInitializerMember, syntax, type)
         {
-
             Debug.Assert(memberName != null, "Field 'memberName' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(receiverType != null, "Field 'receiverType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.MemberName = memberName;
             this.ReceiverType = receiverType;
         }
@@ -4985,6 +4803,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string MemberName { get; }
 
         public TypeSymbol ReceiverType { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5008,10 +4827,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundCollectionInitializerExpression(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.CollectionInitializerExpression, syntax, initializers, type, hasErrors || initializers.HasErrors())
         {
-
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -5037,11 +4854,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundCollectionElementInitializer(SyntaxNode syntax, MethodSymbol addMethod, ImmutableArray<BoundExpression> arguments, BoundExpression implicitReceiverOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, bool invokedAsExtensionMethod, LookupResultKind resultKind, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.CollectionElementInitializer, syntax, type, hasErrors || arguments.HasErrors() || implicitReceiverOpt.HasErrors())
         {
-
             Debug.Assert(addMethod != null, "Field 'addMethod' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.AddMethod = addMethod;
             this.Arguments = arguments;
             this.ImplicitReceiverOpt = implicitReceiverOpt;
@@ -5070,6 +4885,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public Binder BinderOpt { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitCollectionElementInitializer(this);
@@ -5092,12 +4908,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDynamicCollectionElementInitializer(SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, BoundImplicitReceiver implicitReceiver, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicCollectionElementInitializer, syntax, type, hasErrors || arguments.HasErrors() || implicitReceiver.HasErrors())
         {
-
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(implicitReceiver != null, "Field 'implicitReceiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!applicableMethods.IsDefault, "Field 'applicableMethods' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Arguments = arguments;
             this.ImplicitReceiver = implicitReceiver;
             this.ApplicableMethods = applicableMethods;
@@ -5109,6 +4923,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundImplicitReceiver ImplicitReceiver { get; }
 
         public ImmutableArray<MethodSymbol> ApplicableMethods { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5132,17 +4947,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundImplicitReceiver(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ImplicitReceiver, syntax, type, hasErrors)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
         public BoundImplicitReceiver(SyntaxNode syntax, TypeSymbol type)
             : base(BoundKind.ImplicitReceiver, syntax, type)
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -5168,12 +4979,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundAnonymousObjectCreationExpression(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<BoundExpression> arguments, ImmutableArray<BoundAnonymousPropertyDeclaration> declarations, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AnonymousObjectCreationExpression, syntax, type, hasErrors || arguments.HasErrors() || declarations.HasErrors())
         {
-
             Debug.Assert(constructor != null, "Field 'constructor' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!declarations.IsDefault, "Field 'declarations' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Constructor = constructor;
             this.Arguments = arguments;
             this.Declarations = declarations;
@@ -5185,6 +4994,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<BoundExpression> Arguments { get; }
 
         public ImmutableArray<BoundAnonymousPropertyDeclaration> Declarations { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5208,25 +5018,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundAnonymousPropertyDeclaration(SyntaxNode syntax, PropertySymbol property, TypeSymbol type, bool hasErrors)
             : base(BoundKind.AnonymousPropertyDeclaration, syntax, type, hasErrors)
         {
-
             Debug.Assert(property != null, "Field 'property' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Property = property;
         }
 
         public BoundAnonymousPropertyDeclaration(SyntaxNode syntax, PropertySymbol property, TypeSymbol type)
             : base(BoundKind.AnonymousPropertyDeclaration, syntax, type)
         {
-
             Debug.Assert(property != null, "Field 'property' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Property = property;
         }
 
 
         public PropertySymbol Property { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5250,14 +5057,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundNewT(SyntaxNode syntax, BoundObjectInitializerExpressionBase initializerExpressionOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NewT, syntax, type, hasErrors || initializerExpressionOpt.HasErrors())
         {
-
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.InitializerExpressionOpt = initializerExpressionOpt;
         }
 
 
         public BoundObjectInitializerExpressionBase InitializerExpressionOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5281,10 +5087,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDelegateCreationExpression(SyntaxNode syntax, BoundExpression argument, MethodSymbol methodOpt, bool isExtensionMethod, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DelegateCreationExpression, syntax, type, hasErrors || argument.HasErrors())
         {
-
             Debug.Assert(argument != null, "Field 'argument' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Argument = argument;
             this.MethodOpt = methodOpt;
             this.IsExtensionMethod = isExtensionMethod;
@@ -5296,6 +5100,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public MethodSymbol MethodOpt { get; }
 
         public bool IsExtensionMethod { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5319,10 +5124,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundArrayCreation(SyntaxNode syntax, ImmutableArray<BoundExpression> bounds, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArrayCreation, syntax, type, hasErrors || bounds.HasErrors() || initializerOpt.HasErrors())
         {
-
             Debug.Assert(!bounds.IsDefault, "Field 'bounds' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Bounds = bounds;
             this.InitializerOpt = initializerOpt;
         }
@@ -5331,6 +5134,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<BoundExpression> Bounds { get; }
 
         public BoundArrayInitialization InitializerOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5354,14 +5158,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundArrayInitialization(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, bool hasErrors = false)
             : base(BoundKind.ArrayInitialization, syntax, null, hasErrors || initializers.HasErrors())
         {
-
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Initializers = initializers;
         }
 
 
         public ImmutableArray<BoundExpression> Initializers { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5385,10 +5188,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected BoundStackAllocArrayCreation(BoundKind kind, SyntaxNode syntax, TypeSymbol elementType, BoundExpression count, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
             : base(kind, syntax, type, hasErrors)
         {
-
             Debug.Assert(elementType != null, "Field 'elementType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(count != null, "Field 'count' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ElementType = elementType;
             this.Count = count;
             this.InitializerOpt = initializerOpt;
@@ -5397,10 +5198,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundStackAllocArrayCreation(SyntaxNode syntax, TypeSymbol elementType, BoundExpression count, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.StackAllocArrayCreation, syntax, type, hasErrors || count.HasErrors() || initializerOpt.HasErrors())
         {
-
             Debug.Assert(elementType != null, "Field 'elementType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(count != null, "Field 'count' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ElementType = elementType;
             this.Count = count;
             this.InitializerOpt = initializerOpt;
@@ -5412,6 +5211,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Count { get; }
 
         public BoundArrayInitialization InitializerOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5435,11 +5235,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConvertedStackAllocExpression(SyntaxNode syntax, TypeSymbol elementType, BoundExpression count, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConvertedStackAllocExpression, syntax, elementType, count, initializerOpt, type, hasErrors || count.HasErrors() || initializerOpt.HasErrors())
         {
-
             Debug.Assert(elementType != null, "Field 'elementType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(count != null, "Field 'count' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -5465,10 +5263,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundFieldAccess(SyntaxNode syntax, BoundExpression receiverOpt, FieldSymbol fieldSymbol, ConstantValue constantValueOpt, LookupResultKind resultKind, bool isByValue, bool isDeclaration, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.FieldAccess, syntax, type, hasErrors || receiverOpt.HasErrors())
         {
-
             Debug.Assert(fieldSymbol != null, "Field 'fieldSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ReceiverOpt = receiverOpt;
             this.FieldSymbol = fieldSymbol;
             this.ConstantValueOpt = constantValueOpt;
@@ -5490,6 +5286,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool IsByValue { get; }
 
         public bool IsDeclaration { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5513,25 +5310,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundHoistedFieldAccess(SyntaxNode syntax, FieldSymbol fieldSymbol, TypeSymbol type, bool hasErrors)
             : base(BoundKind.HoistedFieldAccess, syntax, type, hasErrors)
         {
-
             Debug.Assert(fieldSymbol != null, "Field 'fieldSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.FieldSymbol = fieldSymbol;
         }
 
         public BoundHoistedFieldAccess(SyntaxNode syntax, FieldSymbol fieldSymbol, TypeSymbol type)
             : base(BoundKind.HoistedFieldAccess, syntax, type)
         {
-
             Debug.Assert(fieldSymbol != null, "Field 'fieldSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.FieldSymbol = fieldSymbol;
         }
 
 
         public FieldSymbol FieldSymbol { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5555,10 +5349,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundPropertyAccess(SyntaxNode syntax, BoundExpression receiverOpt, PropertySymbol propertySymbol, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PropertyAccess, syntax, type, hasErrors || receiverOpt.HasErrors())
         {
-
             Debug.Assert(propertySymbol != null, "Field 'propertySymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ReceiverOpt = receiverOpt;
             this.PropertySymbol = propertySymbol;
             this._ResultKind = resultKind;
@@ -5571,6 +5363,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5594,10 +5387,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundEventAccess(SyntaxNode syntax, BoundExpression receiverOpt, EventSymbol eventSymbol, bool isUsableAsField, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.EventAccess, syntax, type, hasErrors || receiverOpt.HasErrors())
         {
-
             Debug.Assert(eventSymbol != null, "Field 'eventSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ReceiverOpt = receiverOpt;
             this.EventSymbol = eventSymbol;
             this.IsUsableAsField = isUsableAsField;
@@ -5613,6 +5404,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5636,11 +5428,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundIndexerAccess(SyntaxNode syntax, BoundExpression receiverOpt, PropertySymbol indexer, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, Binder binderOpt, bool useSetterForDefaultArgumentGeneration, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IndexerAccess, syntax, type, hasErrors || receiverOpt.HasErrors() || arguments.HasErrors())
         {
-
             Debug.Assert(indexer != null, "Field 'indexer' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ReceiverOpt = receiverOpt;
             this.Indexer = indexer;
             this.Arguments = arguments;
@@ -5671,6 +5461,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public bool UseSetterForDefaultArgumentGeneration { get; }
 
+
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
             return visitor.VisitIndexerAccess(this);
@@ -5693,11 +5484,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDynamicIndexerAccess(SyntaxNode syntax, BoundExpression receiverOpt, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, ImmutableArray<PropertySymbol> applicableIndexers, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicIndexerAccess, syntax, type, hasErrors || receiverOpt.HasErrors() || arguments.HasErrors())
         {
-
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!applicableIndexers.IsDefault, "Field 'applicableIndexers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.ReceiverOpt = receiverOpt;
             this.Arguments = arguments;
             this.ArgumentNamesOpt = argumentNamesOpt;
@@ -5715,6 +5504,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<RefKind> ArgumentRefKindsOpt { get; }
 
         public ImmutableArray<PropertySymbol> ApplicableIndexers { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5738,12 +5528,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundLambda(SyntaxNode syntax, LambdaSymbol symbol, BoundBlock body, ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> diagnostics, Binder binder, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Lambda, syntax, type, hasErrors || body.HasErrors())
         {
-
             Debug.Assert(symbol != null, "Field 'symbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(body != null, "Field 'body' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(!diagnostics.IsDefault, "Field 'diagnostics' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(binder != null, "Field 'binder' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Symbol = symbol;
             this.Body = body;
             this.Diagnostics = diagnostics;
@@ -5758,6 +5546,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics { get; }
 
         public Binder Binder { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5781,23 +5570,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         public UnboundLambda(SyntaxNode syntax, UnboundLambdaState data, bool hasErrors)
             : base(BoundKind.UnboundLambda, syntax, null, hasErrors)
         {
-
             Debug.Assert(data != null, "Field 'data' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Data = data;
         }
 
         public UnboundLambda(SyntaxNode syntax, UnboundLambdaState data)
             : base(BoundKind.UnboundLambda, syntax, null)
         {
-
             Debug.Assert(data != null, "Field 'data' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Data = data;
         }
 
 
         public UnboundLambdaState Data { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5821,11 +5607,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundQueryClause(SyntaxNode syntax, BoundExpression value, RangeVariableSymbol definedSymbol, Binder binder, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.QueryClause, syntax, type, hasErrors || value.HasErrors())
         {
-
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(binder != null, "Field 'binder' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Value = value;
             this.DefinedSymbol = definedSymbol;
             this.Binder = binder;
@@ -5837,6 +5621,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public RangeVariableSymbol DefinedSymbol { get; }
 
         public Binder Binder { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5860,9 +5645,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeOrInstanceInitializers(SyntaxNode syntax, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.TypeOrInstanceInitializers, syntax, statements, hasErrors || statements.HasErrors())
         {
-
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -5888,11 +5671,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundNameOfOperator(SyntaxNode syntax, BoundExpression argument, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NameOfOperator, syntax, type, hasErrors || argument.HasErrors())
         {
-
             Debug.Assert(argument != null, "Field 'argument' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(constantValueOpt != null, "Field 'constantValueOpt' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Argument = argument;
             this.ConstantValueOpt = constantValueOpt;
         }
@@ -5901,6 +5682,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Argument { get; }
 
         public ConstantValue ConstantValueOpt { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5924,14 +5706,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundInterpolatedString(SyntaxNode syntax, ImmutableArray<BoundExpression> parts, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.InterpolatedString, syntax, type, hasErrors || parts.HasErrors())
         {
-
             Debug.Assert(!parts.IsDefault, "Field 'parts' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Parts = parts;
         }
 
 
         public ImmutableArray<BoundExpression> Parts { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5955,9 +5736,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundStringInsert(SyntaxNode syntax, BoundExpression value, BoundExpression alignment, BoundLiteral format, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.StringInsert, syntax, type, hasErrors || value.HasErrors() || alignment.HasErrors() || format.HasErrors())
         {
-
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Value = value;
             this.Alignment = alignment;
             this.Format = format;
@@ -5969,6 +5748,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Alignment { get; }
 
         public BoundLiteral Format { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -5992,10 +5772,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundIsPatternExpression(SyntaxNode syntax, BoundExpression expression, BoundPattern pattern, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IsPatternExpression, syntax, type, hasErrors || expression.HasErrors() || pattern.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
             Debug.Assert(pattern != null, "Field 'pattern' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
             this.Pattern = pattern;
         }
@@ -6004,6 +5782,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Expression { get; }
 
         public BoundPattern Pattern { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -6041,9 +5820,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundDeclarationPattern(SyntaxNode syntax, Symbol variable, BoundExpression variableAccess, BoundTypeExpression declaredType, bool isVar, bool hasErrors = false)
             : base(BoundKind.DeclarationPattern, syntax, hasErrors || variableAccess.HasErrors() || declaredType.HasErrors())
         {
-
             Debug.Assert(variableAccess != null, "Field 'variableAccess' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Variable = variable;
             this.VariableAccess = variableAccess;
             this.DeclaredType = declaredType;
@@ -6058,6 +5835,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundTypeExpression DeclaredType { get; }
 
         public bool IsVar { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -6081,9 +5859,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConstantPattern(SyntaxNode syntax, BoundExpression value, ConstantValue constantValue, bool hasErrors = false)
             : base(BoundKind.ConstantPattern, syntax, hasErrors || value.HasErrors())
         {
-
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Value = value;
             this.ConstantValue = constantValue;
         }
@@ -6092,6 +5868,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression Value { get; }
 
         public ConstantValue ConstantValue { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -6164,14 +5941,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundThrowExpression(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ThrowExpression, syntax, type, hasErrors || expression.HasErrors())
         {
-
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Expression = expression;
         }
 
 
         public BoundExpression Expression { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -6195,9 +5971,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected VariablePendingInference(BoundKind kind, SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
             : base(kind, syntax, null, hasErrors)
         {
-
             Debug.Assert(variableSymbol != null, "Field 'variableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.VariableSymbol = variableSymbol;
             this.ReceiverOpt = receiverOpt;
         }
@@ -6206,6 +5980,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public Symbol VariableSymbol { get; }
 
         public BoundExpression ReceiverOpt { get; }
+
     }
 
     internal sealed partial class OutVariablePendingInference : VariablePendingInference
@@ -6213,9 +5988,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public OutVariablePendingInference(SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
             : base(BoundKind.OutVariablePendingInference, syntax, variableSymbol, receiverOpt, hasErrors || receiverOpt.HasErrors())
         {
-
             Debug.Assert(variableSymbol != null, "Field 'variableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -6241,9 +6014,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public DeconstructionVariablePendingInference(SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
             : base(BoundKind.DeconstructionVariablePendingInference, syntax, variableSymbol, receiverOpt, hasErrors || receiverOpt.HasErrors())
         {
-
             Debug.Assert(variableSymbol != null, "Field 'variableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
         }
 
 
@@ -6301,6 +6072,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundBlock BlockBody { get; }
 
         public BoundBlock ExpressionBody { get; }
+
     }
 
     internal sealed partial class BoundNonConstructorMethodBody : BoundMethodBodyBase
@@ -6333,9 +6105,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundConstructorMethodBody(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpressionStatement initializer, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
             : base(BoundKind.ConstructorMethodBody, syntax, blockBody, expressionBody, hasErrors || initializer.HasErrors() || blockBody.HasErrors() || expressionBody.HasErrors())
         {
-
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
-
             this.Locals = locals;
             this.Initializer = initializer;
         }
@@ -6344,6 +6114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<LocalSymbol> Locals { get; }
 
         public BoundExpressionStatement Initializer { get; }
+
 
         public override BoundNode Accept(BoundTreeVisitor visitor)
         {
@@ -6361,6 +6132,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this;
         }
     }
+
 
     internal abstract partial class BoundTreeVisitor<A,R>
     {
@@ -7924,7 +7696,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 
-    internal abstract partial class BoundTreeWalker: BoundTreeVisitor
+    internal abstract partial class BoundTreeWalker : BoundTreeVisitor
     {
         public override BoundNode VisitFieldEqualsValue(BoundFieldEqualsValue node)
         {
