@@ -196,7 +196,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Interpolation
     End Enum
 
-
     Friend MustInherit Partial Class BoundExpression : Inherits BoundNode
 
         Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
@@ -5643,7 +5642,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Friend MustInherit Partial Class BoundTreeVisitor(Of A,R)
 
-
         <MethodImpl(MethodImplOptions.NoInlining)>
         Friend Function VisitInternal(node As BoundNode, arg As A) As R
             Select Case node.Kind
@@ -5829,7 +5827,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Class
 
     Friend MustInherit Partial Class BoundTreeVisitor(Of A,R)
-
 
         Public Overridable Function VisitTypeArguments(node As BoundTypeArguments, arg As A) As R
             Return Me.DefaultVisit(node,arg)
@@ -6534,7 +6531,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Class
 
     Friend MustInherit Partial Class BoundTreeVisitor
-
 
         Public Overridable Function VisitTypeArguments(node As BoundTypeArguments) As BoundNode
             Return Me.DefaultVisit(node)
@@ -8188,287 +8184,287 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend MustInherit Partial Class BoundTreeRewriter : Inherits BoundTreeVisitor
 
         Public Overrides Function VisitTypeArguments(node As BoundTypeArguments) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Arguments)
         End Function
 
         Public Overrides Function VisitOmittedArgument(node As BoundOmittedArgument) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitLValueToRValueWrapper(node As BoundLValueToRValueWrapper) As BoundNode
-            Dim underlyingLValue As BoundExpression = DirectCast(Me.Visit(node.UnderlyingLValue), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim underlyingLValue = DirectCast(Me.Visit(node.UnderlyingLValue), BoundExpression)
+            Dim             type = Me.VisitType(node.Type)
             Return node.Update(underlyingLValue, type)
         End Function
 
         Public Overrides Function VisitWithLValueExpressionPlaceholder(node As BoundWithLValueExpressionPlaceholder) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitWithRValueExpressionPlaceholder(node As BoundWithRValueExpressionPlaceholder) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitRValuePlaceholder(node As BoundRValuePlaceholder) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitLValuePlaceholder(node As BoundLValuePlaceholder) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitDup(node As BoundDup) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.IsReference, type)
         End Function
 
         Public Overrides Function VisitBadExpression(node As BoundBadExpression) As BoundNode
-            Dim childBoundNodes As ImmutableArray(Of BoundExpression) = Me.VisitList(node.ChildBoundNodes)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim childBoundNodes = Me.VisitList(node.ChildBoundNodes)
+            Dim            type = Me.VisitType(node.Type)
             Return node.Update(node.ResultKind, node.Symbols, childBoundNodes, type)
         End Function
 
         Public Overrides Function VisitBadStatement(node As BoundBadStatement) As BoundNode
-            Dim childBoundNodes As ImmutableArray(Of BoundNode) = Me.VisitList(node.ChildBoundNodes)
+            Dim childBoundNodes = Me.VisitList(node.ChildBoundNodes)
             Return node.Update(childBoundNodes)
         End Function
 
         Public Overrides Function VisitParenthesized(node As BoundParenthesized) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, type)
         End Function
 
         Public Overrides Function VisitBadVariable(node As BoundBadVariable) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, node.IsLValue, type)
         End Function
 
         Public Overrides Function VisitArrayAccess(node As BoundArrayAccess) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim indices As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Indices)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim    indices = Me.VisitList(node.Indices)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, indices, node.IsLValue, type)
         End Function
 
         Public Overrides Function VisitArrayLength(node As BoundArrayLength) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, type)
         End Function
 
         Public Overrides Function VisitGetType(node As BoundGetType) As BoundNode
-            Dim sourceType As BoundTypeExpression = DirectCast(Me.Visit(node.SourceType), BoundTypeExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim sourceType = DirectCast(Me.Visit(node.SourceType), BoundTypeExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(sourceType, type)
         End Function
 
         Public Overrides Function VisitFieldInfo(node As BoundFieldInfo) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Field, type)
         End Function
 
         Public Overrides Function VisitMethodInfo(node As BoundMethodInfo) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Method, type)
         End Function
 
         Public Overrides Function VisitTypeExpression(node As BoundTypeExpression) As BoundNode
-            Dim unevaluatedReceiverOpt As BoundExpression = node.UnevaluatedReceiverOpt
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim unevaluatedReceiverOpt = node.UnevaluatedReceiverOpt
+            Dim                   type = Me.VisitType(node.Type)
             Return node.Update(unevaluatedReceiverOpt, node.AliasOpt, type)
         End Function
 
         Public Overrides Function VisitTypeOrValueExpression(node As BoundTypeOrValueExpression) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Data, type)
         End Function
 
         Public Overrides Function VisitNamespaceExpression(node As BoundNamespaceExpression) As BoundNode
-            Dim unevaluatedReceiverOpt As BoundExpression = DirectCast(Me.Visit(node.UnevaluatedReceiverOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim unevaluatedReceiverOpt = DirectCast(Me.Visit(node.UnevaluatedReceiverOpt), BoundExpression)
+            Dim                   type = Me.VisitType(node.Type)
             Return node.Update(unevaluatedReceiverOpt, node.AliasOpt, node.NamespaceSymbol)
         End Function
 
         Public Overrides Function VisitMethodDefIndex(node As BoundMethodDefIndex) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Method, type)
         End Function
 
         Public Overrides Function VisitMaximumMethodDefIndex(node As BoundMaximumMethodDefIndex) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitInstrumentationPayloadRoot(node As BoundInstrumentationPayloadRoot) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.AnalysisKind, node.IsLValue, type)
         End Function
 
         Public Overrides Function VisitModuleVersionId(node As BoundModuleVersionId) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.IsLValue, type)
         End Function
 
         Public Overrides Function VisitModuleVersionIdString(node As BoundModuleVersionIdString) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitSourceDocumentIndex(node As BoundSourceDocumentIndex) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Document, type)
         End Function
 
         Public Overrides Function VisitUnaryOperator(node As BoundUnaryOperator) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim    type = Me.VisitType(node.Type)
             Return node.Update(node.OperatorKind, operand, node.Checked, node.ConstantValueOpt, type)
         End Function
 
         Public Overrides Function VisitUserDefinedUnaryOperator(node As BoundUserDefinedUnaryOperator) As BoundNode
-            Dim underlyingExpression As BoundExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim underlyingExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(node.OperatorKind, underlyingExpression, type)
         End Function
 
         Public Overrides Function VisitNullableIsTrueOperator(node As BoundNullableIsTrueOperator) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim    type = Me.VisitType(node.Type)
             Return node.Update(operand, type)
         End Function
 
         Public Overrides Function VisitBinaryOperator(node As BoundBinaryOperator) As BoundNode
-            Dim left As BoundExpression = DirectCast(Me.Visit(node.Left), BoundExpression)
-            Dim right As BoundExpression = DirectCast(Me.Visit(node.Right), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim  left = DirectCast(Me.Visit(node.Left), BoundExpression)
+            Dim right = DirectCast(Me.Visit(node.Right), BoundExpression)
+            Dim  type = Me.VisitType(node.Type)
             Return node.Update(node.OperatorKind, left, right, node.Checked, node.ConstantValueOpt, type)
         End Function
 
         Public Overrides Function VisitUserDefinedBinaryOperator(node As BoundUserDefinedBinaryOperator) As BoundNode
-            Dim underlyingExpression As BoundExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim underlyingExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(node.OperatorKind, underlyingExpression, node.Checked, type)
         End Function
 
         Public Overrides Function VisitUserDefinedShortCircuitingOperator(node As BoundUserDefinedShortCircuitingOperator) As BoundNode
-            Dim leftOperand As BoundExpression = DirectCast(Me.Visit(node.LeftOperand), BoundExpression)
-            Dim leftOperandPlaceholder As BoundRValuePlaceholder = DirectCast(Me.Visit(node.LeftOperandPlaceholder), BoundRValuePlaceholder)
-            Dim leftTest As BoundExpression = DirectCast(Me.Visit(node.LeftTest), BoundExpression)
-            Dim bitwiseOperator As BoundUserDefinedBinaryOperator = DirectCast(Me.Visit(node.BitwiseOperator), BoundUserDefinedBinaryOperator)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim            leftOperand = DirectCast(Me.Visit(node.LeftOperand), BoundExpression)
+            Dim leftOperandPlaceholder = DirectCast(Me.Visit(node.LeftOperandPlaceholder), BoundRValuePlaceholder)
+            Dim               leftTest = DirectCast(Me.Visit(node.LeftTest), BoundExpression)
+            Dim        bitwiseOperator = DirectCast(Me.Visit(node.BitwiseOperator), BoundUserDefinedBinaryOperator)
+            Dim                   type = Me.VisitType(node.Type)
             Return node.Update(leftOperand, leftOperandPlaceholder, leftTest, bitwiseOperator, type)
         End Function
 
         Public Overrides Function VisitCompoundAssignmentTargetPlaceholder(node As BoundCompoundAssignmentTargetPlaceholder) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitAssignmentOperator(node As BoundAssignmentOperator) As BoundNode
-            Dim left As BoundExpression = DirectCast(Me.Visit(node.Left), BoundExpression)
-            Dim leftOnTheRightOpt As BoundCompoundAssignmentTargetPlaceholder = DirectCast(Me.Visit(node.LeftOnTheRightOpt), BoundCompoundAssignmentTargetPlaceholder)
-            Dim right As BoundExpression = DirectCast(Me.Visit(node.Right), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim              left = DirectCast(Me.Visit(node.Left), BoundExpression)
+            Dim leftOnTheRightOpt = DirectCast(Me.Visit(node.LeftOnTheRightOpt), BoundCompoundAssignmentTargetPlaceholder)
+            Dim             right = DirectCast(Me.Visit(node.Right), BoundExpression)
+            Dim              type = Me.VisitType(node.Type)
             Return node.Update(left, leftOnTheRightOpt, right, node.SuppressObjectClone, type)
         End Function
 
         Public Overrides Function VisitReferenceAssignment(node As BoundReferenceAssignment) As BoundNode
-            Dim byRefLocal As BoundLocal = DirectCast(Me.Visit(node.ByRefLocal), BoundLocal)
-            Dim lValue As BoundExpression = DirectCast(Me.Visit(node.LValue), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim byRefLocal = DirectCast(Me.Visit(node.ByRefLocal), BoundLocal)
+            Dim     lValue = DirectCast(Me.Visit(node.LValue), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(byRefLocal, lValue, node.IsLValue, type)
         End Function
 
         Public Overrides Function VisitAddressOfOperator(node As BoundAddressOfOperator) As BoundNode
-            Dim methodGroup As BoundMethodGroup = DirectCast(Me.Visit(node.MethodGroup), BoundMethodGroup)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim methodGroup = DirectCast(Me.Visit(node.MethodGroup), BoundMethodGroup)
+            Dim        type = Me.VisitType(node.Type)
             Return node.Update(node.Binder, methodGroup)
         End Function
 
         Public Overrides Function VisitTernaryConditionalExpression(node As BoundTernaryConditionalExpression) As BoundNode
-            Dim condition As BoundExpression = DirectCast(Me.Visit(node.Condition), BoundExpression)
-            Dim whenTrue As BoundExpression = DirectCast(Me.Visit(node.WhenTrue), BoundExpression)
-            Dim whenFalse As BoundExpression = DirectCast(Me.Visit(node.WhenFalse), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim condition = DirectCast(Me.Visit(node.Condition), BoundExpression)
+            Dim  whenTrue = DirectCast(Me.Visit(node.WhenTrue), BoundExpression)
+            Dim whenFalse = DirectCast(Me.Visit(node.WhenFalse), BoundExpression)
+            Dim      type = Me.VisitType(node.Type)
             Return node.Update(condition, whenTrue, whenFalse, node.ConstantValueOpt, type)
         End Function
 
         Public Overrides Function VisitBinaryConditionalExpression(node As BoundBinaryConditionalExpression) As BoundNode
-            Dim testExpression As BoundExpression = DirectCast(Me.Visit(node.TestExpression), BoundExpression)
-            Dim convertedTestExpression As BoundExpression = node.ConvertedTestExpression
-            Dim testExpressionPlaceholder As BoundRValuePlaceholder = node.TestExpressionPlaceholder
-            Dim elseExpression As BoundExpression = DirectCast(Me.Visit(node.ElseExpression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim            testExpression = DirectCast(Me.Visit(node.TestExpression), BoundExpression)
+            Dim   convertedTestExpression = node.ConvertedTestExpression
+            Dim testExpressionPlaceholder = node.TestExpressionPlaceholder
+            Dim            elseExpression = DirectCast(Me.Visit(node.ElseExpression), BoundExpression)
+            Dim                      type = Me.VisitType(node.Type)
             Return node.Update(testExpression, convertedTestExpression, testExpressionPlaceholder, elseExpression, node.ConstantValueOpt, type)
         End Function
 
         Public Overrides Function VisitConversion(node As BoundConversion) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim extendedInfoOpt As BoundExtendedConversionInfo = DirectCast(Me.Visit(node.ExtendedInfoOpt), BoundExtendedConversionInfo)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim         operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim extendedInfoOpt = DirectCast(Me.Visit(node.ExtendedInfoOpt), BoundExtendedConversionInfo)
+            Dim            type = Me.VisitType(node.Type)
             Return node.Update(operand, node.ConversionKind, node.Checked, node.ExplicitCastInCode, node.ConstantValueOpt, extendedInfoOpt, type)
         End Function
 
         Public Overrides Function VisitRelaxationLambda(node As BoundRelaxationLambda) As BoundNode
-            Dim lambda As BoundLambda = DirectCast(Me.Visit(node.Lambda), BoundLambda)
-            Dim receiverPlaceholderOpt As BoundRValuePlaceholder = DirectCast(Me.Visit(node.ReceiverPlaceholderOpt), BoundRValuePlaceholder)
+            Dim                 lambda = DirectCast(Me.Visit(node.Lambda), BoundLambda)
+            Dim receiverPlaceholderOpt = DirectCast(Me.Visit(node.ReceiverPlaceholderOpt), BoundRValuePlaceholder)
             Return node.Update(lambda, receiverPlaceholderOpt)
         End Function
 
         Public Overrides Function VisitConvertedTupleElements(node As BoundConvertedTupleElements) As BoundNode
-            Dim elementPlaceholders As ImmutableArray(Of BoundRValuePlaceholder) = Me.VisitList(node.ElementPlaceholders)
-            Dim convertedElements As ImmutableArray(Of BoundExpression) = Me.VisitList(node.ConvertedElements)
+            Dim elementPlaceholders = Me.VisitList(node.ElementPlaceholders)
+            Dim   convertedElements = Me.VisitList(node.ConvertedElements)
             Return node.Update(elementPlaceholders, convertedElements)
         End Function
 
         Public Overrides Function VisitUserDefinedConversion(node As BoundUserDefinedConversion) As BoundNode
-            Dim underlyingExpression As BoundExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim underlyingExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(underlyingExpression, node.InOutConversionFlags, type)
         End Function
 
         Public Overrides Function VisitDirectCast(node As BoundDirectCast) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim relaxationLambdaOpt As BoundLambda = DirectCast(Me.Visit(node.RelaxationLambdaOpt), BoundLambda)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim             operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim relaxationLambdaOpt = DirectCast(Me.Visit(node.RelaxationLambdaOpt), BoundLambda)
+            Dim                type = Me.VisitType(node.Type)
             Return node.Update(operand, node.ConversionKind, node.SuppressVirtualCalls, node.ConstantValueOpt, relaxationLambdaOpt, type)
         End Function
 
         Public Overrides Function VisitTryCast(node As BoundTryCast) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim relaxationLambdaOpt As BoundLambda = DirectCast(Me.Visit(node.RelaxationLambdaOpt), BoundLambda)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim             operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim relaxationLambdaOpt = DirectCast(Me.Visit(node.RelaxationLambdaOpt), BoundLambda)
+            Dim                type = Me.VisitType(node.Type)
             Return node.Update(operand, node.ConversionKind, node.ConstantValueOpt, relaxationLambdaOpt, type)
         End Function
 
         Public Overrides Function VisitTypeOf(node As BoundTypeOf) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim targetType As TypeSymbol = Me.VisitType(node.TargetType)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim    operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim targetType = Me.VisitType(node.TargetType)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(operand, node.IsTypeOfIsNotExpression, targetType, type)
         End Function
 
         Public Overrides Function VisitSequencePoint(node As BoundSequencePoint) As BoundNode
-            Dim statementOpt As BoundStatement = DirectCast(Me.Visit(node.StatementOpt), BoundStatement)
+            Dim statementOpt = DirectCast(Me.Visit(node.StatementOpt), BoundStatement)
             Return node.Update(statementOpt)
         End Function
 
         Public Overrides Function VisitSequencePointExpression(node As BoundSequencePointExpression) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, type)
         End Function
 
         Public Overrides Function VisitSequencePointWithSpan(node As BoundSequencePointWithSpan) As BoundNode
-            Dim statementOpt As BoundStatement = DirectCast(Me.Visit(node.StatementOpt), BoundStatement)
+            Dim statementOpt = DirectCast(Me.Visit(node.StatementOpt), BoundStatement)
             Return node.Update(statementOpt, node.Span)
         End Function
 
@@ -8477,226 +8473,226 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitMethodGroup(node As BoundMethodGroup) As BoundNode
-            Dim typeArgumentsOpt As BoundTypeArguments = DirectCast(Me.Visit(node.TypeArgumentsOpt), BoundTypeArguments)
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim typeArgumentsOpt = DirectCast(Me.Visit(node.TypeArgumentsOpt), BoundTypeArguments)
+            Dim      receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim             type = Me.VisitType(node.Type)
             Return node.Update(typeArgumentsOpt, node.Methods, node.PendingExtensionMethodsOpt, node.ResultKind, receiverOpt, node.QualificationKind)
         End Function
 
         Public Overrides Function VisitPropertyGroup(node As BoundPropertyGroup) As BoundNode
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim        type = Me.VisitType(node.Type)
             Return node.Update(node.Properties, node.ResultKind, receiverOpt, node.QualificationKind)
         End Function
 
         Public Overrides Function VisitReturnStatement(node As BoundReturnStatement) As BoundNode
-            Dim expressionOpt As BoundExpression = DirectCast(Me.Visit(node.ExpressionOpt), BoundExpression)
+            Dim expressionOpt = DirectCast(Me.Visit(node.ExpressionOpt), BoundExpression)
             Return node.Update(expressionOpt, node.FunctionLocalOpt, node.ExitLabelOpt)
         End Function
 
         Public Overrides Function VisitYieldStatement(node As BoundYieldStatement) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
             Return node.Update(expression)
         End Function
 
         Public Overrides Function VisitThrowStatement(node As BoundThrowStatement) As BoundNode
-            Dim expressionOpt As BoundExpression = DirectCast(Me.Visit(node.ExpressionOpt), BoundExpression)
+            Dim expressionOpt = DirectCast(Me.Visit(node.ExpressionOpt), BoundExpression)
             Return node.Update(expressionOpt)
         End Function
 
         Public Overrides Function VisitRedimStatement(node As BoundRedimStatement) As BoundNode
-            Dim clauses As ImmutableArray(Of BoundRedimClause) = Me.VisitList(node.Clauses)
+            Dim clauses = Me.VisitList(node.Clauses)
             Return node.Update(clauses)
         End Function
 
         Public Overrides Function VisitRedimClause(node As BoundRedimClause) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim indices As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Indices)
+            Dim operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim indices = Me.VisitList(node.Indices)
             Return node.Update(operand, indices, node.ArrayTypeOpt, node.Preserve)
         End Function
 
         Public Overrides Function VisitEraseStatement(node As BoundEraseStatement) As BoundNode
-            Dim clauses As ImmutableArray(Of BoundAssignmentOperator) = Me.VisitList(node.Clauses)
+            Dim clauses = Me.VisitList(node.Clauses)
             Return node.Update(clauses)
         End Function
 
         Public Overrides Function VisitCall(node As BoundCall) As BoundNode
-            Dim methodGroupOpt As BoundMethodGroup = node.MethodGroupOpt
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim arguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Arguments)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim methodGroupOpt = node.MethodGroupOpt
+            Dim    receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim      arguments = Me.VisitList(node.Arguments)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(node.Method, methodGroupOpt, receiverOpt, arguments, node.DefaultArguments, node.ConstantValueOpt, node.IsLValue, node.SuppressObjectClone, type)
         End Function
 
         Public Overrides Function VisitAttribute(node As BoundAttribute) As BoundNode
-            Dim constructorArguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.ConstructorArguments)
-            Dim namedArguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.NamedArguments)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim constructorArguments = Me.VisitList(node.ConstructorArguments)
+            Dim       namedArguments = Me.VisitList(node.NamedArguments)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(node.Constructor, constructorArguments, namedArguments, node.ResultKind, type)
         End Function
 
         Public Overrides Function VisitLateMemberAccess(node As BoundLateMemberAccess) As BoundNode
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim typeArgumentsOpt As BoundTypeArguments = DirectCast(Me.Visit(node.TypeArgumentsOpt), BoundTypeArguments)
-            Dim containerTypeOpt As TypeSymbol = Me.VisitType(node.ContainerTypeOpt)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim      receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim typeArgumentsOpt = DirectCast(Me.Visit(node.TypeArgumentsOpt), BoundTypeArguments)
+            Dim containerTypeOpt = Me.VisitType(node.ContainerTypeOpt)
+            Dim             type = Me.VisitType(node.Type)
             Return node.Update(node.NameOpt, containerTypeOpt, receiverOpt, typeArgumentsOpt, node.AccessKind, type)
         End Function
 
         Public Overrides Function VisitLateInvocation(node As BoundLateInvocation) As BoundNode
-            Dim member As BoundExpression = DirectCast(Me.Visit(node.Member), BoundExpression)
-            Dim argumentsOpt As ImmutableArray(Of BoundExpression) = Me.VisitList(node.ArgumentsOpt)
-            Dim methodOrPropertyGroupOpt As BoundMethodOrPropertyGroup = node.MethodOrPropertyGroupOpt
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim                   member = DirectCast(Me.Visit(node.Member), BoundExpression)
+            Dim             argumentsOpt = Me.VisitList(node.ArgumentsOpt)
+            Dim methodOrPropertyGroupOpt = node.MethodOrPropertyGroupOpt
+            Dim                     type = Me.VisitType(node.Type)
             Return node.Update(member, argumentsOpt, node.ArgumentNamesOpt, node.AccessKind, methodOrPropertyGroupOpt, type)
         End Function
 
         Public Overrides Function VisitLateAddressOfOperator(node As BoundLateAddressOfOperator) As BoundNode
-            Dim memberAccess As BoundLateMemberAccess = DirectCast(Me.Visit(node.MemberAccess), BoundLateMemberAccess)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim memberAccess = DirectCast(Me.Visit(node.MemberAccess), BoundLateMemberAccess)
+            Dim         type = Me.VisitType(node.Type)
             Return node.Update(node.Binder, memberAccess, type)
         End Function
 
         Public Overrides Function VisitTupleLiteral(node As BoundTupleLiteral) As BoundNode
-            Dim arguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Arguments)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim arguments = Me.VisitList(node.Arguments)
+            Dim      type = Me.VisitType(node.Type)
             Return node.Update(node.InferredType, node.ArgumentNamesOpt, node.InferredNamesOpt, arguments, type)
         End Function
 
         Public Overrides Function VisitConvertedTupleLiteral(node As BoundConvertedTupleLiteral) As BoundNode
-            Dim arguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Arguments)
-            Dim naturalTypeOpt As TypeSymbol = Me.VisitType(node.NaturalTypeOpt)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim      arguments = Me.VisitList(node.Arguments)
+            Dim naturalTypeOpt = Me.VisitType(node.NaturalTypeOpt)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(naturalTypeOpt, arguments, type)
         End Function
 
         Public Overrides Function VisitObjectCreationExpression(node As BoundObjectCreationExpression) As BoundNode
-            Dim methodGroupOpt As BoundMethodGroup = node.MethodGroupOpt
-            Dim arguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Arguments)
-            Dim initializerOpt As BoundObjectInitializerExpressionBase = DirectCast(Me.Visit(node.InitializerOpt), BoundObjectInitializerExpressionBase)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim methodGroupOpt = node.MethodGroupOpt
+            Dim      arguments = Me.VisitList(node.Arguments)
+            Dim initializerOpt = DirectCast(Me.Visit(node.InitializerOpt), BoundObjectInitializerExpressionBase)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(node.ConstructorOpt, methodGroupOpt, arguments, node.DefaultArguments, initializerOpt, type)
         End Function
 
         Public Overrides Function VisitNoPiaObjectCreationExpression(node As BoundNoPiaObjectCreationExpression) As BoundNode
-            Dim initializerOpt As BoundObjectInitializerExpressionBase = DirectCast(Me.Visit(node.InitializerOpt), BoundObjectInitializerExpressionBase)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim initializerOpt = DirectCast(Me.Visit(node.InitializerOpt), BoundObjectInitializerExpressionBase)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(node.GuidString, initializerOpt, type)
         End Function
 
         Public Overrides Function VisitAnonymousTypeCreationExpression(node As BoundAnonymousTypeCreationExpression) As BoundNode
-            Dim declarations As ImmutableArray(Of BoundAnonymousTypePropertyAccess) = Me.VisitList(node.Declarations)
-            Dim arguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Arguments)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim declarations = Me.VisitList(node.Declarations)
+            Dim    arguments = Me.VisitList(node.Arguments)
+            Dim         type = Me.VisitType(node.Type)
             Return node.Update(node.BinderOpt, declarations, arguments, type)
         End Function
 
         Public Overrides Function VisitAnonymousTypePropertyAccess(node As BoundAnonymousTypePropertyAccess) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Binder, node.PropertyIndex, type)
         End Function
 
         Public Overrides Function VisitAnonymousTypeFieldInitializer(node As BoundAnonymousTypeFieldInitializer) As BoundNode
-            Dim value As BoundExpression = DirectCast(Me.Visit(node.Value), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim value = DirectCast(Me.Visit(node.Value), BoundExpression)
+            Dim  type = Me.VisitType(node.Type)
             Return node.Update(node.Binder, value, type)
         End Function
 
         Public Overrides Function VisitObjectInitializerExpression(node As BoundObjectInitializerExpression) As BoundNode
-            Dim placeholderOpt As BoundWithLValueExpressionPlaceholder = DirectCast(Me.Visit(node.PlaceholderOpt), BoundWithLValueExpressionPlaceholder)
-            Dim initializers As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Initializers)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim placeholderOpt = DirectCast(Me.Visit(node.PlaceholderOpt), BoundWithLValueExpressionPlaceholder)
+            Dim   initializers = Me.VisitList(node.Initializers)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(node.CreateTemporaryLocalForInitialization, node.Binder, placeholderOpt, initializers, type)
         End Function
 
         Public Overrides Function VisitCollectionInitializerExpression(node As BoundCollectionInitializerExpression) As BoundNode
-            Dim placeholderOpt As BoundWithLValueExpressionPlaceholder = DirectCast(Me.Visit(node.PlaceholderOpt), BoundWithLValueExpressionPlaceholder)
-            Dim initializers As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Initializers)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim placeholderOpt = DirectCast(Me.Visit(node.PlaceholderOpt), BoundWithLValueExpressionPlaceholder)
+            Dim   initializers = Me.VisitList(node.Initializers)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(placeholderOpt, initializers, type)
         End Function
 
         Public Overrides Function VisitNewT(node As BoundNewT) As BoundNode
-            Dim initializerOpt As BoundObjectInitializerExpressionBase = DirectCast(Me.Visit(node.InitializerOpt), BoundObjectInitializerExpressionBase)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim initializerOpt = DirectCast(Me.Visit(node.InitializerOpt), BoundObjectInitializerExpressionBase)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(initializerOpt, type)
         End Function
 
         Public Overrides Function VisitDelegateCreationExpression(node As BoundDelegateCreationExpression) As BoundNode
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim relaxationLambdaOpt As BoundLambda = DirectCast(Me.Visit(node.RelaxationLambdaOpt), BoundLambda)
-            Dim relaxationReceiverPlaceholderOpt As BoundRValuePlaceholder = DirectCast(Me.Visit(node.RelaxationReceiverPlaceholderOpt), BoundRValuePlaceholder)
-            Dim methodGroupOpt As BoundMethodGroup = node.MethodGroupOpt
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim                      receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim              relaxationLambdaOpt = DirectCast(Me.Visit(node.RelaxationLambdaOpt), BoundLambda)
+            Dim relaxationReceiverPlaceholderOpt = DirectCast(Me.Visit(node.RelaxationReceiverPlaceholderOpt), BoundRValuePlaceholder)
+            Dim                   methodGroupOpt = node.MethodGroupOpt
+            Dim                             type = Me.VisitType(node.Type)
             Return node.Update(receiverOpt, node.Method, relaxationLambdaOpt, relaxationReceiverPlaceholderOpt, methodGroupOpt, type)
         End Function
 
         Public Overrides Function VisitArrayCreation(node As BoundArrayCreation) As BoundNode
-            Dim bounds As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Bounds)
-            Dim initializerOpt As BoundArrayInitialization = DirectCast(Me.Visit(node.InitializerOpt), BoundArrayInitialization)
-            Dim arrayLiteralOpt As BoundArrayLiteral = node.ArrayLiteralOpt
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim          bounds = Me.VisitList(node.Bounds)
+            Dim  initializerOpt = DirectCast(Me.Visit(node.InitializerOpt), BoundArrayInitialization)
+            Dim arrayLiteralOpt = node.ArrayLiteralOpt
+            Dim            type = Me.VisitType(node.Type)
             Return node.Update(node.IsParamArrayArgument, bounds, initializerOpt, arrayLiteralOpt, node.ArrayLiteralConversion, type)
         End Function
 
         Public Overrides Function VisitArrayLiteral(node As BoundArrayLiteral) As BoundNode
-            Dim bounds As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Bounds)
-            Dim initializer As BoundArrayInitialization = DirectCast(Me.Visit(node.Initializer), BoundArrayInitialization)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim      bounds = Me.VisitList(node.Bounds)
+            Dim initializer = DirectCast(Me.Visit(node.Initializer), BoundArrayInitialization)
+            Dim        type = Me.VisitType(node.Type)
             Return node.Update(node.HasDominantType, node.NumberOfCandidates, node.InferredType, bounds, initializer, node.Binder)
         End Function
 
         Public Overrides Function VisitArrayInitialization(node As BoundArrayInitialization) As BoundNode
-            Dim initializers As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Initializers)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim initializers = Me.VisitList(node.Initializers)
+            Dim         type = Me.VisitType(node.Type)
             Return node.Update(initializers, type)
         End Function
 
         Public Overrides Function VisitFieldAccess(node As BoundFieldAccess) As BoundNode
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim        type = Me.VisitType(node.Type)
             Return node.Update(receiverOpt, node.FieldSymbol, node.IsLValue, node.SuppressVirtualCalls, node.ConstantsInProgressOpt, type)
         End Function
 
         Public Overrides Function VisitPropertyAccess(node As BoundPropertyAccess) As BoundNode
-            Dim propertyGroupOpt As BoundPropertyGroup = node.PropertyGroupOpt
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim arguments As ImmutableArray(Of BoundExpression) = Me.VisitList(node.Arguments)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim propertyGroupOpt = node.PropertyGroupOpt
+            Dim      receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim        arguments = Me.VisitList(node.Arguments)
+            Dim             type = Me.VisitType(node.Type)
             Return node.Update(node.PropertySymbol, propertyGroupOpt, node.AccessKind, node.IsWriteable, node.IsLValue, receiverOpt, arguments, node.DefaultArguments, type)
         End Function
 
         Public Overrides Function VisitEventAccess(node As BoundEventAccess) As BoundNode
-            Dim receiverOpt As BoundExpression = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim receiverOpt = DirectCast(Me.Visit(node.ReceiverOpt), BoundExpression)
+            Dim        type = Me.VisitType(node.Type)
             Return node.Update(receiverOpt, node.EventSymbol, type)
         End Function
 
         Public Overrides Function VisitBlock(node As BoundBlock) As BoundNode
-            Dim statements As ImmutableArray(Of BoundStatement) = Me.VisitList(node.Statements)
+            Dim statements = Me.VisitList(node.Statements)
             Return node.Update(node.StatementListSyntax, node.Locals, statements)
         End Function
 
         Public Overrides Function VisitStateMachineScope(node As BoundStateMachineScope) As BoundNode
-            Dim statement As BoundStatement = DirectCast(Me.Visit(node.Statement), BoundStatement)
+            Dim statement = DirectCast(Me.Visit(node.Statement), BoundStatement)
             Return node.Update(node.Fields, statement)
         End Function
 
         Public Overrides Function VisitLocalDeclaration(node As BoundLocalDeclaration) As BoundNode
-            Dim declarationInitializerOpt As BoundExpression = DirectCast(Me.Visit(node.DeclarationInitializerOpt), BoundExpression)
-            Dim identifierInitializerOpt As BoundArrayCreation = DirectCast(Me.Visit(node.IdentifierInitializerOpt), BoundArrayCreation)
+            Dim declarationInitializerOpt = DirectCast(Me.Visit(node.DeclarationInitializerOpt), BoundExpression)
+            Dim  identifierInitializerOpt = DirectCast(Me.Visit(node.IdentifierInitializerOpt), BoundArrayCreation)
             Return node.Update(node.LocalSymbol, declarationInitializerOpt, identifierInitializerOpt, node.InitializedByAsNew)
         End Function
 
         Public Overrides Function VisitAsNewLocalDeclarations(node As BoundAsNewLocalDeclarations) As BoundNode
-            Dim localDeclarations As ImmutableArray(Of BoundLocalDeclaration) = Me.VisitList(node.LocalDeclarations)
-            Dim initializer As BoundExpression = DirectCast(Me.Visit(node.Initializer), BoundExpression)
+            Dim localDeclarations = Me.VisitList(node.LocalDeclarations)
+            Dim       initializer = DirectCast(Me.Visit(node.Initializer), BoundExpression)
             Return node.Update(localDeclarations, initializer)
         End Function
 
         Public Overrides Function VisitDimStatement(node As BoundDimStatement) As BoundNode
-            Dim localDeclarations As ImmutableArray(Of BoundLocalDeclarationBase) = Me.VisitList(node.LocalDeclarations)
-            Dim initializerOpt As BoundExpression = DirectCast(Me.Visit(node.InitializerOpt), BoundExpression)
+            Dim localDeclarations = Me.VisitList(node.LocalDeclarations)
+            Dim    initializerOpt = DirectCast(Me.Visit(node.InitializerOpt), BoundExpression)
             Return node.Update(localDeclarations, initializerOpt)
         End Function
 
@@ -8705,124 +8701,124 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitFieldInitializer(node As BoundFieldInitializer) As BoundNode
-            Dim memberAccessExpressionOpt As BoundExpression = DirectCast(Me.Visit(node.MemberAccessExpressionOpt), BoundExpression)
-            Dim initialValue As BoundExpression = DirectCast(Me.Visit(node.InitialValue), BoundExpression)
+            Dim memberAccessExpressionOpt = DirectCast(Me.Visit(node.MemberAccessExpressionOpt), BoundExpression)
+            Dim              initialValue = DirectCast(Me.Visit(node.InitialValue), BoundExpression)
             Return node.Update(node.InitializedFields, memberAccessExpressionOpt, initialValue)
         End Function
 
         Public Overrides Function VisitPropertyInitializer(node As BoundPropertyInitializer) As BoundNode
-            Dim memberAccessExpressionOpt As BoundExpression = DirectCast(Me.Visit(node.MemberAccessExpressionOpt), BoundExpression)
-            Dim initialValue As BoundExpression = DirectCast(Me.Visit(node.InitialValue), BoundExpression)
+            Dim memberAccessExpressionOpt = DirectCast(Me.Visit(node.MemberAccessExpressionOpt), BoundExpression)
+            Dim              initialValue = DirectCast(Me.Visit(node.InitialValue), BoundExpression)
             Return node.Update(node.InitializedProperties, memberAccessExpressionOpt, initialValue)
         End Function
 
         Public Overrides Function VisitParameterEqualsValue(node As BoundParameterEqualsValue) As BoundNode
-            Dim value As BoundExpression = DirectCast(Me.Visit(node.Value), BoundExpression)
+            Dim value = DirectCast(Me.Visit(node.Value), BoundExpression)
             Return node.Update(node.Parameter, value)
         End Function
 
         Public Overrides Function VisitGlobalStatementInitializer(node As BoundGlobalStatementInitializer) As BoundNode
-            Dim statement As BoundStatement = DirectCast(Me.Visit(node.Statement), BoundStatement)
+            Dim statement = DirectCast(Me.Visit(node.Statement), BoundStatement)
             Return node.Update(statement)
         End Function
 
         Public Overrides Function VisitSequence(node As BoundSequence) As BoundNode
-            Dim sideEffects As ImmutableArray(Of BoundExpression) = Me.VisitList(node.SideEffects)
-            Dim valueOpt As BoundExpression = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim sideEffects = Me.VisitList(node.SideEffects)
+            Dim    valueOpt = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
+            Dim        type = Me.VisitType(node.Type)
             Return node.Update(node.Locals, sideEffects, valueOpt, type)
         End Function
 
         Public Overrides Function VisitExpressionStatement(node As BoundExpressionStatement) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
             Return node.Update(expression)
         End Function
 
         Public Overrides Function VisitIfStatement(node As BoundIfStatement) As BoundNode
-            Dim condition As BoundExpression = DirectCast(Me.Visit(node.Condition), BoundExpression)
-            Dim consequence As BoundStatement = DirectCast(Me.Visit(node.Consequence), BoundStatement)
-            Dim alternativeOpt As BoundStatement = DirectCast(Me.Visit(node.AlternativeOpt), BoundStatement)
+            Dim      condition = DirectCast(Me.Visit(node.Condition), BoundExpression)
+            Dim    consequence = DirectCast(Me.Visit(node.Consequence), BoundStatement)
+            Dim alternativeOpt = DirectCast(Me.Visit(node.AlternativeOpt), BoundStatement)
             Return node.Update(condition, consequence, alternativeOpt)
         End Function
 
         Public Overrides Function VisitSelectStatement(node As BoundSelectStatement) As BoundNode
-            Dim expressionStatement As BoundExpressionStatement = DirectCast(Me.Visit(node.ExpressionStatement), BoundExpressionStatement)
-            Dim exprPlaceholderOpt As BoundRValuePlaceholder = DirectCast(Me.Visit(node.ExprPlaceholderOpt), BoundRValuePlaceholder)
-            Dim caseBlocks As ImmutableArray(Of BoundCaseBlock) = Me.VisitList(node.CaseBlocks)
+            Dim expressionStatement = DirectCast(Me.Visit(node.ExpressionStatement), BoundExpressionStatement)
+            Dim  exprPlaceholderOpt = DirectCast(Me.Visit(node.ExprPlaceholderOpt), BoundRValuePlaceholder)
+            Dim          caseBlocks = Me.VisitList(node.CaseBlocks)
             Return node.Update(expressionStatement, exprPlaceholderOpt, caseBlocks, node.RecommendSwitchTable, node.ExitLabel)
         End Function
 
         Public Overrides Function VisitCaseBlock(node As BoundCaseBlock) As BoundNode
-            Dim caseStatement As BoundCaseStatement = DirectCast(Me.Visit(node.CaseStatement), BoundCaseStatement)
-            Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
+            Dim caseStatement = DirectCast(Me.Visit(node.CaseStatement), BoundCaseStatement)
+            Dim          body = DirectCast(Me.Visit(node.Body), BoundBlock)
             Return node.Update(caseStatement, body)
         End Function
 
         Public Overrides Function VisitCaseStatement(node As BoundCaseStatement) As BoundNode
-            Dim caseClauses As ImmutableArray(Of BoundCaseClause) = Me.VisitList(node.CaseClauses)
-            Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
+            Dim  caseClauses = Me.VisitList(node.CaseClauses)
+            Dim conditionOpt = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
             Return node.Update(caseClauses, conditionOpt)
         End Function
 
         Public Overrides Function VisitSimpleCaseClause(node As BoundSimpleCaseClause) As BoundNode
-            Dim valueOpt As BoundExpression = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
-            Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
+            Dim     valueOpt = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
+            Dim conditionOpt = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
             Return node.Update(valueOpt, conditionOpt)
         End Function
 
         Public Overrides Function VisitRangeCaseClause(node As BoundRangeCaseClause) As BoundNode
-            Dim lowerBoundOpt As BoundExpression = DirectCast(Me.Visit(node.LowerBoundOpt), BoundExpression)
-            Dim upperBoundOpt As BoundExpression = DirectCast(Me.Visit(node.UpperBoundOpt), BoundExpression)
-            Dim lowerBoundConditionOpt As BoundExpression = DirectCast(Me.Visit(node.LowerBoundConditionOpt), BoundExpression)
-            Dim upperBoundConditionOpt As BoundExpression = DirectCast(Me.Visit(node.UpperBoundConditionOpt), BoundExpression)
+            Dim          lowerBoundOpt = DirectCast(Me.Visit(node.LowerBoundOpt), BoundExpression)
+            Dim          upperBoundOpt = DirectCast(Me.Visit(node.UpperBoundOpt), BoundExpression)
+            Dim lowerBoundConditionOpt = DirectCast(Me.Visit(node.LowerBoundConditionOpt), BoundExpression)
+            Dim upperBoundConditionOpt = DirectCast(Me.Visit(node.UpperBoundConditionOpt), BoundExpression)
             Return node.Update(lowerBoundOpt, upperBoundOpt, lowerBoundConditionOpt, upperBoundConditionOpt)
         End Function
 
         Public Overrides Function VisitRelationalCaseClause(node As BoundRelationalCaseClause) As BoundNode
-            Dim valueOpt As BoundExpression = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
-            Dim conditionOpt As BoundExpression = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
+            Dim     valueOpt = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
+            Dim conditionOpt = DirectCast(Me.Visit(node.ConditionOpt), BoundExpression)
             Return node.Update(node.OperatorKind, valueOpt, conditionOpt)
         End Function
 
         Public Overrides Function VisitDoLoopStatement(node As BoundDoLoopStatement) As BoundNode
-            Dim topConditionOpt As BoundExpression = DirectCast(Me.Visit(node.TopConditionOpt), BoundExpression)
-            Dim bottomConditionOpt As BoundExpression = DirectCast(Me.Visit(node.BottomConditionOpt), BoundExpression)
-            Dim body As BoundStatement = DirectCast(Me.Visit(node.Body), BoundStatement)
+            Dim    topConditionOpt = DirectCast(Me.Visit(node.TopConditionOpt), BoundExpression)
+            Dim bottomConditionOpt = DirectCast(Me.Visit(node.BottomConditionOpt), BoundExpression)
+            Dim               body = DirectCast(Me.Visit(node.Body), BoundStatement)
             Return node.Update(topConditionOpt, bottomConditionOpt, node.TopConditionIsUntil, node.BottomConditionIsUntil, body, node.ContinueLabel, node.ExitLabel)
         End Function
 
         Public Overrides Function VisitWhileStatement(node As BoundWhileStatement) As BoundNode
-            Dim condition As BoundExpression = DirectCast(Me.Visit(node.Condition), BoundExpression)
-            Dim body As BoundStatement = DirectCast(Me.Visit(node.Body), BoundStatement)
+            Dim condition = DirectCast(Me.Visit(node.Condition), BoundExpression)
+            Dim      body = DirectCast(Me.Visit(node.Body), BoundStatement)
             Return node.Update(condition, body, node.ContinueLabel, node.ExitLabel)
         End Function
 
         Public Overrides Function VisitForToUserDefinedOperators(node As BoundForToUserDefinedOperators) As BoundNode
-            Dim leftOperandPlaceholder As BoundRValuePlaceholder = DirectCast(Me.Visit(node.LeftOperandPlaceholder), BoundRValuePlaceholder)
-            Dim rightOperandPlaceholder As BoundRValuePlaceholder = DirectCast(Me.Visit(node.RightOperandPlaceholder), BoundRValuePlaceholder)
-            Dim addition As BoundUserDefinedBinaryOperator = DirectCast(Me.Visit(node.Addition), BoundUserDefinedBinaryOperator)
-            Dim subtraction As BoundUserDefinedBinaryOperator = DirectCast(Me.Visit(node.Subtraction), BoundUserDefinedBinaryOperator)
-            Dim lessThanOrEqual As BoundExpression = DirectCast(Me.Visit(node.LessThanOrEqual), BoundExpression)
-            Dim greaterThanOrEqual As BoundExpression = DirectCast(Me.Visit(node.GreaterThanOrEqual), BoundExpression)
+            Dim  leftOperandPlaceholder = DirectCast(Me.Visit(node.LeftOperandPlaceholder), BoundRValuePlaceholder)
+            Dim rightOperandPlaceholder = DirectCast(Me.Visit(node.RightOperandPlaceholder), BoundRValuePlaceholder)
+            Dim                addition = DirectCast(Me.Visit(node.Addition), BoundUserDefinedBinaryOperator)
+            Dim             subtraction = DirectCast(Me.Visit(node.Subtraction), BoundUserDefinedBinaryOperator)
+            Dim         lessThanOrEqual = DirectCast(Me.Visit(node.LessThanOrEqual), BoundExpression)
+            Dim      greaterThanOrEqual = DirectCast(Me.Visit(node.GreaterThanOrEqual), BoundExpression)
             Return node.Update(leftOperandPlaceholder, rightOperandPlaceholder, addition, subtraction, lessThanOrEqual, greaterThanOrEqual)
         End Function
 
         Public Overrides Function VisitForToStatement(node As BoundForToStatement) As BoundNode
-            Dim initialValue As BoundExpression = DirectCast(Me.Visit(node.InitialValue), BoundExpression)
-            Dim limitValue As BoundExpression = DirectCast(Me.Visit(node.LimitValue), BoundExpression)
-            Dim stepValue As BoundExpression = DirectCast(Me.Visit(node.StepValue), BoundExpression)
-            Dim operatorsOpt As BoundForToUserDefinedOperators = DirectCast(Me.Visit(node.OperatorsOpt), BoundForToUserDefinedOperators)
-            Dim controlVariable As BoundExpression = DirectCast(Me.Visit(node.ControlVariable), BoundExpression)
-            Dim body As BoundStatement = DirectCast(Me.Visit(node.Body), BoundStatement)
-            Dim nextVariablesOpt As ImmutableArray(Of BoundExpression) = Me.VisitList(node.NextVariablesOpt)
+            Dim     initialValue = DirectCast(Me.Visit(node.InitialValue), BoundExpression)
+            Dim       limitValue = DirectCast(Me.Visit(node.LimitValue), BoundExpression)
+            Dim        stepValue = DirectCast(Me.Visit(node.StepValue), BoundExpression)
+            Dim     operatorsOpt = DirectCast(Me.Visit(node.OperatorsOpt), BoundForToUserDefinedOperators)
+            Dim  controlVariable = DirectCast(Me.Visit(node.ControlVariable), BoundExpression)
+            Dim             body = DirectCast(Me.Visit(node.Body), BoundStatement)
+            Dim nextVariablesOpt = Me.VisitList(node.NextVariablesOpt)
             Return node.Update(initialValue, limitValue, stepValue, node.Checked, operatorsOpt, node.DeclaredOrInferredLocalOpt, controlVariable, body, nextVariablesOpt, node.ContinueLabel, node.ExitLabel)
         End Function
 
         Public Overrides Function VisitForEachStatement(node As BoundForEachStatement) As BoundNode
-            Dim collection As BoundExpression = DirectCast(Me.Visit(node.Collection), BoundExpression)
-            Dim controlVariable As BoundExpression = DirectCast(Me.Visit(node.ControlVariable), BoundExpression)
-            Dim body As BoundStatement = DirectCast(Me.Visit(node.Body), BoundStatement)
-            Dim nextVariablesOpt As ImmutableArray(Of BoundExpression) = Me.VisitList(node.NextVariablesOpt)
+            Dim       collection = DirectCast(Me.Visit(node.Collection), BoundExpression)
+            Dim  controlVariable = DirectCast(Me.Visit(node.ControlVariable), BoundExpression)
+            Dim             body = DirectCast(Me.Visit(node.Body), BoundStatement)
+            Dim nextVariablesOpt = Me.VisitList(node.NextVariablesOpt)
             Return node.Update(collection, node.EnumeratorInfo, node.DeclaredOrInferredLocalOpt, controlVariable, body, nextVariablesOpt, node.ContinueLabel, node.ExitLabel)
         End Function
 
@@ -8835,88 +8831,88 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitTryStatement(node As BoundTryStatement) As BoundNode
-            Dim tryBlock As BoundBlock = DirectCast(Me.Visit(node.TryBlock), BoundBlock)
-            Dim catchBlocks As ImmutableArray(Of BoundCatchBlock) = Me.VisitList(node.CatchBlocks)
-            Dim finallyBlockOpt As BoundBlock = DirectCast(Me.Visit(node.FinallyBlockOpt), BoundBlock)
+            Dim        tryBlock = DirectCast(Me.Visit(node.TryBlock), BoundBlock)
+            Dim     catchBlocks = Me.VisitList(node.CatchBlocks)
+            Dim finallyBlockOpt = DirectCast(Me.Visit(node.FinallyBlockOpt), BoundBlock)
             Return node.Update(tryBlock, catchBlocks, finallyBlockOpt, node.ExitLabelOpt)
         End Function
 
         Public Overrides Function VisitCatchBlock(node As BoundCatchBlock) As BoundNode
-            Dim exceptionSourceOpt As BoundExpression = DirectCast(Me.Visit(node.ExceptionSourceOpt), BoundExpression)
-            Dim errorLineNumberOpt As BoundExpression = DirectCast(Me.Visit(node.ErrorLineNumberOpt), BoundExpression)
-            Dim exceptionFilterOpt As BoundExpression = DirectCast(Me.Visit(node.ExceptionFilterOpt), BoundExpression)
-            Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
+            Dim exceptionSourceOpt = DirectCast(Me.Visit(node.ExceptionSourceOpt), BoundExpression)
+            Dim errorLineNumberOpt = DirectCast(Me.Visit(node.ErrorLineNumberOpt), BoundExpression)
+            Dim exceptionFilterOpt = DirectCast(Me.Visit(node.ExceptionFilterOpt), BoundExpression)
+            Dim               body = DirectCast(Me.Visit(node.Body), BoundBlock)
             Return node.Update(node.LocalOpt, exceptionSourceOpt, errorLineNumberOpt, exceptionFilterOpt, body, node.IsSynthesizedAsyncCatchAll)
         End Function
 
         Public Overrides Function VisitLiteral(node As BoundLiteral) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Value, type)
         End Function
 
         Public Overrides Function VisitMeReference(node As BoundMeReference) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitValueTypeMeReference(node As BoundValueTypeMeReference) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitMyBaseReference(node As BoundMyBaseReference) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitMyClassReference(node As BoundMyClassReference) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitPreviousSubmissionReference(node As BoundPreviousSubmissionReference) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.SourceType, type)
         End Function
 
         Public Overrides Function VisitHostObjectMemberReference(node As BoundHostObjectMemberReference) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(type)
         End Function
 
         Public Overrides Function VisitLocal(node As BoundLocal) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.LocalSymbol, node.IsLValue, type)
         End Function
 
         Public Overrides Function VisitPseudoVariable(node As BoundPseudoVariable) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.LocalSymbol, node.IsLValue, node.EmitExpressions, type)
         End Function
 
         Public Overrides Function VisitParameter(node As BoundParameter) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.ParameterSymbol, node.IsLValue, node.SuppressVirtualCalls, type)
         End Function
 
         Public Overrides Function VisitByRefArgumentPlaceholder(node As BoundByRefArgumentPlaceholder) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.IsOut, type)
         End Function
 
         Public Overrides Function VisitByRefArgumentWithCopyBack(node As BoundByRefArgumentWithCopyBack) As BoundNode
-            Dim originalArgument As BoundExpression = DirectCast(Me.Visit(node.OriginalArgument), BoundExpression)
-            Dim inConversion As BoundExpression = DirectCast(Me.Visit(node.InConversion), BoundExpression)
-            Dim inPlaceholder As BoundByRefArgumentPlaceholder = DirectCast(Me.Visit(node.InPlaceholder), BoundByRefArgumentPlaceholder)
-            Dim outConversion As BoundExpression = DirectCast(Me.Visit(node.OutConversion), BoundExpression)
-            Dim outPlaceholder As BoundRValuePlaceholder = DirectCast(Me.Visit(node.OutPlaceholder), BoundRValuePlaceholder)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim originalArgument = DirectCast(Me.Visit(node.OriginalArgument), BoundExpression)
+            Dim     inConversion = DirectCast(Me.Visit(node.InConversion), BoundExpression)
+            Dim    inPlaceholder = DirectCast(Me.Visit(node.InPlaceholder), BoundByRefArgumentPlaceholder)
+            Dim    outConversion = DirectCast(Me.Visit(node.OutConversion), BoundExpression)
+            Dim   outPlaceholder = DirectCast(Me.Visit(node.OutPlaceholder), BoundRValuePlaceholder)
+            Dim             type = Me.VisitType(node.Type)
             Return node.Update(originalArgument, inConversion, inPlaceholder, outConversion, outPlaceholder, type)
         End Function
 
         Public Overrides Function VisitLateBoundArgumentSupportingAssignmentWithCapture(node As BoundLateBoundArgumentSupportingAssignmentWithCapture) As BoundNode
-            Dim originalArgument As BoundExpression = DirectCast(Me.Visit(node.OriginalArgument), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim originalArgument = DirectCast(Me.Visit(node.OriginalArgument), BoundExpression)
+            Dim             type = Me.VisitType(node.Type)
             Return node.Update(originalArgument, node.LocalSymbol, type)
         End Function
 
@@ -8925,279 +8921,279 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitLabel(node As BoundLabel) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Label, type)
         End Function
 
         Public Overrides Function VisitGotoStatement(node As BoundGotoStatement) As BoundNode
-            Dim labelExpressionOpt As BoundLabel = DirectCast(Me.Visit(node.LabelExpressionOpt), BoundLabel)
+            Dim labelExpressionOpt = DirectCast(Me.Visit(node.LabelExpressionOpt), BoundLabel)
             Return node.Update(node.Label, labelExpressionOpt)
         End Function
 
         Public Overrides Function VisitStatementList(node As BoundStatementList) As BoundNode
-            Dim statements As ImmutableArray(Of BoundStatement) = Me.VisitList(node.Statements)
+            Dim statements = Me.VisitList(node.Statements)
             Return node.Update(statements)
         End Function
 
         Public Overrides Function VisitConditionalGoto(node As BoundConditionalGoto) As BoundNode
-            Dim condition As BoundExpression = DirectCast(Me.Visit(node.Condition), BoundExpression)
+            Dim condition = DirectCast(Me.Visit(node.Condition), BoundExpression)
             Return node.Update(condition, node.JumpIfTrue, node.Label)
         End Function
 
         Public Overrides Function VisitWithStatement(node As BoundWithStatement) As BoundNode
-            Dim originalExpression As BoundExpression = DirectCast(Me.Visit(node.OriginalExpression), BoundExpression)
-            Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
+            Dim originalExpression = DirectCast(Me.Visit(node.OriginalExpression), BoundExpression)
+            Dim               body = DirectCast(Me.Visit(node.Body), BoundBlock)
             Return node.Update(originalExpression, body, node.Binder)
         End Function
 
         Public Overrides Function VisitUnboundLambda(node As UnboundLambda) As BoundNode
-            Dim returnType As TypeSymbol = Me.VisitType(node.ReturnType)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim returnType = Me.VisitType(node.ReturnType)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(node.Binder, node.Flags, node.Parameters, returnType, node.BindingCache)
         End Function
 
         Public Overrides Function VisitLambda(node As BoundLambda) As BoundNode
-            Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim body = DirectCast(Me.Visit(node.Body), BoundBlock)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.LambdaSymbol, body, node.Diagnostics, node.LambdaBinderOpt, node.DelegateRelaxation, node.MethodConversionKind)
         End Function
 
         Public Overrides Function VisitQueryExpression(node As BoundQueryExpression) As BoundNode
-            Dim lastOperator As BoundQueryClauseBase = DirectCast(Me.Visit(node.LastOperator), BoundQueryClauseBase)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim lastOperator = DirectCast(Me.Visit(node.LastOperator), BoundQueryClauseBase)
+            Dim         type = Me.VisitType(node.Type)
             Return node.Update(lastOperator, type)
         End Function
 
         Public Overrides Function VisitQuerySource(node As BoundQuerySource) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, type)
         End Function
 
         Public Overrides Function VisitToQueryableCollectionConversion(node As BoundToQueryableCollectionConversion) As BoundNode
-            Dim conversionCall As BoundCall = DirectCast(Me.Visit(node.ConversionCall), BoundCall)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim conversionCall = DirectCast(Me.Visit(node.ConversionCall), BoundCall)
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(conversionCall, type)
         End Function
 
         Public Overrides Function VisitQueryableSource(node As BoundQueryableSource) As BoundNode
-            Dim source As BoundQueryPart = DirectCast(Me.Visit(node.Source), BoundQueryPart)
-            Dim compoundVariableType As TypeSymbol = Me.VisitType(node.CompoundVariableType)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim               source = DirectCast(Me.Visit(node.Source), BoundQueryPart)
+            Dim compoundVariableType = Me.VisitType(node.CompoundVariableType)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(source, node.RangeVariableOpt, node.RangeVariables, compoundVariableType, node.Binders, type)
         End Function
 
         Public Overrides Function VisitQueryClause(node As BoundQueryClause) As BoundNode
-            Dim underlyingExpression As BoundExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
-            Dim compoundVariableType As TypeSymbol = Me.VisitType(node.CompoundVariableType)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim underlyingExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
+            Dim compoundVariableType = Me.VisitType(node.CompoundVariableType)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(underlyingExpression, node.RangeVariables, compoundVariableType, node.Binders, type)
         End Function
 
         Public Overrides Function VisitOrdering(node As BoundOrdering) As BoundNode
-            Dim underlyingExpression As BoundExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim underlyingExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(underlyingExpression, type)
         End Function
 
         Public Overrides Function VisitQueryLambda(node As BoundQueryLambda) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(node.LambdaSymbol, node.RangeVariables, expression, node.ExprIsOperandOfConditionalBranch)
         End Function
 
         Public Overrides Function VisitRangeVariableAssignment(node As BoundRangeVariableAssignment) As BoundNode
-            Dim value As BoundExpression = DirectCast(Me.Visit(node.Value), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim value = DirectCast(Me.Visit(node.Value), BoundExpression)
+            Dim  type = Me.VisitType(node.Type)
             Return node.Update(node.RangeVariable, value, type)
         End Function
 
         Public Overrides Function VisitGroupTypeInferenceLambda(node As GroupTypeInferenceLambda) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.Binder, node.Parameters, node.Compilation)
         End Function
 
         Public Overrides Function VisitAggregateClause(node As BoundAggregateClause) As BoundNode
-            Dim capturedGroupOpt As BoundQueryClauseBase = DirectCast(Me.Visit(node.CapturedGroupOpt), BoundQueryClauseBase)
-            Dim groupPlaceholderOpt As BoundRValuePlaceholder = DirectCast(Me.Visit(node.GroupPlaceholderOpt), BoundRValuePlaceholder)
-            Dim underlyingExpression As BoundExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
-            Dim compoundVariableType As TypeSymbol = Me.VisitType(node.CompoundVariableType)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim     capturedGroupOpt = DirectCast(Me.Visit(node.CapturedGroupOpt), BoundQueryClauseBase)
+            Dim  groupPlaceholderOpt = DirectCast(Me.Visit(node.GroupPlaceholderOpt), BoundRValuePlaceholder)
+            Dim underlyingExpression = DirectCast(Me.Visit(node.UnderlyingExpression), BoundExpression)
+            Dim compoundVariableType = Me.VisitType(node.CompoundVariableType)
+            Dim                 type = Me.VisitType(node.Type)
             Return node.Update(capturedGroupOpt, groupPlaceholderOpt, underlyingExpression, node.RangeVariables, compoundVariableType, node.Binders, type)
         End Function
 
         Public Overrides Function VisitGroupAggregation(node As BoundGroupAggregation) As BoundNode
-            Dim group As BoundExpression = DirectCast(Me.Visit(node.Group), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim group = DirectCast(Me.Visit(node.Group), BoundExpression)
+            Dim  type = Me.VisitType(node.Type)
             Return node.Update(group, type)
         End Function
 
         Public Overrides Function VisitRangeVariable(node As BoundRangeVariable) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.RangeVariable, type)
         End Function
 
         Public Overrides Function VisitAddHandlerStatement(node As BoundAddHandlerStatement) As BoundNode
-            Dim eventAccess As BoundExpression = DirectCast(Me.Visit(node.EventAccess), BoundExpression)
-            Dim handler As BoundExpression = DirectCast(Me.Visit(node.Handler), BoundExpression)
+            Dim eventAccess = DirectCast(Me.Visit(node.EventAccess), BoundExpression)
+            Dim     handler = DirectCast(Me.Visit(node.Handler), BoundExpression)
             Return node.Update(eventAccess, handler)
         End Function
 
         Public Overrides Function VisitRemoveHandlerStatement(node As BoundRemoveHandlerStatement) As BoundNode
-            Dim eventAccess As BoundExpression = DirectCast(Me.Visit(node.EventAccess), BoundExpression)
-            Dim handler As BoundExpression = DirectCast(Me.Visit(node.Handler), BoundExpression)
+            Dim eventAccess = DirectCast(Me.Visit(node.EventAccess), BoundExpression)
+            Dim     handler = DirectCast(Me.Visit(node.Handler), BoundExpression)
             Return node.Update(eventAccess, handler)
         End Function
 
         Public Overrides Function VisitRaiseEventStatement(node As BoundRaiseEventStatement) As BoundNode
-            Dim eventInvocation As BoundExpression = DirectCast(Me.Visit(node.EventInvocation), BoundExpression)
+            Dim eventInvocation = DirectCast(Me.Visit(node.EventInvocation), BoundExpression)
             Return node.Update(node.EventSymbol, eventInvocation)
         End Function
 
         Public Overrides Function VisitUsingStatement(node As BoundUsingStatement) As BoundNode
-            Dim resourceList As ImmutableArray(Of BoundLocalDeclarationBase) = Me.VisitList(node.ResourceList)
-            Dim resourceExpressionOpt As BoundExpression = DirectCast(Me.Visit(node.ResourceExpressionOpt), BoundExpression)
-            Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
+            Dim          resourceList = Me.VisitList(node.ResourceList)
+            Dim resourceExpressionOpt = DirectCast(Me.Visit(node.ResourceExpressionOpt), BoundExpression)
+            Dim                  body = DirectCast(Me.Visit(node.Body), BoundBlock)
             Return node.Update(resourceList, resourceExpressionOpt, body, node.UsingInfo, node.Locals)
         End Function
 
         Public Overrides Function VisitSyncLockStatement(node As BoundSyncLockStatement) As BoundNode
-            Dim lockExpression As BoundExpression = DirectCast(Me.Visit(node.LockExpression), BoundExpression)
-            Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
+            Dim lockExpression = DirectCast(Me.Visit(node.LockExpression), BoundExpression)
+            Dim           body = DirectCast(Me.Visit(node.Body), BoundBlock)
             Return node.Update(lockExpression, body)
         End Function
 
         Public Overrides Function VisitXmlName(node As BoundXmlName) As BoundNode
-            Dim xmlNamespace As BoundExpression = DirectCast(Me.Visit(node.XmlNamespace), BoundExpression)
-            Dim localName As BoundExpression = DirectCast(Me.Visit(node.LocalName), BoundExpression)
-            Dim objectCreation As BoundExpression = node.ObjectCreation
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim   xmlNamespace = DirectCast(Me.Visit(node.XmlNamespace), BoundExpression)
+            Dim      localName = DirectCast(Me.Visit(node.LocalName), BoundExpression)
+            Dim objectCreation = node.ObjectCreation
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(xmlNamespace, localName, objectCreation, type)
         End Function
 
         Public Overrides Function VisitXmlNamespace(node As BoundXmlNamespace) As BoundNode
-            Dim xmlNamespace As BoundExpression = DirectCast(Me.Visit(node.XmlNamespace), BoundExpression)
-            Dim objectCreation As BoundExpression = node.ObjectCreation
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim   xmlNamespace = DirectCast(Me.Visit(node.XmlNamespace), BoundExpression)
+            Dim objectCreation = node.ObjectCreation
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(xmlNamespace, objectCreation, type)
         End Function
 
         Public Overrides Function VisitXmlDocument(node As BoundXmlDocument) As BoundNode
-            Dim declaration As BoundExpression = DirectCast(Me.Visit(node.Declaration), BoundExpression)
-            Dim childNodes As ImmutableArray(Of BoundExpression) = Me.VisitList(node.ChildNodes)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim declaration = DirectCast(Me.Visit(node.Declaration), BoundExpression)
+            Dim  childNodes = Me.VisitList(node.ChildNodes)
+            Dim        type = Me.VisitType(node.Type)
             Return node.Update(declaration, childNodes, node.RewriterInfo, type)
         End Function
 
         Public Overrides Function VisitXmlDeclaration(node As BoundXmlDeclaration) As BoundNode
-            Dim version As BoundExpression = DirectCast(Me.Visit(node.Version), BoundExpression)
-            Dim encoding As BoundExpression = DirectCast(Me.Visit(node.Encoding), BoundExpression)
-            Dim standalone As BoundExpression = DirectCast(Me.Visit(node.Standalone), BoundExpression)
-            Dim objectCreation As BoundExpression = node.ObjectCreation
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim        version = DirectCast(Me.Visit(node.Version), BoundExpression)
+            Dim       encoding = DirectCast(Me.Visit(node.Encoding), BoundExpression)
+            Dim     standalone = DirectCast(Me.Visit(node.Standalone), BoundExpression)
+            Dim objectCreation = node.ObjectCreation
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(version, encoding, standalone, objectCreation, type)
         End Function
 
         Public Overrides Function VisitXmlProcessingInstruction(node As BoundXmlProcessingInstruction) As BoundNode
-            Dim target As BoundExpression = DirectCast(Me.Visit(node.Target), BoundExpression)
-            Dim data As BoundExpression = DirectCast(Me.Visit(node.Data), BoundExpression)
-            Dim objectCreation As BoundExpression = node.ObjectCreation
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim         target = DirectCast(Me.Visit(node.Target), BoundExpression)
+            Dim           data = DirectCast(Me.Visit(node.Data), BoundExpression)
+            Dim objectCreation = node.ObjectCreation
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(target, data, objectCreation, type)
         End Function
 
         Public Overrides Function VisitXmlComment(node As BoundXmlComment) As BoundNode
-            Dim value As BoundExpression = DirectCast(Me.Visit(node.Value), BoundExpression)
-            Dim objectCreation As BoundExpression = node.ObjectCreation
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim          value = DirectCast(Me.Visit(node.Value), BoundExpression)
+            Dim objectCreation = node.ObjectCreation
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(value, objectCreation, type)
         End Function
 
         Public Overrides Function VisitXmlAttribute(node As BoundXmlAttribute) As BoundNode
-            Dim name As BoundExpression = DirectCast(Me.Visit(node.Name), BoundExpression)
-            Dim value As BoundExpression = DirectCast(Me.Visit(node.Value), BoundExpression)
-            Dim objectCreation As BoundExpression = node.ObjectCreation
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim           name = DirectCast(Me.Visit(node.Name), BoundExpression)
+            Dim          value = DirectCast(Me.Visit(node.Value), BoundExpression)
+            Dim objectCreation = node.ObjectCreation
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(name, value, node.MatchesImport, objectCreation, type)
         End Function
 
         Public Overrides Function VisitXmlElement(node As BoundXmlElement) As BoundNode
-            Dim argument As BoundExpression = DirectCast(Me.Visit(node.Argument), BoundExpression)
-            Dim childNodes As ImmutableArray(Of BoundExpression) = Me.VisitList(node.ChildNodes)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim   argument = DirectCast(Me.Visit(node.Argument), BoundExpression)
+            Dim childNodes = Me.VisitList(node.ChildNodes)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(argument, childNodes, node.RewriterInfo, type)
         End Function
 
         Public Overrides Function VisitXmlMemberAccess(node As BoundXmlMemberAccess) As BoundNode
-            Dim memberAccess As BoundExpression = DirectCast(Me.Visit(node.MemberAccess), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim memberAccess = DirectCast(Me.Visit(node.MemberAccess), BoundExpression)
+            Dim         type = Me.VisitType(node.Type)
             Return node.Update(memberAccess, type)
         End Function
 
         Public Overrides Function VisitXmlEmbeddedExpression(node As BoundXmlEmbeddedExpression) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, type)
         End Function
 
         Public Overrides Function VisitXmlCData(node As BoundXmlCData) As BoundNode
-            Dim value As BoundLiteral = DirectCast(Me.Visit(node.Value), BoundLiteral)
-            Dim objectCreation As BoundExpression = node.ObjectCreation
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim          value = DirectCast(Me.Visit(node.Value), BoundLiteral)
+            Dim objectCreation = node.ObjectCreation
+            Dim           type = Me.VisitType(node.Type)
             Return node.Update(value, objectCreation, type)
         End Function
 
         Public Overrides Function VisitResumeStatement(node As BoundResumeStatement) As BoundNode
-            Dim labelExpressionOpt As BoundExpression = DirectCast(Me.Visit(node.LabelExpressionOpt), BoundExpression)
+            Dim labelExpressionOpt = DirectCast(Me.Visit(node.LabelExpressionOpt), BoundExpression)
             Return node.Update(node.ResumeKind, node.LabelOpt, labelExpressionOpt)
         End Function
 
         Public Overrides Function VisitOnErrorStatement(node As BoundOnErrorStatement) As BoundNode
-            Dim labelExpressionOpt As BoundExpression = DirectCast(Me.Visit(node.LabelExpressionOpt), BoundExpression)
+            Dim labelExpressionOpt = DirectCast(Me.Visit(node.LabelExpressionOpt), BoundExpression)
             Return node.Update(node.OnErrorKind, node.LabelOpt, labelExpressionOpt)
         End Function
 
         Public Overrides Function VisitUnstructuredExceptionHandlingStatement(node As BoundUnstructuredExceptionHandlingStatement) As BoundNode
-            Dim body As BoundBlock = DirectCast(Me.Visit(node.Body), BoundBlock)
+            Dim body = DirectCast(Me.Visit(node.Body), BoundBlock)
             Return node.Update(node.ContainsOnError, node.ContainsResume, node.ResumeWithoutLabelOpt, node.TrackLineNumber, body)
         End Function
 
         Public Overrides Function VisitUnstructuredExceptionHandlingCatchFilter(node As BoundUnstructuredExceptionHandlingCatchFilter) As BoundNode
-            Dim activeHandlerLocal As BoundLocal = DirectCast(Me.Visit(node.ActiveHandlerLocal), BoundLocal)
-            Dim resumeTargetLocal As BoundLocal = DirectCast(Me.Visit(node.ResumeTargetLocal), BoundLocal)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim activeHandlerLocal = DirectCast(Me.Visit(node.ActiveHandlerLocal), BoundLocal)
+            Dim  resumeTargetLocal = DirectCast(Me.Visit(node.ResumeTargetLocal), BoundLocal)
+            Dim               type = Me.VisitType(node.Type)
             Return node.Update(activeHandlerLocal, resumeTargetLocal, type)
         End Function
 
         Public Overrides Function VisitUnstructuredExceptionOnErrorSwitch(node As BoundUnstructuredExceptionOnErrorSwitch) As BoundNode
-            Dim value As BoundExpression = DirectCast(Me.Visit(node.Value), BoundExpression)
-            Dim jumps As ImmutableArray(Of BoundGotoStatement) = Me.VisitList(node.Jumps)
+            Dim value = DirectCast(Me.Visit(node.Value), BoundExpression)
+            Dim jumps = Me.VisitList(node.Jumps)
             Return node.Update(value, jumps)
         End Function
 
         Public Overrides Function VisitUnstructuredExceptionResumeSwitch(node As BoundUnstructuredExceptionResumeSwitch) As BoundNode
-            Dim resumeTargetTemporary As BoundLocal = DirectCast(Me.Visit(node.ResumeTargetTemporary), BoundLocal)
-            Dim resumeLabel As BoundLabelStatement = DirectCast(Me.Visit(node.ResumeLabel), BoundLabelStatement)
-            Dim resumeNextLabel As BoundLabelStatement = DirectCast(Me.Visit(node.ResumeNextLabel), BoundLabelStatement)
-            Dim jumps As ImmutableArray(Of BoundGotoStatement) = Me.VisitList(node.Jumps)
+            Dim resumeTargetTemporary = DirectCast(Me.Visit(node.ResumeTargetTemporary), BoundLocal)
+            Dim           resumeLabel = DirectCast(Me.Visit(node.ResumeLabel), BoundLabelStatement)
+            Dim       resumeNextLabel = DirectCast(Me.Visit(node.ResumeNextLabel), BoundLabelStatement)
+            Dim                 jumps = Me.VisitList(node.Jumps)
             Return node.Update(resumeTargetTemporary, resumeLabel, resumeNextLabel, jumps)
         End Function
 
         Public Overrides Function VisitAwaitOperator(node As BoundAwaitOperator) As BoundNode
-            Dim operand As BoundExpression = DirectCast(Me.Visit(node.Operand), BoundExpression)
-            Dim awaitableInstancePlaceholder As BoundRValuePlaceholder = DirectCast(Me.Visit(node.AwaitableInstancePlaceholder), BoundRValuePlaceholder)
-            Dim getAwaiter As BoundExpression = DirectCast(Me.Visit(node.GetAwaiter), BoundExpression)
-            Dim awaiterInstancePlaceholder As BoundLValuePlaceholder = DirectCast(Me.Visit(node.AwaiterInstancePlaceholder), BoundLValuePlaceholder)
-            Dim isCompleted As BoundExpression = DirectCast(Me.Visit(node.IsCompleted), BoundExpression)
-            Dim getResult As BoundExpression = DirectCast(Me.Visit(node.GetResult), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim                      operand = DirectCast(Me.Visit(node.Operand), BoundExpression)
+            Dim awaitableInstancePlaceholder = DirectCast(Me.Visit(node.AwaitableInstancePlaceholder), BoundRValuePlaceholder)
+            Dim                   getAwaiter = DirectCast(Me.Visit(node.GetAwaiter), BoundExpression)
+            Dim   awaiterInstancePlaceholder = DirectCast(Me.Visit(node.AwaiterInstancePlaceholder), BoundLValuePlaceholder)
+            Dim                  isCompleted = DirectCast(Me.Visit(node.IsCompleted), BoundExpression)
+            Dim                    getResult = DirectCast(Me.Visit(node.GetResult), BoundExpression)
+            Dim                         type = Me.VisitType(node.Type)
             Return node.Update(operand, awaitableInstancePlaceholder, getAwaiter, awaiterInstancePlaceholder, isCompleted, getResult, type)
         End Function
 
         Public Overrides Function VisitSpillSequence(node As BoundSpillSequence) As BoundNode
-            Dim statements As ImmutableArray(Of BoundStatement) = Me.VisitList(node.Statements)
-            Dim valueOpt As BoundExpression = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim statements = Me.VisitList(node.Statements)
+            Dim   valueOpt = DirectCast(Me.Visit(node.ValueOpt), BoundExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(node.Locals, node.SpillFields, statements, valueOpt, type)
         End Function
 
@@ -9210,64 +9206,64 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitMidResult(node As BoundMidResult) As BoundNode
-            Dim original As BoundExpression = DirectCast(Me.Visit(node.Original), BoundExpression)
-            Dim start As BoundExpression = DirectCast(Me.Visit(node.Start), BoundExpression)
-            Dim lengthOpt As BoundExpression = DirectCast(Me.Visit(node.LengthOpt), BoundExpression)
-            Dim source As BoundExpression = DirectCast(Me.Visit(node.Source), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim  original = DirectCast(Me.Visit(node.Original), BoundExpression)
+            Dim     start = DirectCast(Me.Visit(node.Start), BoundExpression)
+            Dim lengthOpt = DirectCast(Me.Visit(node.LengthOpt), BoundExpression)
+            Dim    source = DirectCast(Me.Visit(node.Source), BoundExpression)
+            Dim      type = Me.VisitType(node.Type)
             Return node.Update(original, start, lengthOpt, source, type)
         End Function
 
         Public Overrides Function VisitConditionalAccess(node As BoundConditionalAccess) As BoundNode
-            Dim receiver As BoundExpression = DirectCast(Me.Visit(node.Receiver), BoundExpression)
-            Dim placeholder As BoundRValuePlaceholder = DirectCast(Me.Visit(node.Placeholder), BoundRValuePlaceholder)
-            Dim accessExpression As BoundExpression = DirectCast(Me.Visit(node.AccessExpression), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim         receiver = DirectCast(Me.Visit(node.Receiver), BoundExpression)
+            Dim      placeholder = DirectCast(Me.Visit(node.Placeholder), BoundRValuePlaceholder)
+            Dim accessExpression = DirectCast(Me.Visit(node.AccessExpression), BoundExpression)
+            Dim             type = Me.VisitType(node.Type)
             Return node.Update(receiver, placeholder, accessExpression, type)
         End Function
 
         Public Overrides Function VisitConditionalAccessReceiverPlaceholder(node As BoundConditionalAccessReceiverPlaceholder) As BoundNode
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim type = Me.VisitType(node.Type)
             Return node.Update(node.PlaceholderId, type)
         End Function
 
         Public Overrides Function VisitLoweredConditionalAccess(node As BoundLoweredConditionalAccess) As BoundNode
-            Dim receiverOrCondition As BoundExpression = DirectCast(Me.Visit(node.ReceiverOrCondition), BoundExpression)
-            Dim whenNotNull As BoundExpression = DirectCast(Me.Visit(node.WhenNotNull), BoundExpression)
-            Dim whenNullOpt As BoundExpression = DirectCast(Me.Visit(node.WhenNullOpt), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim receiverOrCondition = DirectCast(Me.Visit(node.ReceiverOrCondition), BoundExpression)
+            Dim         whenNotNull = DirectCast(Me.Visit(node.WhenNotNull), BoundExpression)
+            Dim         whenNullOpt = DirectCast(Me.Visit(node.WhenNullOpt), BoundExpression)
+            Dim                type = Me.VisitType(node.Type)
             Return node.Update(receiverOrCondition, node.CaptureReceiver, node.PlaceholderId, whenNotNull, whenNullOpt, type)
         End Function
 
         Public Overrides Function VisitComplexConditionalAccessReceiver(node As BoundComplexConditionalAccessReceiver) As BoundNode
-            Dim valueTypeReceiver As BoundExpression = DirectCast(Me.Visit(node.ValueTypeReceiver), BoundExpression)
-            Dim referenceTypeReceiver As BoundExpression = DirectCast(Me.Visit(node.ReferenceTypeReceiver), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim     valueTypeReceiver = DirectCast(Me.Visit(node.ValueTypeReceiver), BoundExpression)
+            Dim referenceTypeReceiver = DirectCast(Me.Visit(node.ReferenceTypeReceiver), BoundExpression)
+            Dim                  type = Me.VisitType(node.Type)
             Return node.Update(valueTypeReceiver, referenceTypeReceiver, type)
         End Function
 
         Public Overrides Function VisitNameOfOperator(node As BoundNameOfOperator) As BoundNode
-            Dim argument As BoundExpression = DirectCast(Me.Visit(node.Argument), BoundExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim argument = DirectCast(Me.Visit(node.Argument), BoundExpression)
+            Dim     type = Me.VisitType(node.Type)
             Return node.Update(argument, node.ConstantValueOpt, type)
         End Function
 
         Public Overrides Function VisitTypeAsValueExpression(node As BoundTypeAsValueExpression) As BoundNode
-            Dim expression As BoundTypeExpression = DirectCast(Me.Visit(node.Expression), BoundTypeExpression)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim expression = DirectCast(Me.Visit(node.Expression), BoundTypeExpression)
+            Dim       type = Me.VisitType(node.Type)
             Return node.Update(expression, type)
         End Function
 
         Public Overrides Function VisitInterpolatedStringExpression(node As BoundInterpolatedStringExpression) As BoundNode
-            Dim contents As ImmutableArray(Of BoundNode) = Me.VisitList(node.Contents)
-            Dim type As TypeSymbol = Me.VisitType(node.Type)
+            Dim contents = Me.VisitList(node.Contents)
+            Dim     type = Me.VisitType(node.Type)
             Return node.Update(contents, node.Binder, type)
         End Function
 
         Public Overrides Function VisitInterpolation(node As BoundInterpolation) As BoundNode
-            Dim expression As BoundExpression = DirectCast(Me.Visit(node.Expression), BoundExpression)
-            Dim alignmentOpt As BoundExpression = DirectCast(Me.Visit(node.AlignmentOpt), BoundExpression)
-            Dim formatStringOpt As BoundLiteral = DirectCast(Me.Visit(node.FormatStringOpt), BoundLiteral)
+            Dim      expression = DirectCast(Me.Visit(node.Expression), BoundExpression)
+            Dim    alignmentOpt = DirectCast(Me.Visit(node.AlignmentOpt), BoundExpression)
+            Dim formatStringOpt = DirectCast(Me.Visit(node.FormatStringOpt), BoundLiteral)
             Return node.Update(expression, alignmentOpt, formatStringOpt)
         End Function
 

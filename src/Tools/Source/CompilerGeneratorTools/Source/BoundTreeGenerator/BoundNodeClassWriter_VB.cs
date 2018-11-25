@@ -14,14 +14,13 @@ namespace BoundTreeGenerator
         private void EOL() => WriteLine("");
         private void Write_End(string text, bool afterBlankLine = false, bool thenBlankLine = false) => WriteLine($"End {text}", undent: true, thenBlankLine: thenBlankLine, afterBlankLine: afterBlankLine);
         private void End_Sub() => Write_End("Sub", thenBlankLine: true);
-        private void End_Enum() => Write_End("Enum", thenBlankLine: true);
+        private void End_Enum() => Write_End("Enum", thenBlankLine: false);
         private void End_Select() => Write_End("Select");
         private void End_Class(bool thenBlankLine = true) => Write_End("Class", thenBlankLine: thenBlankLine);
         private void End_Function(bool thenBlankLine = true) => Write_End("Function", thenBlankLine: thenBlankLine);
         protected override void End_Namespace() => Write_End("Namespace");
         #endregion
 
-        private void ReturnNode() => Return("node", eol: false);
         private void Friend_MustInherit_Partial_Class(string className, string inherits = null) => Write_Class("Friend MustInherit Partial ", className, inherits);
         private void Write_Class(string modifiers, string className, string inherits) => WriteLine($"{modifiers}Class {className}{(inherits == null ? "" : $" : Inherits {inherits}")}", thenIndent: true, thenBlankLine: true);
 
@@ -34,10 +33,10 @@ namespace BoundTreeGenerator
             }
         }
 
+        private void ReturnNode() => Return("node", eol: false);
         private void Return(string text, bool eol = true) { if (eol) { WriteLine($"Return {text}"); } else { Write($"Return {text}"); } }
         private string NameOf(string name) => $"{{NameOf({name})}}";
 
-        #region "protected override void"
         protected override void InitializeValueTypes(ref Dictionary<string, bool> _valueTypes)
         {
             _valueTypes.Add("Boolean", true);
@@ -250,8 +249,6 @@ namespace BoundTreeGenerator
             void Write_VisitInternal()
             {
                 Friend_MustInherit_Partial_Class($"BoundTreeVisitor(Of A,R)");
-                Blank();
-
                 WriteLine("<MethodImpl(MethodImplOptions.NoInlining)>");
                 WriteLine($"Friend Function VisitInternal({NodeAsBoundNode()}, {NameAsType("arg", "A")}) As R", thenIndent: true);
                 SelectCase();
@@ -276,7 +273,6 @@ namespace BoundTreeGenerator
             void Write_Visit_AsR()
             {
                 Friend_MustInherit_Partial_Class("BoundTreeVisitor(Of A,R)");
-                Blank();
                 foreach (var node in _tree.Types.OfType<Node>())
                     WriteVisitor(node, Parameters(NodeAs(node), NameAsType("arg", "A")), "R", "node,arg");
                 End_Class();
@@ -284,7 +280,6 @@ namespace BoundTreeGenerator
             void Write_Vist_AsBoundNode()
             {
                 Friend_MustInherit_Partial_Class("BoundTreeVisitor");
-                Blank();
                 foreach (var node in _tree.Types.OfType<Node>())
                     WriteVisitor(node, Parameters(NodeAs(node)), boundNode, "node");
                 End_Class();
@@ -327,7 +322,8 @@ namespace BoundTreeGenerator
             }
         }
         void ReturnType(string type) => WriteLine($" As {type}",thenIndent: true);
-#region "Function Writing"
+
+
         private void F(string modifier,string name,string[] parameters, string returns, bool thenIndent = true)
         {
             if (modifier != null) Write($"{modifier} ");
@@ -335,26 +331,13 @@ namespace BoundTreeGenerator
             WriteParameters(parameters);
             ReturnType(returns);
         }
-        private void WriteParameters(string[] parameters)
-        {
-            ParenList(parameters, x => x);
-
-            //var isFirst = true;
-            //foreach(var parameter in parameters)
-            //{
-            //    if (!isFirst) { WriteComma(); }
-            //    isFirst = false;
-            //    Write(parameter);
-            //}
-            //void WriteComma() => Write(", ");
-        }
-
+        private void WriteParameters(string[] parameters) => ParenList(parameters, x => x);
+ 
         private string VAR(string name) => ToCamelCase(StripBound(name));
-        #endregion
+
         protected override void WriteTreeDumperNodeProducer()
         {
             Write_Class("Friend NotInheritable ", "BoundTreeDumperNodeProducer", "BoundTreeVisitor(Of Object, TreeDumperNode)");
-//            WriteLine("Friend NotInheritable Class BoundTreeDumperNodeProducer : Inherits BoundTreeVisitor(Of Object, TreeDumperNode)", thenIndent: true);
             WriteLine("Private Sub New()", afterBlankLine: true);
             WriteLine("End Sub", thenBlankLine: true);
             Write_MakeTree();
@@ -405,52 +388,83 @@ namespace BoundTreeGenerator
 
         string _Field(Field field) => ToCamelCase(field.Name);
 
-        private string NameAsType(string name, string typename) => $"{ToCamelCase(name)} As {typename}";
+        private string NameAsType(string name, string typename, bool isNew = false)
+        {
+            var output = ToCamelCase(name);
+            if (typename != null)
+            {
+                output += " As ";
+                if (isNew) output += "New ";
+                output += typename;
+            }
+            return output;
+        }
 
         protected override void WriteRewriter()
         {
             Friend_MustInherit_Partial_Class("BoundTreeRewriter", "BoundTreeVisitor");
             
             foreach (var node in _tree.Types.OfType<Node>())
-                WriteFunction(node);
+                WriteOverridesVisitFunction(node);
             End_Class();
 
-            void WriteFunction(Node node)
+            void WriteOverridesVisitFunction(Node node)
             {
                 F("Public Overrides", Visit(node),Parameters( NodeAs(node)), "BoundNode");
                 var hadField = false;
-                foreach (var field in AllNodeOrNodeListFields(node))
+                var f0 = AllNodeOrNodeListFields(node).ToArray();
+                var m0 = f0.Length == 0 ? 0 : f0.Max(x => x.Name.Length);
+                var f1 = AllTypeFields(node).ToArray();
+                var m1 = f1.Length == 0 ? 0 : f1.Max(x => x.Name.Length);
+                var widest = Math.Max(m0, m1);
+                AddAny_NodeNodeListField(f0);
+                AddAny_TypeFields(f1);
+                AddReturnStatement();
+                EOL();
+                End_Function();
+
+
+                void AddAny_NodeNodeListField(Field[] fields)
                 {
-                    hadField = true;
-                    Declaration(field.Name,field.Type,"",false);
-                    if (SkipInVisitor(field))
-                        WriteLine($"node.{field.Name}");
-                    else if (IsNodeList(field.Type))
-                        WriteLine($"Me.VisitList(node.{field.Name})");
-                    else
-                        WriteLine($"DirectCast(Me.Visit(node.{field.Name}), {field.Type})");
+                    if (fields.Length <= 0) return;
+                    for (var idx = 0; idx < fields.Length; idx++)
+                    {
+                        var field = fields[idx];
+                        hadField = true;
+                        if (SkipInVisitor(field))
+                            Declaration(field.Name, null, $"node.{field.Name}", eol: true, width: widest);
+                        else if (IsNodeList(field.Type))
+                            Declaration(field.Name, null, $"Me.VisitList(node.{field.Name})", eol: true, width: widest);
+                        else
+                            Declaration(field.Name, null, $"DirectCast(Me.Visit(node.{field.Name}), {field.Type})", eol: true, width: widest);
+                    }
                 }
-                foreach (var field in AllTypeFields(node))
+                void AddAny_TypeFields(Field[] fields)
                 {
-                    hadField = true;
-                    Declaration(field.Name, "TypeSymbol",$"Me.VisitType(node.{field.Name})",false,true);
+                    if (fields.Length <= 0) return;
+                    for (var idx = 0; idx < fields.Length; idx++)
+                    {
+                        var field = fields[idx];
+                        hadField = true;
+                        Declaration(field.Name, null, $"Me.VisitType(node.{field.Name})", eol: true, width: widest);
+                    }
                 }
-                ReturnNode();
-                if (hadField)
+                void AddReturnStatement()
                 {
+                    ReturnNode();
+                    if (!hadField) return;
                     Write(".Update");
                     ParenList(AllSpecifiableFields(node), field => IsDerivedOrListOfDerived("BoundNode", field.Type) || field.Type == "TypeSymbol" ? ToCamelCase(field.Name) : $"node.{field.Name}");
                 }
-                EOL();
-                End_Function();
             }
         }
-        private void Declaration(string field, string typeName, string value , bool isNew, bool eol = false)
+
+        private void Declaration(string field, string typeName, string value , bool isNew = false, bool eol = false,  int width = 0)
         {
-            Write($"Dim {NameAsType(field, IsAsNew())}");
-            if (value != null) Write($" = {value}");
-            if (eol) EOL();
-            string IsAsNew() => (isNew ? "New " : "") + typeName;
+            width = width <= 0 ? field.Length : width;
+           Write($"Dim {NameAsType(field, typeName, isNew: isNew).PadLeft(width)}");
+           if (value != null) Write($" = {value}");
+           if (eol) EOL();
         }
 
         protected override bool   IsImmutableArray(string typeName) => typeName.StartsWith("ImmutableArray(Of", StringComparison.OrdinalIgnoreCase);
@@ -471,7 +485,6 @@ namespace BoundTreeGenerator
             return typeName.Substring(iStart + 3, iEnd - iStart - 3).Trim();
         }
         protected override string EscapeKeyword(string name) => "[" + name + "]";
-        #endregion
 
         private static HashSet<string> Keywords = new HashSet<string>(new string[]
         {  "addhandler", "addressof", "alias", "and", "andalso", "as",
