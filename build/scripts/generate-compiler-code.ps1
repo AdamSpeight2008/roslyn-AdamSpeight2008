@@ -104,7 +104,7 @@ function Build-Tools() {
             $fileName = [IO.Path]::GetFileNameWithoutExtension($proj)
             Write-Host "Building $fileName"
             Restore-Project $dotnet $proj
-            Exec-Command $dotnet "publish /p:Configuration=Debug /p:RuntimeIdentifier=win-x64 /v:m $proj" | Out-Null
+            Exec-Command $dotnet "publish /p:Configuration=Debug /p:RuntimeIdentifier=win-x64 /v:m $proj" #| Out-Null
 
             $exePath = Join-Path $binariesDir "Debug\Exes\$fileName\win-x64\publish\$($exeName).exe"
             if (-not (Test-Path $exePath)) { 

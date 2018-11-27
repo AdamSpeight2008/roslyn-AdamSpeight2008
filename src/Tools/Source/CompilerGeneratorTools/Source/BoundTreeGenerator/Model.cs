@@ -21,90 +21,53 @@ namespace BoundTreeGenerator
 
     public class TreeType
     {
-        [XmlAttribute]
-        public string Name;
-
-        [XmlAttribute]
-        public string Base;
-
-        [XmlAttribute]
-        public string HasValidate;
+        [XmlAttribute]  public string Name;
+        [XmlAttribute]  public string Base;
+        [XmlAttribute]  public string HasValidate;
     }
 
-    public class PredefinedNode : TreeType
-    {
-    }
+    public class PredefinedNode : TreeType  {  }
 
     public class AbstractNode : TreeType
     {
-        [XmlElement(ElementName = "Field", Type = typeof(Field))]
-        public List<Field> Fields;
+        [XmlElement(ElementName = "Field", Type = typeof(Field))] public List<Field> Fields;
     }
 
     public class Node : TreeType
     {
-        [XmlAttribute]
-        public string Root;
-
-        [XmlAttribute]
-        public string Errors;
-
-        [XmlElement(ElementName = "Kind", Type = typeof(Kind))]
-        public List<Kind> Kinds;
-
-        [XmlElement(ElementName = "Field", Type = typeof(Field))]
-        public List<Field> Fields;
+        [XmlAttribute] public string Root;
+        [XmlAttribute] public string Errors;
+        [XmlElement(ElementName = "Kind", Type = typeof(Kind))]   public List<Kind> Kinds;
+        [XmlElement(ElementName = "Field", Type = typeof(Field))] public List<Field> Fields;
     }
 
     public class Kind
     {
-        [XmlAttribute]
-        public string Name;
+        [XmlAttribute]  public string Name;
     }
 
     public class Field
     {
-        [XmlAttribute]
-        public string Name;
-
-        [XmlAttribute]
-        public string Type;
-
-        [XmlAttribute]
-        public string Null;
-
-        [XmlAttribute]
-        public bool Override;
-
-        [XmlAttribute]
-        public string New;
-
-        [XmlAttribute]
-        public string PropertyOverrides;
-
-        [XmlAttribute]
-        public string SkipInVisitor;
+        [XmlAttribute]  public string Name;
+        [XmlAttribute]  public string Type;
+        [XmlAttribute]  public string Null;
+        [XmlAttribute]  public bool Override;
+        [XmlAttribute]  public string New;
+        [XmlAttribute]  public string PropertyOverrides;
+        [XmlAttribute]  public string SkipInVisitor;
     }
 
     public class EnumType : TreeType
     {
-        [XmlAttribute]
-        public string Flags;
-
-        [XmlElement(ElementName = "Field", Type = typeof(EnumField))]
-        public List<EnumField> Fields;
+        [XmlAttribute]  public string Flags;
+        [XmlElement(ElementName = "Field", Type = typeof(EnumField))]  public List<EnumField> Fields;
     }
 
     public class EnumField
     {
-        [XmlAttribute]
-        public string Name;
-
-        [XmlAttribute]
-        public string Value;
+        [XmlAttribute]  public string Name;
+        [XmlAttribute]  public string Value;
     }
 
-    public class ValueType : TreeType
-    {
-    }
+    public class ValueType : TreeType  {  }
 }

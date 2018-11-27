@@ -11,14 +11,11 @@ using System.Threading;
 using System.Text;
 using Microsoft.CodeAnalysis.Collections;
 using Roslyn.Utilities;
-
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 namespace Microsoft.CodeAnalysis.CSharp
-{
-    internal enum BoundKind: byte
+(internal enum BoundKind: byte
     {
         FieldEqualsValue,
         PropertyEqualsValue,
@@ -176,9 +173,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         ConstructorMethodBody,
     }
 
-    internal abstract partial class BoundInitializer : BoundNode
-    {
-        protected BoundInitializer(BoundKind kind, SyntaxNode syntax, bool hasErrors)
+    internal abstract partial  class BoundInitializer : BoundNode
+
+    (protected BoundInitializer(BoundKind kind, SyntaxNode syntax, bool hasErrors)
             : base(kind, syntax, hasErrors)
         {
         }
@@ -188,11 +185,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
         }
 
-    }
 
-    internal abstract partial class BoundEqualsValue : BoundInitializer
-    {
-        protected BoundEqualsValue(BoundKind kind, SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
+    internal abstract partial  class BoundEqualsValue : BoundInitializer
+
+    (protected BoundEqualsValue(BoundKind kind, SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(kind, syntax, hasErrors)
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -206,11 +202,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundExpression Value { get; }
 
-    }
 
-    internal sealed partial class BoundFieldEqualsValue : BoundEqualsValue
-    {
-        public BoundFieldEqualsValue(SyntaxNode syntax, FieldSymbol field, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
+    internal sealed partial  class BoundFieldEqualsValue : BoundEqualsValue
+
+    (public BoundFieldEqualsValue(SyntaxNode syntax, FieldSymbol field, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(BoundKind.FieldEqualsValue, syntax, locals, value, hasErrors || value.HasErrors())
         {
             Debug.Assert(field != null, "Field 'field' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -238,11 +233,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPropertyEqualsValue : BoundEqualsValue
-    {
-        public BoundPropertyEqualsValue(SyntaxNode syntax, PropertySymbol property, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
+    internal sealed partial  class BoundPropertyEqualsValue : BoundEqualsValue
+
+    (public BoundPropertyEqualsValue(SyntaxNode syntax, PropertySymbol property, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(BoundKind.PropertyEqualsValue, syntax, locals, value, hasErrors || value.HasErrors())
         {
             Debug.Assert(property != null, "Field 'property' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -270,11 +264,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundParameterEqualsValue : BoundEqualsValue
-    {
-        public BoundParameterEqualsValue(SyntaxNode syntax, ParameterSymbol parameter, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
+    internal sealed partial  class BoundParameterEqualsValue : BoundEqualsValue
+
+    (public BoundParameterEqualsValue(SyntaxNode syntax, ParameterSymbol parameter, ImmutableArray<LocalSymbol> locals, BoundExpression value, bool hasErrors = false)
             : base(BoundKind.ParameterEqualsValue, syntax, locals, value, hasErrors || value.HasErrors())
         {
             Debug.Assert(parameter != null, "Field 'parameter' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -302,11 +295,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundGlobalStatementInitializer : BoundInitializer
-    {
-        public BoundGlobalStatementInitializer(SyntaxNode syntax, BoundStatement statement, bool hasErrors = false)
+    internal sealed partial  class BoundGlobalStatementInitializer : BoundInitializer
+
+    (public BoundGlobalStatementInitializer(SyntaxNode syntax, BoundStatement statement, bool hasErrors = false)
             : base(BoundKind.GlobalStatementInitializer, syntax, hasErrors || statement.HasErrors())
         {
             Debug.Assert(statement != null, "Field 'statement' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -332,11 +324,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundExpression : BoundNode
-    {
-        protected BoundExpression(BoundKind kind, SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal abstract partial  class BoundExpression : BoundNode
+
+    (protected BoundExpression(BoundKind kind, SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(kind, syntax, hasErrors)
         {
             this.Type = type;
@@ -351,11 +342,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public TypeSymbol Type { get; }
 
-    }
 
-    internal abstract partial class BoundValuePlaceholderBase : BoundExpression
-    {
-        protected BoundValuePlaceholderBase(BoundKind kind, SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal abstract partial  class BoundValuePlaceholderBase : BoundExpression
+
+    (protected BoundValuePlaceholderBase(BoundKind kind, SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(kind, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -367,11 +357,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
         }
 
-    }
 
-    internal sealed partial class BoundDeconstructValuePlaceholder : BoundValuePlaceholderBase
-    {
-        public BoundDeconstructValuePlaceholder(SyntaxNode syntax, uint valEscape, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundDeconstructValuePlaceholder : BoundValuePlaceholderBase
+
+    (public BoundDeconstructValuePlaceholder(SyntaxNode syntax, uint valEscape, TypeSymbol type, bool hasErrors)
             : base(BoundKind.DeconstructValuePlaceholder, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -404,11 +393,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundTupleOperandPlaceholder : BoundValuePlaceholderBase
-    {
-        public BoundTupleOperandPlaceholder(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundTupleOperandPlaceholder : BoundValuePlaceholderBase
+
+    (public BoundTupleOperandPlaceholder(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.TupleOperandPlaceholder, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -436,11 +424,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDup : BoundExpression
-    {
-        public BoundDup(SyntaxNode syntax, RefKind refKind, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundDup : BoundExpression
+
+    (public BoundDup(SyntaxNode syntax, RefKind refKind, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Dup, syntax, type, hasErrors)
         {
             this.RefKind = refKind;
@@ -471,11 +458,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPassByCopy : BoundExpression
-    {
-        public BoundPassByCopy(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundPassByCopy : BoundExpression
+
+    (public BoundPassByCopy(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PassByCopy, syntax, type, hasErrors || expression.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -501,11 +487,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundBadExpression : BoundExpression
-    {
-        public BoundBadExpression(SyntaxNode syntax, LookupResultKind resultKind, ImmutableArray<Symbol> symbols, ImmutableArray<BoundExpression> childBoundNodes, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundBadExpression : BoundExpression
+
+    (public BoundBadExpression(SyntaxNode syntax, LookupResultKind resultKind, ImmutableArray<Symbol> symbols, ImmutableArray<BoundExpression> childBoundNodes, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.BadExpression, syntax, type, hasErrors || childBoundNodes.HasErrors())
         {
             Debug.Assert(!symbols.IsDefault, "Field 'symbols' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -539,11 +524,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundBadStatement : BoundStatement
-    {
-        public BoundBadStatement(SyntaxNode syntax, ImmutableArray<BoundNode> childBoundNodes, bool hasErrors = false)
+    internal sealed partial  class BoundBadStatement : BoundStatement
+
+    (public BoundBadStatement(SyntaxNode syntax, ImmutableArray<BoundNode> childBoundNodes, bool hasErrors = false)
             : base(BoundKind.BadStatement, syntax, hasErrors || childBoundNodes.HasErrors())
         {
             Debug.Assert(!childBoundNodes.IsDefault, "Field 'childBoundNodes' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -569,11 +553,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundTypeExpression : BoundExpression
-    {
-        public BoundTypeExpression(SyntaxNode syntax, AliasSymbol aliasOpt, bool inferredType, BoundTypeExpression boundContainingTypeOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundTypeExpression : BoundExpression
+
+    (public BoundTypeExpression(SyntaxNode syntax, AliasSymbol aliasOpt, bool inferredType, BoundTypeExpression boundContainingTypeOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TypeExpression, syntax, type, hasErrors || boundContainingTypeOpt.HasErrors())
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -605,11 +588,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundTypeOrValueExpression : BoundExpression
-    {
-        public BoundTypeOrValueExpression(SyntaxNode syntax, BoundTypeOrValueData data, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundTypeOrValueExpression : BoundExpression
+
+    (public BoundTypeOrValueExpression(SyntaxNode syntax, BoundTypeOrValueData data, TypeSymbol type, bool hasErrors)
             : base(BoundKind.TypeOrValueExpression, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -642,11 +624,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundNamespaceExpression : BoundExpression
-    {
-        public BoundNamespaceExpression(SyntaxNode syntax, NamespaceSymbol namespaceSymbol, AliasSymbol aliasOpt, bool hasErrors)
+    internal sealed partial  class BoundNamespaceExpression : BoundExpression
+
+    (public BoundNamespaceExpression(SyntaxNode syntax, NamespaceSymbol namespaceSymbol, AliasSymbol aliasOpt, bool hasErrors)
             : base(BoundKind.NamespaceExpression, syntax, null, hasErrors)
         {
             Debug.Assert(namespaceSymbol != null, "Field 'namespaceSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -683,11 +664,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundUnaryOperator : BoundExpression
-    {
-        public BoundUnaryOperator(SyntaxNode syntax, UnaryOperatorKind operatorKind, BoundExpression operand, ConstantValue constantValueOpt, MethodSymbol methodOpt, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundUnaryOperator : BoundExpression
+
+    (public BoundUnaryOperator(SyntaxNode syntax, UnaryOperatorKind operatorKind, BoundExpression operand, ConstantValue constantValueOpt, MethodSymbol methodOpt, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.UnaryOperator, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -727,11 +707,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundIncrementOperator : BoundExpression
-    {
-        public BoundIncrementOperator(SyntaxNode syntax, UnaryOperatorKind operatorKind, BoundExpression operand, MethodSymbol methodOpt, Conversion operandConversion, Conversion resultConversion, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundIncrementOperator : BoundExpression
+
+    (public BoundIncrementOperator(SyntaxNode syntax, UnaryOperatorKind operatorKind, BoundExpression operand, MethodSymbol methodOpt, Conversion operandConversion, Conversion resultConversion, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IncrementOperator, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -774,11 +753,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundAddressOfOperator : BoundExpression
-    {
-        public BoundAddressOfOperator(SyntaxNode syntax, BoundExpression operand, bool isManaged, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundAddressOfOperator : BoundExpression
+
+    (public BoundAddressOfOperator(SyntaxNode syntax, BoundExpression operand, bool isManaged, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AddressOfOperator, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -808,11 +786,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPointerIndirectionOperator : BoundExpression
-    {
-        public BoundPointerIndirectionOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundPointerIndirectionOperator : BoundExpression
+
+    (public BoundPointerIndirectionOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PointerIndirectionOperator, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -839,11 +816,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPointerElementAccess : BoundExpression
-    {
-        public BoundPointerElementAccess(SyntaxNode syntax, BoundExpression expression, BoundExpression index, bool @checked, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundPointerElementAccess : BoundExpression
+
+    (public BoundPointerElementAccess(SyntaxNode syntax, BoundExpression expression, BoundExpression index, bool @checked, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PointerElementAccess, syntax, type, hasErrors || expression.HasErrors() || index.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -877,11 +853,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundRefTypeOperator : BoundExpression
-    {
-        public BoundRefTypeOperator(SyntaxNode syntax, BoundExpression operand, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundRefTypeOperator : BoundExpression
+
+    (public BoundRefTypeOperator(SyntaxNode syntax, BoundExpression operand, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.RefTypeOperator, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -911,11 +886,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundMakeRefOperator : BoundExpression
-    {
-        public BoundMakeRefOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundMakeRefOperator : BoundExpression
+
+    (public BoundMakeRefOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.MakeRefOperator, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -942,11 +916,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundRefValueOperator : BoundExpression
-    {
-        public BoundRefValueOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundRefValueOperator : BoundExpression
+
+    (public BoundRefValueOperator(SyntaxNode syntax, BoundExpression operand, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.RefValueOperator, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -973,11 +946,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundBinaryOperator : BoundExpression
-    {
-        public BoundBinaryOperator(SyntaxNode syntax, BinaryOperatorKind operatorKind, BoundExpression left, BoundExpression right, ConstantValue constantValueOpt, MethodSymbol methodOpt, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundBinaryOperator : BoundExpression
+
+    (public BoundBinaryOperator(SyntaxNode syntax, BinaryOperatorKind operatorKind, BoundExpression left, BoundExpression right, ConstantValue constantValueOpt, MethodSymbol methodOpt, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.BinaryOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1021,11 +993,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundTupleBinaryOperator : BoundExpression
-    {
-        public BoundTupleBinaryOperator(SyntaxNode syntax, BoundExpression left, BoundExpression right, BoundExpression convertedLeft, BoundExpression convertedRight, BinaryOperatorKind operatorKind, TupleBinaryOperatorInfo.Multiple operators, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundTupleBinaryOperator : BoundExpression
+
+    (public BoundTupleBinaryOperator(SyntaxNode syntax, BoundExpression left, BoundExpression right, BoundExpression convertedLeft, BoundExpression convertedRight, BinaryOperatorKind operatorKind, TupleBinaryOperatorInfo.Multiple operators, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TupleBinaryOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors() || convertedLeft.HasErrors() || convertedRight.HasErrors())
         {
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1071,11 +1042,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundUserDefinedConditionalLogicalOperator : BoundExpression
-    {
-        public BoundUserDefinedConditionalLogicalOperator(SyntaxNode syntax, BinaryOperatorKind operatorKind, BoundExpression left, BoundExpression right, MethodSymbol logicalOperator, MethodSymbol trueOperator, MethodSymbol falseOperator, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundUserDefinedConditionalLogicalOperator : BoundExpression
+
+    (public BoundUserDefinedConditionalLogicalOperator(SyntaxNode syntax, BinaryOperatorKind operatorKind, BoundExpression left, BoundExpression right, MethodSymbol logicalOperator, MethodSymbol trueOperator, MethodSymbol falseOperator, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.UserDefinedConditionalLogicalOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1125,11 +1095,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundCompoundAssignmentOperator : BoundExpression
-    {
-        public BoundCompoundAssignmentOperator(SyntaxNode syntax, BinaryOperatorSignature @operator, BoundExpression left, BoundExpression right, Conversion leftConversion, Conversion finalConversion, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundCompoundAssignmentOperator : BoundExpression
+
+    (public BoundCompoundAssignmentOperator(SyntaxNode syntax, BinaryOperatorSignature @operator, BoundExpression left, BoundExpression right, Conversion leftConversion, Conversion finalConversion, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.CompoundAssignmentOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1173,11 +1142,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundAssignmentOperator : BoundExpression
-    {
-        public BoundAssignmentOperator(SyntaxNode syntax, BoundExpression left, BoundExpression right, bool isRef, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundAssignmentOperator : BoundExpression
+
+    (public BoundAssignmentOperator(SyntaxNode syntax, BoundExpression left, BoundExpression right, bool isRef, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AssignmentOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1209,11 +1177,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDeconstructionAssignmentOperator : BoundExpression
-    {
-        public BoundDeconstructionAssignmentOperator(SyntaxNode syntax, BoundTupleExpression left, BoundConversion right, bool isUsed, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundDeconstructionAssignmentOperator : BoundExpression
+
+    (public BoundDeconstructionAssignmentOperator(SyntaxNode syntax, BoundTupleExpression left, BoundConversion right, bool isUsed, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DeconstructionAssignmentOperator, syntax, type, hasErrors || left.HasErrors() || right.HasErrors())
         {
             Debug.Assert(left != null, "Field 'left' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1247,11 +1214,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundNullCoalescingOperator : BoundExpression
-    {
-        public BoundNullCoalescingOperator(SyntaxNode syntax, BoundExpression leftOperand, BoundExpression rightOperand, Conversion leftConversion, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundNullCoalescingOperator : BoundExpression
+
+    (public BoundNullCoalescingOperator(SyntaxNode syntax, BoundExpression leftOperand, BoundExpression rightOperand, Conversion leftConversion, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NullCoalescingOperator, syntax, type, hasErrors || leftOperand.HasErrors() || rightOperand.HasErrors())
         {
             Debug.Assert(leftOperand != null, "Field 'leftOperand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1284,11 +1250,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConditionalOperator : BoundExpression
-    {
-        public BoundConditionalOperator(SyntaxNode syntax, bool isRef, BoundExpression condition, BoundExpression consequence, BoundExpression alternative, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundConditionalOperator : BoundExpression
+
+    (public BoundConditionalOperator(SyntaxNode syntax, bool isRef, BoundExpression condition, BoundExpression consequence, BoundExpression alternative, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConditionalOperator, syntax, type, hasErrors || condition.HasErrors() || consequence.HasErrors() || alternative.HasErrors())
         {
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1329,11 +1294,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundArrayAccess : BoundExpression
-    {
-        public BoundArrayAccess(SyntaxNode syntax, BoundExpression expression, ImmutableArray<BoundExpression> indices, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundArrayAccess : BoundExpression
+
+    (public BoundArrayAccess(SyntaxNode syntax, BoundExpression expression, ImmutableArray<BoundExpression> indices, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArrayAccess, syntax, type, hasErrors || expression.HasErrors() || indices.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1364,11 +1328,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundArrayLength : BoundExpression
-    {
-        public BoundArrayLength(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundArrayLength : BoundExpression
+
+    (public BoundArrayLength(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArrayLength, syntax, type, hasErrors || expression.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1395,11 +1358,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundAwaitExpression : BoundExpression
-    {
-        public BoundAwaitExpression(SyntaxNode syntax, BoundExpression expression, MethodSymbol getAwaiter, PropertySymbol isCompleted, MethodSymbol getResult, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundAwaitExpression : BoundExpression
+
+    (public BoundAwaitExpression(SyntaxNode syntax, BoundExpression expression, MethodSymbol getAwaiter, PropertySymbol isCompleted, MethodSymbol getResult, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AwaitExpression, syntax, type, hasErrors || expression.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1435,11 +1397,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundTypeOf : BoundExpression
-    {
-        protected BoundTypeOf(BoundKind kind, SyntaxNode syntax, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors)
+    internal abstract partial  class BoundTypeOf : BoundExpression
+
+    (protected BoundTypeOf(BoundKind kind, SyntaxNode syntax, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors)
             : base(kind, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1456,11 +1417,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public MethodSymbol GetTypeFromHandle { get; }
 
-    }
 
-    internal sealed partial class BoundTypeOfOperator : BoundTypeOf
-    {
-        public BoundTypeOfOperator(SyntaxNode syntax, BoundTypeExpression sourceType, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundTypeOfOperator : BoundTypeOf
+
+    (public BoundTypeOfOperator(SyntaxNode syntax, BoundTypeExpression sourceType, MethodSymbol getTypeFromHandle, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TypeOfOperator, syntax, getTypeFromHandle, type, hasErrors || sourceType.HasErrors())
         {
             Debug.Assert(sourceType != null, "Field 'sourceType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1487,11 +1447,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundMethodDefIndex : BoundExpression
-    {
-        public BoundMethodDefIndex(SyntaxNode syntax, MethodSymbol method, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundMethodDefIndex : BoundExpression
+
+    (public BoundMethodDefIndex(SyntaxNode syntax, MethodSymbol method, TypeSymbol type, bool hasErrors)
             : base(BoundKind.MethodDefIndex, syntax, type, hasErrors)
         {
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1526,11 +1485,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundMaximumMethodDefIndex : BoundExpression
-    {
-        public BoundMaximumMethodDefIndex(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundMaximumMethodDefIndex : BoundExpression
+
+    (public BoundMaximumMethodDefIndex(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.MaximumMethodDefIndex, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1558,11 +1516,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundInstrumentationPayloadRoot : BoundExpression
-    {
-        public BoundInstrumentationPayloadRoot(SyntaxNode syntax, int analysisKind, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundInstrumentationPayloadRoot : BoundExpression
+
+    (public BoundInstrumentationPayloadRoot(SyntaxNode syntax, int analysisKind, TypeSymbol type, bool hasErrors)
             : base(BoundKind.InstrumentationPayloadRoot, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1595,11 +1552,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundModuleVersionId : BoundExpression
-    {
-        public BoundModuleVersionId(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundModuleVersionId : BoundExpression
+
+    (public BoundModuleVersionId(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ModuleVersionId, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1627,11 +1583,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundModuleVersionIdString : BoundExpression
-    {
-        public BoundModuleVersionIdString(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundModuleVersionIdString : BoundExpression
+
+    (public BoundModuleVersionIdString(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ModuleVersionIdString, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1659,11 +1614,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSourceDocumentIndex : BoundExpression
-    {
-        public BoundSourceDocumentIndex(SyntaxNode syntax, Cci.DebugSourceDocument document, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundSourceDocumentIndex : BoundExpression
+
+    (public BoundSourceDocumentIndex(SyntaxNode syntax, Cci.DebugSourceDocument document, TypeSymbol type, bool hasErrors)
             : base(BoundKind.SourceDocumentIndex, syntax, type, hasErrors)
         {
             Debug.Assert(document != null, "Field 'document' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1698,11 +1652,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundMethodInfo : BoundExpression
-    {
-        public BoundMethodInfo(SyntaxNode syntax, MethodSymbol method, MethodSymbol getMethodFromHandle, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundMethodInfo : BoundExpression
+
+    (public BoundMethodInfo(SyntaxNode syntax, MethodSymbol method, MethodSymbol getMethodFromHandle, TypeSymbol type, bool hasErrors)
             : base(BoundKind.MethodInfo, syntax, type, hasErrors)
         {
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1741,11 +1694,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundFieldInfo : BoundExpression
-    {
-        public BoundFieldInfo(SyntaxNode syntax, FieldSymbol field, MethodSymbol getFieldFromHandle, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundFieldInfo : BoundExpression
+
+    (public BoundFieldInfo(SyntaxNode syntax, FieldSymbol field, MethodSymbol getFieldFromHandle, TypeSymbol type, bool hasErrors)
             : base(BoundKind.FieldInfo, syntax, type, hasErrors)
         {
             Debug.Assert(field != null, "Field 'field' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1784,11 +1736,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDefaultExpression : BoundExpression
-    {
-        public BoundDefaultExpression(SyntaxNode syntax, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundDefaultExpression : BoundExpression
+
+    (public BoundDefaultExpression(SyntaxNode syntax, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors)
             : base(BoundKind.DefaultExpression, syntax, type, hasErrors)
         {
             this.ConstantValueOpt = constantValueOpt;
@@ -1819,11 +1770,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundIsOperator : BoundExpression
-    {
-        public BoundIsOperator(SyntaxNode syntax, BoundExpression operand, BoundTypeExpression targetType, Conversion conversion, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundIsOperator : BoundExpression
+
+    (public BoundIsOperator(SyntaxNode syntax, BoundExpression operand, BoundTypeExpression targetType, Conversion conversion, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IsOperator, syntax, type, hasErrors || operand.HasErrors() || targetType.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1857,11 +1807,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundAsOperator : BoundExpression
-    {
-        public BoundAsOperator(SyntaxNode syntax, BoundExpression operand, BoundTypeExpression targetType, Conversion conversion, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundAsOperator : BoundExpression
+
+    (public BoundAsOperator(SyntaxNode syntax, BoundExpression operand, BoundTypeExpression targetType, Conversion conversion, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AsOperator, syntax, type, hasErrors || operand.HasErrors() || targetType.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1895,11 +1844,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSizeOfOperator : BoundExpression
-    {
-        public BoundSizeOfOperator(SyntaxNode syntax, BoundTypeExpression sourceType, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundSizeOfOperator : BoundExpression
+
+    (public BoundSizeOfOperator(SyntaxNode syntax, BoundTypeExpression sourceType, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.SizeOfOperator, syntax, type, hasErrors || sourceType.HasErrors())
         {
             Debug.Assert(sourceType != null, "Field 'sourceType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1929,11 +1877,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConversion : BoundExpression
-    {
-        public BoundConversion(SyntaxNode syntax, BoundExpression operand, Conversion conversion, bool isBaseConversion, bool @checked, bool explicitCastInCode, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundConversion : BoundExpression
+
+    (public BoundConversion(SyntaxNode syntax, BoundExpression operand, Conversion conversion, bool isBaseConversion, bool @checked, bool explicitCastInCode, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Conversion, syntax, type, hasErrors || operand.HasErrors())
         {
             Debug.Assert(operand != null, "Field 'operand' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -1975,11 +1922,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundArgList : BoundExpression
-    {
-        public BoundArgList(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundArgList : BoundExpression
+
+    (public BoundArgList(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ArgList, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2007,11 +1953,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundArgListOperator : BoundExpression
-    {
-        public BoundArgListOperator(SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, ImmutableArray<RefKind> argumentRefKindsOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundArgListOperator : BoundExpression
+
+    (public BoundArgListOperator(SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, ImmutableArray<RefKind> argumentRefKindsOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArgListOperator, syntax, type, hasErrors || arguments.HasErrors())
         {
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2040,11 +1985,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundFixedLocalCollectionInitializer : BoundExpression
-    {
-        public BoundFixedLocalCollectionInitializer(SyntaxNode syntax, TypeSymbol elementPointerType, Conversion elementPointerTypeConversion, BoundExpression expression, MethodSymbol getPinnableOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundFixedLocalCollectionInitializer : BoundExpression
+
+    (public BoundFixedLocalCollectionInitializer(SyntaxNode syntax, TypeSymbol elementPointerType, Conversion elementPointerTypeConversion, BoundExpression expression, MethodSymbol getPinnableOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.FixedLocalCollectionInitializer, syntax, type, hasErrors || expression.HasErrors())
         {
             Debug.Assert(elementPointerType != null, "Field 'elementPointerType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2081,11 +2025,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundStatement : BoundNode
-    {
-        protected BoundStatement(BoundKind kind, SyntaxNode syntax, bool hasErrors)
+    internal abstract partial  class BoundStatement : BoundNode
+
+    (protected BoundStatement(BoundKind kind, SyntaxNode syntax, bool hasErrors)
             : base(kind, syntax, hasErrors)
         {
         }
@@ -2095,11 +2038,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
         }
 
-    }
 
-    internal sealed partial class BoundSequencePoint : BoundStatement
-    {
-        public BoundSequencePoint(SyntaxNode syntax, BoundStatement statementOpt, bool hasErrors = false)
+    internal sealed partial  class BoundSequencePoint : BoundStatement
+
+    (public BoundSequencePoint(SyntaxNode syntax, BoundStatement statementOpt, bool hasErrors = false)
             : base(BoundKind.SequencePoint, syntax, hasErrors || statementOpt.HasErrors())
         {
             this.StatementOpt = statementOpt;
@@ -2124,11 +2066,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSequencePointExpression : BoundExpression
-    {
-        public BoundSequencePointExpression(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundSequencePointExpression : BoundExpression
+
+    (public BoundSequencePointExpression(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.SequencePointExpression, syntax, type, hasErrors || expression.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2154,11 +2095,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSequencePointWithSpan : BoundStatement
-    {
-        public BoundSequencePointWithSpan(SyntaxNode syntax, BoundStatement statementOpt, TextSpan span, bool hasErrors = false)
+    internal sealed partial  class BoundSequencePointWithSpan : BoundStatement
+
+    (public BoundSequencePointWithSpan(SyntaxNode syntax, BoundStatement statementOpt, TextSpan span, bool hasErrors = false)
             : base(BoundKind.SequencePointWithSpan, syntax, hasErrors || statementOpt.HasErrors())
         {
             this.StatementOpt = statementOpt;
@@ -2186,11 +2126,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundBlock : BoundStatementList
-    {
-        public BoundBlock(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<LocalFunctionSymbol> localFunctions, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
+    internal sealed partial  class BoundBlock : BoundStatementList
+
+    (public BoundBlock(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<LocalFunctionSymbol> localFunctions, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.Block, syntax, statements, hasErrors || statements.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2221,11 +2160,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundScope : BoundStatementList
-    {
-        public BoundScope(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
+    internal sealed partial  class BoundScope : BoundStatementList
+
+    (public BoundScope(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.Scope, syntax, statements, hasErrors || statements.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2252,11 +2190,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundStateMachineScope : BoundStatement
-    {
-        public BoundStateMachineScope(SyntaxNode syntax, ImmutableArray<StateMachineFieldSymbol> fields, BoundStatement statement, bool hasErrors = false)
+    internal sealed partial  class BoundStateMachineScope : BoundStatement
+
+    (public BoundStateMachineScope(SyntaxNode syntax, ImmutableArray<StateMachineFieldSymbol> fields, BoundStatement statement, bool hasErrors = false)
             : base(BoundKind.StateMachineScope, syntax, hasErrors || statement.HasErrors())
         {
             Debug.Assert(!fields.IsDefault, "Field 'fields' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2286,11 +2223,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLocalDeclaration : BoundStatement
-    {
-        public BoundLocalDeclaration(SyntaxNode syntax, LocalSymbol localSymbol, BoundTypeExpression declaredType, BoundExpression initializerOpt, ImmutableArray<BoundExpression> argumentsOpt, bool hasErrors = false)
+    internal sealed partial  class BoundLocalDeclaration : BoundStatement
+
+    (public BoundLocalDeclaration(SyntaxNode syntax, LocalSymbol localSymbol, BoundTypeExpression declaredType, BoundExpression initializerOpt, ImmutableArray<BoundExpression> argumentsOpt, bool hasErrors = false)
             : base(BoundKind.LocalDeclaration, syntax, hasErrors || declaredType.HasErrors() || initializerOpt.HasErrors() || argumentsOpt.HasErrors())
         {
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2326,11 +2262,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundMultipleLocalDeclarations : BoundStatement
-    {
-        public BoundMultipleLocalDeclarations(SyntaxNode syntax, ImmutableArray<BoundLocalDeclaration> localDeclarations, bool hasErrors = false)
+    internal sealed partial  class BoundMultipleLocalDeclarations : BoundStatement
+
+    (public BoundMultipleLocalDeclarations(SyntaxNode syntax, ImmutableArray<BoundLocalDeclaration> localDeclarations, bool hasErrors = false)
             : base(BoundKind.MultipleLocalDeclarations, syntax, hasErrors || localDeclarations.HasErrors())
         {
             Debug.Assert(!localDeclarations.IsDefault, "Field 'localDeclarations' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2356,11 +2291,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLocalFunctionStatement : BoundStatement
-    {
-        public BoundLocalFunctionStatement(SyntaxNode syntax, LocalFunctionSymbol symbol, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
+    internal sealed partial  class BoundLocalFunctionStatement : BoundStatement
+
+    (public BoundLocalFunctionStatement(SyntaxNode syntax, LocalFunctionSymbol symbol, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
             : base(BoundKind.LocalFunctionStatement, syntax, hasErrors || blockBody.HasErrors() || expressionBody.HasErrors())
         {
             Debug.Assert(symbol != null, "Field 'symbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2392,11 +2326,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSequence : BoundExpression
-    {
-        public BoundSequence(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundExpression> sideEffects, BoundExpression value, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundSequence : BoundExpression
+
+    (public BoundSequence(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundExpression> sideEffects, BoundExpression value, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Sequence, syntax, type, hasErrors || sideEffects.HasErrors() || value.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2431,11 +2364,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundNoOpStatement : BoundStatement
-    {
-        public BoundNoOpStatement(SyntaxNode syntax, NoOpStatementFlavor flavor, bool hasErrors)
+    internal sealed partial  class BoundNoOpStatement : BoundStatement
+
+    (public BoundNoOpStatement(SyntaxNode syntax, NoOpStatementFlavor flavor, bool hasErrors)
             : base(BoundKind.NoOpStatement, syntax, hasErrors)
         {
             this.Flavor = flavor;
@@ -2466,11 +2398,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundReturnStatement : BoundStatement
-    {
-        public BoundReturnStatement(SyntaxNode syntax, RefKind refKind, BoundExpression expressionOpt, bool hasErrors = false)
+    internal sealed partial  class BoundReturnStatement : BoundStatement
+
+    (public BoundReturnStatement(SyntaxNode syntax, RefKind refKind, BoundExpression expressionOpt, bool hasErrors = false)
             : base(BoundKind.ReturnStatement, syntax, hasErrors || expressionOpt.HasErrors())
         {
             this.RefKind = refKind;
@@ -2498,11 +2429,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundYieldReturnStatement : BoundStatement
-    {
-        public BoundYieldReturnStatement(SyntaxNode syntax, BoundExpression expression, bool hasErrors = false)
+    internal sealed partial  class BoundYieldReturnStatement : BoundStatement
+
+    (public BoundYieldReturnStatement(SyntaxNode syntax, BoundExpression expression, bool hasErrors = false)
             : base(BoundKind.YieldReturnStatement, syntax, hasErrors || expression.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2528,11 +2458,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundYieldBreakStatement : BoundStatement
-    {
-        public BoundYieldBreakStatement(SyntaxNode syntax, bool hasErrors)
+    internal sealed partial  class BoundYieldBreakStatement : BoundStatement
+
+    (public BoundYieldBreakStatement(SyntaxNode syntax, bool hasErrors)
             : base(BoundKind.YieldBreakStatement, syntax, hasErrors)
         {
         }
@@ -2547,11 +2476,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return visitor.VisitYieldBreakStatement(this);
         }
-    }
 
-    internal sealed partial class BoundThrowStatement : BoundStatement
-    {
-        public BoundThrowStatement(SyntaxNode syntax, BoundExpression expressionOpt, bool hasErrors = false)
+    internal sealed partial  class BoundThrowStatement : BoundStatement
+
+    (public BoundThrowStatement(SyntaxNode syntax, BoundExpression expressionOpt, bool hasErrors = false)
             : base(BoundKind.ThrowStatement, syntax, hasErrors || expressionOpt.HasErrors())
         {
             this.ExpressionOpt = expressionOpt;
@@ -2576,11 +2504,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundExpressionStatement : BoundStatement
-    {
-        public BoundExpressionStatement(SyntaxNode syntax, BoundExpression expression, bool hasErrors = false)
+    internal sealed partial  class BoundExpressionStatement : BoundStatement
+
+    (public BoundExpressionStatement(SyntaxNode syntax, BoundExpression expression, bool hasErrors = false)
             : base(BoundKind.ExpressionStatement, syntax, hasErrors || expression.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2606,11 +2533,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSwitchStatement : BoundStatement
-    {
-        public BoundSwitchStatement(SyntaxNode syntax, BoundStatement loweredPreambleOpt, BoundExpression expression, LabelSymbol constantTargetOpt, ImmutableArray<LocalSymbol> innerLocals, ImmutableArray<LocalFunctionSymbol> innerLocalFunctions, ImmutableArray<BoundSwitchSection> switchSections, GeneratedLabelSymbol breakLabel, MethodSymbol stringEquality, bool hasErrors = false)
+    internal sealed partial  class BoundSwitchStatement : BoundStatement
+
+    (public BoundSwitchStatement(SyntaxNode syntax, BoundStatement loweredPreambleOpt, BoundExpression expression, LabelSymbol constantTargetOpt, ImmutableArray<LocalSymbol> innerLocals, ImmutableArray<LocalFunctionSymbol> innerLocalFunctions, ImmutableArray<BoundSwitchSection> switchSections, GeneratedLabelSymbol breakLabel, MethodSymbol stringEquality, bool hasErrors = false)
             : base(BoundKind.SwitchStatement, syntax, hasErrors || loweredPreambleOpt.HasErrors() || expression.HasErrors() || switchSections.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2661,11 +2587,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSwitchSection : BoundStatementList
-    {
-        public BoundSwitchSection(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundSwitchLabel> switchLabels, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
+    internal sealed partial  class BoundSwitchSection : BoundStatementList
+
+    (public BoundSwitchSection(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundSwitchLabel> switchLabels, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.SwitchSection, syntax, statements, hasErrors || switchLabels.HasErrors() || statements.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2696,11 +2621,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundSwitchLabel : BoundNode
-    {
-        public BoundSwitchLabel(SyntaxNode syntax, LabelSymbol label, BoundExpression expressionOpt, ConstantValue constantValueOpt, bool hasErrors = false)
+    internal sealed partial  class BoundSwitchLabel : BoundNode
+
+    (public BoundSwitchLabel(SyntaxNode syntax, LabelSymbol label, BoundExpression expressionOpt, ConstantValue constantValueOpt, bool hasErrors = false)
             : base(BoundKind.SwitchLabel, syntax, hasErrors || expressionOpt.HasErrors())
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2732,11 +2656,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundBreakStatement : BoundStatement
-    {
-        public BoundBreakStatement(SyntaxNode syntax, GeneratedLabelSymbol label, bool hasErrors)
+    internal sealed partial  class BoundBreakStatement : BoundStatement
+
+    (public BoundBreakStatement(SyntaxNode syntax, GeneratedLabelSymbol label, bool hasErrors)
             : base(BoundKind.BreakStatement, syntax, hasErrors)
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2769,11 +2692,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundContinueStatement : BoundStatement
-    {
-        public BoundContinueStatement(SyntaxNode syntax, GeneratedLabelSymbol label, bool hasErrors)
+    internal sealed partial  class BoundContinueStatement : BoundStatement
+
+    (public BoundContinueStatement(SyntaxNode syntax, GeneratedLabelSymbol label, bool hasErrors)
             : base(BoundKind.ContinueStatement, syntax, hasErrors)
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2806,11 +2728,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPatternSwitchStatement : BoundStatement
-    {
-        public BoundPatternSwitchStatement(SyntaxNode syntax, BoundExpression expression, bool someLabelAlwaysMatches, ImmutableArray<LocalSymbol> innerLocals, ImmutableArray<LocalFunctionSymbol> innerLocalFunctions, ImmutableArray<BoundPatternSwitchSection> switchSections, BoundPatternSwitchLabel defaultLabel, GeneratedLabelSymbol breakLabel, PatternSwitchBinder binder, bool isComplete, bool hasErrors = false)
+    internal sealed partial  class BoundPatternSwitchStatement : BoundStatement
+
+    (public BoundPatternSwitchStatement(SyntaxNode syntax, BoundExpression expression, bool someLabelAlwaysMatches, ImmutableArray<LocalSymbol> innerLocals, ImmutableArray<LocalFunctionSymbol> innerLocalFunctions, ImmutableArray<BoundPatternSwitchSection> switchSections, BoundPatternSwitchLabel defaultLabel, GeneratedLabelSymbol breakLabel, PatternSwitchBinder binder, bool isComplete, bool hasErrors = false)
             : base(BoundKind.PatternSwitchStatement, syntax, hasErrors || expression.HasErrors() || switchSections.HasErrors() || defaultLabel.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2865,11 +2786,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPatternSwitchSection : BoundStatementList
-    {
-        public BoundPatternSwitchSection(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundPatternSwitchLabel> switchLabels, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
+    internal sealed partial  class BoundPatternSwitchSection : BoundStatementList
+
+    (public BoundPatternSwitchSection(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, ImmutableArray<BoundPatternSwitchLabel> switchLabels, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.PatternSwitchSection, syntax, statements, hasErrors || switchLabels.HasErrors() || statements.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2900,11 +2820,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPatternSwitchLabel : BoundNode
-    {
-        public BoundPatternSwitchLabel(SyntaxNode syntax, LabelSymbol label, BoundPattern pattern, BoundExpression guard, bool isReachable, bool hasErrors = false)
+    internal sealed partial  class BoundPatternSwitchLabel : BoundNode
+
+    (public BoundPatternSwitchLabel(SyntaxNode syntax, LabelSymbol label, BoundPattern pattern, BoundExpression guard, bool isReachable, bool hasErrors = false)
             : base(BoundKind.PatternSwitchLabel, syntax, hasErrors || pattern.HasErrors() || guard.HasErrors())
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2940,11 +2859,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundIfStatement : BoundStatement
-    {
-        public BoundIfStatement(SyntaxNode syntax, BoundExpression condition, BoundStatement consequence, BoundStatement alternativeOpt, bool hasErrors = false)
+    internal sealed partial  class BoundIfStatement : BoundStatement
+
+    (public BoundIfStatement(SyntaxNode syntax, BoundExpression condition, BoundStatement consequence, BoundStatement alternativeOpt, bool hasErrors = false)
             : base(BoundKind.IfStatement, syntax, hasErrors || condition.HasErrors() || consequence.HasErrors() || alternativeOpt.HasErrors())
         {
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -2977,11 +2895,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundLoopStatement : BoundStatement
-    {
-        protected BoundLoopStatement(BoundKind kind, SyntaxNode syntax, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors)
+    internal abstract partial  class BoundLoopStatement : BoundStatement
+
+    (protected BoundLoopStatement(BoundKind kind, SyntaxNode syntax, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors)
             : base(kind, syntax, hasErrors)
         {
             Debug.Assert(breakLabel != null, "Field 'breakLabel' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3004,11 +2921,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public GeneratedLabelSymbol ContinueLabel { get; }
 
-    }
 
-    internal sealed partial class BoundDoStatement : BoundLoopStatement
-    {
-        public BoundDoStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression condition, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
+    internal sealed partial  class BoundDoStatement : BoundLoopStatement
+
+    (public BoundDoStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression condition, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.DoStatement, syntax, breakLabel, continueLabel, hasErrors || condition.HasErrors() || body.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3044,11 +2960,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundWhileStatement : BoundLoopStatement
-    {
-        public BoundWhileStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression condition, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
+    internal sealed partial  class BoundWhileStatement : BoundLoopStatement
+
+    (public BoundWhileStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression condition, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.WhileStatement, syntax, breakLabel, continueLabel, hasErrors || condition.HasErrors() || body.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3084,11 +2999,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundForStatement : BoundLoopStatement
-    {
-        public BoundForStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> outerLocals, BoundStatement initializer, ImmutableArray<LocalSymbol> innerLocals, BoundExpression condition, BoundStatement increment, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
+    internal sealed partial  class BoundForStatement : BoundLoopStatement
+
+    (public BoundForStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> outerLocals, BoundStatement initializer, ImmutableArray<LocalSymbol> innerLocals, BoundExpression condition, BoundStatement increment, BoundStatement body, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.ForStatement, syntax, breakLabel, continueLabel, hasErrors || initializer.HasErrors() || condition.HasErrors() || increment.HasErrors() || body.HasErrors())
         {
             Debug.Assert(!outerLocals.IsDefault, "Field 'outerLocals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3133,11 +3047,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundForEachStatement : BoundLoopStatement
-    {
-        public BoundForEachStatement(SyntaxNode syntax, ForEachEnumeratorInfo enumeratorInfoOpt, Conversion elementConversion, BoundTypeExpression iterationVariableType, ImmutableArray<LocalSymbol> iterationVariables, BoundExpression iterationErrorExpressionOpt, BoundExpression expression, BoundForEachDeconstructStep deconstructionOpt, BoundStatement body, bool @checked, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
+    internal sealed partial  class BoundForEachStatement : BoundLoopStatement
+
+    (public BoundForEachStatement(SyntaxNode syntax, ForEachEnumeratorInfo enumeratorInfoOpt, Conversion elementConversion, BoundTypeExpression iterationVariableType, ImmutableArray<LocalSymbol> iterationVariables, BoundExpression iterationErrorExpressionOpt, BoundExpression expression, BoundForEachDeconstructStep deconstructionOpt, BoundStatement body, bool @checked, GeneratedLabelSymbol breakLabel, GeneratedLabelSymbol continueLabel, bool hasErrors = false)
             : base(BoundKind.ForEachStatement, syntax, breakLabel, continueLabel, hasErrors || iterationVariableType.HasErrors() || iterationErrorExpressionOpt.HasErrors() || expression.HasErrors() || deconstructionOpt.HasErrors() || body.HasErrors())
         {
             Debug.Assert(iterationVariableType != null, "Field 'iterationVariableType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3192,11 +3105,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundForEachDeconstructStep : BoundNode
-    {
-        public BoundForEachDeconstructStep(SyntaxNode syntax, BoundDeconstructionAssignmentOperator deconstructionAssignment, BoundDeconstructValuePlaceholder targetPlaceholder, bool hasErrors = false)
+    internal sealed partial  class BoundForEachDeconstructStep : BoundNode
+
+    (public BoundForEachDeconstructStep(SyntaxNode syntax, BoundDeconstructionAssignmentOperator deconstructionAssignment, BoundDeconstructValuePlaceholder targetPlaceholder, bool hasErrors = false)
             : base(BoundKind.ForEachDeconstructStep, syntax, hasErrors || deconstructionAssignment.HasErrors() || targetPlaceholder.HasErrors())
         {
             Debug.Assert(deconstructionAssignment != null, "Field 'deconstructionAssignment' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3226,11 +3138,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundUsingStatement : BoundStatement
-    {
-        public BoundUsingStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundMultipleLocalDeclarations declarationsOpt, BoundExpression expressionOpt, Conversion iDisposableConversion, BoundStatement body, bool hasErrors = false)
+    internal sealed partial  class BoundUsingStatement : BoundStatement
+
+    (public BoundUsingStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundMultipleLocalDeclarations declarationsOpt, BoundExpression expressionOpt, Conversion iDisposableConversion, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.UsingStatement, syntax, hasErrors || declarationsOpt.HasErrors() || expressionOpt.HasErrors() || body.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3269,11 +3180,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundFixedStatement : BoundStatement
-    {
-        public BoundFixedStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundMultipleLocalDeclarations declarations, BoundStatement body, bool hasErrors = false)
+    internal sealed partial  class BoundFixedStatement : BoundStatement
+
+    (public BoundFixedStatement(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundMultipleLocalDeclarations declarations, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.FixedStatement, syntax, hasErrors || declarations.HasErrors() || body.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3307,11 +3217,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLockStatement : BoundStatement
-    {
-        public BoundLockStatement(SyntaxNode syntax, BoundExpression argument, BoundStatement body, bool hasErrors = false)
+    internal sealed partial  class BoundLockStatement : BoundStatement
+
+    (public BoundLockStatement(SyntaxNode syntax, BoundExpression argument, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.LockStatement, syntax, hasErrors || argument.HasErrors() || body.HasErrors())
         {
             Debug.Assert(argument != null, "Field 'argument' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3341,11 +3250,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundTryStatement : BoundStatement
-    {
-        public BoundTryStatement(SyntaxNode syntax, BoundBlock tryBlock, ImmutableArray<BoundCatchBlock> catchBlocks, BoundBlock finallyBlockOpt, bool preferFaultHandler, bool hasErrors = false)
+    internal sealed partial  class BoundTryStatement : BoundStatement
+
+    (public BoundTryStatement(SyntaxNode syntax, BoundBlock tryBlock, ImmutableArray<BoundCatchBlock> catchBlocks, BoundBlock finallyBlockOpt, bool preferFaultHandler, bool hasErrors = false)
             : base(BoundKind.TryStatement, syntax, hasErrors || tryBlock.HasErrors() || catchBlocks.HasErrors() || finallyBlockOpt.HasErrors())
         {
             Debug.Assert(tryBlock != null, "Field 'tryBlock' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3381,11 +3289,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundCatchBlock : BoundNode
-    {
-        public BoundCatchBlock(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression exceptionSourceOpt, TypeSymbol exceptionTypeOpt, BoundExpression exceptionFilterOpt, BoundBlock body, bool isSynthesizedAsyncCatchAll, bool hasErrors = false)
+    internal sealed partial  class BoundCatchBlock : BoundNode
+
+    (public BoundCatchBlock(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpression exceptionSourceOpt, TypeSymbol exceptionTypeOpt, BoundExpression exceptionFilterOpt, BoundBlock body, bool isSynthesizedAsyncCatchAll, bool hasErrors = false)
             : base(BoundKind.CatchBlock, syntax, hasErrors || exceptionSourceOpt.HasErrors() || exceptionFilterOpt.HasErrors() || body.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3427,11 +3334,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLiteral : BoundExpression
-    {
-        public BoundLiteral(SyntaxNode syntax, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundLiteral : BoundExpression
+
+    (public BoundLiteral(SyntaxNode syntax, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Literal, syntax, type, hasErrors)
         {
             this.ConstantValueOpt = constantValueOpt;
@@ -3462,11 +3368,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundThisReference : BoundExpression
-    {
-        public BoundThisReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundThisReference : BoundExpression
+
+    (public BoundThisReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ThisReference, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3494,11 +3399,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPreviousSubmissionReference : BoundExpression
-    {
-        public BoundPreviousSubmissionReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundPreviousSubmissionReference : BoundExpression
+
+    (public BoundPreviousSubmissionReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.PreviousSubmissionReference, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3526,11 +3430,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundHostObjectMemberReference : BoundExpression
-    {
-        public BoundHostObjectMemberReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundHostObjectMemberReference : BoundExpression
+
+    (public BoundHostObjectMemberReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.HostObjectMemberReference, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3558,11 +3461,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundBaseReference : BoundExpression
-    {
-        public BoundBaseReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundBaseReference : BoundExpression
+
+    (public BoundBaseReference(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.BaseReference, syntax, type, hasErrors)
         {
         }
@@ -3588,11 +3490,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLocal : BoundExpression
-    {
-        public BoundLocal(SyntaxNode syntax, LocalSymbol localSymbol, bool isDeclaration, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundLocal : BoundExpression
+
+    (public BoundLocal(SyntaxNode syntax, LocalSymbol localSymbol, bool isDeclaration, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Local, syntax, type, hasErrors)
         {
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3635,11 +3536,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPseudoVariable : BoundExpression
-    {
-        public BoundPseudoVariable(SyntaxNode syntax, LocalSymbol localSymbol, PseudoVariableExpressions emitExpressions, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundPseudoVariable : BoundExpression
+
+    (public BoundPseudoVariable(SyntaxNode syntax, LocalSymbol localSymbol, PseudoVariableExpressions emitExpressions, TypeSymbol type, bool hasErrors)
             : base(BoundKind.PseudoVariable, syntax, type, hasErrors)
         {
             Debug.Assert(localSymbol != null, "Field 'localSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3680,11 +3580,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundRangeVariable : BoundExpression
-    {
-        public BoundRangeVariable(SyntaxNode syntax, RangeVariableSymbol rangeVariableSymbol, BoundExpression value, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundRangeVariable : BoundExpression
+
+    (public BoundRangeVariable(SyntaxNode syntax, RangeVariableSymbol rangeVariableSymbol, BoundExpression value, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.RangeVariable, syntax, type, hasErrors || value.HasErrors())
         {
             Debug.Assert(rangeVariableSymbol != null, "Field 'rangeVariableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3715,11 +3614,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundParameter : BoundExpression
-    {
-        public BoundParameter(SyntaxNode syntax, ParameterSymbol parameterSymbol, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundParameter : BoundExpression
+
+    (public BoundParameter(SyntaxNode syntax, ParameterSymbol parameterSymbol, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Parameter, syntax, type, hasErrors)
         {
             Debug.Assert(parameterSymbol != null, "Field 'parameterSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3754,11 +3652,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLabelStatement : BoundStatement
-    {
-        public BoundLabelStatement(SyntaxNode syntax, LabelSymbol label, bool hasErrors)
+    internal sealed partial  class BoundLabelStatement : BoundStatement
+
+    (public BoundLabelStatement(SyntaxNode syntax, LabelSymbol label, bool hasErrors)
             : base(BoundKind.LabelStatement, syntax, hasErrors)
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3791,11 +3688,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundGotoStatement : BoundStatement
-    {
-        public BoundGotoStatement(SyntaxNode syntax, LabelSymbol label, BoundExpression caseExpressionOpt, BoundLabel labelExpressionOpt, bool hasErrors = false)
+    internal sealed partial  class BoundGotoStatement : BoundStatement
+
+    (public BoundGotoStatement(SyntaxNode syntax, LabelSymbol label, BoundExpression caseExpressionOpt, BoundLabel labelExpressionOpt, bool hasErrors = false)
             : base(BoundKind.GotoStatement, syntax, hasErrors || caseExpressionOpt.HasErrors() || labelExpressionOpt.HasErrors())
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3827,11 +3723,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLabeledStatement : BoundStatement
-    {
-        public BoundLabeledStatement(SyntaxNode syntax, LabelSymbol label, BoundStatement body, bool hasErrors = false)
+    internal sealed partial  class BoundLabeledStatement : BoundStatement
+
+    (public BoundLabeledStatement(SyntaxNode syntax, LabelSymbol label, BoundStatement body, bool hasErrors = false)
             : base(BoundKind.LabeledStatement, syntax, hasErrors || body.HasErrors())
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3861,11 +3756,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLabel : BoundExpression
-    {
-        public BoundLabel(SyntaxNode syntax, LabelSymbol label, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundLabel : BoundExpression
+
+    (public BoundLabel(SyntaxNode syntax, LabelSymbol label, TypeSymbol type, bool hasErrors)
             : base(BoundKind.Label, syntax, type, hasErrors)
         {
             Debug.Assert(label != null, "Field 'label' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3898,11 +3792,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal partial class BoundStatementList : BoundStatement
-    {
-        protected BoundStatementList(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
+    internal partial  class BoundStatementList : BoundStatement
+
+    (protected BoundStatementList(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(kind, syntax, hasErrors)
         {
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3935,11 +3828,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConditionalGoto : BoundStatement
-    {
-        public BoundConditionalGoto(SyntaxNode syntax, BoundExpression condition, bool jumpIfTrue, LabelSymbol label, bool hasErrors = false)
+    internal sealed partial  class BoundConditionalGoto : BoundStatement
+
+    (public BoundConditionalGoto(SyntaxNode syntax, BoundExpression condition, bool jumpIfTrue, LabelSymbol label, bool hasErrors = false)
             : base(BoundKind.ConditionalGoto, syntax, hasErrors || condition.HasErrors())
         {
             Debug.Assert(condition != null, "Field 'condition' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -3972,11 +3864,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundMethodOrPropertyGroup : BoundExpression
-    {
-        protected BoundMethodOrPropertyGroup(BoundKind kind, SyntaxNode syntax, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
+    internal abstract partial  class BoundMethodOrPropertyGroup : BoundExpression
+
+    (protected BoundMethodOrPropertyGroup(BoundKind kind, SyntaxNode syntax, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
             : base(kind, syntax, null, hasErrors)
         {
             this.ReceiverOpt = receiverOpt;
@@ -3989,11 +3880,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         private readonly LookupResultKind _ResultKind;
         public override LookupResultKind ResultKind { get { return _ResultKind;} }
 
-    }
 
-    internal sealed partial class BoundDynamicMemberAccess : BoundExpression
-    {
-        public BoundDynamicMemberAccess(SyntaxNode syntax, BoundExpression receiver, ImmutableArray<TypeSymbol> typeArgumentsOpt, string name, bool invoked, bool indexed, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundDynamicMemberAccess : BoundExpression
+
+    (public BoundDynamicMemberAccess(SyntaxNode syntax, BoundExpression receiver, ImmutableArray<TypeSymbol> typeArgumentsOpt, string name, bool invoked, bool indexed, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicMemberAccess, syntax, type, hasErrors || receiver.HasErrors())
         {
             Debug.Assert(receiver != null, "Field 'receiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4033,11 +3923,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDynamicInvocation : BoundExpression
-    {
-        public BoundDynamicInvocation(SyntaxNode syntax, BoundExpression expression, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundDynamicInvocation : BoundExpression
+
+    (public BoundDynamicInvocation(SyntaxNode syntax, BoundExpression expression, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicInvocation, syntax, type, hasErrors || expression.HasErrors() || arguments.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4078,11 +3967,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConditionalAccess : BoundExpression
-    {
-        public BoundConditionalAccess(SyntaxNode syntax, BoundExpression receiver, BoundExpression accessExpression, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundConditionalAccess : BoundExpression
+
+    (public BoundConditionalAccess(SyntaxNode syntax, BoundExpression receiver, BoundExpression accessExpression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConditionalAccess, syntax, type, hasErrors || receiver.HasErrors() || accessExpression.HasErrors())
         {
             Debug.Assert(receiver != null, "Field 'receiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4113,11 +4001,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLoweredConditionalAccess : BoundExpression
-    {
-        public BoundLoweredConditionalAccess(SyntaxNode syntax, BoundExpression receiver, MethodSymbol hasValueMethodOpt, BoundExpression whenNotNull, BoundExpression whenNullOpt, int id, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundLoweredConditionalAccess : BoundExpression
+
+    (public BoundLoweredConditionalAccess(SyntaxNode syntax, BoundExpression receiver, MethodSymbol hasValueMethodOpt, BoundExpression whenNotNull, BoundExpression whenNullOpt, int id, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.LoweredConditionalAccess, syntax, type, hasErrors || receiver.HasErrors() || whenNotNull.HasErrors() || whenNullOpt.HasErrors())
         {
             Debug.Assert(receiver != null, "Field 'receiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4157,11 +4044,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConditionalReceiver : BoundExpression
-    {
-        public BoundConditionalReceiver(SyntaxNode syntax, int id, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundConditionalReceiver : BoundExpression
+
+    (public BoundConditionalReceiver(SyntaxNode syntax, int id, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ConditionalReceiver, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4194,11 +4080,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundComplexConditionalReceiver : BoundExpression
-    {
-        public BoundComplexConditionalReceiver(SyntaxNode syntax, BoundExpression valueTypeReceiver, BoundExpression referenceTypeReceiver, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundComplexConditionalReceiver : BoundExpression
+
+    (public BoundComplexConditionalReceiver(SyntaxNode syntax, BoundExpression valueTypeReceiver, BoundExpression referenceTypeReceiver, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ComplexConditionalReceiver, syntax, type, hasErrors || valueTypeReceiver.HasErrors() || referenceTypeReceiver.HasErrors())
         {
             Debug.Assert(valueTypeReceiver != null, "Field 'valueTypeReceiver' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4229,11 +4114,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundMethodGroup : BoundMethodOrPropertyGroup
-    {
-        public BoundMethodGroup(SyntaxNode syntax, ImmutableArray<TypeSymbol> typeArgumentsOpt, string name, ImmutableArray<MethodSymbol> methods, Symbol lookupSymbolOpt, DiagnosticInfo lookupError, BoundMethodGroupFlags flags, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
+    internal sealed partial  class BoundMethodGroup : BoundMethodOrPropertyGroup
+
+    (public BoundMethodGroup(SyntaxNode syntax, ImmutableArray<TypeSymbol> typeArgumentsOpt, string name, ImmutableArray<MethodSymbol> methods, Symbol lookupSymbolOpt, DiagnosticInfo lookupError, BoundMethodGroupFlags flags, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
             : base(BoundKind.MethodGroup, syntax, receiverOpt, resultKind, hasErrors || receiverOpt.HasErrors())
         {
             Debug.Assert(name != null, "Field 'name' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4275,11 +4159,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPropertyGroup : BoundMethodOrPropertyGroup
-    {
-        public BoundPropertyGroup(SyntaxNode syntax, ImmutableArray<PropertySymbol> properties, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
+    internal sealed partial  class BoundPropertyGroup : BoundMethodOrPropertyGroup
+
+    (public BoundPropertyGroup(SyntaxNode syntax, ImmutableArray<PropertySymbol> properties, BoundExpression receiverOpt, LookupResultKind resultKind, bool hasErrors = false)
             : base(BoundKind.PropertyGroup, syntax, receiverOpt, resultKind, hasErrors || receiverOpt.HasErrors())
         {
             Debug.Assert(!properties.IsDefault, "Field 'properties' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4305,11 +4188,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundCall : BoundExpression
-    {
-        public BoundCall(SyntaxNode syntax, BoundExpression receiverOpt, MethodSymbol method, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool isDelegateCall, bool expanded, bool invokedAsExtensionMethod, ImmutableArray<int> argsToParamsOpt, LookupResultKind resultKind, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundCall : BoundExpression
+
+    (public BoundCall(SyntaxNode syntax, BoundExpression receiverOpt, MethodSymbol method, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool isDelegateCall, bool expanded, bool invokedAsExtensionMethod, ImmutableArray<int> argsToParamsOpt, LookupResultKind resultKind, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Call, syntax, type, hasErrors || receiverOpt.HasErrors() || arguments.HasErrors())
         {
             Debug.Assert(method != null, "Field 'method' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4368,11 +4250,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundEventAssignmentOperator : BoundExpression
-    {
-        public BoundEventAssignmentOperator(SyntaxNode syntax, EventSymbol @event, bool isAddition, bool isDynamic, BoundExpression receiverOpt, BoundExpression argument, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundEventAssignmentOperator : BoundExpression
+
+    (public BoundEventAssignmentOperator(SyntaxNode syntax, EventSymbol @event, bool isAddition, bool isDynamic, BoundExpression receiverOpt, BoundExpression argument, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.EventAssignmentOperator, syntax, type, hasErrors || receiverOpt.HasErrors() || argument.HasErrors())
         {
             Debug.Assert(@event != null, "Field '@event' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4412,11 +4293,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundAttribute : BoundExpression
-    {
-        public BoundAttribute(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<BoundExpression> constructorArguments, ImmutableArray<string> constructorArgumentNamesOpt, ImmutableArray<BoundExpression> namedArguments, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundAttribute : BoundExpression
+
+    (public BoundAttribute(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<BoundExpression> constructorArguments, ImmutableArray<string> constructorArgumentNamesOpt, ImmutableArray<BoundExpression> namedArguments, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Attribute, syntax, type, hasErrors || constructorArguments.HasErrors() || namedArguments.HasErrors())
         {
             Debug.Assert(!constructorArguments.IsDefault, "Field 'constructorArguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4457,11 +4337,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundObjectCreationExpression : BoundExpression
-    {
-        public BoundObjectCreationExpression(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<MethodSymbol> constructorsGroup, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, ConstantValue constantValueOpt, BoundObjectInitializerExpressionBase initializerExpressionOpt, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundObjectCreationExpression : BoundExpression
+
+    (public BoundObjectCreationExpression(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<MethodSymbol> constructorsGroup, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, ConstantValue constantValueOpt, BoundObjectInitializerExpressionBase initializerExpressionOpt, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ObjectCreationExpression, syntax, type, hasErrors || arguments.HasErrors() || initializerExpressionOpt.HasErrors())
         {
             Debug.Assert(constructor != null, "Field 'constructor' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4517,11 +4396,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundTupleExpression : BoundExpression
-    {
-        protected BoundTupleExpression(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
+    internal abstract partial  class BoundTupleExpression : BoundExpression
+
+    (protected BoundTupleExpression(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
             : base(kind, syntax, type, hasErrors)
         {
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4531,11 +4409,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public ImmutableArray<BoundExpression> Arguments { get; }
 
-    }
 
-    internal sealed partial class BoundTupleLiteral : BoundTupleExpression
-    {
-        public BoundTupleLiteral(SyntaxNode syntax, ImmutableArray<string> argumentNamesOpt, ImmutableArray<bool> inferredNamesOpt, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundTupleLiteral : BoundTupleExpression
+
+    (public BoundTupleLiteral(SyntaxNode syntax, ImmutableArray<string> argumentNamesOpt, ImmutableArray<bool> inferredNamesOpt, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.TupleLiteral, syntax, arguments, type, hasErrors || arguments.HasErrors())
         {
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4564,11 +4441,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConvertedTupleLiteral : BoundTupleExpression
-    {
-        public BoundConvertedTupleLiteral(SyntaxNode syntax, TypeSymbol naturalTypeOpt, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundConvertedTupleLiteral : BoundTupleExpression
+
+    (public BoundConvertedTupleLiteral(SyntaxNode syntax, TypeSymbol naturalTypeOpt, ImmutableArray<BoundExpression> arguments, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConvertedTupleLiteral, syntax, arguments, type, hasErrors || arguments.HasErrors())
         {
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4595,11 +4471,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDynamicObjectCreationExpression : BoundExpression
-    {
-        public BoundDynamicObjectCreationExpression(SyntaxNode syntax, string name, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, BoundObjectInitializerExpressionBase initializerExpressionOpt, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundDynamicObjectCreationExpression : BoundExpression
+
+    (public BoundDynamicObjectCreationExpression(SyntaxNode syntax, string name, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, BoundObjectInitializerExpressionBase initializerExpressionOpt, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicObjectCreationExpression, syntax, type, hasErrors || arguments.HasErrors() || initializerExpressionOpt.HasErrors())
         {
             Debug.Assert(name != null, "Field 'name' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4643,11 +4518,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundNoPiaObjectCreationExpression : BoundExpression
-    {
-        public BoundNoPiaObjectCreationExpression(SyntaxNode syntax, string guidString, BoundObjectInitializerExpressionBase initializerExpressionOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundNoPiaObjectCreationExpression : BoundExpression
+
+    (public BoundNoPiaObjectCreationExpression(SyntaxNode syntax, string guidString, BoundObjectInitializerExpressionBase initializerExpressionOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NoPiaObjectCreationExpression, syntax, type, hasErrors || initializerExpressionOpt.HasErrors())
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4676,11 +4550,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundObjectInitializerExpressionBase : BoundExpression
-    {
-        protected BoundObjectInitializerExpressionBase(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
+    internal abstract partial  class BoundObjectInitializerExpressionBase : BoundExpression
+
+    (protected BoundObjectInitializerExpressionBase(BoundKind kind, SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
             : base(kind, syntax, type, hasErrors)
         {
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4691,11 +4564,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public ImmutableArray<BoundExpression> Initializers { get; }
 
-    }
 
-    internal sealed partial class BoundObjectInitializerExpression : BoundObjectInitializerExpressionBase
-    {
-        public BoundObjectInitializerExpression(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundObjectInitializerExpression : BoundObjectInitializerExpressionBase
+
+    (public BoundObjectInitializerExpression(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ObjectInitializerExpression, syntax, initializers, type, hasErrors || initializers.HasErrors())
         {
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4718,11 +4590,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundObjectInitializerMember : BoundExpression
-    {
-        public BoundObjectInitializerMember(SyntaxNode syntax, Symbol memberSymbol, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, LookupResultKind resultKind, TypeSymbol receiverType, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundObjectInitializerMember : BoundExpression
+
+    (public BoundObjectInitializerMember(SyntaxNode syntax, Symbol memberSymbol, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, LookupResultKind resultKind, TypeSymbol receiverType, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ObjectInitializerMember, syntax, type, hasErrors || arguments.HasErrors())
         {
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4775,11 +4646,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDynamicObjectInitializerMember : BoundExpression
-    {
-        public BoundDynamicObjectInitializerMember(SyntaxNode syntax, string memberName, TypeSymbol receiverType, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundDynamicObjectInitializerMember : BoundExpression
+
+    (public BoundDynamicObjectInitializerMember(SyntaxNode syntax, string memberName, TypeSymbol receiverType, TypeSymbol type, bool hasErrors)
             : base(BoundKind.DynamicObjectInitializerMember, syntax, type, hasErrors)
         {
             Debug.Assert(memberName != null, "Field 'memberName' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4820,11 +4690,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundCollectionInitializerExpression : BoundObjectInitializerExpressionBase
-    {
-        public BoundCollectionInitializerExpression(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundCollectionInitializerExpression : BoundObjectInitializerExpressionBase
+
+    (public BoundCollectionInitializerExpression(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.CollectionInitializerExpression, syntax, initializers, type, hasErrors || initializers.HasErrors())
         {
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4847,11 +4716,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundCollectionElementInitializer : BoundExpression
-    {
-        public BoundCollectionElementInitializer(SyntaxNode syntax, MethodSymbol addMethod, ImmutableArray<BoundExpression> arguments, BoundExpression implicitReceiverOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, bool invokedAsExtensionMethod, LookupResultKind resultKind, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundCollectionElementInitializer : BoundExpression
+
+    (public BoundCollectionElementInitializer(SyntaxNode syntax, MethodSymbol addMethod, ImmutableArray<BoundExpression> arguments, BoundExpression implicitReceiverOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, bool invokedAsExtensionMethod, LookupResultKind resultKind, Binder binderOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.CollectionElementInitializer, syntax, type, hasErrors || arguments.HasErrors() || implicitReceiverOpt.HasErrors())
         {
             Debug.Assert(addMethod != null, "Field 'addMethod' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4901,11 +4769,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDynamicCollectionElementInitializer : BoundExpression
-    {
-        public BoundDynamicCollectionElementInitializer(SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, BoundImplicitReceiver implicitReceiver, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundDynamicCollectionElementInitializer : BoundExpression
+
+    (public BoundDynamicCollectionElementInitializer(SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, BoundImplicitReceiver implicitReceiver, ImmutableArray<MethodSymbol> applicableMethods, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicCollectionElementInitializer, syntax, type, hasErrors || arguments.HasErrors() || implicitReceiver.HasErrors())
         {
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4940,11 +4807,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundImplicitReceiver : BoundExpression
-    {
-        public BoundImplicitReceiver(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundImplicitReceiver : BoundExpression
+
+    (public BoundImplicitReceiver(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.ImplicitReceiver, syntax, type, hasErrors)
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -4972,11 +4838,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundAnonymousObjectCreationExpression : BoundExpression
-    {
-        public BoundAnonymousObjectCreationExpression(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<BoundExpression> arguments, ImmutableArray<BoundAnonymousPropertyDeclaration> declarations, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundAnonymousObjectCreationExpression : BoundExpression
+
+    (public BoundAnonymousObjectCreationExpression(SyntaxNode syntax, MethodSymbol constructor, ImmutableArray<BoundExpression> arguments, ImmutableArray<BoundAnonymousPropertyDeclaration> declarations, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.AnonymousObjectCreationExpression, syntax, type, hasErrors || arguments.HasErrors() || declarations.HasErrors())
         {
             Debug.Assert(constructor != null, "Field 'constructor' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5011,11 +4876,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundAnonymousPropertyDeclaration : BoundExpression
-    {
-        public BoundAnonymousPropertyDeclaration(SyntaxNode syntax, PropertySymbol property, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundAnonymousPropertyDeclaration : BoundExpression
+
+    (public BoundAnonymousPropertyDeclaration(SyntaxNode syntax, PropertySymbol property, TypeSymbol type, bool hasErrors)
             : base(BoundKind.AnonymousPropertyDeclaration, syntax, type, hasErrors)
         {
             Debug.Assert(property != null, "Field 'property' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5050,11 +4914,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundNewT : BoundExpression
-    {
-        public BoundNewT(SyntaxNode syntax, BoundObjectInitializerExpressionBase initializerExpressionOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundNewT : BoundExpression
+
+    (public BoundNewT(SyntaxNode syntax, BoundObjectInitializerExpressionBase initializerExpressionOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NewT, syntax, type, hasErrors || initializerExpressionOpt.HasErrors())
         {
             Debug.Assert(type != null, "Field 'type' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5080,11 +4943,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDelegateCreationExpression : BoundExpression
-    {
-        public BoundDelegateCreationExpression(SyntaxNode syntax, BoundExpression argument, MethodSymbol methodOpt, bool isExtensionMethod, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundDelegateCreationExpression : BoundExpression
+
+    (public BoundDelegateCreationExpression(SyntaxNode syntax, BoundExpression argument, MethodSymbol methodOpt, bool isExtensionMethod, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DelegateCreationExpression, syntax, type, hasErrors || argument.HasErrors())
         {
             Debug.Assert(argument != null, "Field 'argument' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5117,11 +4979,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundArrayCreation : BoundExpression
-    {
-        public BoundArrayCreation(SyntaxNode syntax, ImmutableArray<BoundExpression> bounds, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundArrayCreation : BoundExpression
+
+    (public BoundArrayCreation(SyntaxNode syntax, ImmutableArray<BoundExpression> bounds, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ArrayCreation, syntax, type, hasErrors || bounds.HasErrors() || initializerOpt.HasErrors())
         {
             Debug.Assert(!bounds.IsDefault, "Field 'bounds' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5151,11 +5012,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundArrayInitialization : BoundExpression
-    {
-        public BoundArrayInitialization(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, bool hasErrors = false)
+    internal sealed partial  class BoundArrayInitialization : BoundExpression
+
+    (public BoundArrayInitialization(SyntaxNode syntax, ImmutableArray<BoundExpression> initializers, bool hasErrors = false)
             : base(BoundKind.ArrayInitialization, syntax, null, hasErrors || initializers.HasErrors())
         {
             Debug.Assert(!initializers.IsDefault, "Field 'initializers' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5181,11 +5041,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal partial class BoundStackAllocArrayCreation : BoundExpression
-    {
-        protected BoundStackAllocArrayCreation(BoundKind kind, SyntaxNode syntax, TypeSymbol elementType, BoundExpression count, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
+    internal partial  class BoundStackAllocArrayCreation : BoundExpression
+
+    (protected BoundStackAllocArrayCreation(BoundKind kind, SyntaxNode syntax, TypeSymbol elementType, BoundExpression count, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
             : base(kind, syntax, type, hasErrors)
         {
             Debug.Assert(elementType != null, "Field 'elementType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5228,11 +5087,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConvertedStackAllocExpression : BoundStackAllocArrayCreation
-    {
-        public BoundConvertedStackAllocExpression(SyntaxNode syntax, TypeSymbol elementType, BoundExpression count, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundConvertedStackAllocExpression : BoundStackAllocArrayCreation
+
+    (public BoundConvertedStackAllocExpression(SyntaxNode syntax, TypeSymbol elementType, BoundExpression count, BoundArrayInitialization initializerOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ConvertedStackAllocExpression, syntax, elementType, count, initializerOpt, type, hasErrors || count.HasErrors() || initializerOpt.HasErrors())
         {
             Debug.Assert(elementType != null, "Field 'elementType' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5256,11 +5114,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundFieldAccess : BoundExpression
-    {
-        public BoundFieldAccess(SyntaxNode syntax, BoundExpression receiverOpt, FieldSymbol fieldSymbol, ConstantValue constantValueOpt, LookupResultKind resultKind, bool isByValue, bool isDeclaration, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundFieldAccess : BoundExpression
+
+    (public BoundFieldAccess(SyntaxNode syntax, BoundExpression receiverOpt, FieldSymbol fieldSymbol, ConstantValue constantValueOpt, LookupResultKind resultKind, bool isByValue, bool isDeclaration, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.FieldAccess, syntax, type, hasErrors || receiverOpt.HasErrors())
         {
             Debug.Assert(fieldSymbol != null, "Field 'fieldSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5303,11 +5160,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundHoistedFieldAccess : BoundExpression
-    {
-        public BoundHoistedFieldAccess(SyntaxNode syntax, FieldSymbol fieldSymbol, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundHoistedFieldAccess : BoundExpression
+
+    (public BoundHoistedFieldAccess(SyntaxNode syntax, FieldSymbol fieldSymbol, TypeSymbol type, bool hasErrors)
             : base(BoundKind.HoistedFieldAccess, syntax, type, hasErrors)
         {
             Debug.Assert(fieldSymbol != null, "Field 'fieldSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5342,11 +5198,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundPropertyAccess : BoundExpression
-    {
-        public BoundPropertyAccess(SyntaxNode syntax, BoundExpression receiverOpt, PropertySymbol propertySymbol, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundPropertyAccess : BoundExpression
+
+    (public BoundPropertyAccess(SyntaxNode syntax, BoundExpression receiverOpt, PropertySymbol propertySymbol, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.PropertyAccess, syntax, type, hasErrors || receiverOpt.HasErrors())
         {
             Debug.Assert(propertySymbol != null, "Field 'propertySymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5380,11 +5235,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundEventAccess : BoundExpression
-    {
-        public BoundEventAccess(SyntaxNode syntax, BoundExpression receiverOpt, EventSymbol eventSymbol, bool isUsableAsField, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundEventAccess : BoundExpression
+
+    (public BoundEventAccess(SyntaxNode syntax, BoundExpression receiverOpt, EventSymbol eventSymbol, bool isUsableAsField, LookupResultKind resultKind, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.EventAccess, syntax, type, hasErrors || receiverOpt.HasErrors())
         {
             Debug.Assert(eventSymbol != null, "Field 'eventSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5421,11 +5275,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundIndexerAccess : BoundExpression
-    {
-        public BoundIndexerAccess(SyntaxNode syntax, BoundExpression receiverOpt, PropertySymbol indexer, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, Binder binderOpt, bool useSetterForDefaultArgumentGeneration, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundIndexerAccess : BoundExpression
+
+    (public BoundIndexerAccess(SyntaxNode syntax, BoundExpression receiverOpt, PropertySymbol indexer, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, bool expanded, ImmutableArray<int> argsToParamsOpt, Binder binderOpt, bool useSetterForDefaultArgumentGeneration, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IndexerAccess, syntax, type, hasErrors || receiverOpt.HasErrors() || arguments.HasErrors())
         {
             Debug.Assert(indexer != null, "Field 'indexer' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5477,11 +5330,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundDynamicIndexerAccess : BoundExpression
-    {
-        public BoundDynamicIndexerAccess(SyntaxNode syntax, BoundExpression receiverOpt, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, ImmutableArray<PropertySymbol> applicableIndexers, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundDynamicIndexerAccess : BoundExpression
+
+    (public BoundDynamicIndexerAccess(SyntaxNode syntax, BoundExpression receiverOpt, ImmutableArray<BoundExpression> arguments, ImmutableArray<string> argumentNamesOpt, ImmutableArray<RefKind> argumentRefKindsOpt, ImmutableArray<PropertySymbol> applicableIndexers, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.DynamicIndexerAccess, syntax, type, hasErrors || receiverOpt.HasErrors() || arguments.HasErrors())
         {
             Debug.Assert(!arguments.IsDefault, "Field 'arguments' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5521,11 +5373,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundLambda : BoundExpression
-    {
-        public BoundLambda(SyntaxNode syntax, LambdaSymbol symbol, BoundBlock body, ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> diagnostics, Binder binder, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundLambda : BoundExpression
+
+    (public BoundLambda(SyntaxNode syntax, LambdaSymbol symbol, BoundBlock body, ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> diagnostics, Binder binder, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.Lambda, syntax, type, hasErrors || body.HasErrors())
         {
             Debug.Assert(symbol != null, "Field 'symbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5563,11 +5414,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class UnboundLambda : BoundExpression
-    {
-        public UnboundLambda(SyntaxNode syntax, UnboundLambdaState data, bool hasErrors)
+    internal sealed partial  class UnboundLambda : BoundExpression
+
+    (public UnboundLambda(SyntaxNode syntax, UnboundLambdaState data, bool hasErrors)
             : base(BoundKind.UnboundLambda, syntax, null, hasErrors)
         {
             Debug.Assert(data != null, "Field 'data' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5600,11 +5450,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundQueryClause : BoundExpression
-    {
-        public BoundQueryClause(SyntaxNode syntax, BoundExpression value, RangeVariableSymbol definedSymbol, Binder binder, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundQueryClause : BoundExpression
+
+    (public BoundQueryClause(SyntaxNode syntax, BoundExpression value, RangeVariableSymbol definedSymbol, Binder binder, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.QueryClause, syntax, type, hasErrors || value.HasErrors())
         {
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5638,11 +5487,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundTypeOrInstanceInitializers : BoundStatementList
-    {
-        public BoundTypeOrInstanceInitializers(SyntaxNode syntax, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
+    internal sealed partial  class BoundTypeOrInstanceInitializers : BoundStatementList
+
+    (public BoundTypeOrInstanceInitializers(SyntaxNode syntax, ImmutableArray<BoundStatement> statements, bool hasErrors = false)
             : base(BoundKind.TypeOrInstanceInitializers, syntax, statements, hasErrors || statements.HasErrors())
         {
             Debug.Assert(!statements.IsDefault, "Field 'statements' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5664,11 +5512,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundNameOfOperator : BoundExpression
-    {
-        public BoundNameOfOperator(SyntaxNode syntax, BoundExpression argument, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundNameOfOperator : BoundExpression
+
+    (public BoundNameOfOperator(SyntaxNode syntax, BoundExpression argument, ConstantValue constantValueOpt, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.NameOfOperator, syntax, type, hasErrors || argument.HasErrors())
         {
             Debug.Assert(argument != null, "Field 'argument' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5699,11 +5546,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundInterpolatedString : BoundExpression
-    {
-        public BoundInterpolatedString(SyntaxNode syntax, ImmutableArray<BoundExpression> parts, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundInterpolatedString : BoundExpression
+
+    (public BoundInterpolatedString(SyntaxNode syntax, ImmutableArray<BoundExpression> parts, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.InterpolatedString, syntax, type, hasErrors || parts.HasErrors())
         {
             Debug.Assert(!parts.IsDefault, "Field 'parts' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5729,11 +5575,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundStringInsert : BoundExpression
-    {
-        public BoundStringInsert(SyntaxNode syntax, BoundExpression value, BoundExpression alignment, BoundLiteral format, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundStringInsert : BoundExpression
+
+    (public BoundStringInsert(SyntaxNode syntax, BoundExpression value, BoundExpression alignment, BoundLiteral format, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.StringInsert, syntax, type, hasErrors || value.HasErrors() || alignment.HasErrors() || format.HasErrors())
         {
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5765,11 +5610,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundIsPatternExpression : BoundExpression
-    {
-        public BoundIsPatternExpression(SyntaxNode syntax, BoundExpression expression, BoundPattern pattern, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundIsPatternExpression : BoundExpression
+
+    (public BoundIsPatternExpression(SyntaxNode syntax, BoundExpression expression, BoundPattern pattern, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.IsPatternExpression, syntax, type, hasErrors || expression.HasErrors() || pattern.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5799,11 +5643,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class BoundPattern : BoundNode
-    {
-        protected BoundPattern(BoundKind kind, SyntaxNode syntax, bool hasErrors)
+    internal abstract partial  class BoundPattern : BoundNode
+
+    (protected BoundPattern(BoundKind kind, SyntaxNode syntax, bool hasErrors)
             : base(kind, syntax, hasErrors)
         {
         }
@@ -5813,11 +5656,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
         }
 
-    }
 
-    internal sealed partial class BoundDeclarationPattern : BoundPattern
-    {
-        public BoundDeclarationPattern(SyntaxNode syntax, Symbol variable, BoundExpression variableAccess, BoundTypeExpression declaredType, bool isVar, bool hasErrors = false)
+    internal sealed partial  class BoundDeclarationPattern : BoundPattern
+
+    (public BoundDeclarationPattern(SyntaxNode syntax, Symbol variable, BoundExpression variableAccess, BoundTypeExpression declaredType, bool isVar, bool hasErrors = false)
             : base(BoundKind.DeclarationPattern, syntax, hasErrors || variableAccess.HasErrors() || declaredType.HasErrors())
         {
             Debug.Assert(variableAccess != null, "Field 'variableAccess' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5852,11 +5694,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConstantPattern : BoundPattern
-    {
-        public BoundConstantPattern(SyntaxNode syntax, BoundExpression value, ConstantValue constantValue, bool hasErrors = false)
+    internal sealed partial  class BoundConstantPattern : BoundPattern
+
+    (public BoundConstantPattern(SyntaxNode syntax, BoundExpression value, ConstantValue constantValue, bool hasErrors = false)
             : base(BoundKind.ConstantPattern, syntax, hasErrors || value.HasErrors())
         {
             Debug.Assert(value != null, "Field 'value' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5885,11 +5726,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundWildcardPattern : BoundPattern
-    {
-        public BoundWildcardPattern(SyntaxNode syntax, bool hasErrors)
+    internal sealed partial  class BoundWildcardPattern : BoundPattern
+
+    (public BoundWildcardPattern(SyntaxNode syntax, bool hasErrors)
             : base(BoundKind.WildcardPattern, syntax, hasErrors)
         {
         }
@@ -5904,11 +5744,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return visitor.VisitWildcardPattern(this);
         }
-    }
 
-    internal sealed partial class BoundDiscardExpression : BoundExpression
-    {
-        public BoundDiscardExpression(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
+    internal sealed partial  class BoundDiscardExpression : BoundExpression
+
+    (public BoundDiscardExpression(SyntaxNode syntax, TypeSymbol type, bool hasErrors)
             : base(BoundKind.DiscardExpression, syntax, type, hasErrors)
         {
         }
@@ -5934,11 +5773,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundThrowExpression : BoundExpression
-    {
-        public BoundThrowExpression(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
+    internal sealed partial  class BoundThrowExpression : BoundExpression
+
+    (public BoundThrowExpression(SyntaxNode syntax, BoundExpression expression, TypeSymbol type, bool hasErrors = false)
             : base(BoundKind.ThrowExpression, syntax, type, hasErrors || expression.HasErrors())
         {
             Debug.Assert(expression != null, "Field 'expression' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5964,11 +5802,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal abstract partial class VariablePendingInference : BoundExpression
-    {
-        protected VariablePendingInference(BoundKind kind, SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
+    internal abstract partial  class VariablePendingInference : BoundExpression
+
+    (protected VariablePendingInference(BoundKind kind, SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
             : base(kind, syntax, null, hasErrors)
         {
             Debug.Assert(variableSymbol != null, "Field 'variableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -5981,11 +5818,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundExpression ReceiverOpt { get; }
 
-    }
 
-    internal sealed partial class OutVariablePendingInference : VariablePendingInference
-    {
-        public OutVariablePendingInference(SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
+    internal sealed partial  class OutVariablePendingInference : VariablePendingInference
+
+    (public OutVariablePendingInference(SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
             : base(BoundKind.OutVariablePendingInference, syntax, variableSymbol, receiverOpt, hasErrors || receiverOpt.HasErrors())
         {
             Debug.Assert(variableSymbol != null, "Field 'variableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -6007,11 +5843,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class DeconstructionVariablePendingInference : VariablePendingInference
-    {
-        public DeconstructionVariablePendingInference(SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
+    internal sealed partial  class DeconstructionVariablePendingInference : VariablePendingInference
+
+    (public DeconstructionVariablePendingInference(SyntaxNode syntax, Symbol variableSymbol, BoundExpression receiverOpt, bool hasErrors = false)
             : base(BoundKind.DeconstructionVariablePendingInference, syntax, variableSymbol, receiverOpt, hasErrors || receiverOpt.HasErrors())
         {
             Debug.Assert(variableSymbol != null, "Field 'variableSymbol' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -6033,11 +5868,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class OutDeconstructVarPendingInference : BoundExpression
-    {
-        public OutDeconstructVarPendingInference(SyntaxNode syntax, bool hasErrors)
+    internal sealed partial  class OutDeconstructVarPendingInference : BoundExpression
+
+    (public OutDeconstructVarPendingInference(SyntaxNode syntax, bool hasErrors)
             : base(BoundKind.OutDeconstructVarPendingInference, syntax, null, hasErrors)
         {
         }
@@ -6057,11 +5891,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return this;
         }
-    }
 
-    internal abstract partial class BoundMethodBodyBase : BoundNode
-    {
-        protected BoundMethodBodyBase(BoundKind kind, SyntaxNode syntax, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
+    internal abstract partial  class BoundMethodBodyBase : BoundNode
+
+    (protected BoundMethodBodyBase(BoundKind kind, SyntaxNode syntax, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
             : base(kind, syntax, hasErrors)
         {
             this.BlockBody = blockBody;
@@ -6073,11 +5906,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundBlock ExpressionBody { get; }
 
-    }
 
-    internal sealed partial class BoundNonConstructorMethodBody : BoundMethodBodyBase
-    {
-        public BoundNonConstructorMethodBody(SyntaxNode syntax, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
+    internal sealed partial  class BoundNonConstructorMethodBody : BoundMethodBodyBase
+
+    (public BoundNonConstructorMethodBody(SyntaxNode syntax, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
             : base(BoundKind.NonConstructorMethodBody, syntax, blockBody, expressionBody, hasErrors || blockBody.HasErrors() || expressionBody.HasErrors())
         {
         }
@@ -6098,11 +5930,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
-    internal sealed partial class BoundConstructorMethodBody : BoundMethodBodyBase
-    {
-        public BoundConstructorMethodBody(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpressionStatement initializer, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
+    internal sealed partial  class BoundConstructorMethodBody : BoundMethodBodyBase
+
+    (public BoundConstructorMethodBody(SyntaxNode syntax, ImmutableArray<LocalSymbol> locals, BoundExpressionStatement initializer, BoundBlock blockBody, BoundBlock expressionBody, bool hasErrors = false)
             : base(BoundKind.ConstructorMethodBody, syntax, blockBody, expressionBody, hasErrors || initializer.HasErrors() || blockBody.HasErrors() || expressionBody.HasErrors())
         {
             Debug.Assert(!locals.IsDefault, "Field 'locals' cannot be null (use Null=\"allow\" in BoundNodes.xml to remove this check)");
@@ -6131,7 +5962,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return this;
         }
-    }
 
 
     internal abstract partial class BoundTreeVisitor<A,R>
