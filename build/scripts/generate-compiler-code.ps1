@@ -7,10 +7,22 @@ param ([switch]$test = $false)
 Set-StrictMode -version 2.0
 $ErrorActionPreference="Stop"
 
-function Run-Tool($tool, $toolArgs) {
-    $toolName = Split-Path -leaf $tool
-    Write-Host "Running $toolName"
-    Exec-Console $tool $toolArgs
+function Run-Tool($tool, $toolArgs)
+{
+    try
+    {
+        $toolName = Split-Path -leaf $tool
+        Write-Host "Running $toolName"
+        Exec-Console $tool $toolArgs
+    }
+    catch
+    {
+        $ErrorMessage = $_.Exception.Message
+        $StackTrace = $_.Exception.StackTrace
+
+        Write-Host $ErrorMessage
+        Write-Host $StackTrace
+    }
 }
 
 function Run-LanguageCore($language, $languageSuffix, $languageDir, $syntaxTool, $errorFactsTool, $generatedDir, $generatedTestDir) {
@@ -138,6 +150,10 @@ try {
     exit 0
 }
 catch {
-    Write-Host $_
+    $ErrorMessage = $_.Exception.Message
+    $StackTrace = $_.Exception.StackTrace
+
+    Write-Host $ErrorMessage
+    Write-Host $StackTrace
     exit 1
 }

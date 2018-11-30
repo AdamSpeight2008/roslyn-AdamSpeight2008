@@ -34,8 +34,8 @@ namespace BoundTreeGenerator
 
         internal BoundNodeClassWriter(TextWriter writer, Tree tree, TargetLanguage targetLang)
         {
-            _tree    = tree;
-            _writer  = writer;
+            _tree = tree;
+            _writer = writer;
             _typeMap = tree.Types.Where(t => !(t is EnumType || t is ValueType)).ToDictionary(n => n.Name, n => n.Base);
             _typeMap.Add(tree.Root, null);
             _targetLang = targetLang;
@@ -44,11 +44,8 @@ namespace BoundTreeGenerator
 
         public bool IsNodeOrNodeList(string typeName) => IsNode(typeName) || IsNodeList(typeName);
 
-        protected TreeType BaseType(TreeType node)
-        {
-            var name = _typeMap[node.Name];
-            return (name != _tree.Root) ? (_tree.Types.Single(t => t.Name == name)) : null;
-        }
+        protected TreeType BaseType(TreeType node)=> (_typeMap[node.Name] != _tree.Root) ? (_tree.Types.Single(t => t.Name == _typeMap[node.Name])) : null;
+
         protected NullHandling FieldNullHandling(TreeType node, string fieldName)
         {
             var f = GetField(node, fieldName);
@@ -84,15 +81,18 @@ namespace BoundTreeGenerator
                 throw new InvalidOperationException($"Field {fieldName} not found in type {node.Name}");
         }
 
-        public static void Write(TextWriter writer, Tree tree, TargetLanguage targetLang)
+        internal static void Write(TextWriter writer, Tree tree, TargetLanguage targetLang)
         {
             switch (targetLang)
             {
                 case TargetLanguage.CSharp: new BoundNodeClassWriter_CS(writer, tree).WriteFile(); break;
-                case TargetLanguage.VB    : new BoundNodeClassWriter_VB(writer, tree).WriteFile(); break;
-                default:                    throw new UnexpectedTargetLanguage(nameof(_targetLang));
+                case TargetLanguage.VB: new BoundNodeClassWriter_VB(writer, tree).WriteFile(); break;
+                default: throw new UnexpectedTargetLanguage(nameof(_targetLang));
             }
         }
+        protected virtual int IndentSize() => 4;
+
+        void WriteIndent() { _writer.Write(new string (' ', _indent* IndentSize())); _needsIndent = false; }
 
         protected void InitializeValueTypes()
         {
@@ -114,34 +114,36 @@ namespace BoundTreeGenerator
         }
         protected void Write(string text)
         {
-            if (_needsIndent)
-            {
-                _writer.Write(new string(' ', _indent * 4));
-                _needsIndent = false;
-            }
+            if (_needsIndent)  WriteIndent();
             _writer.Write(text);
         }
-        protected void WriteLine( string text, bool afterBlankLine = false, bool undent = false, bool thenIndent = false, bool thenBlankLine = false )
+        protected void WriteLine(string text)
         {
-            if (afterBlankLine) {  Blank(); }
-            if (undent)         { Undent(); }
             Write(text);
             _writer.WriteLine();
             _needsIndent = true;
-            if (thenIndent)     { Indent(); }
-            if (thenBlankLine)  {  Blank(); }
         }
-        protected void Blank() { _writer.WriteLine(); _needsIndent = true; }
-        protected void LBrace()  => WriteLine("{", thenIndent: true);
-        protected void RBrace()  => WriteLine("}", undent: true);
+        protected void Blank() => WriteLine("");// _writer.WriteLine(); _needsIndent = true; }
+        protected void LBrace() => WriteLine("{");
+        protected void RBrace() => WriteLine("}");
         protected void LParens() => Write("(");
         protected void RParens() => Write(")");
-        protected void Indent()  => ++_indent;
-        protected void Undent()  => _indent = _indent > 0 ? (_indent - 1) : _indent;
+        protected int MaxIndent() => int.MaxValue - IndentSize();
+        protected void Indent() => _indent = _indent < MaxIndent() ? (_indent +1)  : _indent;
+        protected void Undent() => _indent = _indent > 0 ? (_indent - 1) : _indent;
         protected void EOL() => WriteLine("");
+        protected Action NotUsed() => () => { };
+        #region "Keywords"
+        protected abstract string @bool();
+        protected abstract string @private();
+        protected abstract string @public();
+        protected abstract string @optional();
+        protected abstract string @false();
+        protected abstract string @protected();
         protected abstract string InsideNamespace();
         protected abstract void ImportsNamespaces();
         protected abstract string Friend();
+        protected abstract string @_nameof_();
         protected abstract string Partial();
         protected abstract string Abstract();
         protected abstract string Sealed();
@@ -151,16 +153,14 @@ namespace BoundTreeGenerator
         protected abstract string OrElse();
         protected abstract string AndAlso();
         protected abstract string Imports();
-        protected virtual string EndOfStatement() => "";
-        protected abstract void End_Class(bool thenBlankLine = true);
-        protected string Inherits(string inheritsFrom) => $" : {Inherits()}{inheritsFrom}";
         protected abstract string Inherits();
+        #endregion
+        protected virtual string EndOfStatement() => "";
+        protected string Inherits(string inheritsFrom) => $" : {Inherits()}{inheritsFrom}";
 
-        protected void WriteFile()
+
+        private void CommonImports()
         {
-            AutoGenerated();
-
-            Blank();
             ImportNamespace("System");
             ImportNamespace("System.Collections");
             ImportNamespace("System.Collections.Generic");
@@ -172,10 +172,19 @@ namespace BoundTreeGenerator
             ImportNamespace("System.Text");
             ImportNamespace("Microsoft.CodeAnalysis.Collections");
             ImportNamespace("Roslyn.Utilities");
+        }
+
+        protected void WriteFile()
+        {
+            AutoGenerated();
+
+            Blank();
+            CommonImports();
             ImportsNamespaces();
             InsideNamespace(InsideNamespace(),
-                ()=>
+                () =>
                 {
+                    Blank();
                     WriteKinds();
                     WriteTypes();
                     WriteVisitor();
@@ -190,32 +199,39 @@ namespace BoundTreeGenerator
                 WriteType(node);
             Blank();
         }
-        protected void InsideNamespace(string ns,Action body)
+        protected virtual void InsideNamespace(string ns, Action body)=> InBlock(() => WriteLine($"{Namespace()} {ns}"), body, false, () => End_Namespace());
+        protected void Indented(Action body) => InBlock(Indent, body, false, Undent);
+
+
+        protected void InBlock(Action header, Action body, bool indented, Action footer = null)
         {
-            InBlock(
-                () => WriteLine($"{Namespace()} {ns}"),
-                body,
-                ()=>End_Namespace());
+            header();
+            if (indented) { Indented(body);} else{ body(); };
+            footer?.Invoke();
         }
-        protected abstract void InBlock(Action header, Action body, Action footer);
 
-        protected void WriteClass(string modifiers,string classname,string inherits, Action body)
+        protected string[] Parameters(params string[] parameters) => parameters;
+
+
+
+        protected void WriteClass(string modifiers, string classname, string inherits, Action body, Action endClass, bool indentBody)
         {
-
             InBlock(
                 () =>
                 {
                     Write($"{modifiers} {Class()} {classname}");
                     if (inherits != null) Write(Inherits(inherits));
                     EOL();
-                    Blank();
                 },
-                body,
-                ()=>End_Class());
+                body ?? NotUsed(),
+                indentBody, endClass ?? NotUsed());
         }
- 
+        protected abstract void WriteClass(string modifiers, string classname, string inherits = null, Action body = null);
+
         protected bool CanBeSealed(TreeType node) => !_typeMap.Values.Contains(node.Name);  // Is this type the base type of anything?
-        
+        protected string OutIsPublic(bool isPublic) => isPublic ? @public() : @protected();
+
+        #region "Parenthesis"
         protected void SeparatedList<T>(string separator, IEnumerable<T> items, Func<T, string> func)
         {
             var first = true;
@@ -229,11 +245,39 @@ namespace BoundTreeGenerator
         protected void Comma<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList(", ", items, func);
         protected void ParenList<T>(IEnumerable<T> items, Func<T, string> func)
         {
-            LParens();
-            if(items != null) Comma(items, func);
-            RParens();
+            Parens(() => { if (items != null) Comma(items, func); });
         }
-        protected void ParenList(IEnumerable<string> items) =>  ParenList<string>(items, x => x);
+        protected void ParenList(IEnumerable<string> items) => ParenList(items, x => x);
+        protected void Parens(Action content)=> InBlock(() => LParens(), content, false, () => RParens());
+        #endregion
+
+        #region "Parameter"
+        protected abstract string NameAsType(string name, string typename, bool isNew = false);
+        protected string Parameter(string name, string typeName) => NameAsType(ToCamelCase(name), typeName);
+
+        protected IEnumerable<string> OutputFirstParameters(bool isPublic)
+        {
+            if (!isPublic) yield return NameAsType("kind", "BoundKind");
+            yield return NameAsType("syntax", "SyntaxNode");
+        }
+        #endregion
+
+        protected string _NameOf(string name) => $"{{{@_nameof_()}({name})}}";
+        protected string[] SubMewParameters(TreeType node, bool isPublic, bool? hasErrorsIsOptional = default(bool?))
+        {
+            var fields = OutputFirstParameters(isPublic).Concat(from field in AllSpecifiableFields(node) select Parameter(field.Name, field.Type));
+            if (hasErrorsIsOptional.HasValue) { Include_HasError(); };
+            return fields.ToArray();
+
+            void Include_HasError()
+            {
+                var param = NameAsType("hasErrors", @bool());
+                if (hasErrorsIsOptional.Value)
+                    fields = fields.Concat(new[] { $"{@optional()} {param} = {@false()}" });
+                else
+                    fields = fields.Concat(new[] { param });
+            }
+        }
 
         protected void WriteConstructor(TreeType node, bool isPublic, bool hasChildNodes)
         {
@@ -247,6 +291,7 @@ namespace BoundTreeGenerator
                 WriteConstructorWithoutHasErrors(node, isPublic);
             }
         }
+
         // Write the null checks for any fields that can't be null.
         protected void WriteNullChecks(TreeType node)
         {
@@ -258,7 +303,7 @@ namespace BoundTreeGenerator
                 Write_DebugAssert_Nulls(isROArray, field);
             }
         }
-        protected void ApplyToTreeNodes(Action<Node> a) { foreach (var node in _tree.Types.OfType<Node>()) { a(node); } }
+        protected Action ApplyToTreeNodes(Action<Node> a) => () => { foreach (var node in _tree.Types.OfType<Node>()) { a(node); } };
 
         protected string _GetModifiers(TreeType node) => (node is AbstractNode) ? $"{Abstract()} " : CanBeSealed(node) ? $"{Sealed()} " : "";
 
@@ -269,7 +314,6 @@ namespace BoundTreeGenerator
             WriteClass($"{Friend()} {_GetModifiers(node)}{Partial()}", node.Name, node.Base,
                 () =>
                 {
-
                     var unsealed = !CanBeSealed(node);
                     var concrete = !(node is AbstractNode);
                     var hasChildNodes = AllNodeOrNodeListFields(node).Any();
@@ -336,8 +380,7 @@ namespace BoundTreeGenerator
         protected virtual void Write_DebugAssert_Nulls(bool isROArray, Field field) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual void ImportNamespace(string nsName) => WriteLine($"{Imports()} {nsName}{EndOfStatement()}");
 
-        protected virtual void WriteStartNamespace() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void End_Namespace() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
+        protected virtual void End_Namespace() {}
         protected virtual void WriteKinds() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual void WriteField(Field field) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual void WriteAccept(string name) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
@@ -351,8 +394,8 @@ namespace BoundTreeGenerator
         protected virtual string GetGenericType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual string GetElementType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual void InitializeValueTypes(ref Dictionary<string, bool> _valueTypes) { }
-        protected virtual string EscapeKeyword(string name) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual bool IsKeyword(string name) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
+        protected abstract string EscapeKeyword(string name);
+        protected abstract bool IsKeyword(string name);
 
         #endregion
 
