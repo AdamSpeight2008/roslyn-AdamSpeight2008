@@ -7,262 +7,9 @@ using System.Linq;
 
 namespace BoundTreeGenerator
 {
-    internal enum TargetLanguage  {  VB,  CSharp  }
-
-    internal enum NullHandling
+    internal abstract partial class BoundNodeClassWriter
     {
-        Allow,
-        Disallow,
-        Always,
-        NotApplicable // for value types
-    }
 
-    public class UnexpectedTargetLanguage : ArgumentException
-    {
-        public UnexpectedTargetLanguage(string targetLanguage) : base("Unexpected target language", targetLanguage)  { }
-    }
-
-    internal abstract class BoundNodeClassWriter
-    {
-        protected int _indent;
-        protected bool _needsIndent = true;
-        protected Dictionary<string, bool> _valueTypes;
-        protected readonly Tree _tree;
-        protected readonly TextWriter _writer;
-        protected readonly Dictionary<string, string> _typeMap;
-        protected readonly TargetLanguage _targetLang;
-
-        internal BoundNodeClassWriter(TextWriter writer, Tree tree, TargetLanguage targetLang)
-        {
-            _tree = tree;
-            _writer = writer;
-            _typeMap = tree.Types.Where(t => !(t is EnumType || t is ValueType)).ToDictionary(n => n.Name, n => n.Base);
-            _typeMap.Add(tree.Root, null);
-            _targetLang = targetLang;
-            InitializeValueTypes();
-        }
-
-        public bool IsNodeOrNodeList(string typeName) => IsNode(typeName) || IsNodeList(typeName);
-
-        protected TreeType BaseType(TreeType node)=> (_typeMap[node.Name] != _tree.Root) ? (_tree.Types.Single(t => t.Name == _typeMap[node.Name])) : null;
-
-        protected NullHandling FieldNullHandling(TreeType node, string fieldName)
-        {
-            var f = GetField(node, fieldName);
-
-            if (f.Null != null)
-            {
-                switch (f.Null.ToUpperInvariant())
-                {
-                    case "ALLOW": return NullHandling.Allow;
-                    case "DISALLOW": return NullHandling.Disallow;
-                    case "ALWAYS": return NullHandling.Always;
-                    case "NOTAPPLICABLE": return NullHandling.NotApplicable;
-                    case "": break;
-                    default: throw new ArgumentException("Unexpected value", nameof(f.Null));
-                }
-            }
-
-            if (f.Override)
-                return FieldNullHandling(BaseType(node), fieldName);
-            else if (!IsValueType(f.Type) || GetGenericType(f.Type) == "ImmutableArray")
-                return NullHandling.Disallow; // default is to disallow nulls.
-            else
-                return NullHandling.NotApplicable;   // value types can't check nulls.
-        }
-        protected Field GetField(TreeType node, string fieldName)
-        {
-            var fieldsWithName = from f in FieldsIncludingOverrides(node) where f.Name == fieldName select f;
-            if (fieldsWithName.Any())
-                return fieldsWithName.Single();
-            else if (BaseType(node) != null)
-                return GetField(BaseType(node), fieldName);
-            else
-                throw new InvalidOperationException($"Field {fieldName} not found in type {node.Name}");
-        }
-
-        internal static void Write(TextWriter writer, Tree tree, TargetLanguage targetLang)
-        {
-            switch (targetLang)
-            {
-                case TargetLanguage.CSharp: new BoundNodeClassWriter_CS(writer, tree).WriteFile(); break;
-                case TargetLanguage.VB: new BoundNodeClassWriter_VB(writer, tree).WriteFile(); break;
-                default: throw new UnexpectedTargetLanguage(nameof(_targetLang));
-            }
-        }
-        protected virtual int IndentSize() => 4;
-
-        void WriteIndent() { _writer.Write(new string (' ', _indent* IndentSize())); _needsIndent = false; }
-
-        protected void InitializeValueTypes()
-        {
-            _valueTypes = new Dictionary<string, bool>();
-            foreach (ValueType t in _tree.Types.Where(t => t is ValueType))
-                _valueTypes.Add(t.Name, true);
-            InitializeValueTypes(ref _valueTypes);
-
-            _valueTypes.Add("Int8", true);
-            _valueTypes.Add("Int16", true);
-            _valueTypes.Add("Int32", true);
-            _valueTypes.Add("Int64", true);
-            _valueTypes.Add("UInt8", true);
-            _valueTypes.Add("UInt16", true);
-            _valueTypes.Add("UInt32", true);
-            _valueTypes.Add("UInt64", true);
-            _valueTypes.Add("ImmutableArray", true);
-            _valueTypes.Add("PropertyAccessKind", true);
-        }
-        protected void Write(string text)
-        {
-            if (_needsIndent)  WriteIndent();
-            _writer.Write(text);
-        }
-        protected void WriteLine(string text)
-        {
-            Write(text);
-            _writer.WriteLine();
-            _needsIndent = true;
-        }
-        protected void Blank() => WriteLine("");// _writer.WriteLine(); _needsIndent = true; }
-        protected void LBrace() => WriteLine("{");
-        protected void RBrace() => WriteLine("}");
-        protected void LParens() => Write("(");
-        protected void RParens() => Write(")");
-        protected int MaxIndent() => int.MaxValue - IndentSize();
-        protected void Indent() => _indent = _indent < MaxIndent() ? (_indent +1)  : _indent;
-        protected void Undent() => _indent = _indent > 0 ? (_indent - 1) : _indent;
-        protected void EOL() => WriteLine("");
-        protected Action NotUsed() => () => { };
-        #region "Keywords"
-        protected abstract string @bool();
-        protected abstract string @private();
-        protected abstract string @public();
-        protected abstract string @optional();
-        protected abstract string @false();
-        protected abstract string @protected();
-        protected abstract string InsideNamespace();
-        protected abstract void ImportsNamespaces();
-        protected abstract string Friend();
-        protected abstract string @_nameof_();
-        protected abstract string Partial();
-        protected abstract string Abstract();
-        protected abstract string Sealed();
-        protected abstract string Namespace();
-        protected abstract string Class();
-        protected abstract string Enum();
-        protected abstract string OrElse();
-        protected abstract string AndAlso();
-        protected abstract string Imports();
-        protected abstract string Inherits();
-        #endregion
-        protected virtual string EndOfStatement() => "";
-        protected string Inherits(string inheritsFrom) => $" : {Inherits()}{inheritsFrom}";
-
-
-        private void CommonImports()
-        {
-            ImportNamespace("System");
-            ImportNamespace("System.Collections");
-            ImportNamespace("System.Collections.Generic");
-            ImportNamespace("System.Collections.Immutable");
-            ImportNamespace("System.Diagnostics");
-            ImportNamespace("System.Linq");
-            ImportNamespace("System.Runtime.CompilerServices");
-            ImportNamespace("System.Threading");
-            ImportNamespace("System.Text");
-            ImportNamespace("Microsoft.CodeAnalysis.Collections");
-            ImportNamespace("Roslyn.Utilities");
-        }
-
-        protected void WriteFile()
-        {
-            AutoGenerated();
-
-            Blank();
-            CommonImports();
-            ImportsNamespaces();
-            InsideNamespace(InsideNamespace(),
-                () =>
-                {
-                    Blank();
-                    WriteKinds();
-                    WriteTypes();
-                    WriteVisitor();
-                    WriteWalker();
-                    WriteRewriter();
-                    WriteTreeDumperNodeProducer();
-                });
-        }
-        protected void WriteTypes()
-        {
-            foreach (var node in _tree.Types.Where(n => !(n is PredefinedNode)))
-                WriteType(node);
-            Blank();
-        }
-        protected virtual void InsideNamespace(string ns, Action body)=> InBlock(() => WriteLine($"{Namespace()} {ns}"), body, false, () => End_Namespace());
-        protected void Indented(Action body) => InBlock(Indent, body, false, Undent);
-
-
-        protected void InBlock(Action header, Action body, bool indented, Action footer = null)
-        {
-            header();
-            if (indented) { Indented(body);} else{ body(); };
-            footer?.Invoke();
-        }
-
-        protected string[] Parameters(params string[] parameters) => parameters;
-
-
-
-        protected void WriteClass(string modifiers, string classname, string inherits, Action body, Action endClass, bool indentBody)
-        {
-            InBlock(
-                () =>
-                {
-                    Write($"{modifiers} {Class()} {classname}");
-                    if (inherits != null) Write(Inherits(inherits));
-                    EOL();
-                },
-                body ?? NotUsed(),
-                indentBody, endClass ?? NotUsed());
-        }
-        protected abstract void WriteClass(string modifiers, string classname, string inherits = null, Action body = null);
-
-        protected bool CanBeSealed(TreeType node) => !_typeMap.Values.Contains(node.Name);  // Is this type the base type of anything?
-        protected string OutIsPublic(bool isPublic) => isPublic ? @public() : @protected();
-
-        #region "Parenthesis"
-        protected void SeparatedList<T>(string separator, IEnumerable<T> items, Func<T, string> func)
-        {
-            var first = true;
-            foreach (var item in items)
-            {
-                if (!first) _writer.Write(separator);
-                first = false;
-                _writer.Write(func(item));
-            }
-        }
-        protected void Comma<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList(", ", items, func);
-        protected void ParenList<T>(IEnumerable<T> items, Func<T, string> func)
-        {
-            Parens(() => { if (items != null) Comma(items, func); });
-        }
-        protected void ParenList(IEnumerable<string> items) => ParenList(items, x => x);
-        protected void Parens(Action content)=> InBlock(() => LParens(), content, false, () => RParens());
-        #endregion
-
-        #region "Parameter"
-        protected abstract string NameAsType(string name, string typename, bool isNew = false);
-        protected string Parameter(string name, string typeName) => NameAsType(ToCamelCase(name), typeName);
-
-        protected IEnumerable<string> OutputFirstParameters(bool isPublic)
-        {
-            if (!isPublic) yield return NameAsType("kind", "BoundKind");
-            yield return NameAsType("syntax", "SyntaxNode");
-        }
-        #endregion
-
-        protected string _NameOf(string name) => $"{{{@_nameof_()}({name})}}";
         protected string[] SubMewParameters(TreeType node, bool isPublic, bool? hasErrorsIsOptional = default(bool?))
         {
             var fields = OutputFirstParameters(isPublic).Concat(from field in AllSpecifiableFields(node) select Parameter(field.Name, field.Type));
@@ -292,9 +39,9 @@ namespace BoundTreeGenerator
             }
         }
 
-        // Write the null checks for any fields that can't be null.
         protected void WriteNullChecks(TreeType node)
         {
+            // Write the null checks for any fields that can't be null.
             var nullCheckFields = AllFields(node).Where(f => FieldNullHandling(node, f.Name) == NullHandling.Disallow);
             if (!nullCheckFields.Any()) return;
             foreach (var field in nullCheckFields)
@@ -303,6 +50,7 @@ namespace BoundTreeGenerator
                 Write_DebugAssert_Nulls(isROArray, field);
             }
         }
+
         protected Action ApplyToTreeNodes(Action<Node> a) => () => { foreach (var node in _tree.Types.OfType<Node>()) { a(node); } };
 
         protected string _GetModifiers(TreeType node) => (node is AbstractNode) ? $"{Abstract()} " : CanBeSealed(node) ? $"{Sealed()} " : "";
@@ -311,7 +59,7 @@ namespace BoundTreeGenerator
         {
             if (!(node is AbstractNode) && !(node is Node)) return;
             Blank();
-            WriteClass($"{Friend()} {_GetModifiers(node)}{Partial()}", node.Name, node.Base,
+            WriteClass($"{Friend()} {_GetModifiers(node)}{Partial()}",node.Name,null,  node.Base,
                 () =>
                 {
                     var unsealed = !CanBeSealed(node);
@@ -367,7 +115,13 @@ namespace BoundTreeGenerator
         protected IEnumerable<Field> AllTypeFields(TreeType node) => AllFields(node).Where(field => field.Type == "TypeSymbol");
         #endregion
 
-        #region "protected virtual"
+        #region "Enumeration (Enums)"
+        protected void E(string modifier, string name, string enumType, Action body) =>
+            Indented(InBlock(() => Statement($"{modifier} {Enum()} {NameAsType(name, enumType)}",true,false), body, true, footer: () => End_Enum()));
+
+        protected void Write_Kinds_Enum() => E(Friend(), "BoundKind", "System.Byte",
+            ApplyToTreeNodes(node => Statement($"{FixKeyword(StripBound(node.Name))}{EnumStatementEnding()}",true,false)));
+        #endregion
 
         protected void Or<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList($" {OrElse()} ", items, func);
         protected void AndAlso<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList($" {AndAlso()} ", items, func);
@@ -375,13 +129,10 @@ namespace BoundTreeGenerator
         protected virtual void WriteConstructorWithHasErrors(TreeType node, bool isPublic, bool hasErrorsIsOptional) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         // This constructor should only be created if no node or list fields, since it just calls base class constructor
         // without merging hasErrors.
-        protected virtual void WriteConstructorWithoutHasErrors(TreeType node, bool isPublic) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void AutoGenerated() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void Write_DebugAssert_Nulls(bool isROArray, Field field) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void ImportNamespace(string nsName) => WriteLine($"{Imports()} {nsName}{EndOfStatement()}");
+        protected abstract void WriteConstructorWithoutHasErrors(TreeType node, bool isPublic);
+        protected abstract void Write_DebugAssert_Nulls(bool isROArray, Field field);
+       #region "protected virtual"
 
-        protected virtual void End_Namespace() {}
-        protected virtual void WriteKinds() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual void WriteField(Field field) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual void WriteAccept(string name) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual void Write_Update(Node node, Boolean emitNew) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
@@ -393,10 +144,9 @@ namespace BoundTreeGenerator
         protected virtual bool IsNodeList(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual string GetGenericType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual string GetElementType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void InitializeValueTypes(ref Dictionary<string, bool> _valueTypes) { }
-        protected abstract string EscapeKeyword(string name);
-        protected abstract bool IsKeyword(string name);
 
+
+        protected abstract void InitializeValueTypes(ref Dictionary<string, bool> _valueTypes);
         #endregion
 
         #region "protected bool"
@@ -415,7 +165,7 @@ namespace BoundTreeGenerator
             return false;
         }
         protected bool IsNode(string typeName) => _typeMap.ContainsKey(typeName);
-#endregion
+        #endregion
 
         #region "protected string"
         protected string StripBound(string name)    => (name.StartsWith("Bound", StringComparison.Ordinal)) ? name.Substring(5) : name;
