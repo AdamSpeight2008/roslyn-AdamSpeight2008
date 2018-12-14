@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace BoundTreeGenerator
+namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 {
     [XmlRoot]
     public class Tree

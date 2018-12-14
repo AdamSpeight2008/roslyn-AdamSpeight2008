@@ -7,12 +7,14 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace BoundTreeGenerator
+namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 {
     internal class Program
     {
         private static int Main(string[] args)
         {
+          
+
             string language;
             string infilename;
             string outfilename;
@@ -52,9 +54,17 @@ namespace BoundTreeGenerator
 
             using (var outfile = new StreamWriter(File.Open(outfilename, FileMode.Create), Encoding.UTF8))
             {
-                BoundNodeClassWriter.Write(outfile, tree, targetLanguage);
-            }
+                try
+                {
+                    BoundNodeClassWriter.Write(outfile, tree, targetLanguage);
+                }
+                catch (global::System.Exception e)
+                {
+                    Console.Error.WriteLine(e.ToString());
 
+                    throw new Exception("Rethrowing ",e);
+                }
+            }
             return 0;
         }
     }

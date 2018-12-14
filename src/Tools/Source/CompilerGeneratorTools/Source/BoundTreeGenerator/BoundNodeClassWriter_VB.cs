@@ -5,98 +5,155 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-namespace BoundTreeGenerator
+//using static BoundTreeGenerator.Exts; 
+
+namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 {
+    public sealed class VBLangSpecific : LangSpecific
+    {
+        internal VBLangSpecific(): base() { }
+   
+        #region "language specific"
+        public override string @overrides() => "Overrides";
+        public override string Namespace()  => "Namespace";
+        public override string Class()      => "Class";
+        public override string Enum()       => "Enum";
+        public override string Friend()     => "Friend";
+        public override string Partial()    => "Partial";
+        public override string Abstract()   => "MustInherit";
+        public override string Sealed()     => "NotInheritable";
+        public string Sub()                => "Sub";
+        public string Function()           => "Function";
+        private string End()                => "End";
+        public override string @public()    => "Public";
+        public override string @private()   => "Private";
+        public override string @protected() => "Protected";
+        public override string @optional()  => "Optional";
+        public override string @false()     => "False";
+        public override string @bool()      => "Boolean";
+        public override string @shadows()   => "Shadows";
+        private string Overridable()        => "Overridable";
+        public override string Imports()    => "Imports";
+        public override string Inherits()   => "Inherits ";
+        public override string OrElse()     => "OrElse";
+        public override string AndAlso()    => "AndAlso";
+        public override string @_nameof_()  => "NameOf";
+        public override string @return()    => "Return";
+        public override string @shared()    => "Shared";
+        public override string @this()      => "Me";
+        public override string @case()      => "Case";
+        public override string @if()        => "If";
+        public override string @then()      => "Then";
+        public override string @New()       => "New";
+        public override string @null()      => "Nothing";
+        public override string @byte()      => "System.Byte";
+        public override string @from()      => "From";
+        public override string @In()        => "In";
+        public override string @Select()    => "Select";
+        public override string EnumBase(string baseType) => AsType(baseType);
+        public override string AsType(string typename, bool isNew = false) => (typename == null) ? "" : $"As {(isNew ? @New() + " " : "")}{typename}";
+        public override Func<string> MyBaseNew() => ()=>"MyBase.New";
+        #endregion
+
+        public override string InsideNamespace() => "Microsoft.CodeAnalysis.VisualBasic";
+        public override IEnumerable<string> ImportedNamespaces()
+        {
+            yield return "Microsoft.CodeAnalysis.Text";
+            yield return "Microsoft.CodeAnalysis.VisualBasic.Symbols";
+            yield return "Microsoft.CodeAnalysis.VisualBasic.Syntax";
+        }
+        public override string Attribute(string attribute) => $"<{attribute}>";
+        public override string CommentMarker() => "'";
+        public override string NameAsType(string name, string typename, bool isNew = false) => $"{name.ToCamelCase(this)} {AsType(typename, isNew)}";
+        public override string EscapeKeyword(string name) => $"[{name}]";
+        public override string Generics(string genericParams) => $"(Of {genericParams})";
+        public override string Inherits(string inheritsFrom) => $" : {Inherits()}{inheritsFrom}";
+
+        private Func<string> End_(string text) => () => $"{End()} {text}";
+        private Func<string> End_Class() => End_(this.Class());
+        public Func<string> End_Select() => End_(this.Select());
+        public Func<string> End_Sub() => End_(this.Sub());
+        public override string End_Enum() => End_(this.Enum())();
+        public Func<string> End_Function() => End_(Function());
+        public override string End_Namespace =>  End_(this.Namespace())();
+
+        public override void WriteClass(IndentedWriter iw,string modifiers, string classname, string genericParams = null, string inherits = null, Action body = null)
+            =>  base.WriteClass(iw,modifiers, classname, genericParams, inherits, body.Indented(iw),End_Class().Output(_iw,true));
+
+        private static HashSet<string> s_keywords =
+            new HashSet<string>(
+                new string[] {
+                    "addhandler", "addressof", "alias", "and", "andalso", "as",
+                    "boolean", "byref", "byte", "byval",
+                    "call", "case", "catch", "cbool", "cbyte", "cchar", "cdate", "cdbl", "cdec", "char", "cint", "class", "clng", "cobj", "const", "continue",
+                    "csbyte", "cshort", "csng", "cstr", "ctype", "cuint", "culng", "cushort",
+                    "date", "decimal", "declare", "default", "delegate", "dim", "directcast", "do", "double",
+                    "each", "else", "elseif", "end", "endif", "enum", "erase", "error", "event", "exit",
+                    "false", "finally", "for", "friend", "function",
+                    "get", "gettype", "getxmlnamespace", "global", "gosub", "goTo",
+                    "handles",
+                    "if", "implements", "imports", "in", "inherits", "integer", "interface", "is", "isnot",
+                    "let", "lib", "like", "long", "loop",
+                    "me", "mod", "module", "mustinherit", "mustoverride", "mybase", "myclass",
+                    "namespace", "narrowing", "new", "next", "not", "nothing", "notinheritable", "notoverridable",
+                    "object", "of", "on", "operator", "option", "optional", "or", "orelse", "overloads", "overridable", "overrides",
+                    "paramArray", "partial", "private", "property", "protected", "public",
+                    "raiseevent", "readonly", "redim", "rem", "removehandler", "resume", "return",
+                    "sbyte", "select", "set", "shadows", "shared", "short", "single", "static", "step", "stop", "string", "structure", "sub", "synclock",
+                    "then", "throw", "to", "true", "try", "trycast", "typeof",
+                    "uinteger", "ulong", "ushort", "using",
+                    "variant", "wend", "when", "while", "widening", "with", "withevents", "writeonly",
+                    "xor" }
+                );
+        public override bool IsKeyword(string name) => s_keywords.Contains(name.ToLower());
+        public override string @override() => "Override";
+        public override string @overridable() => "Overridable";
+
+
+    }
 
     internal sealed class BoundNodeClassWriter_VB : BoundNodeClassWriter
     {
-        internal BoundNodeClassWriter_VB(TextWriter writer, Tree tree) : base(writer, tree, TargetLanguage.VB) { }
-
-        protected override int IndentSize() => 2;
-
-        #region "language specific"
-        protected override string @overrides() => "Overrides";
-        protected override string Namespace() => "Namespace";
-        protected override string Class() => "Class";
-        protected override string Enum() => "Enum";
-        protected override string Friend() => "Friend";
-        protected override string Partial() => "Partial";
-        protected override string Abstract() => "MustInherit";
-        protected override string Sealed() => "NotInheritable";
-        private string Sub() => "Sub";
-        private string Function() => "Function";
-        private string End() => "End";
-        private string Select() => "Select";
-        protected override string @public() => "Public";
-        protected override string @private() => "Private";
-        protected override string @optional() => "Optional";
-        protected override string @false() => "False";
-        protected override string @bool() => "Boolean";
-        protected override string @protected() => "Protected";
-        protected override string @shadows() => "Shadows";
-        private string Overridable() => "Overridable";
-        protected override string Imports() => "Imports";
-        protected override string Inherits() => "Inherits ";
-        protected override string OrElse() => "OrElse";
-        protected override string AndAlso() => "AndAlso";
-        protected override string @_nameof_() => "NameOf";
-        protected override string @return() => "Return";
-        protected override string @shared() => "Shared";
-        protected override string @this() => "Me";
-        protected override string @case() => "Case";
-        protected override string @if() => "If";
-        protected override string @then() => "Then";
-        protected override string @New() => "New";
-        protected override string @null() => "Nothing";
-        #endregion
-
-        private string AsType(string typename, bool isNew = false) => (typename == null) ? "" : $" As {(isNew ? @New() + " " : "")}{typename}";
-        protected override string NameAsType(string name, string typename, bool isNew = false) => $"{ToCamelCase(name)}{AsType(typename, isNew)}";
+        internal BoundNodeClassWriter_VB(TextWriter writer, Tree tree)
+            : base(tree, TargetLanguage.VB, new IndentedWriter(levelSize: 2,writer), new VBLangSpecific()) { }
 
         #region "block creation helpers"
-        void ReturnType(string type) => Statement(AsType(type));
 
-        protected override string Generics(string genericParams) => $"(Of {genericParams})";
-        protected override void WriteClass(string modifiers, string classname, string genericParams = null,string inherits = null, Action body = null) => 
-            Indented(()=>base.WriteClass(modifiers, classname, genericParams, inherits, body,()=> End_Class(),true));
+        Func<string> ReturnType(string type) => () => Lang.AsType(type);
+
         #region "method creation helpers"
-        private void MethodHeader(string modifiers, string methodKind, string methodName, string[] parameters, string returns)
-        {
-            modifiers.IfNonNull(Write_Modifier);
-            Write($"{methodKind} {methodName}");
-            ParenList(parameters);
-            returns.IfNonNull(ReturnType,EOL);
-        }
+        private Action MethodHeader(string modifiers, string methodKind, string methodName, string[] parameters, string returns)
+            => () =>
+            {
+                if (modifiers != null) Write_Modifier(modifiers);
+                $"{ methodKind} {methodName}".Output(_o)();
+                ParenList(parameters);
+                if (returns != null) $" {ReturnType(returns)()}".Output(_o, false)();
+            };
 
         private void F(string modifier, string name, string[] parameters, string returns, Action body) =>
-            InBlock(() => MethodHeader(modifier, Function(), name, parameters, returns), body,true, footer: () => End_Function())();
+          Exts.Body(MethodHeader(modifier, ((VBLangSpecific)Lang).Function(), name, parameters, returns), body.Indented(_o),
+                    ((VBLangSpecific)Lang).End_Function().Output(_o,true), _o);
+
         private void S(string modifier, string name, string[] parameters, Action body) =>
-            InBlock(() => MethodHeader(modifier, Sub(), name, parameters, null), body, true, footer: () => End_Sub())();
-        private void ReturnNode() => Return("node", eol: false);
-        #endregion
-        private void Friend_MustInherit_Partial_Class(string className,string genericParams, string inherits, Action body) =>
-            WriteClass($"{Friend()} {Abstract()} {Partial()}", className, genericParams, inherits, body);
+            Exts.Body(MethodHeader( modifier,((VBLangSpecific)Lang).Sub(), name, parameters, null), body.Indented(_o),
+                     ((VBLangSpecific)Lang).End_Sub().Output(_o, true), _o);
 
-        #region "End Of Blocks"
-        private void Write_End(string text) => Statement($"{End()} {text}");
-        private void End_Sub() => Write_End(Sub());
-        protected override void End_Enum() => Write_End(Enum());
-        private void End_Select() => Write_End(Select());
-        private void End_Class() => Write_End(Class());
-        private void End_Function() => Write_End(Function());
-        protected override void End_Namespace() => Write_End(Namespace());
         #endregion
+        private void Friend_MustInherit_Partial_Class(string className, string genericParams, string inherits, Action body)
+            => Lang.WriteClass(_o, $"{Lang.Friend()} {Lang.Abstract()} {Lang.Partial()}", className, genericParams, inherits, body);
+
         #endregion
 
-        private void WriteArgumentsToMethod(string head,string prefix, IEnumerable<Field> fx, TreeType node, string postfix,string foot=null)
+        private void WriteArgumentsToMethod(string head, string prefix, IEnumerable<Field> fx, TreeType node, string postfix, string foot = null)
         {
-            Write(head);
-            foreach (var baseField in fx)
-            {
-                var value = FieldNullHandling(node, baseField.Name) == NullHandling.Always ? @null() : ToCamelCase(baseField.Name);
-                Write($"{prefix}{value}{postfix}");
-            }
-            foot.IfNonNull(Write);
+            head.Output(_o)();
+            fx.ForAll(null,
+                (baseField, __) =>
+                {
+                    var value = FieldNullHandling(node, baseField.Name) == NullHandling.Always ? Lang.@null() : baseField.Name.ToCamelCase(Lang);
+                    $"{prefix}{value}{postfix}".Output(_o)();
+                })();
         }
 
         protected override void InitializeValueTypes(ref Dictionary<string, bool> _valueTypes)
@@ -113,107 +170,122 @@ namespace BoundTreeGenerator
             _valueTypes.Add("Char", true);
         }
 
-        protected override string Attribute(string attribute) => $"<{attribute}>";
-        protected override string CommentMarker() => "'";
-
-        protected override string InsideNamespace() => "Microsoft.CodeAnalysis.VisualBasic";
-        protected override void ImportsNamespaces() => ImportNamespaces("Microsoft.CodeAnalysis.Text","Microsoft.CodeAnalysis.VisualBasic.Symbols","Microsoft.CodeAnalysis.VisualBasic.Syntax");
-
+        #region "Write Constructors"
         private void WriteConstructor(TreeType node, bool isPublic, bool? hasErrorsIsOptional, Action whenPublic, string whenNonPublic, Action whenHasValidate = null)
         {
             var hasValidate = false;
             // A public constructor does not have an explicit kind parameter.
-            S(OutIsPublic(isPublic), @New(), SubMewParameters(node, isPublic, hasErrorsIsOptional),
+            S(OutIsPublic(isPublic),
+                Lang.@New(), SubMewParameters(node, isPublic, hasErrorsIsOptional),
                 () =>
                 {
-                    MyBase();
-                    Parens(() => { if (isPublic) { whenPublic(); } else { NonPublic(); } },true)();
+                    Lang.MyBaseNew().Output(_o,false)();
+                    Action src = null;
+                    if (isPublic) { src = whenPublic; } else { src =()=> NonPublic(); };
+                    Parens(src, true)();
                     WriteNullChecks(node);
-                    foreach (var field in Fields(node))
-                        AssignmentTo(node, field);
+
+                    Fields(node).ForAll(()=>_o.EOL(),(field, eolLast) => AssignmentTo(node, field).Code(_o, eolLast))();
 
                     hasValidate = HasValidate(node);
 
-                    if (hasValidate) Statement("Validate()");
-
+                    if (hasValidate) EOL().__(()=>"Validate()".Code(_o, false))();
                 });
-            if (hasValidate && whenHasValidate !=null) whenHasValidate();
 
-            void NonPublic()=>WriteArgumentsToMethod("kind, syntax", ", ", AllSpecifiableFields(BaseType(node)), node, "", whenNonPublic);
-            
+            if (hasValidate && whenHasValidate != null) whenHasValidate();
+
+            void NonPublic() => WriteArgumentsToMethod("kind, syntax", ", ", AllSpecifiableFields(BaseType(node)), node, "", whenNonPublic);
         }
-
+               
         protected override void WriteConstructorWithHasErrors(TreeType node, bool isPublic, bool hasErrorsIsOptional)
         {
-            WriteConstructor(node, isPublic, hasErrorsIsOptional, IsPublic(), ", hasErrors", Write_ValidateMethod());
+            WriteConstructor(node, isPublic, hasErrorsIsOptional, ()=>IsPublic(), ", hasErrors", Write_ValidateMethod);
 
-            Action Write_ValidateMethod() => ()=>S($"{@private()} {Partial()}", "Validate",null, NotUsed());
-  
-            Action IsPublic()
+            void Write_ValidateMethod() => S($"{Lang.@private()} {Lang.Partial()}", "Validate", null, NotUsed);
+
+            void IsPublic()   // Base call has bound kind, syntax, all fields in base type, plus merged HasErrors.
             {
-                return () =>
-                {
-                    // Base call has bound kind, syntax, all fields in base type, plus merged HasErrors.
-                    WriteArgumentsToMethod($"BoundKind.{StripBound(node.Name)}, syntax, ","", AllSpecifiableFields(BaseType(node)), node, ", ");
-                    Or((new[] { "hasErrors" })
-                        .Concat(from field in AllNodeOrNodeListFields(node)
-                                select ToCamelCase(field.Name) + ".NonNullAndHasErrors()"), x => x);
-                };
+                WriteArgumentsToMethod($"BoundKind.{node.Name.StripBound()}, syntax, ", "", AllSpecifiableFields(BaseType(node)), node, ", ");
+                Or((new[] { "hasErrors" }).Concat(
+                        AllNodeOrNodeListFields(node).Select(field=>field.Name.ToCamelCase(Lang) + ".NonNullAndHasErrors()")), x => x).Output(_o)();
             }
         }
-   
+
         // This constructor should only be created if no node or list fields, since it just calls base class constructor
         // without merging hasErrors.
         protected override void WriteConstructorWithoutHasErrors(TreeType node, bool isPublic)
         {
-            WriteConstructor(node, isPublic, null, Public(), null);
+            WriteConstructor(node, isPublic, null, ()=> Public(), null);
             // Base call has bound kind, syntax, fields.
-            Action Public() => ()=>WriteArgumentsToMethod($"BoundKind.{StripBound(node.Name)}, syntax",", ", AllSpecifiableFields(BaseType(node)), node, "");
-         }
+            void  Public() => WriteArgumentsToMethod($"BoundKind.{node.Name.StripBound()}, syntax", ", ", AllSpecifiableFields(BaseType(node)), node, "");
+        }
+        #endregion
 
-        protected override void Write_DebugAssert_Nulls(bool isROArray, Field field)
+        protected override void Write_DebugAssert_Nulls(bool isROArray, Field field, bool eolLast)
         {
-            var fieldName = ToCamelCase(field.Name);
-            Write("Debug.Assert(");
-            if (isROArray) { Write($"Not {fieldName}.IsDefault"); } else { Write($"{fieldName} IsNot {@null()}"); }
-            Statement($", $\"Field '{_NameOf(fieldName)}' cannot be null (use Null=\"\"allow\"\" in BoundNodes.xml to remove this check)\")");
+            var fieldName = field.Name.ToCamelCase(Lang);
+            "Debug.Assert(".Output(_o)();
+            if (isROArray) { $"Not {fieldName}.IsDefault".Output(_o)(); } else { $"{fieldName} IsNot {Lang.@null()}".Output(_o)(); }
+                $", $\"Field '{Lang._NameOf(fieldName)}' cannot be null (use Null=\"\"allow\"\" in BoundNodes.xml to remove this check)\")".Output(_o,eolLast)();
         }
 
-        protected override void WriteField(Field field)=>
-            Statement($"{@public()} {(IsNew(field) ? shadows() : (IsPropertyOverrides(field) ? overrides() : "")) + " "}ReadOnly Property {NameAsType(field.Name, field.Type)}");
-        
-        private void MyBase() => Write("MyBase.New");
+        protected override void WriteField(Field field)
+        {
+            $"{Lang.@public()} ".Output(_o)();
+            if (IsNew(field))
+                $"{Lang.shadows()} ".Output(_o)();
+            else if (IsPropertyOverrides(field))
+                $"{Lang.overrides()} ".Output(_o)();
+            ReadOnly_Property(field);
+        }
 
-        private void AssignmentTo(TreeType node, Field field) => Statement($"_{field.Name} = {(FieldNullHandling(node, field.Name) == NullHandling.Always ? "Nothing" : ToCamelCase(field.Name))}");
+        protected override void ReadOnly_Property(Field field)
+            => $"ReadOnly Property {Lang.NameAsType(field.Name, field.Type)}".Output(_o, true)();
 
+        private Func<string> AssignmentTo(TreeType node, Field field)=>
+            () => $"_{field.Name} = {(FieldNullHandling(node, field.Name) == NullHandling.Always ? Lang.@null() : field.Name.ToCamelCase(Lang))}";
+ 
         protected override void WriteAccept(string name) =>
-            F($"{@public()} {@overrides()}", "Accept", Parameters(NameAsType("visitor", "BoundTreeVisitor")), boundNode, () => { Return($"visitor.Visit{StripBound(name)}({@this()})"); });
+            F($"{Lang.@public()} {Lang.@overrides()}", "Accept", Parameters(Lang.NameAsType("visitor", "BoundTreeVisitor")), boundNode,
+              Return($"visitor.Visit{name.StripBound()}({Lang.@this()})",false));
 
         protected override void Write_Update(Node node, bool emitNew)
         {
-            Blank();
-            var modifier = emitNew ? $" {@shadows()}" : "";
-            F($"{@public()}{modifier}", "Update", AllSpecifiableFields(node).Select(field => NameAsType(field.Name, field.Type)).ToArray(), node.Name,
-                () =>
-                {
-                    if (!AllSpecifiableFields(node).Any())
-                    {
-                        Return(@this());
-                    }
-                    else
-                    {
-                        IfThen(() => AndAlso(AllSpecifiableFields(node), field => $"({ToCamelCase(field.Name)} {WriteComparision(field)}"), () => Return(@this()));
-                        Declaration("result", node.Name, null, isNew: true);
-                        ParenList((new[] { $"{@this()}.Syntax" }).Concat(AllSpecifiableFields(node).Select(f => ToCamelCase(f.Name))).Concat(new[] { $"{@this()}.HasErrors" }));
-                        EOL();
-                        IfThen(() => Write($"{@this()}.WasCompilerGenerated"), () => Statement("result.SetWasCompilerGenerated()"));
-                        Return("result");
-                    };
-                });
+            Internals();
+
+            void Internals()
+            {
+                var modifier = emitNew ? $" {Lang.@shadows()}" : "";
+                F($"{Lang.@public()}{modifier}", "Update", AllSpecifiableFields(node).Select(field => Lang.NameAsType(field.Name, field.Type)).ToArray(), node.Name,
+                    () =>
+                     {
+                        if (!AllSpecifiableFields(node).Any())
+                        {
+                             Return(Lang.@this(),false)();
+                        }
+                        else
+                        {
+                             IfThen(AndAlso(AllSpecifiableFields(node), field => $"({field.Name.ToCamelCase(Lang)} {WriteComparision(field)}"), Return(Lang.@this(),true));
+                             NewDeclaration();
+                             IfThen(() => $"{Lang.@this()}.WasCompilerGenerated", "result.SetWasCompilerGenerated()".Output(_o,true));
+                             Return("result",false)();
+                         };
+                    });
+            }
+            void NewDeclaration()
+            {
+                Declaration("result", node.Name, null, isNew: true, false);
+                ParenList(
+                   new[] { $"{Lang.@this()}.Syntax" }.
+                   Concat(AllSpecifiableFields(node).Select(f => f.Name.ToCamelCase(Lang)).
+                   Concat(new[] { $"{Lang.@this()}.HasErrors" })));
+                _o.Lang.EOS().Output( _o, true)();
+
+            }
             // Helpers
-            void IfThen(Action cmp, Action a){ Write($"{@if()} "); cmp(); Write($" {@then()} "); a(); }
+            void IfThen(Func<string> cmp, Action a)  { $"{Lang.@if()} {cmp()} {Lang.@then()} ".Output(_o, false)(); a(); }
             
-            string WriteComparision(Field field) => $"{(IsValueType(field.Type) ? $"=" : "Is")} {@this()}.{ field.Name})";
+            string WriteComparision(Field field) => $"{(IsValueType(field.Type) ? $"=" : "Is")} {Lang.@this()}.{ field.Name})";
         }
 
         protected override void WriteVisitor()
@@ -222,234 +294,211 @@ namespace BoundTreeGenerator
             Write_Visit_AsR();
             Write_Vist_AsBoundNode();
 
-            void Write_VisitInternal()
-            {
+            void Write_VisitInternal() =>
                 Friend_MustInherit_Partial_Class("BoundTreeVisitor","A,R", null,
-                    () =>
-                    {
-                        Statement("<MethodImpl(MethodImplOptions.NoInlining)>");
-                        F(Friend(), $"VisitInternal", Parameters(NodeAsBoundNode(), NameAsType("arg", "A")), "R",
-                            () =>
-                            {
-                                SelectCase();
-                                Return("DefaultVisit(node, arg)");
-                            });
-                    });
-            }
-            void SelectCase()
+                 ()=>
+                 {
+                     "<MethodImpl(MethodImplOptions.NoInlining)>".Output(_o, true)();
+                     F(Lang.Friend(), $"VisitInternal", Parameters(NodeAsBoundNode(), Lang.NameAsType("arg", "A")), "R",
+                       SelectCase().__(Return($"DefaultVisit({_node}, arg)",false)));
+                 });
+
+            Action SelectCase()
+                => ()=>Exts.Body(pre: $"Select Case {_node}.Kind".Output(_o, true),
+                             Exts.Indented(CaseClauses(), _o), ((VBLangSpecific)Lang).End_Select().EOL(_o),_o);
+
+            Action CaseClauses()
             {
-                InBlock(() => Statement("Select Case node.Kind"),
-                    () =>
-                    {
-                        var _OfTypes = _tree.Types.OfType<Node>().ToList();
-                        var widest = _OfTypes.Max(node => FixKeyword(StripBound(node.Name)).Length);
-                        for (var idx = 0; idx < _OfTypes.Count; idx++)
-                        {
-                            var node = _OfTypes[idx];
-                            var stripName = StripBound(node.Name);
-                            var name = FixKeyword(stripName);
-                            Statement($"{@case()} BoundKind.{name}{new string(' ', widest - name.Length)}: {@return()} Visit{stripName}(CType(node, {node.Name}), arg)");
-                        }
-                    },
-                    true,
-                    footer: () => End_Select())();
+                var _OfTypes = _tree.Types.OfType<Node>().ToArray();
+                var widest = _OfTypes.Max(node => Lang.FixKeyword(node.Name.StripBound()).Length);
+                return _OfTypes.ForAll(null, (clause, eolLast) => WriteCaseClauseStatement(clause, widest, eolLast));
             }
+
+            void WriteCaseClauseStatement(Node node, int widest, bool eolLast)
+            {
+                var stripName = node.Name.StripBound();
+                var name = Lang.FixKeyword(stripName);
+                $"{Lang.@case()} BoundKind.{name}{new string(' ', widest - name.Length)}: {Lang.@return()} Visit{stripName}(CType({_node}, {node.Name}), arg)".Output(_o, eolLast)();
+            }
+
             void Write_Visit_AsR() =>
-                Friend_MustInherit_Partial_Class("BoundTreeVisitor","A,R", null, ApplyToTreeNodes(node => WriteVisitor(node, Parameters(NodeAs(node), NameAsType("arg", "A")), "R", "node,arg")));
+                Friend_MustInherit_Partial_Class("BoundTreeVisitor","A,R", null,
+                    ApplyToTreeNodes((node, eolLast) => WriteVisitor(node, Parameters(NodeAs(node), Lang.NameAsType("arg", "A")), "R", "node,arg")));
 
             void Write_Vist_AsBoundNode()=>
-                Friend_MustInherit_Partial_Class("BoundTreeVisitor",null, null, ApplyToTreeNodes(node=> WriteVisitor(node, Parameters(NodeAs(node)), boundNode, "node")));
+                Friend_MustInherit_Partial_Class("BoundTreeVisitor",null, null,
+                    ApplyToTreeNodes((node, eolLast) => WriteVisitor(node, Parameters(NodeAs(node)), boundNode, "node")));
 
             void WriteVisitor(Node node, string[] parameters, string returns, string argument) =>
-                F($"{@public()} {Overridable()}", $"Visit{StripBound(node.Name)}", parameters.ToArray(), returns, ()=> Return($"{@this()}.DefaultVisit({argument})"));
-        }
+                F($"{Lang.@public()} {Lang.overridable()}", $"Visit{node.Name.StripBound()}", parameters.ToArray(), returns,
+                  Return($"{Lang.@this()}.DefaultVisit({argument})",true));
 
-        private string NodeAsBoundNode() => NameAsType("node", "BoundNode");
-        private string NodeAs(Node node) => NameAsType("node", node.Name);
+         }
 
-        private string Visit(Node node) => $"Visit{StripBound(node.Name)}";
+        private string NodeAsBoundNode() => Lang.NameAsType(_node, boundNode);
+        private string NodeAs(Node node) => Lang.NameAsType(_node, node.Name);
 
-        private const string boundNode = "BoundNode";
+        private string Visit(Node node) => $"Visit{node.Name.StripBound()}";
+
         protected override void WriteWalker()
         {
-            Friend_MustInherit_Partial_Class("BoundTreeWalker",null, "BoundTreeVisitor",
-                () => { foreach (var node in _tree.Types.OfType<Node>())
-                        {
-                        F($"{@public()} {@overrides()}", Visit(node), Parameters(NodeAs(node)).ToArray(), boundNode,
-                            () =>
-                            {
-                                Visiting(node);
-                                Return(@null());
-                            });
-                        }
-                      });
+            Friend_MustInherit_Partial_Class("BoundTreeWalker",null, "BoundTreeVisitor", Internal());
 
-            void Visiting(Node node)
-            {
-                foreach (var field in AllFields(node).Where(f => IsDerivedOrListOfDerived(boundNode, f.Type) && !SkipInVisitor(f)))
-                {
-                    var member = IsNodeList(field.Type) ? "List" : "";
-                    Statement($"{@this()}.Visit{member}(node.{field.Name})");
-                }
-            }
+            Action Internal()
+                => _tree.Types.OfType<Node>().ForAll(null,(node,__)=>
+                    F($"{Lang.@public()} {Lang.@overrides()}", Visit(node), Parameters(NodeAs(node)).ToArray(), boundNode,
+                      Visiting(node).__(Return(Lang.@null(),true))));
+
+            Action Visiting(Node node)
+                => AllFields(node).Where(f => IsDerivedOrListOfDerived(boundNode, f.Type) && !SkipInVisitor(f)).
+                   ForAll(null, (field, __) =>
+                   {
+                      var member = IsNodeList(field.Type) ? "List" : "";
+                      $"{Lang.@this()}.Visit{member}(node.{field.Name})".Output(_o, true)();
+                   });
         }
  
-        private string useAsVariableName(string name) => ToCamelCase(StripBound(name));
+        private string UseAsVariableName(string name) => name.StripBound().ToCamelCase(Lang);
 
         protected override void WriteTreeDumperNodeProducer()
         {
-            WriteClass($"{Friend()} {Sealed()}", "BoundTreeDumperNodeProducer",
-                inherits: $"BoundTreeVisitor{Generics("Object, TreeDumperNode")}",
+            Lang.WriteClass(_o, $"{Lang.Friend()} {Lang.Sealed()}", "BoundTreeDumperNodeProducer",
+                inherits: $"BoundTreeVisitor{Lang.Generics("Object, TreeDumperNode")}",
                 body: () =>
                 {
-                    Blank();
-                    S(@private(), @New(), null, NotUsed());
-
+                    _o.Blank();
+                    S(Lang.@private(), Lang.@New(), null, NotUsed);
                     Write_MakeTree();
-                    ApplyToTreeNodes(
-                        node => {
-                        F(
-                            $"{@public()} {@overrides()}", Visit(node), Parameters(NodeAs(node), NameAsType("arg", "Object")).ToArray(),"TreeDumperNode",
-                            Write_InnerTree(node)
-                            );
-                        }
-                        )();
-                }
-                );
-             
-            Action Write_InnerTree(Node node)
+                    Write_Functions();
+                });
+
+            void Write_Functions()
             {
-                return () =>
-                {
-                    Return($"{@New()} TreeDumperNode",eol: false);
-                    Parens(
-                        () =>
-                        {
-                            Write($"\"{useAsVariableName(node.Name)}\", {@null()}, ");
-                            var allFields = AllFields(node).ToArray();
-                            if (allFields.Length > 0)
-                            {
-                                Braced(
-                                    () =>
-                                    {
-                                        for (var i = 0; i < allFields.Length; ++i)
-                                        {
-                                            var field = allFields[i];
-                                            Write($"{@New()} TreeDumperNode");
-                                            Parens(
-                                                () =>
-                                                {
-                                                    Write($"\"{_Field(field)}\", ");
-                                                    if (IsDerivedType(boundNode, field.Type))
-                                                        Write($"{@null()}, {{ Visit(node.{field.Name}, {@null()}) }}");
-                                                    else if (IsListOfDerived(boundNode, field.Type))
-                                                        Write($"{@null()}, From x In node.{field.Name} Select Visit(x, {@null()})");
-                                                    else
-                                                        Write($"node.{field.Name}, {@null()}");
-                                                })();
-                                            if (i == allFields.Length - 1)
-                                                EOL();
-                                            else
-                                                Statement(",");
-                                        }
-                                    }
-                                    )();
-                            }
-                            else
-                            {
-                                Statement("Array.Empty(Of TreeDumperNode)()");
-                            };
-                        }, true)();
-                };
+                ApplyToTreeNodes((node, eolLast) => F($"{Lang.@public()} {Lang.@overrides()}", Visit(node),
+                    Parameters(NodeAs(node), Lang.NameAsType("arg", "Object")).ToArray(), "TreeDumperNode",
+                    Write_InnerTree(node)))();
             }
-            void Write_MakeTree()=>
-                F($"{@public()} {@shared()}", "MakeTree", Parameters(NodeAsBoundNode()), "TreeDumperNode",
-                    () => Return($"({@New()} BoundTreeDumperNodeProducer()).Visit(node, {@null()})"));
+
+            Action Write_InnerTree(Node node) 
+                => $"{Lang.@return()} {Lang.New()} TreeDumperNode".Output(_o).__(
+                    Parens(() =>
+                    {
+                        $"\"{UseAsVariableName(node.Name)}\", {Lang.@null()}, ".Output(_o)();
+                        var allFields = AllFields(node).ToArray();
+                        if (allFields.Length > 0)
+                            BraceField( allFields);
+                        else
+                            $"Array.Empty{Lang.Generics("TreeDumperNode")}()".Output(_o)();
+                    }));
+
+            void Write_MakeTree()
+                => F($"{Lang.@public()} {Lang.@shared()}", "MakeTree", Parameters(NodeAsBoundNode()), "TreeDumperNode",
+                  $"{Lang.@return()} ({Lang.@New()} BoundTreeDumperNodeProducer()).Visit(node, {Lang.@null()})".Output(_o,true));
+
+            void BraceField(Field[] allFields)
+            {
+                allFields.ForAll(null,
+                (field,eolLast)=>
+                {
+                    $"{Lang.@New()} TreeDumperNode".Output(_o).__(Parens(WithField(field)))();
+                    if (eolLast) ",".Output(_o, true)();
+                }).Indented(_o,false).InBraces(_o)();
+            }
+
+            Action WithField(Field field)
+                => () =>
+                {
+                    $"\"{_Field(field)}\", ".Output(_o)();
+                    if (IsDerivedType(boundNode, field.Type))
+                        $"{Lang.@null()}, {{ Visit({_node}.{field.Name}, {Lang.@null()}) }}".Output(_o)();
+                    else if (IsListOfDerived(boundNode, field.Type))
+                        $"{Lang.@null()}, {Lang.@from()} x {Lang.@In()} {_node}.{field.Name} {Lang.@Select()} Visit(x, {Lang.@null()})".Output(_o)();
+                    else
+                        $"node.{field.Name}, {Lang.@null()}".Output(_o)();
+                };
         }
 
-        string _Field(Field field) => ToCamelCase(field.Name);
+        string _Field(Field field) => field.Name.ToCamelCase(Lang);
+
         protected override void WriteRewriter()
         {
-            Friend_MustInherit_Partial_Class("BoundTreeRewriter", null,null,
-                ApplyToTreeNodes(node => WriteOverridesVisitFunction(node)));
+            Friend_MustInherit_Partial_Class("BoundTreeRewriter", null,null, ()=>ApplyToTreeNodes((node, eolLast) => WriteOverridesVisitFunction(node)));
 
             void WriteOverridesVisitFunction(Node node)
             {
                 var hadField = false;
-                F($"{@public()} {@overrides()}", Visit(node),Parameters( NodeAs(node)), "BoundNode", 
+                F($"{Lang.@public()} {Lang.@overrides()}", Visit(node),Parameters( NodeAs(node)), boundNode, 
                 () =>
                 {
+                    _o.EOL();
                     var f0 = AllNodeOrNodeListFields(node).ToArray();
-                    var m0 = f0.Length == 0 ? 0 : f0.Max(x => x.Name.Length);
+                    var m0 = DefaultToZero(f0);
                     var f1 = AllTypeFields(node).ToArray();
-                    var m1 = f1.Length == 0 ? 0 : f1.Max(x => x.Name.Length);
+                    var m1 = DefaultToZero(f1);
                     var widest = Math.Max(m0, m1);
                     AddAny_NodeNodeListField(f0, widest);
                     AddAny_TypeFields(f1, widest);
                     AddReturnStatement();
-                    EOL();
                 });
 
+                int DefaultToZero(Field[] f) =>  f == null || f.Length == 0 ? 0 : f.Max(x => x.Name.Length);
+                
                 void AddAny_NodeNodeListField(Field[] fields,int widest)
                 {
-                    if (fields.Length <= 0) return;
-                    for (var idx = 0; idx < fields.Length; idx++)
-                    {
-                        var field = fields[idx];
-                        hadField = true;
-                        if (SkipInVisitor(field))
-                            Declaration(field.Name, null, $"node.{field.Name}", eol: true, width: widest);
-                        else if (IsNodeList(field.Type))
-                            Declaration(field.Name, null, $"{@this()}.VisitList(node.{field.Name})", eol: true, width: widest);
-                        else
-                            Declaration(field.Name, null, $"DirectCast({@this()}.Visit(node.{field.Name}), {field.Type})", eol: true, width: widest);
-                    }
+                    fields.ForAll(null,
+                        (field,eolLast) =>
+                        {
+                            hadField = true;
+                            if (SkipInVisitor(field))
+                                Declaration(field.Name, null, $"{_node}.{field.Name}", false, eol: true, width: widest);
+                            else if (IsNodeList(field.Type))
+                                Declaration(field.Name, null, $"{Lang.@this()}.VisitList({_node}.{field.Name})", false, eol: true, width: widest);
+                            else
+                                Declaration(field.Name, null, $"DirectCast({Lang.@this()}.Visit({_node}.{field.Name}), {field.Type})", false, eol: true, width: widest);
+                        })();
                 }
+
                 void AddAny_TypeFields(Field[] fields, int widest)
                 {
-                    if (fields.Length <= 0) return;
-                    for (var idx = 0; idx < fields.Length; idx++)
+                    fields.ForAll(null, (field, eolLast) =>
                     {
-                        var field = fields[idx];
                         hadField = true;
-                        Declaration(field.Name, null, $"{@this()}.VisitType(node.{field.Name})", eol: true, width: widest);
-                    }
+                        Declaration(field.Name, null, $"{Lang.@this()}.VisitType({_node}.{field.Name})", false, eol: true, width: widest);
+                        _o.EOL();
+                    })();                   
                 }
+
                 void AddReturnStatement()
                 {
-                    Return("node",false);
-//                    Write("node");
-                    if (hadField)
-                    {
-                        Write(".Update");
-                        ParenList(AllSpecifiableFields(node), field => IsDerivedOrListOfDerived("BoundNode", field.Type) || field.Type == "TypeSymbol" ? ToCamelCase(field.Name) : $"node.{field.Name}");
-                    }
-                    EOL();
+                    Return(_node,false)();
+                    if (!hadField) return;
+                    ".Update".Output(_o)();
+                    ParenList(AllSpecifiableFields(node).
+                        Select(field => IsDerivedOrListOfDerived(boundNode, field.Type) || field.Type == "TypeSymbol" ? field.Name.ToCamelCase(Lang) : $"{_node}.{field.Name}"));
                 }
             }
         }
 
-
-
-        private void Declaration(string field, string typeName, string value , bool isNew = false, bool eol = false,  int width = 0)
+        private void Declaration(string field, string typeName, string value , bool isNew, bool eol ,  int width = 0)
         {
             width = width <= 0 ? field.Length : width;
-           Write($"Dim {NameAsType(field, typeName, isNew: isNew).PadLeft(width)}");
-           value.IfNonNull(expr=>Write($" = {expr}"));
-           if (eol) EOL();
+            var result = $"Dim {Lang.NameAsType(field, typeName, isNew: isNew).PadLeft(width)}";
+            if (value != null) result+=$" = {value}";
+            result.Output(_o,eol)();
         }
 
-        private const string _of = "(Of";
-
+        #region "reqiuires constant _of"
+        const string _of = "(Of ";
         protected override bool   IsImmutableArray(string typeName) => typeName.StartsWith($"ImmutableArray{_of}", StringComparison.OrdinalIgnoreCase);
         protected override bool   IsNodeList(string typeName) => typeName.StartsWith($"IList{_of}", StringComparison.OrdinalIgnoreCase) ||
                                                                typeName.StartsWith($"ImmutableArray{_of}", StringComparison.OrdinalIgnoreCase);
-        protected override bool   IsKeyword(string name) => Keywords.Contains(name.ToLower());
+        #endregion
         protected override string GetGenericType(string typeName)
         {
             var iStart = typeName.IndexOf(_of, StringComparison.OrdinalIgnoreCase);
             return (iStart == -1) ? typeName : typeName.Substring(0, iStart);
         }
+
         protected override string GetElementType(string typeName)
         {
             var iStart = typeName.IndexOf(_of, StringComparison.OrdinalIgnoreCase);
@@ -458,30 +507,7 @@ namespace BoundTreeGenerator
             if (iEnd < iStart) return string.Empty;
             return typeName.Substring(iStart + 3, iEnd - iStart - 3).Trim();
         }
-        protected override string EscapeKeyword(string name) => "[" + name + "]";
 
-        private static HashSet<string> Keywords = new HashSet<string>(new string[]
-        {  "addhandler", "addressof", "alias", "and", "andalso", "as",
-           "boolean", "byref", "byte", "byval",
-            "call", "case", "catch", "cbool", "cbyte", "cchar", "cdate", "cdbl", "cdec", "char", "cint", "class", "clng", "cobj", "const", "continue",
-            "csbyte", "cshort", "csng", "cstr", "ctype", "cuint", "culng", "cushort",
-            "date", "decimal", "declare", "default", "delegate", "dim", "directcast", "do", "double",
-            "each", "else", "elseif", "end", "endif", "enum", "erase", "error", "event", "exit",
-            "false", "finally", "for", "friend", "function",
-            "get", "gettype", "getxmlnamespace", "global", "gosub", "goTo",
-            "handles",
-            "if", "implements", "imports", "in", "inherits", "integer", "interface", "is", "isnot",
-            "let", "lib", "like", "long", "loop",
-            "me", "mod", "module", "mustinherit", "mustoverride", "mybase", "myclass",
-            "namespace", "narrowing", "new", "next", "not", "nothing", "notinheritable", "notoverridable",
-            "object", "of", "on", "operator", "option", "optional", "or", "orelse", "overloads", "overridable", "overrides",
-            "paramArray", "partial", "private", "property", "protected", "public",
-            "raiseevent", "readonly", "redim", "rem", "removehandler", "resume", "return",
-            "sbyte", "select", "set", "shadows", "shared", "short", "single", "static", "step", "stop", "string", "structure", "sub", "synclock",
-            "then", "throw", "to", "true", "try", "trycast", "typeof",
-            "uinteger", "ulong", "ushort", "using",
-            "variant", "wend", "when", "while", "widening", "with", "withevents", "writeonly",
-            "xor"}
-        );
     }
+
 }

@@ -4,11 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+// using static BoundTreeGenerator.Exts;
 
-namespace BoundTreeGenerator
+namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 {
     internal abstract partial class BoundNodeClassWriter
     {
+        protected const string boundNode = "BoundNode";
+        protected const string _node = "node";
+
+        //protected static Func<string> NullFunc = () => null;
+        protected static Action NotUsed = () => { };
 
         protected string[] SubMewParameters(TreeType node, bool isPublic, bool? hasErrorsIsOptional = default(bool?))
         {
@@ -18,70 +24,59 @@ namespace BoundTreeGenerator
 
             void Include_HasError()
             {
-                var param = NameAsType("hasErrors", @bool());
-                if (hasErrorsIsOptional.Value)
-                    fields = fields.Concat(new[] { $"{@optional()} {param} = {@false()}" });
-                else
-                    fields = fields.Concat(new[] { param });
+                var param = Lang.NameAsType("hasErrors", Lang.@bool());
+                fields = fields.Concat(hasErrorsIsOptional.Value ? new[] { $"{Lang.@optional()} {param} = {Lang.@false()}" } : new[] { param });
             }
         }
 
         protected void WriteConstructor(TreeType node, bool isPublic, bool hasChildNodes)
         {
-            if (hasChildNodes)
-            {
-                WriteConstructorWithHasErrors(node, isPublic, hasErrorsIsOptional: true);
-            }
-            else
-            {
-                WriteConstructorWithHasErrors(node, isPublic, hasErrorsIsOptional: false);
-                WriteConstructorWithoutHasErrors(node, isPublic);
-            }
+            WriteConstructorWithHasErrors(node, isPublic, hasErrorsIsOptional: hasChildNodes);
+            if(!hasChildNodes) WriteConstructorWithoutHasErrors(node, isPublic);
         }
 
         protected void WriteNullChecks(TreeType node)
         {
             // Write the null checks for any fields that can't be null.
             var nullCheckFields = AllFields(node).Where(f => FieldNullHandling(node, f.Name) == NullHandling.Disallow);
-            if (!nullCheckFields.Any()) return;
-            foreach (var field in nullCheckFields)
-            {
-                var isROArray = (GetGenericType(field.Type) == "ImmutableArray");
-                Write_DebugAssert_Nulls(isROArray, field);
-            }
+            nullCheckFields.ForAll(null,
+                (field, eolLast) =>
+                {
+                    var isROArray = (GetGenericType(field.Type) == "ImmutableArray");
+                    Write_DebugAssert_Nulls(isROArray, field, eolLast);
+                })();
         }
+        protected Action ApplyToTreeNodes(Action<Node,bool> a) => _tree.Types.OfType<Node>().ForAll(null, a);
 
-        protected Action ApplyToTreeNodes(Action<Node> a) => () => { foreach (var node in _tree.Types.OfType<Node>()) { a(node); } };
-
-        protected string _GetModifiers(TreeType node) => (node is AbstractNode) ? $"{Abstract()} " : CanBeSealed(node) ? $"{Sealed()} " : "";
+        protected string _GetModifiers(TreeType node) =>
+            (node is AbstractNode) ? $"{Lang.Abstract()} " : CanBeSealed(node) ? $"{Lang.Sealed()} " : "";
 
         protected void WriteType(TreeType node)
         {
             if (!(node is AbstractNode) && !(node is Node)) return;
-            Blank();
-            WriteClass($"{Friend()} {_GetModifiers(node)}{Partial()}",node.Name,null,  node.Base,
-                () =>
-                {
-                    var unsealed = !CanBeSealed(node);
-                    var concrete = !(node is AbstractNode);
-                    var hasChildNodes = AllNodeOrNodeListFields(node).Any();
+            _o.Blank();
+            Lang.WriteClass(_o, $"{Lang.Friend()} {_GetModifiers(node)}{Lang.Partial()}", node.Name, null, node.Base, Internals);
 
-                    if (unsealed) WriteConstructor(node, false, hasChildNodes);
-                    if (concrete) WriteConstructor(node, true, hasChildNodes);
-                    var _fields = Fields(node).ToList();
-                    if (_fields.Count > 0)
-                    {
-                        foreach (var field in Fields(node))
-                            WriteField(field);
-                        Blank();
-                    }
-                    if (node is Node)
-                    {
-                        WriteAccept(node.Name);
-                        WriteUpdateMethod(node as Node);
-                    }
-                });
+            void Internals()
+            {
+                var unsealed = !CanBeSealed(node);
+                var concrete = !(node is AbstractNode);
+                var hasChildNodes = AllNodeOrNodeListFields(node).Any();
+
+                if (unsealed) WriteConstructor(node, false, hasChildNodes);
+                if (concrete) WriteConstructor(node, true, hasChildNodes);
+                var _fields = Fields(node).ToList();
+                if (_fields.Count > 0)
+                    foreach (var field in Fields(node))  WriteField(field);
+                if (node is Node)
+                {
+                    WriteAccept(node.Name);
+                    WriteUpdateMethod(node as Node);
+                }
+            }
         }
+        protected abstract void ReadOnly_Property(Field field);
+
         protected void WriteUpdateMethod(Node node)
         {
             if (!AllFields(node).Any()) return;
@@ -117,31 +112,37 @@ namespace BoundTreeGenerator
 
         #region "Enumeration (Enums)"
         protected void E(string modifier, string name, string enumType, Action body) =>
-            Indented(InBlock(() => Statement($"{modifier} {Enum()} {NameAsType(name, enumType)}",true,false), body, true, footer: () => End_Enum()));
+            Exts.Body(
+                pre: $"{modifier} {Lang.Enum()} {name} {Lang.EnumBase(enumType)}".Output(_o),
+                act: body.Indented(_o),
+                suf: Lang.End_Enum().Output(_o),
+                iw: _o);
 
-        protected void Write_Kinds_Enum() => E(Friend(), "BoundKind", "System.Byte",
-            ApplyToTreeNodes(node => Statement($"{FixKeyword(StripBound(node.Name))}{EnumStatementEnding()}",true,false)));
+        protected void Write_Kinds_Enum()=>
+            E( Lang.Friend(), "BoundKind", Lang.@byte(),
+               Lang.GetCodeBlockBody(ApplyToTreeNodes(
+                    (node, eolLast) => _o.Write($"{Lang.FixKeyword(node.Name.StripBound())}{Lang.EnumStatementEnding()}", eolLast)))
+             );
+ 
         #endregion
 
-        protected void Or<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList($" {OrElse()} ", items, func);
-        protected void AndAlso<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList($" {AndAlso()} ", items, func);
 
-        protected virtual void WriteConstructorWithHasErrors(TreeType node, bool isPublic, bool hasErrorsIsOptional) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
+        protected abstract void WriteConstructorWithHasErrors(TreeType node, bool isPublic, bool hasErrorsIsOptional);
         // This constructor should only be created if no node or list fields, since it just calls base class constructor
         // without merging hasErrors.
         protected abstract void WriteConstructorWithoutHasErrors(TreeType node, bool isPublic);
-        protected abstract void Write_DebugAssert_Nulls(bool isROArray, Field field);
+        protected abstract void Write_DebugAssert_Nulls(bool isROArray, Field field,bool eolLast);
        #region "protected virtual"
 
-        protected virtual void WriteField(Field field) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void WriteAccept(string name) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void Write_Update(Node node, Boolean emitNew) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void WriteVisitor() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void WriteWalker() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void WriteTreeDumperNodeProducer() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual void WriteRewriter() => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual bool IsImmutableArray(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual bool IsNodeList(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
+        protected abstract void WriteField(Field field);
+        protected abstract void WriteAccept(string name);
+        protected abstract void Write_Update(Node node, bool emitNew);
+        protected abstract void WriteVisitor();
+        protected abstract void WriteWalker();
+        protected abstract void WriteTreeDumperNodeProducer();
+        protected abstract void WriteRewriter();
+        protected abstract bool IsImmutableArray(string typeName);
+        protected abstract bool IsNodeList(string typeName);
         protected virtual string GetGenericType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
         protected virtual string GetElementType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
 
@@ -167,11 +168,7 @@ namespace BoundTreeGenerator
         protected bool IsNode(string typeName) => _typeMap.ContainsKey(typeName);
         #endregion
 
-        #region "protected string"
-        protected string StripBound(string name)    => (name.StartsWith("Bound", StringComparison.Ordinal)) ? name.Substring(5) : name;
-        protected string ToCamelCase(string name)   => FixKeyword(char.IsUpper(name[0]) ? char.ToLowerInvariant(name[0]) + name.Substring(1) : name);
-        protected string FixKeyword(string name)    => IsKeyword(name) ? EscapeKeyword(name) : name;
-        #endregion
+
         
         #region "protected static"
         protected static IEnumerable<Field> Fields(TreeType node)
