@@ -14,7 +14,6 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         protected const string _node = "node";
 
         //protected static Func<string> NullFunc = () => null;
-        protected static Action NotUsed = () => { };
 
         protected string[] SubMewParameters(TreeType node, bool isPublic, bool? hasErrorsIsOptional = default(bool?))
         {
@@ -40,10 +39,10 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             // Write the null checks for any fields that can't be null.
             var nullCheckFields = AllFields(node).Where(f => FieldNullHandling(node, f.Name) == NullHandling.Disallow);
             nullCheckFields.ForAll(null,
-                (field, eolLast) =>
+                (field, __) =>
                 {
                     var isROArray = (GetGenericType(field.Type) == "ImmutableArray");
-                    Write_DebugAssert_Nulls(isROArray, field, eolLast);
+                    Write_DebugAssert_Nulls(isROArray, field, true);
                 })();
         }
         protected Action ApplyToTreeNodes(Action<Node,bool> a) => _tree.Types.OfType<Node>().ForAll(null, a);
@@ -111,28 +110,26 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         #endregion
 
         #region "Enumeration (Enums)"
-        protected void E(string modifier, string name, string enumType, Action body) =>
-            Exts.Body(
-                pre: $"{modifier} {Lang.Enum()} {name} {Lang.EnumBase(enumType)}".Output(_o),
-                act: body.Indented(_o),
-                suf: Lang.End_Enum().Output(_o),
-                iw: _o);
+
+        protected void E(string modifier, string name, string enumType, Action body)
+            => $"{modifier} {Lang.Enum()} {name} {Lang.EnumBase(enumType)}".Output(_o).WithBody(
+                act: body.Indented(_o,eolThenSuf:true),
+                suf: Lang.End_Enum.Output(_o))();
 
         protected void Write_Kinds_Enum()=>
             E( Lang.Friend(), "BoundKind", Lang.@byte(),
                Lang.GetCodeBlockBody(ApplyToTreeNodes(
-                    (node, eolLast) => _o.Write($"{Lang.FixKeyword(node.Name.StripBound())}{Lang.EnumStatementEnding()}", eolLast)))
+                    (node, eolLast) => _o.Write($"{Lang.FixKeyword(node.Name.StripBound())}{Lang.EnumStatementEnding}", eolLast)))
              );
  
         #endregion
-
 
         protected abstract void WriteConstructorWithHasErrors(TreeType node, bool isPublic, bool hasErrorsIsOptional);
         // This constructor should only be created if no node or list fields, since it just calls base class constructor
         // without merging hasErrors.
         protected abstract void WriteConstructorWithoutHasErrors(TreeType node, bool isPublic);
         protected abstract void Write_DebugAssert_Nulls(bool isROArray, Field field,bool eolLast);
-       #region "protected virtual"
+        #region "protected virtual"
 
         protected abstract void WriteField(Field field);
         protected abstract void WriteAccept(string name);
@@ -167,9 +164,6 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         }
         protected bool IsNode(string typeName) => _typeMap.ContainsKey(typeName);
         #endregion
-
-
-        
         #region "protected static"
         protected static IEnumerable<Field> Fields(TreeType node)
         {

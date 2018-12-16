@@ -58,12 +58,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public abstract string @from();
         public abstract string @In();
         public abstract string @Select();
-
         #endregion
 
         #region "Abstract Methods"
         public abstract string EnumBase(string baseType);
-     public abstract string Attribute(string attribute);
+        public abstract string Attribute(string attribute);
         public abstract string CommentMarker();
         public abstract string Generics(string genericParams);
         public abstract string EscapeKeyword(string name);
@@ -77,30 +76,26 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         #region "Virtual Methods"
         public virtual Action GetCodeBlockBody(Action  body) => body;
-        public virtual string EOS() => null;
-        public virtual string EnumStatementEnding() => null;
-        public virtual string EndOfStatement() => null;
-        public virtual string End_Enum() => string.Empty;
-        public virtual string End_Namespace => string.Empty;
+        public virtual string EOS                   => null;
+        public virtual string EnumStatementEnding   => null;
+        public virtual string EndOfStatement        => null;
+        public virtual string End_Enum              => string.Empty;
+        public virtual string End_Namespace         => string.Empty;
         public virtual IEnumerable<string> ImportedNamespaces() => System.Linq.Enumerable.Empty<string>();
         #endregion
 
         protected void WriteClass(IndentedWriter iw, string modifiers, string classname, string genericParams, string inherits, Action body, Action endClass)
-          => Exts.Body(
+          => Exts.WithBody(
               () =>
               {
                   $"{modifiers} {Class()} {classname}".Output(_iw)();
                   if (genericParams != null) Generics(genericParams).Output(_iw)();
                   if (inherits      != null) Inherits(inherits).Output(_iw)();
-                  _iw.EOL();
               },
               body,
-              endClass, iw);
+              endClass)();
         public void ImportNamespace(string nsName, IndentedWriter iw, bool eol) => $"{Imports()} {nsName}".Code(iw,eol);
         public string _NameOf(string name) => $"{{{@_nameof_()}({name})}}";
         public string FixKeyword(string name) => IsKeyword(name) ? EscapeKeyword(name) : name;
-   
     }
-
-
 }

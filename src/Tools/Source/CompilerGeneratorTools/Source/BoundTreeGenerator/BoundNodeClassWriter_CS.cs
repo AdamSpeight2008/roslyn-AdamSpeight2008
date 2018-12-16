@@ -12,7 +12,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         internal CSLangSpecific() : base() { }
         public override Action GetCodeBlockBody(Action body) => body.InBraces(_iw);
         public override string Attribute(string attribute) => $"[{attribute}]";
-        public override string EOS() => ";";
+        public override string EOS => ";";
         #region "Language Specific"
         public override string CommentMarker()  => @"//";
         public override string @optional()      => "";
@@ -65,7 +65,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public override string EscapeKeyword(string name) => "@" + name;
 
         public override string NameAsType(string name, string typename, bool isNew = false) => $"{typename} {name}";
-        public override string EnumStatementEnding() => ",";
+        public override string EnumStatementEnding => ",";
         //public override void End_Namespace() { }
         //public override void InsideNamespace(string ns, Func<Action> body, IndentedWriter iw) => base.InsideNamespace(ns, body.Braced(iw), iw);
         public override string @override() => "Override";
@@ -129,17 +129,17 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         private void F(string modifiers, string methodName, string[] parameters, string returns = null, Action basecall = null, Action body = null)
         {
-            Exts.Body(pre:
+            Exts.WithBody(pre:
                 ()=> {
                     MethodHeader(modifiers, methodName, parameters, returns);
                     basecall?.Invoke();
                 },
                 Lang.GetCodeBlockBody(body),
-                ()=>_o.EOL(),_o);
+                ()=>_o.EOL())();
         }
 
         private void BaseCall(string basecall)
-            => Exts.Indented(act: () => {  $": base".Output(_o)(); Parens(() => basecall.Output(_o)())(); }, _o)();
+            => Exts.Indented(act: () => {  $": base".Output(_o)(); InParens(() => basecall.Output(_o)())(); }, _o)();
 
         private void Fa(string modifiers, string methodName, string[] parameters, string returns, string basecall = null, string statement = null)
         {
@@ -257,7 +257,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                   if (AllSpecifiableFields(node).Any())
                   {
                       _o.Write("if ",false);
-                      Parens(() => Or(AllSpecifiableFields(node), field => $"{field.Name} != this.{field.Name}")())();
+                      InParens(() => Or(AllSpecifiableFields(node), field => $"{field.Name} != this.{field.Name}")())();
                       _o.EOL();
                       Exts.InBraces(()=>
                         {
@@ -282,8 +282,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 {
                     _o.Write(Lang.Attribute("MethodImpl(MethodImplOptions.NoInlining)"),true);
                     F("internal", "VisitInternal", Parameters(Parameter("node", "BoundNode"), Parameter("arg", "A")), "R",
-                        body: ()=>Exts.Body(
-                               pre: ()=>_o.Write("switch (node.Kind)",true),
+                      "switch (node.Kind)".Output(_o,true).WithBody(
                                act: ApplyToTreeNodes(
                                    (node,eolLast) =>
                                    {
@@ -291,7 +290,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                                        _o.Write($"case BoundKind.{Lang.FixKeyword(strip)}:", false);
                                        Return($"Visit{strip}(node as {node.Name}, arg)", eolLast)();
                                    }).InBraces(_o),
-                               suf: Return("default(R)",true), _o)
+                               suf: Return("default(R)",true))
                                 ); // end method
                       }); // end class
 

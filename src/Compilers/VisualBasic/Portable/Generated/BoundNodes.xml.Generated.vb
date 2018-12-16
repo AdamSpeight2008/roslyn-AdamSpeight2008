@@ -1,6 +1,5 @@
 ﻿' < auto-generated />
 
-
 Imports System
 Imports System.Collections
 Imports System.Collections.Generic
@@ -12,9 +11,11 @@ Imports System.Threading
 Imports System.Text
 Imports Microsoft.CodeAnalysis.Collections
 Imports Roslyn.Utilities
+
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+
 Namespace Microsoft.CodeAnalysis.VisualBasic
   Friend Enum BoundKind As System.Byte
     TypeArguments
@@ -194,27 +195,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Interpolation
   End Enum
 
-
-
   Friend MustInherit Partial Class BoundExpression : Inherits BoundNode
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax)
-
       _Type = type
     End Sub
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol)
       MyBase.New(kind, syntax)
-
       _Type = type
     End Sub
     Public ReadOnly Property type As TypeSymbol
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTypeArguments : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, arguments As ImmutableArray(Of TypeSymbol), hasErrors As Boolean)
       MyBase.New(BoundKind.TypeArguments, syntax, Nothing, hasErrors)
       Debug.Assert(Not arguments.IsDefault, $"Field '{NameOf(arguments)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -235,19 +228,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundOmittedArgument : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.OmittedArgument, syntax, type, hasErrors)
-
     End Sub
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol)
       MyBase.New(BoundKind.OmittedArgument, syntax, type)
-
     End Sub
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
       Return visitor.VisitOmittedArgument(Me)
@@ -258,12 +246,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundValuePlaceholderBase : Inherits BoundExpression
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -272,12 +257,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
     End Sub
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLValueToRValueWrapper : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, underlyingLValue As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.LValueToRValueWrapper, syntax, type, hasErrors OrElse underlyingLValue.NonNullAndHasErrors())
       Debug.Assert(underlyingLValue IsNot Nothing, $"Field '{NameOf(underlyingLValue)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -286,7 +268,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property underlyingLValue As BoundExpression
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
@@ -298,12 +279,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
-
 
   Friend MustInherit Partial Class BoundLValuePlaceholderBase : Inherits BoundValuePlaceholderBase
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -312,12 +290,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
     End Sub
-
   End Class
-
 
   Friend MustInherit Partial Class BoundRValuePlaceholderBase : Inherits BoundValuePlaceholderBase
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -326,12 +301,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
     End Sub
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundWithLValueExpressionPlaceholder : Inherits BoundLValuePlaceholderBase
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.WithLValueExpressionPlaceholder, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -349,12 +321,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundWithRValueExpressionPlaceholder : Inherits BoundRValuePlaceholderBase
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.WithRValueExpressionPlaceholder, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -372,19 +341,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRValuePlaceholder : Inherits BoundRValuePlaceholderBase
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.RValuePlaceholder, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol)
       MyBase.New(BoundKind.RValuePlaceholder, syntax, type)
@@ -400,19 +365,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLValuePlaceholder : Inherits BoundLValuePlaceholderBase
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.LValuePlaceholder, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol)
       MyBase.New(BoundKind.LValuePlaceholder, syntax, type)
@@ -428,20 +389,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundDup : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, isReference As Boolean, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.Dup, syntax, type, hasErrors)
-
       _IsReference = isReference
     End Sub
     Public Sub New(syntax As SyntaxNode, isReference As Boolean, type As TypeSymbol)
       MyBase.New(BoundKind.Dup, syntax, type)
-
       _IsReference = isReference
     End Sub
     Public ReadOnly Property isReference As Boolean
@@ -454,12 +410,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundBadExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, resultKind As LookupResultKind, symbols As ImmutableArray(Of Symbol), childBoundNodes As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.BadExpression, syntax, type, hasErrors OrElse childBoundNodes.NonNullAndHasErrors())
       Debug.Assert(Not symbols.IsDefault, $"Field '{NameOf(symbols)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -470,7 +423,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Overrides ReadOnly Property resultKind As LookupResultKind
     Public ReadOnly Property symbols As ImmutableArray(Of Symbol)
@@ -484,12 +436,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundBadStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, childBoundNodes As ImmutableArray(Of BoundNode), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.BadStatement, syntax, hasErrors OrElse childBoundNodes.NonNullAndHasErrors())
       Debug.Assert(Not childBoundNodes.IsDefault, $"Field '{NameOf(childBoundNodes)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -505,12 +454,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundParenthesized : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Parenthesized, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -518,7 +464,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property expression As BoundExpression
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
@@ -530,12 +475,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundBadVariable : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, isLValue As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.BadVariable, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -553,12 +495,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundArrayAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, indices As ImmutableArray(Of BoundExpression), isLValue As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ArrayAccess, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors() OrElse indices.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -570,7 +509,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property expression As BoundExpression
     Public ReadOnly Property indices As ImmutableArray(Of BoundExpression)
@@ -584,12 +522,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundArrayLength : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ArrayLength, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -606,12 +541,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundGetType : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, sourceType As BoundTypeExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.GetType, syntax, type, hasErrors OrElse sourceType.NonNullAndHasErrors())
       Debug.Assert(sourceType IsNot Nothing, $"Field '{NameOf(sourceType)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -628,12 +560,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundFieldInfo : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, field As FieldSymbol, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.FieldInfo, syntax, type, hasErrors)
       Debug.Assert(field IsNot Nothing, $"Field '{NameOf(field)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -656,12 +585,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMethodInfo : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, method As MethodSymbol, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.MethodInfo, syntax, type, hasErrors)
       Debug.Assert(method IsNot Nothing, $"Field '{NameOf(method)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -684,12 +610,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTypeExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, unevaluatedReceiverOpt As BoundExpression, aliasOpt As AliasSymbol, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.TypeExpression, syntax, type, hasErrors OrElse unevaluatedReceiverOpt.NonNullAndHasErrors())
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -707,12 +630,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTypeOrValueExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, data As BoundTypeOrValueData, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.TypeOrValueExpression, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -733,12 +653,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundNamespaceExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, unevaluatedReceiverOpt As BoundExpression, aliasOpt As AliasSymbol, namespaceSymbol As NamespaceSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.NamespaceExpression, syntax, Nothing, hasErrors OrElse unevaluatedReceiverOpt.NonNullAndHasErrors())
       Debug.Assert(namespaceSymbol IsNot Nothing, $"Field '{NameOf(namespaceSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -748,7 +665,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property unevaluatedReceiverOpt As BoundExpression
     Public ReadOnly Property aliasOpt As AliasSymbol
@@ -762,12 +678,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMethodDefIndex : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, method As MethodSymbol, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.MethodDefIndex, syntax, type, hasErrors)
       Debug.Assert(method IsNot Nothing, $"Field '{NameOf(method)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -790,12 +703,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMaximumMethodDefIndex : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.MaximumMethodDefIndex, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -813,12 +723,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundInstrumentationPayloadRoot : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, analysisKind As Integer, isLValue As Boolean, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.InstrumentationPayloadRoot, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -842,12 +749,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundModuleVersionId : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, isLValue As Boolean, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.ModuleVersionId, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -868,12 +772,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundModuleVersionIdString : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.ModuleVersionIdString, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -891,12 +792,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSourceDocumentIndex : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, document As Cci.DebugSourceDocument, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.SourceDocumentIndex, syntax, type, hasErrors)
       Debug.Assert(document IsNot Nothing, $"Field '{NameOf(document)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -919,12 +817,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUnaryOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, operatorKind As UnaryOperatorKind, operand As BoundExpression, checked As Boolean, constantValueOpt As ConstantValue, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UnaryOperator, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -936,7 +831,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operatorKind As UnaryOperatorKind
     Public ReadOnly Property operand As BoundExpression
@@ -951,12 +845,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUserDefinedUnaryOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, operatorKind As UnaryOperatorKind, underlyingExpression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UserDefinedUnaryOperator, syntax, type, hasErrors OrElse underlyingExpression.NonNullAndHasErrors())
       Debug.Assert(underlyingExpression IsNot Nothing, $"Field '{NameOf(underlyingExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -966,7 +857,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operatorKind As UnaryOperatorKind
     Public ReadOnly Property underlyingExpression As BoundExpression
@@ -979,12 +869,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundNullableIsTrueOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, operand As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.NullableIsTrueOperator, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -993,7 +880,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operand As BoundExpression
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
@@ -1005,12 +891,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundBinaryOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, operatorKind As BinaryOperatorKind, left As BoundExpression, right As BoundExpression, checked As Boolean, constantValueOpt As ConstantValue, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.BinaryOperator, syntax, type, hasErrors OrElse left.NonNullAndHasErrors() OrElse right.NonNullAndHasErrors())
       Debug.Assert(left IsNot Nothing, $"Field '{NameOf(left)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1024,7 +907,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operatorKind As BinaryOperatorKind
     Public ReadOnly Property left As BoundExpression
@@ -1040,12 +922,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUserDefinedBinaryOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, operatorKind As BinaryOperatorKind, underlyingExpression As BoundExpression, checked As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UserDefinedBinaryOperator, syntax, type, hasErrors OrElse underlyingExpression.NonNullAndHasErrors())
       Debug.Assert(underlyingExpression IsNot Nothing, $"Field '{NameOf(underlyingExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1056,7 +935,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operatorKind As BinaryOperatorKind
     Public ReadOnly Property underlyingExpression As BoundExpression
@@ -1070,12 +948,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUserDefinedShortCircuitingOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, leftOperand As BoundExpression, leftOperandPlaceholder As BoundRValuePlaceholder, leftTest As BoundExpression, bitwiseOperator As BoundUserDefinedBinaryOperator, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UserDefinedShortCircuitingOperator, syntax, type, hasErrors OrElse leftOperand.NonNullAndHasErrors() OrElse leftOperandPlaceholder.NonNullAndHasErrors() OrElse leftTest.NonNullAndHasErrors() OrElse bitwiseOperator.NonNullAndHasErrors())
       Debug.Assert(bitwiseOperator IsNot Nothing, $"Field '{NameOf(bitwiseOperator)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1087,7 +962,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property leftOperand As BoundExpression
     Public ReadOnly Property leftOperandPlaceholder As BoundRValuePlaceholder
@@ -1102,12 +976,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundCompoundAssignmentTargetPlaceholder : Inherits BoundValuePlaceholderBase
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.CompoundAssignmentTargetPlaceholder, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1125,12 +996,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAssignmentOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, left As BoundExpression, leftOnTheRightOpt As BoundCompoundAssignmentTargetPlaceholder, right As BoundExpression, suppressObjectClone As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AssignmentOperator, syntax, type, hasErrors OrElse left.NonNullAndHasErrors() OrElse leftOnTheRightOpt.NonNullAndHasErrors() OrElse right.NonNullAndHasErrors())
       Debug.Assert(left IsNot Nothing, $"Field '{NameOf(left)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1143,7 +1011,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property left As BoundExpression
     Public ReadOnly Property leftOnTheRightOpt As BoundCompoundAssignmentTargetPlaceholder
@@ -1158,12 +1025,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundReferenceAssignment : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, byRefLocal As BoundLocal, lValue As BoundExpression, isLValue As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ReferenceAssignment, syntax, type, hasErrors OrElse byRefLocal.NonNullAndHasErrors() OrElse lValue.NonNullAndHasErrors())
       Debug.Assert(byRefLocal IsNot Nothing, $"Field '{NameOf(byRefLocal)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1174,7 +1038,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property byRefLocal As BoundLocal
     Public ReadOnly Property lValue As BoundExpression
@@ -1188,12 +1051,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAddressOfOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, binder As Binder, methodGroup As BoundMethodGroup, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AddressOfOperator, syntax, Nothing, hasErrors OrElse methodGroup.NonNullAndHasErrors())
       Debug.Assert(binder IsNot Nothing, $"Field '{NameOf(binder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1212,12 +1072,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTernaryConditionalExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, condition As BoundExpression, whenTrue As BoundExpression, whenFalse As BoundExpression, constantValueOpt As ConstantValue, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.TernaryConditionalExpression, syntax, type, hasErrors OrElse condition.NonNullAndHasErrors() OrElse whenTrue.NonNullAndHasErrors() OrElse whenFalse.NonNullAndHasErrors())
       Debug.Assert(condition IsNot Nothing, $"Field '{NameOf(condition)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1231,7 +1088,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property condition As BoundExpression
     Public ReadOnly Property whenTrue As BoundExpression
@@ -1246,12 +1102,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundBinaryConditionalExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, testExpression As BoundExpression, convertedTestExpression As BoundExpression, testExpressionPlaceholder As BoundRValuePlaceholder, elseExpression As BoundExpression, constantValueOpt As ConstantValue, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.BinaryConditionalExpression, syntax, type, hasErrors OrElse testExpression.NonNullAndHasErrors() OrElse convertedTestExpression.NonNullAndHasErrors() OrElse testExpressionPlaceholder.NonNullAndHasErrors() OrElse elseExpression.NonNullAndHasErrors())
       Debug.Assert(testExpression IsNot Nothing, $"Field '{NameOf(testExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1265,7 +1118,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property testExpression As BoundExpression
     Public ReadOnly Property convertedTestExpression As BoundExpression
@@ -1281,12 +1133,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundConversionOrCast : Inherits BoundExpression
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1295,12 +1144,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
     End Sub
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundConversion : Inherits BoundConversionOrCast
-
     Public Sub New(syntax As SyntaxNode, operand As BoundExpression, conversionKind As ConversionKind, checked As Boolean, explicitCastInCode As Boolean, constantValueOpt As ConstantValue, extendedInfoOpt As BoundExtendedConversionInfo, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Conversion, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors() OrElse extendedInfoOpt.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1314,7 +1160,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Overrides ReadOnly Property operand As BoundExpression
     Public Overrides ReadOnly Property conversionKind As ConversionKind
@@ -1331,26 +1176,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundExtendedConversionInfo : Inherits BoundNode
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(kind, syntax)
-
     End Sub
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode)
       MyBase.New(kind, syntax)
-
     End Sub
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRelaxationLambda : Inherits BoundExtendedConversionInfo
-
     Public Sub New(syntax As SyntaxNode, lambda As BoundLambda, receiverPlaceholderOpt As BoundRValuePlaceholder, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RelaxationLambda, syntax, hasErrors OrElse lambda.NonNullAndHasErrors() OrElse receiverPlaceholderOpt.NonNullAndHasErrors())
       Debug.Assert(lambda IsNot Nothing, $"Field '{NameOf(lambda)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1368,12 +1205,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundConvertedTupleElements : Inherits BoundExtendedConversionInfo
-
     Public Sub New(syntax As SyntaxNode, elementPlaceholders As ImmutableArray(Of BoundRValuePlaceholder), convertedElements As ImmutableArray(Of BoundExpression), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ConvertedTupleElements, syntax, hasErrors OrElse elementPlaceholders.NonNullAndHasErrors() OrElse convertedElements.NonNullAndHasErrors())
       Debug.Assert(Not elementPlaceholders.IsDefault, $"Field '{NameOf(elementPlaceholders)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1383,7 +1217,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property elementPlaceholders As ImmutableArray(Of BoundRValuePlaceholder)
     Public ReadOnly Property convertedElements As ImmutableArray(Of BoundExpression)
@@ -1396,12 +1229,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUserDefinedConversion : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, underlyingExpression As BoundExpression, inOutConversionFlags As Byte, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UserDefinedConversion, syntax, type, hasErrors OrElse underlyingExpression.NonNullAndHasErrors())
       Debug.Assert(underlyingExpression IsNot Nothing, $"Field '{NameOf(underlyingExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1411,7 +1241,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property underlyingExpression As BoundExpression
     Public ReadOnly Property inOutConversionFlags As Byte
@@ -1424,12 +1253,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundDirectCast : Inherits BoundConversionOrCast
-
     Public Sub New(syntax As SyntaxNode, operand As BoundExpression, conversionKind As ConversionKind, suppressVirtualCalls As Boolean, constantValueOpt As ConstantValue, relaxationLambdaOpt As BoundLambda, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.DirectCast, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors() OrElse relaxationLambdaOpt.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1442,7 +1268,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Overrides ReadOnly Property operand As BoundExpression
     Public Overrides ReadOnly Property conversionKind As ConversionKind
@@ -1458,12 +1283,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTryCast : Inherits BoundConversionOrCast
-
     Public Sub New(syntax As SyntaxNode, operand As BoundExpression, conversionKind As ConversionKind, constantValueOpt As ConstantValue, relaxationLambdaOpt As BoundLambda, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.TryCast, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors() OrElse relaxationLambdaOpt.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1475,7 +1297,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Overrides ReadOnly Property operand As BoundExpression
     Public Overrides ReadOnly Property conversionKind As ConversionKind
@@ -1490,12 +1311,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTypeOf : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, operand As BoundExpression, isTypeOfIsNotExpression As Boolean, targetType As TypeSymbol, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.TypeOf, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1517,29 +1335,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundStatement : Inherits BoundNode
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(kind, syntax)
-
     End Sub
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode)
       MyBase.New(kind, syntax)
-
     End Sub
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSequencePoint : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, statementOpt As BoundStatement, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.SequencePoint, syntax, hasErrors OrElse statementOpt.NonNullAndHasErrors())
-
       _StatementOpt = statementOpt
     End Sub
     Public ReadOnly Property statementOpt As BoundStatement
@@ -1552,12 +1361,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSequencePointExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.SequencePointExpression, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1573,15 +1379,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSequencePointWithSpan : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, statementOpt As BoundStatement, span As TextSpan, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.SequencePointWithSpan, syntax, hasErrors OrElse statementOpt.NonNullAndHasErrors())
-
       _StatementOpt = statementOpt
       _Span = span
     End Sub
@@ -1596,20 +1398,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundNoOpStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, flavor As NoOpStatementFlavor, hasErrors As Boolean)
       MyBase.New(BoundKind.NoOpStatement, syntax, hasErrors)
-
       _Flavor = flavor
     End Sub
     Public Sub New(syntax As SyntaxNode, flavor As NoOpStatementFlavor)
       MyBase.New(BoundKind.NoOpStatement, syntax)
-
       _Flavor = flavor
     End Sub
     Public ReadOnly Property flavor As NoOpStatementFlavor
@@ -1622,26 +1419,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundMethodOrPropertyGroup : Inherits BoundExpression
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, receiverOpt As BoundExpression, qualificationKind As QualificationKind, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax, Nothing)
-
       _ReceiverOpt = receiverOpt
       _QualificationKind = qualificationKind
     End Sub
     Public ReadOnly Property receiverOpt As BoundExpression
     Public ReadOnly Property qualificationKind As QualificationKind
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMethodGroup : Inherits BoundMethodOrPropertyGroup
-
     Public Sub New(syntax As SyntaxNode, typeArgumentsOpt As BoundTypeArguments, methods As ImmutableArray(Of MethodSymbol), pendingExtensionMethodsOpt As ExtensionMethodGroup, resultKind As LookupResultKind, receiverOpt As BoundExpression, qualificationKind As QualificationKind, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.MethodGroup, syntax, receiverOpt, qualificationKind, hasErrors OrElse typeArgumentsOpt.NonNullAndHasErrors() OrElse receiverOpt.NonNullAndHasErrors())
       Debug.Assert(Not methods.IsDefault, $"Field '{NameOf(methods)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1663,12 +1453,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundPropertyGroup : Inherits BoundMethodOrPropertyGroup
-
     Public Sub New(syntax As SyntaxNode, properties As ImmutableArray(Of PropertySymbol), resultKind As LookupResultKind, receiverOpt As BoundExpression, qualificationKind As QualificationKind, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.PropertyGroup, syntax, receiverOpt, qualificationKind, hasErrors OrElse receiverOpt.NonNullAndHasErrors())
       Debug.Assert(Not properties.IsDefault, $"Field '{NameOf(properties)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1686,22 +1473,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundReturnStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, expressionOpt As BoundExpression, functionLocalOpt As LocalSymbol, exitLabelOpt As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ReturnStatement, syntax, hasErrors OrElse expressionOpt.NonNullAndHasErrors())
-
       _ExpressionOpt = expressionOpt
       _FunctionLocalOpt = functionLocalOpt
       _ExitLabelOpt = exitLabelOpt
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property expressionOpt As BoundExpression
     Public ReadOnly Property functionLocalOpt As LocalSymbol
@@ -1715,12 +1497,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundYieldStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.YieldStatement, syntax, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1728,7 +1507,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property expression As BoundExpression
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
@@ -1740,15 +1518,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundThrowStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, expressionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ThrowStatement, syntax, hasErrors OrElse expressionOpt.NonNullAndHasErrors())
-
       _ExpressionOpt = expressionOpt
     End Sub
     Public ReadOnly Property expressionOpt As BoundExpression
@@ -1761,12 +1535,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRedimStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, clauses As ImmutableArray(Of BoundRedimClause), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RedimStatement, syntax, hasErrors OrElse clauses.NonNullAndHasErrors())
       Debug.Assert(Not clauses.IsDefault, $"Field '{NameOf(clauses)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1782,12 +1553,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRedimClause : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, operand As BoundExpression, indices As ImmutableArray(Of BoundExpression), arrayTypeOpt As ArrayTypeSymbol, preserve As Boolean, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RedimClause, syntax, hasErrors OrElse operand.NonNullAndHasErrors() OrElse indices.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1799,7 +1567,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operand As BoundExpression
     Public ReadOnly Property indices As ImmutableArray(Of BoundExpression)
@@ -1814,12 +1581,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundEraseStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, clauses As ImmutableArray(Of BoundAssignmentOperator), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.EraseStatement, syntax, hasErrors OrElse clauses.NonNullAndHasErrors())
       Debug.Assert(Not clauses.IsDefault, $"Field '{NameOf(clauses)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1835,12 +1599,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundCall : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, method As MethodSymbol, methodGroupOpt As BoundMethodGroup, receiverOpt As BoundExpression, arguments As ImmutableArray(Of BoundExpression), defaultArguments As BitVector, constantValueOpt As ConstantValue, isLValue As Boolean, suppressObjectClone As Boolean, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Call, syntax, type, hasErrors OrElse methodGroupOpt.NonNullAndHasErrors() OrElse receiverOpt.NonNullAndHasErrors() OrElse arguments.NonNullAndHasErrors())
       Debug.Assert(method IsNot Nothing, $"Field '{NameOf(method)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1857,7 +1618,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property method As MethodSymbol
     Public ReadOnly Property methodGroupOpt As BoundMethodGroup
@@ -1876,12 +1636,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAttribute : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, constructor As MethodSymbol, constructorArguments As ImmutableArray(Of BoundExpression), namedArguments As ImmutableArray(Of BoundExpression), resultKind As LookupResultKind, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Attribute, syntax, type, hasErrors OrElse constructorArguments.NonNullAndHasErrors() OrElse namedArguments.NonNullAndHasErrors())
       Debug.Assert(Not constructorArguments.IsDefault, $"Field '{NameOf(constructorArguments)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1905,12 +1662,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLateMemberAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, nameOpt As String, containerTypeOpt As TypeSymbol, receiverOpt As BoundExpression, typeArgumentsOpt As BoundTypeArguments, accessKind As LateBoundAccessKind, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.LateMemberAccess, syntax, type, hasErrors OrElse receiverOpt.NonNullAndHasErrors() OrElse typeArgumentsOpt.NonNullAndHasErrors())
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1922,7 +1676,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property nameOpt As String
     Public ReadOnly Property containerTypeOpt As TypeSymbol
@@ -1938,12 +1691,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLateInvocation : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, member As BoundExpression, argumentsOpt As ImmutableArray(Of BoundExpression), argumentNamesOpt As ImmutableArray(Of string), accessKind As LateBoundAccessKind, methodOrPropertyGroupOpt As BoundMethodOrPropertyGroup, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.LateInvocation, syntax, type, hasErrors OrElse member.NonNullAndHasErrors() OrElse argumentsOpt.NonNullAndHasErrors() OrElse methodOrPropertyGroupOpt.NonNullAndHasErrors())
       Debug.Assert(member IsNot Nothing, $"Field '{NameOf(member)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1956,7 +1706,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property member As BoundExpression
     Public ReadOnly Property argumentsOpt As ImmutableArray(Of BoundExpression)
@@ -1972,12 +1721,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLateAddressOfOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, binder As Binder, memberAccess As BoundLateMemberAccess, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.LateAddressOfOperator, syntax, type, hasErrors OrElse memberAccess.NonNullAndHasErrors())
       Debug.Assert(binder IsNot Nothing, $"Field '{NameOf(binder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -1996,24 +1742,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundTupleExpression : Inherits BoundExpression
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, arguments As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax, type)
       Debug.Assert(Not arguments.IsDefault, $"Field '{NameOf(arguments)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
       _Arguments = arguments
     End Sub
     Public ReadOnly Property arguments As ImmutableArray(Of BoundExpression)
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTupleLiteral : Inherits BoundTupleExpression
-
     Public Sub New(syntax As SyntaxNode, inferredType As TupleTypeSymbol, argumentNamesOpt As ImmutableArray(Of String), inferredNamesOpt As ImmutableArray(Of Boolean), arguments As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.TupleLiteral, syntax, arguments, type, hasErrors OrElse arguments.NonNullAndHasErrors())
       Debug.Assert(Not arguments.IsDefault, $"Field '{NameOf(arguments)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2033,12 +1773,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundConvertedTupleLiteral : Inherits BoundTupleExpression
-
     Public Sub New(syntax As SyntaxNode, naturalTypeOpt As TypeSymbol, arguments As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ConvertedTupleLiteral, syntax, arguments, type, hasErrors OrElse arguments.NonNullAndHasErrors())
       Debug.Assert(Not arguments.IsDefault, $"Field '{NameOf(arguments)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2055,12 +1792,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundObjectCreationExpressionBase : Inherits BoundExpression
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, initializerOpt As BoundObjectInitializerExpressionBase, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2068,15 +1802,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property initializerOpt As BoundObjectInitializerExpressionBase
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundObjectCreationExpression : Inherits BoundObjectCreationExpressionBase
-
     Public Sub New(syntax As SyntaxNode, constructorOpt As MethodSymbol, methodGroupOpt As BoundMethodGroup, arguments As ImmutableArray(Of BoundExpression), defaultArguments As BitVector, initializerOpt As BoundObjectInitializerExpressionBase, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ObjectCreationExpression, syntax, initializerOpt, type, hasErrors OrElse methodGroupOpt.NonNullAndHasErrors() OrElse arguments.NonNullAndHasErrors() OrElse initializerOpt.NonNullAndHasErrors())
       Debug.Assert(Not arguments.IsDefault, $"Field '{NameOf(arguments)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2088,7 +1818,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property constructorOpt As MethodSymbol
     Public ReadOnly Property methodGroupOpt As BoundMethodGroup
@@ -2103,12 +1832,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundNoPiaObjectCreationExpression : Inherits BoundObjectCreationExpressionBase
-
     Public Sub New(syntax As SyntaxNode, guidString As string, initializerOpt As BoundObjectInitializerExpressionBase, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.NoPiaObjectCreationExpression, syntax, initializerOpt, type, hasErrors OrElse initializerOpt.NonNullAndHasErrors())
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2124,12 +1850,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAnonymousTypeCreationExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, binderOpt As Binder.AnonymousTypeCreationBinder, declarations As ImmutableArray(Of BoundAnonymousTypePropertyAccess), arguments As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AnonymousTypeCreationExpression, syntax, type, hasErrors OrElse declarations.NonNullAndHasErrors() OrElse arguments.NonNullAndHasErrors())
       Debug.Assert(Not declarations.IsDefault, $"Field '{NameOf(declarations)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2150,12 +1873,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAnonymousTypePropertyAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, binder As Binder.AnonymousTypeCreationBinder, propertyIndex As Integer, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.AnonymousTypePropertyAccess, syntax, type, hasErrors)
       Debug.Assert(binder IsNot Nothing, $"Field '{NameOf(binder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2179,12 +1899,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAnonymousTypeFieldInitializer : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, binder As Binder.AnonymousTypeFieldInitializerBinder, value As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AnonymousTypeFieldInitializer, syntax, type, hasErrors OrElse value.NonNullAndHasErrors())
       Debug.Assert(binder IsNot Nothing, $"Field '{NameOf(binder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2203,12 +1920,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundObjectInitializerExpressionBase : Inherits BoundExpression
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, placeholderOpt As BoundWithLValueExpressionPlaceholder, initializers As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax, type)
       Debug.Assert(Not initializers.IsDefault, $"Field '{NameOf(initializers)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2217,12 +1931,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Sub
     Public ReadOnly Property placeholderOpt As BoundWithLValueExpressionPlaceholder
     Public ReadOnly Property initializers As ImmutableArray(Of BoundExpression)
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundObjectInitializerExpression : Inherits BoundObjectInitializerExpressionBase
-
     Public Sub New(syntax As SyntaxNode, createTemporaryLocalForInitialization As Boolean, binder As Binder, placeholderOpt As BoundWithLValueExpressionPlaceholder, initializers As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ObjectInitializerExpression, syntax, placeholderOpt, initializers, type, hasErrors OrElse placeholderOpt.NonNullAndHasErrors() OrElse initializers.NonNullAndHasErrors())
       Debug.Assert(binder IsNot Nothing, $"Field '{NameOf(binder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2232,7 +1943,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property createTemporaryLocalForInitialization As Boolean
     Public ReadOnly Property binder As Binder
@@ -2245,19 +1955,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundCollectionInitializerExpression : Inherits BoundObjectInitializerExpressionBase
-
     Public Sub New(syntax As SyntaxNode, placeholderOpt As BoundWithLValueExpressionPlaceholder, initializers As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.CollectionInitializerExpression, syntax, placeholderOpt, initializers, type, hasErrors OrElse placeholderOpt.NonNullAndHasErrors() OrElse initializers.NonNullAndHasErrors())
       Debug.Assert(Not initializers.IsDefault, $"Field '{NameOf(initializers)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
       Return visitor.VisitCollectionInitializerExpression(Me)
@@ -2268,19 +1974,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundNewT : Inherits BoundObjectCreationExpressionBase
-
     Public Sub New(syntax As SyntaxNode, initializerOpt As BoundObjectInitializerExpressionBase, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.NewT, syntax, initializerOpt, type, hasErrors OrElse initializerOpt.NonNullAndHasErrors())
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
       Return visitor.VisitNewT(Me)
@@ -2291,12 +1993,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundDelegateCreationExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, receiverOpt As BoundExpression, method As MethodSymbol, relaxationLambdaOpt As BoundLambda, relaxationReceiverPlaceholderOpt As BoundRValuePlaceholder, methodGroupOpt As BoundMethodGroup, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.DelegateCreationExpression, syntax, type, hasErrors OrElse receiverOpt.NonNullAndHasErrors() OrElse relaxationLambdaOpt.NonNullAndHasErrors() OrElse relaxationReceiverPlaceholderOpt.NonNullAndHasErrors() OrElse methodGroupOpt.NonNullAndHasErrors())
       Debug.Assert(method IsNot Nothing, $"Field '{NameOf(method)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2321,12 +2020,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundArrayCreation : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, isParamArrayArgument As Boolean, bounds As ImmutableArray(Of BoundExpression), initializerOpt As BoundArrayInitialization, arrayLiteralOpt As BoundArrayLiteral, arrayLiteralConversion As ConversionKind, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ArrayCreation, syntax, type, hasErrors OrElse bounds.NonNullAndHasErrors() OrElse initializerOpt.NonNullAndHasErrors() OrElse arrayLiteralOpt.NonNullAndHasErrors())
       Debug.Assert(Not bounds.IsDefault, $"Field '{NameOf(bounds)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2339,7 +2035,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property isParamArrayArgument As Boolean
     Public ReadOnly Property bounds As ImmutableArray(Of BoundExpression)
@@ -2355,12 +2050,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundArrayLiteral : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, hasDominantType As Boolean, numberOfCandidates As Integer, inferredType As ArrayTypeSymbol, bounds As ImmutableArray(Of BoundExpression), initializer As BoundArrayInitialization, binder As Binder, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ArrayLiteral, syntax, Nothing, hasErrors OrElse bounds.NonNullAndHasErrors() OrElse initializer.NonNullAndHasErrors())
       Debug.Assert(inferredType IsNot Nothing, $"Field '{NameOf(inferredType)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2389,12 +2081,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundArrayInitialization : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, initializers As ImmutableArray(Of BoundExpression), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ArrayInitialization, syntax, type, hasErrors OrElse initializers.NonNullAndHasErrors())
       Debug.Assert(Not initializers.IsDefault, $"Field '{NameOf(initializers)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2410,12 +2099,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundFieldAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, receiverOpt As BoundExpression, fieldSymbol As FieldSymbol, isLValue As Boolean, suppressVirtualCalls As Boolean, constantsInProgressOpt As SymbolsInProgress(Of FieldSymbol), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.FieldAccess, syntax, type, hasErrors OrElse receiverOpt.NonNullAndHasErrors())
       Debug.Assert(fieldSymbol IsNot Nothing, $"Field '{NameOf(fieldSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2428,7 +2114,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property receiverOpt As BoundExpression
     Public ReadOnly Property fieldSymbol As FieldSymbol
@@ -2444,12 +2129,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundPropertyAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, propertySymbol As PropertySymbol, propertyGroupOpt As BoundPropertyGroup, accessKind As PropertyAccessKind, isWriteable As Boolean, isLValue As Boolean, receiverOpt As BoundExpression, arguments As ImmutableArray(Of BoundExpression), defaultArguments As BitVector, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.PropertyAccess, syntax, type, hasErrors OrElse propertyGroupOpt.NonNullAndHasErrors() OrElse receiverOpt.NonNullAndHasErrors() OrElse arguments.NonNullAndHasErrors())
       Debug.Assert(propertySymbol IsNot Nothing, $"Field '{NameOf(propertySymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2466,7 +2148,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property propertySymbol As PropertySymbol
     Public ReadOnly Property propertyGroupOpt As BoundPropertyGroup
@@ -2485,12 +2166,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundEventAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, receiverOpt As BoundExpression, eventSymbol As EventSymbol, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.EventAccess, syntax, type, hasErrors OrElse receiverOpt.NonNullAndHasErrors())
       Debug.Assert(eventSymbol IsNot Nothing, $"Field '{NameOf(eventSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2509,12 +2187,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundBlock : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, statementListSyntax As SyntaxList(Of StatementSyntax), locals As ImmutableArray(Of LocalSymbol), statements As ImmutableArray(Of BoundStatement), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Block, syntax, hasErrors OrElse statements.NonNullAndHasErrors())
       Debug.Assert(Not locals.IsDefault, $"Field '{NameOf(locals)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2535,12 +2210,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundStateMachineScope : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, fields As ImmutableArray(Of FieldSymbol), statement As BoundStatement, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.StateMachineScope, syntax, hasErrors OrElse statement.NonNullAndHasErrors())
       Debug.Assert(Not fields.IsDefault, $"Field '{NameOf(fields)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2559,26 +2231,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundLocalDeclarationBase : Inherits BoundStatement
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(kind, syntax)
-
     End Sub
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode)
       MyBase.New(kind, syntax)
-
     End Sub
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLocalDeclaration : Inherits BoundLocalDeclarationBase
-
     Public Sub New(syntax As SyntaxNode, localSymbol As LocalSymbol, declarationInitializerOpt As BoundExpression, identifierInitializerOpt As BoundArrayCreation, initializedByAsNew As Boolean, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.LocalDeclaration, syntax, hasErrors OrElse declarationInitializerOpt.NonNullAndHasErrors() OrElse identifierInitializerOpt.NonNullAndHasErrors())
       Debug.Assert(localSymbol IsNot Nothing, $"Field '{NameOf(localSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2589,7 +2253,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property localSymbol As LocalSymbol
     Public ReadOnly Property declarationInitializerOpt As BoundExpression
@@ -2604,12 +2267,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAsNewLocalDeclarations : Inherits BoundLocalDeclarationBase
-
     Public Sub New(syntax As SyntaxNode, localDeclarations As ImmutableArray(Of BoundLocalDeclaration), initializer As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AsNewLocalDeclarations, syntax, hasErrors OrElse localDeclarations.NonNullAndHasErrors() OrElse initializer.NonNullAndHasErrors())
       Debug.Assert(Not localDeclarations.IsDefault, $"Field '{NameOf(localDeclarations)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2628,12 +2288,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundDimStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, localDeclarations As ImmutableArray(Of BoundLocalDeclarationBase), initializerOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.DimStatement, syntax, hasErrors OrElse localDeclarations.NonNullAndHasErrors() OrElse initializerOpt.NonNullAndHasErrors())
       Debug.Assert(Not localDeclarations.IsDefault, $"Field '{NameOf(localDeclarations)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2651,37 +2308,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend Partial Class BoundInitializer : Inherits BoundStatement
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(kind, syntax)
-
     End Sub
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode)
       MyBase.New(kind, syntax)
-
     End Sub
     Public Sub New(syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(BoundKind.Initializer, syntax, hasErrors)
-
     End Sub
     Public Sub New(syntax As SyntaxNode)
       MyBase.New(BoundKind.Initializer, syntax)
-
     End Sub
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
       Return visitor.VisitInitializer(Me)
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundFieldOrPropertyInitializer : Inherits BoundInitializer
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, memberAccessExpressionOpt As BoundExpression, initialValue As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax)
       Debug.Assert(initialValue IsNot Nothing, $"Field '{NameOf(initialValue)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2690,12 +2337,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Sub
     Public ReadOnly Property memberAccessExpressionOpt As BoundExpression
     Public ReadOnly Property initialValue As BoundExpression
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundFieldInitializer : Inherits BoundFieldOrPropertyInitializer
-
     Public Sub New(syntax As SyntaxNode, initializedFields As ImmutableArray(Of FieldSymbol), memberAccessExpressionOpt As BoundExpression, initialValue As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.FieldInitializer, syntax, memberAccessExpressionOpt, initialValue, hasErrors OrElse memberAccessExpressionOpt.NonNullAndHasErrors() OrElse initialValue.NonNullAndHasErrors())
       Debug.Assert(Not initializedFields.IsDefault, $"Field '{NameOf(initializedFields)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2712,12 +2356,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundPropertyInitializer : Inherits BoundFieldOrPropertyInitializer
-
     Public Sub New(syntax As SyntaxNode, initializedProperties As ImmutableArray(Of PropertySymbol), memberAccessExpressionOpt As BoundExpression, initialValue As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.PropertyInitializer, syntax, memberAccessExpressionOpt, initialValue, hasErrors OrElse memberAccessExpressionOpt.NonNullAndHasErrors() OrElse initialValue.NonNullAndHasErrors())
       Debug.Assert(Not initializedProperties.IsDefault, $"Field '{NameOf(initializedProperties)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2734,12 +2375,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundParameterEqualsValue : Inherits BoundNode
-
     Public Sub New(syntax As SyntaxNode, parameter As ParameterSymbol, value As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ParameterEqualsValue, syntax, hasErrors OrElse value.NonNullAndHasErrors())
       Debug.Assert(parameter IsNot Nothing, $"Field '{NameOf(parameter)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2758,12 +2396,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundGlobalStatementInitializer : Inherits BoundInitializer
-
     Public Sub New(syntax As SyntaxNode, statement As BoundStatement, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.GlobalStatementInitializer, syntax, hasErrors OrElse statement.NonNullAndHasErrors())
       Debug.Assert(statement IsNot Nothing, $"Field '{NameOf(statement)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2779,12 +2414,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSequence : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, locals As ImmutableArray(Of LocalSymbol), sideEffects As ImmutableArray(Of BoundExpression), valueOpt As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Sequence, syntax, type, hasErrors OrElse sideEffects.NonNullAndHasErrors() OrElse valueOpt.NonNullAndHasErrors())
       Debug.Assert(Not locals.IsDefault, $"Field '{NameOf(locals)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2796,7 +2428,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property locals As ImmutableArray(Of LocalSymbol)
     Public ReadOnly Property sideEffects As ImmutableArray(Of BoundExpression)
@@ -2810,12 +2441,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundExpressionStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ExpressionStatement, syntax, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2831,12 +2459,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundIfStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, condition As BoundExpression, consequence As BoundStatement, alternativeOpt As BoundStatement, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.IfStatement, syntax, hasErrors OrElse condition.NonNullAndHasErrors() OrElse consequence.NonNullAndHasErrors() OrElse alternativeOpt.NonNullAndHasErrors())
       Debug.Assert(condition IsNot Nothing, $"Field '{NameOf(condition)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2857,12 +2482,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSelectStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, expressionStatement As BoundExpressionStatement, exprPlaceholderOpt As BoundRValuePlaceholder, caseBlocks As ImmutableArray(Of BoundCaseBlock), recommendSwitchTable As Boolean, exitLabel As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.SelectStatement, syntax, hasErrors OrElse expressionStatement.NonNullAndHasErrors() OrElse exprPlaceholderOpt.NonNullAndHasErrors() OrElse caseBlocks.NonNullAndHasErrors())
       Debug.Assert(expressionStatement IsNot Nothing, $"Field '{NameOf(expressionStatement)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2888,12 +2510,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundCaseBlock : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, caseStatement As BoundCaseStatement, body As BoundBlock, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.CaseBlock, syntax, hasErrors OrElse caseStatement.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors())
       Debug.Assert(caseStatement IsNot Nothing, $"Field '{NameOf(caseStatement)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2912,12 +2531,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundCaseStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, caseClauses As ImmutableArray(Of BoundCaseClause), conditionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.CaseStatement, syntax, hasErrors OrElse caseClauses.NonNullAndHasErrors() OrElse conditionOpt.NonNullAndHasErrors())
       Debug.Assert(Not caseClauses.IsDefault, $"Field '{NameOf(caseClauses)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -2935,47 +2551,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundCaseClause : Inherits BoundNode
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(kind, syntax)
-
     End Sub
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode)
       MyBase.New(kind, syntax)
-
     End Sub
-
   End Class
 
-
   Friend MustInherit Partial Class BoundSingleValueCaseClause : Inherits BoundCaseClause
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, valueOpt As BoundExpression, conditionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax)
-
       _ValueOpt = valueOpt
       _ConditionOpt = conditionOpt
     End Sub
     Public ReadOnly Property valueOpt As BoundExpression
     Public ReadOnly Property conditionOpt As BoundExpression
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSimpleCaseClause : Inherits BoundSingleValueCaseClause
-
     Public Sub New(syntax As SyntaxNode, valueOpt As BoundExpression, conditionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.SimpleCaseClause, syntax, valueOpt, conditionOpt, hasErrors OrElse valueOpt.NonNullAndHasErrors() OrElse conditionOpt.NonNullAndHasErrors())
-
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
       Return visitor.VisitSimpleCaseClause(Me)
@@ -2986,15 +2588,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRangeCaseClause : Inherits BoundCaseClause
-
     Public Sub New(syntax As SyntaxNode, lowerBoundOpt As BoundExpression, upperBoundOpt As BoundExpression, lowerBoundConditionOpt As BoundExpression, upperBoundConditionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RangeCaseClause, syntax, hasErrors OrElse lowerBoundOpt.NonNullAndHasErrors() OrElse upperBoundOpt.NonNullAndHasErrors() OrElse lowerBoundConditionOpt.NonNullAndHasErrors() OrElse upperBoundConditionOpt.NonNullAndHasErrors())
-
       _LowerBoundOpt = lowerBoundOpt
       _UpperBoundOpt = upperBoundOpt
       _LowerBoundConditionOpt = lowerBoundConditionOpt
@@ -3002,7 +2600,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property lowerBoundOpt As BoundExpression
     Public ReadOnly Property upperBoundOpt As BoundExpression
@@ -3017,20 +2614,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRelationalCaseClause : Inherits BoundSingleValueCaseClause
-
     Public Sub New(syntax As SyntaxNode, operatorKind As BinaryOperatorKind, valueOpt As BoundExpression, conditionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RelationalCaseClause, syntax, valueOpt, conditionOpt, hasErrors OrElse valueOpt.NonNullAndHasErrors() OrElse conditionOpt.NonNullAndHasErrors())
-
       _OperatorKind = operatorKind
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operatorKind As BinaryOperatorKind
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
@@ -3042,12 +2634,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundLoopStatement : Inherits BoundStatement
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, continueLabel As LabelSymbol, exitLabel As LabelSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax)
       Debug.Assert(continueLabel IsNot Nothing, $"Field '{NameOf(continueLabel)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3064,12 +2653,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Sub
     Public ReadOnly Property continueLabel As LabelSymbol
     Public ReadOnly Property exitLabel As LabelSymbol
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundDoLoopStatement : Inherits BoundLoopStatement
-
     Public Sub New(syntax As SyntaxNode, topConditionOpt As BoundExpression, bottomConditionOpt As BoundExpression, topConditionIsUntil As Boolean, bottomConditionIsUntil As Boolean, body As BoundStatement, continueLabel As LabelSymbol, exitLabel As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.DoLoopStatement, syntax, continueLabel, exitLabel, hasErrors OrElse topConditionOpt.NonNullAndHasErrors() OrElse bottomConditionOpt.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors())
       Debug.Assert(body IsNot Nothing, $"Field '{NameOf(body)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3095,12 +2681,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundWhileStatement : Inherits BoundLoopStatement
-
     Public Sub New(syntax As SyntaxNode, condition As BoundExpression, body As BoundStatement, continueLabel As LabelSymbol, exitLabel As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.WhileStatement, syntax, continueLabel, exitLabel, hasErrors OrElse condition.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors())
       Debug.Assert(condition IsNot Nothing, $"Field '{NameOf(condition)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3121,12 +2704,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundForStatement : Inherits BoundLoopStatement
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, declaredOrInferredLocalOpt As LocalSymbol, controlVariable As BoundExpression, body As BoundStatement, nextVariablesOpt As ImmutableArray(Of BoundExpression), continueLabel As LabelSymbol, exitLabel As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax, continueLabel, exitLabel)
       Debug.Assert(controlVariable IsNot Nothing, $"Field '{NameOf(controlVariable)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3142,12 +2722,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Public ReadOnly Property controlVariable As BoundExpression
     Public ReadOnly Property body As BoundStatement
     Public ReadOnly Property nextVariablesOpt As ImmutableArray(Of BoundExpression)
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundForToUserDefinedOperators : Inherits BoundNode
-
     Public Sub New(syntax As SyntaxNode, leftOperandPlaceholder As BoundRValuePlaceholder, rightOperandPlaceholder As BoundRValuePlaceholder, addition As BoundUserDefinedBinaryOperator, subtraction As BoundUserDefinedBinaryOperator, lessThanOrEqual As BoundExpression, greaterThanOrEqual As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ForToUserDefinedOperators, syntax, hasErrors OrElse leftOperandPlaceholder.NonNullAndHasErrors() OrElse rightOperandPlaceholder.NonNullAndHasErrors() OrElse addition.NonNullAndHasErrors() OrElse subtraction.NonNullAndHasErrors() OrElse lessThanOrEqual.NonNullAndHasErrors() OrElse greaterThanOrEqual.NonNullAndHasErrors())
       Debug.Assert(leftOperandPlaceholder IsNot Nothing, $"Field '{NameOf(leftOperandPlaceholder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3165,7 +2742,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property leftOperandPlaceholder As BoundRValuePlaceholder
     Public ReadOnly Property rightOperandPlaceholder As BoundRValuePlaceholder
@@ -3182,12 +2758,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundForToStatement : Inherits BoundForStatement
-
     Public Sub New(syntax As SyntaxNode, initialValue As BoundExpression, limitValue As BoundExpression, stepValue As BoundExpression, checked As Boolean, operatorsOpt As BoundForToUserDefinedOperators, declaredOrInferredLocalOpt As LocalSymbol, controlVariable As BoundExpression, body As BoundStatement, nextVariablesOpt As ImmutableArray(Of BoundExpression), continueLabel As LabelSymbol, exitLabel As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ForToStatement, syntax, declaredOrInferredLocalOpt, controlVariable, body, nextVariablesOpt, continueLabel, exitLabel, hasErrors OrElse initialValue.NonNullAndHasErrors() OrElse limitValue.NonNullAndHasErrors() OrElse stepValue.NonNullAndHasErrors() OrElse operatorsOpt.NonNullAndHasErrors() OrElse controlVariable.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors() OrElse nextVariablesOpt.NonNullAndHasErrors())
       Debug.Assert(initialValue IsNot Nothing, $"Field '{NameOf(initialValue)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3217,12 +2790,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundForEachStatement : Inherits BoundForStatement
-
     Public Sub New(syntax As SyntaxNode, collection As BoundExpression, enumeratorInfo As ForEachEnumeratorInfo, declaredOrInferredLocalOpt As LocalSymbol, controlVariable As BoundExpression, body As BoundStatement, nextVariablesOpt As ImmutableArray(Of BoundExpression), continueLabel As LabelSymbol, exitLabel As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ForEachStatement, syntax, declaredOrInferredLocalOpt, controlVariable, body, nextVariablesOpt, continueLabel, exitLabel, hasErrors OrElse collection.NonNullAndHasErrors() OrElse controlVariable.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors() OrElse nextVariablesOpt.NonNullAndHasErrors())
       Debug.Assert(collection IsNot Nothing, $"Field '{NameOf(collection)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3245,12 +2815,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundExitStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, label As LabelSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.ExitStatement, syntax, hasErrors)
       Debug.Assert(label IsNot Nothing, $"Field '{NameOf(label)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3271,12 +2838,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundContinueStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, label As LabelSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.ContinueStatement, syntax, hasErrors)
       Debug.Assert(label IsNot Nothing, $"Field '{NameOf(label)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3297,12 +2861,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTryStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, tryBlock As BoundBlock, catchBlocks As ImmutableArray(Of BoundCatchBlock), finallyBlockOpt As BoundBlock, exitLabelOpt As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.TryStatement, syntax, hasErrors OrElse tryBlock.NonNullAndHasErrors() OrElse catchBlocks.NonNullAndHasErrors() OrElse finallyBlockOpt.NonNullAndHasErrors())
       Debug.Assert(tryBlock IsNot Nothing, $"Field '{NameOf(tryBlock)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3325,12 +2886,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundCatchBlock : Inherits BoundNode
-
     Public Sub New(syntax As SyntaxNode, localOpt As LocalSymbol, exceptionSourceOpt As BoundExpression, errorLineNumberOpt As BoundExpression, exceptionFilterOpt As BoundExpression, body As BoundBlock, isSynthesizedAsyncCatchAll As Boolean, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.CatchBlock, syntax, hasErrors OrElse exceptionSourceOpt.NonNullAndHasErrors() OrElse errorLineNumberOpt.NonNullAndHasErrors() OrElse exceptionFilterOpt.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors())
       Debug.Assert(body IsNot Nothing, $"Field '{NameOf(body)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3356,12 +2914,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLiteral : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, value As ConstantValue, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.Literal, syntax, type, hasErrors)
       Debug.Assert(value IsNot Nothing, $"Field '{NameOf(value)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3369,7 +2924,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Sub New(syntax As SyntaxNode, value As ConstantValue, type As TypeSymbol)
       MyBase.New(BoundKind.Literal, syntax, type)
@@ -3387,12 +2941,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMeReference : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.MeReference, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3410,19 +2961,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundValueTypeMeReference : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.ValueTypeMeReference, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol)
       MyBase.New(BoundKind.ValueTypeMeReference, syntax, type)
@@ -3438,12 +2985,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMyBaseReference : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.MyBaseReference, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3461,12 +3005,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMyClassReference : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.MyClassReference, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3484,12 +3025,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundPreviousSubmissionReference : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, sourceType As NamedTypeSymbol, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.PreviousSubmissionReference, syntax, type, hasErrors)
       Debug.Assert(sourceType IsNot Nothing, $"Field '{NameOf(sourceType)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3512,12 +3050,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundHostObjectMemberReference : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.HostObjectMemberReference, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3535,12 +3070,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLocal : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, localSymbol As LocalSymbol, isLValue As Boolean, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.Local, syntax, type, hasErrors)
       Debug.Assert(localSymbol IsNot Nothing, $"Field '{NameOf(localSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3550,7 +3082,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Sub New(syntax As SyntaxNode, localSymbol As LocalSymbol, isLValue As Boolean, type As TypeSymbol)
       MyBase.New(BoundKind.Local, syntax, type)
@@ -3571,12 +3102,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundPseudoVariable : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, localSymbol As LocalSymbol, isLValue As Boolean, emitExpressions As PseudoVariableExpressions, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.PseudoVariable, syntax, type, hasErrors)
       Debug.Assert(localSymbol IsNot Nothing, $"Field '{NameOf(localSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3607,12 +3135,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundParameter : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, parameterSymbol As ParameterSymbol, isLValue As Boolean, suppressVirtualCalls As Boolean, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.Parameter, syntax, type, hasErrors)
       Debug.Assert(parameterSymbol IsNot Nothing, $"Field '{NameOf(parameterSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3641,12 +3166,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundByRefArgumentPlaceholder : Inherits BoundValuePlaceholderBase
-
     Public Sub New(syntax As SyntaxNode, isOut As Boolean, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.ByRefArgumentPlaceholder, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3667,12 +3189,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundByRefArgumentWithCopyBack : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, originalArgument As BoundExpression, inConversion As BoundExpression, inPlaceholder As BoundByRefArgumentPlaceholder, outConversion As BoundExpression, outPlaceholder As BoundRValuePlaceholder, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ByRefArgumentWithCopyBack, syntax, type, hasErrors OrElse originalArgument.NonNullAndHasErrors() OrElse inConversion.NonNullAndHasErrors() OrElse inPlaceholder.NonNullAndHasErrors() OrElse outConversion.NonNullAndHasErrors() OrElse outPlaceholder.NonNullAndHasErrors())
       Debug.Assert(originalArgument IsNot Nothing, $"Field '{NameOf(originalArgument)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3688,7 +3207,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property originalArgument As BoundExpression
     Public ReadOnly Property inConversion As BoundExpression
@@ -3704,12 +3222,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLateBoundArgumentSupportingAssignmentWithCapture : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, originalArgument As BoundExpression, localSymbol As SynthesizedLocal, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.LateBoundArgumentSupportingAssignmentWithCapture, syntax, type, hasErrors OrElse originalArgument.NonNullAndHasErrors())
       Debug.Assert(originalArgument IsNot Nothing, $"Field '{NameOf(originalArgument)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3719,7 +3234,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property originalArgument As BoundExpression
     Public ReadOnly Property localSymbol As SynthesizedLocal
@@ -3732,12 +3246,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLabelStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, label As LabelSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.LabelStatement, syntax, hasErrors)
       Debug.Assert(label IsNot Nothing, $"Field '{NameOf(label)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3758,12 +3269,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLabel : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, label As LabelSymbol, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.Label, syntax, type, hasErrors)
       Debug.Assert(label IsNot Nothing, $"Field '{NameOf(label)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3784,12 +3292,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundGotoStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, label As LabelSymbol, labelExpressionOpt As BoundLabel, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.GotoStatement, syntax, hasErrors OrElse labelExpressionOpt.NonNullAndHasErrors())
       Debug.Assert(label IsNot Nothing, $"Field '{NameOf(label)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3807,12 +3312,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundStatementList : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, statements As ImmutableArray(Of BoundStatement), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.StatementList, syntax, hasErrors OrElse statements.NonNullAndHasErrors())
       Debug.Assert(Not statements.IsDefault, $"Field '{NameOf(statements)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3828,12 +3330,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundConditionalGoto : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, condition As BoundExpression, jumpIfTrue As Boolean, label As LabelSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ConditionalGoto, syntax, hasErrors OrElse condition.NonNullAndHasErrors())
       Debug.Assert(condition IsNot Nothing, $"Field '{NameOf(condition)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3854,12 +3353,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundWithStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, originalExpression As BoundExpression, body As BoundBlock, binder As WithBlockBinder, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.WithStatement, syntax, hasErrors OrElse originalExpression.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors())
       Debug.Assert(originalExpression IsNot Nothing, $"Field '{NameOf(originalExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3881,12 +3377,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class UnboundLambda : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, binder As Binder, flags As SourceMemberFlags, parameters As ImmutableArray(Of ParameterSymbol), returnType As TypeSymbol, bindingCache As UnboundLambda.UnboundLambdaBindingCache, hasErrors As Boolean)
       MyBase.New(BoundKind.UnboundLambda, syntax, Nothing, hasErrors)
       Debug.Assert(binder IsNot Nothing, $"Field '{NameOf(binder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3900,7 +3393,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Sub New(syntax As SyntaxNode, binder As Binder, flags As SourceMemberFlags, parameters As ImmutableArray(Of ParameterSymbol), returnType As TypeSymbol, bindingCache As UnboundLambda.UnboundLambdaBindingCache)
       MyBase.New(BoundKind.UnboundLambda, syntax, Nothing)
@@ -3928,12 +3420,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLambda : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, lambdaSymbol As LambdaSymbol, body As BoundBlock, diagnostics As ImmutableArray(Of Microsoft.CodeAnalysis.Diagnostic), lambdaBinderOpt As LambdaBodyBinder, delegateRelaxation As ConversionKind, methodConversionKind As MethodConversionKind, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Lambda, syntax, Nothing, hasErrors OrElse body.NonNullAndHasErrors())
       Debug.Assert(lambdaSymbol IsNot Nothing, $"Field '{NameOf(lambdaSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3948,7 +3437,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property lambdaSymbol As LambdaSymbol
     Public ReadOnly Property body As BoundBlock
@@ -3965,12 +3453,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundQueryExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, lastOperator As BoundQueryClauseBase, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.QueryExpression, syntax, type, hasErrors OrElse lastOperator.NonNullAndHasErrors())
       Debug.Assert(lastOperator IsNot Nothing, $"Field '{NameOf(lastOperator)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -3987,12 +3472,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundQueryPart : Inherits BoundExpression
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4001,12 +3483,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       MyBase.New(kind, syntax, type)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
     End Sub
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundQuerySource : Inherits BoundQueryPart
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.QuerySource, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4023,12 +3502,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundToQueryableCollectionConversion : Inherits BoundQueryPart
-
     Public Sub New(syntax As SyntaxNode, conversionCall As BoundCall, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ToQueryableCollectionConversion, syntax, type, hasErrors OrElse conversionCall.NonNullAndHasErrors())
       Debug.Assert(conversionCall IsNot Nothing, $"Field '{NameOf(conversionCall)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4045,12 +3521,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundQueryClauseBase : Inherits BoundQueryPart
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, rangeVariables As ImmutableArray(Of RangeVariableSymbol), compoundVariableType As TypeSymbol, binders As ImmutableArray(Of Binder), type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(kind, syntax, type)
       Debug.Assert(Not rangeVariables.IsDefault, $"Field '{NameOf(rangeVariables)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4074,12 +3547,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Public ReadOnly Property rangeVariables As ImmutableArray(Of RangeVariableSymbol)
     Public ReadOnly Property compoundVariableType As TypeSymbol
     Public ReadOnly Property binders As ImmutableArray(Of Binder)
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundQueryableSource : Inherits BoundQueryClauseBase
-
     Public Sub New(syntax As SyntaxNode, source As BoundQueryPart, rangeVariableOpt As RangeVariableSymbol, rangeVariables As ImmutableArray(Of RangeVariableSymbol), compoundVariableType As TypeSymbol, binders As ImmutableArray(Of Binder), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.QueryableSource, syntax, rangeVariables, compoundVariableType, binders, type, hasErrors OrElse source.NonNullAndHasErrors())
       Debug.Assert(source IsNot Nothing, $"Field '{NameOf(source)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4092,7 +3562,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property source As BoundQueryPart
     Public ReadOnly Property rangeVariableOpt As RangeVariableSymbol
@@ -4105,12 +3574,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundQueryClause : Inherits BoundQueryClauseBase
-
     Public Sub New(syntax As SyntaxNode, underlyingExpression As BoundExpression, rangeVariables As ImmutableArray(Of RangeVariableSymbol), compoundVariableType As TypeSymbol, binders As ImmutableArray(Of Binder), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.QueryClause, syntax, rangeVariables, compoundVariableType, binders, type, hasErrors OrElse underlyingExpression.NonNullAndHasErrors())
       Debug.Assert(underlyingExpression IsNot Nothing, $"Field '{NameOf(underlyingExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4130,12 +3596,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundOrdering : Inherits BoundQueryPart
-
     Public Sub New(syntax As SyntaxNode, underlyingExpression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Ordering, syntax, type, hasErrors OrElse underlyingExpression.NonNullAndHasErrors())
       Debug.Assert(underlyingExpression IsNot Nothing, $"Field '{NameOf(underlyingExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4152,12 +3615,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundQueryLambda : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, lambdaSymbol As SynthesizedLambdaSymbol, rangeVariables As ImmutableArray(Of RangeVariableSymbol), expression As BoundExpression, exprIsOperandOfConditionalBranch As Boolean, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.QueryLambda, syntax, Nothing, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(lambdaSymbol IsNot Nothing, $"Field '{NameOf(lambdaSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4181,12 +3641,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRangeVariableAssignment : Inherits BoundQueryPart
-
     Public Sub New(syntax As SyntaxNode, rangeVariable As RangeVariableSymbol, value As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RangeVariableAssignment, syntax, type, hasErrors OrElse value.NonNullAndHasErrors())
       Debug.Assert(rangeVariable IsNot Nothing, $"Field '{NameOf(rangeVariable)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4206,12 +3663,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class GroupTypeInferenceLambda : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, binder As Binder, parameters As ImmutableArray(Of ParameterSymbol), compilation As VisualBasicCompilation, hasErrors As Boolean)
       MyBase.New(BoundKind.GroupTypeInferenceLambda, syntax, Nothing, hasErrors)
       Debug.Assert(binder IsNot Nothing, $"Field '{NameOf(binder)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4242,12 +3696,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAggregateClause : Inherits BoundQueryClauseBase
-
     Public Sub New(syntax As SyntaxNode, capturedGroupOpt As BoundQueryClauseBase, groupPlaceholderOpt As BoundRValuePlaceholder, underlyingExpression As BoundExpression, rangeVariables As ImmutableArray(Of RangeVariableSymbol), compoundVariableType As TypeSymbol, binders As ImmutableArray(Of Binder), type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AggregateClause, syntax, rangeVariables, compoundVariableType, binders, type, hasErrors OrElse capturedGroupOpt.NonNullAndHasErrors() OrElse groupPlaceholderOpt.NonNullAndHasErrors() OrElse underlyingExpression.NonNullAndHasErrors())
       Debug.Assert(underlyingExpression IsNot Nothing, $"Field '{NameOf(underlyingExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4271,12 +3722,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundGroupAggregation : Inherits BoundQueryPart
-
     Public Sub New(syntax As SyntaxNode, group As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.GroupAggregation, syntax, type, hasErrors OrElse group.NonNullAndHasErrors())
       Debug.Assert(group IsNot Nothing, $"Field '{NameOf(group)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4293,12 +3741,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRangeVariable : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, rangeVariable As RangeVariableSymbol, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.RangeVariable, syntax, type, hasErrors)
       Debug.Assert(rangeVariable IsNot Nothing, $"Field '{NameOf(rangeVariable)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4321,12 +3766,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundAddRemoveHandlerStatement : Inherits BoundStatement
-
     Protected Sub New(kind As BoundKind, syntax As SyntaxNode, eventAccess As BoundExpression, handler As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(kind, syntax)
       Debug.Assert(eventAccess IsNot Nothing, $"Field '{NameOf(eventAccess)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4336,12 +3778,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Sub
     Public ReadOnly Property eventAccess As BoundExpression
     Public ReadOnly Property handler As BoundExpression
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAddHandlerStatement : Inherits BoundAddRemoveHandlerStatement
-
     Public Sub New(syntax As SyntaxNode, eventAccess As BoundExpression, handler As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AddHandlerStatement, syntax, eventAccess, handler, hasErrors OrElse eventAccess.NonNullAndHasErrors() OrElse handler.NonNullAndHasErrors())
       Debug.Assert(eventAccess IsNot Nothing, $"Field '{NameOf(eventAccess)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4356,12 +3795,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRemoveHandlerStatement : Inherits BoundAddRemoveHandlerStatement
-
     Public Sub New(syntax As SyntaxNode, eventAccess As BoundExpression, handler As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RemoveHandlerStatement, syntax, eventAccess, handler, hasErrors OrElse eventAccess.NonNullAndHasErrors() OrElse handler.NonNullAndHasErrors())
       Debug.Assert(eventAccess IsNot Nothing, $"Field '{NameOf(eventAccess)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4376,12 +3812,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundRaiseEventStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, eventSymbol As EventSymbol, eventInvocation As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.RaiseEventStatement, syntax, hasErrors OrElse eventInvocation.NonNullAndHasErrors())
       Debug.Assert(eventSymbol IsNot Nothing, $"Field '{NameOf(eventSymbol)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4400,12 +3833,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUsingStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, resourceList As ImmutableArray(Of BoundLocalDeclarationBase), resourceExpressionOpt As BoundExpression, body As BoundBlock, usingInfo As UsingInfo, locals As ImmutableArray(Of LocalSymbol), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UsingStatement, syntax, hasErrors OrElse resourceList.NonNullAndHasErrors() OrElse resourceExpressionOpt.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors())
       Debug.Assert(body IsNot Nothing, $"Field '{NameOf(body)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4431,12 +3861,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSyncLockStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, lockExpression As BoundExpression, body As BoundBlock, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.SyncLockStatement, syntax, hasErrors OrElse lockExpression.NonNullAndHasErrors() OrElse body.NonNullAndHasErrors())
       Debug.Assert(lockExpression IsNot Nothing, $"Field '{NameOf(lockExpression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4455,12 +3882,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlName : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, xmlNamespace As BoundExpression, localName As BoundExpression, objectCreation As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlName, syntax, type, hasErrors OrElse xmlNamespace.NonNullAndHasErrors() OrElse localName.NonNullAndHasErrors() OrElse objectCreation.NonNullAndHasErrors())
       Debug.Assert(xmlNamespace IsNot Nothing, $"Field '{NameOf(xmlNamespace)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4483,12 +3907,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlNamespace : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, xmlNamespace As BoundExpression, objectCreation As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlNamespace, syntax, type, hasErrors OrElse xmlNamespace.NonNullAndHasErrors() OrElse objectCreation.NonNullAndHasErrors())
       Debug.Assert(xmlNamespace IsNot Nothing, $"Field '{NameOf(xmlNamespace)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4508,12 +3929,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlDocument : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, declaration As BoundExpression, childNodes As ImmutableArray(Of BoundExpression), rewriterInfo As BoundXmlContainerRewriterInfo, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlDocument, syntax, type, hasErrors OrElse declaration.NonNullAndHasErrors() OrElse childNodes.NonNullAndHasErrors())
       Debug.Assert(declaration IsNot Nothing, $"Field '{NameOf(declaration)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4536,12 +3954,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlDeclaration : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, version As BoundExpression, encoding As BoundExpression, standalone As BoundExpression, objectCreation As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlDeclaration, syntax, type, hasErrors OrElse version.NonNullAndHasErrors() OrElse encoding.NonNullAndHasErrors() OrElse standalone.NonNullAndHasErrors() OrElse objectCreation.NonNullAndHasErrors())
       Debug.Assert(objectCreation IsNot Nothing, $"Field '{NameOf(objectCreation)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4564,12 +3979,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlProcessingInstruction : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, target As BoundExpression, data As BoundExpression, objectCreation As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlProcessingInstruction, syntax, type, hasErrors OrElse target.NonNullAndHasErrors() OrElse data.NonNullAndHasErrors() OrElse objectCreation.NonNullAndHasErrors())
       Debug.Assert(target IsNot Nothing, $"Field '{NameOf(target)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4592,12 +4004,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlComment : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, value As BoundExpression, objectCreation As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlComment, syntax, type, hasErrors OrElse value.NonNullAndHasErrors() OrElse objectCreation.NonNullAndHasErrors())
       Debug.Assert(value IsNot Nothing, $"Field '{NameOf(value)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4617,12 +4026,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlAttribute : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, name As BoundExpression, value As BoundExpression, matchesImport As Boolean, objectCreation As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlAttribute, syntax, type, hasErrors OrElse name.NonNullAndHasErrors() OrElse value.NonNullAndHasErrors() OrElse objectCreation.NonNullAndHasErrors())
       Debug.Assert(name IsNot Nothing, $"Field '{NameOf(name)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4636,7 +4042,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property name As BoundExpression
     Public ReadOnly Property value As BoundExpression
@@ -4651,12 +4056,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlElement : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, argument As BoundExpression, childNodes As ImmutableArray(Of BoundExpression), rewriterInfo As BoundXmlContainerRewriterInfo, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlElement, syntax, type, hasErrors OrElse argument.NonNullAndHasErrors() OrElse childNodes.NonNullAndHasErrors())
       Debug.Assert(argument IsNot Nothing, $"Field '{NameOf(argument)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4679,12 +4081,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlMemberAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, memberAccess As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlMemberAccess, syntax, type, hasErrors OrElse memberAccess.NonNullAndHasErrors())
       Debug.Assert(memberAccess IsNot Nothing, $"Field '{NameOf(memberAccess)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4701,12 +4100,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlEmbeddedExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlEmbeddedExpression, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4723,12 +4119,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundXmlCData : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, value As BoundLiteral, objectCreation As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.XmlCData, syntax, type, hasErrors OrElse value.NonNullAndHasErrors() OrElse objectCreation.NonNullAndHasErrors())
       Debug.Assert(value IsNot Nothing, $"Field '{NameOf(value)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4748,22 +4141,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundResumeStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, resumeKind As ResumeStatementKind, labelOpt As LabelSymbol, labelExpressionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ResumeStatement, syntax, hasErrors OrElse labelExpressionOpt.NonNullAndHasErrors())
-
       _ResumeKind = resumeKind
       _LabelOpt = labelOpt
       _LabelExpressionOpt = labelExpressionOpt
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property resumeKind As ResumeStatementKind
     Public ReadOnly Property labelOpt As LabelSymbol
@@ -4777,22 +4165,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundOnErrorStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, onErrorKind As OnErrorStatementKind, labelOpt As LabelSymbol, labelExpressionOpt As BoundExpression, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.OnErrorStatement, syntax, hasErrors OrElse labelExpressionOpt.NonNullAndHasErrors())
-
       _OnErrorKind = onErrorKind
       _LabelOpt = labelOpt
       _LabelExpressionOpt = labelExpressionOpt
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property onErrorKind As OnErrorStatementKind
     Public ReadOnly Property labelOpt As LabelSymbol
@@ -4806,12 +4189,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUnstructuredExceptionHandlingStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, containsOnError As Boolean, containsResume As Boolean, resumeWithoutLabelOpt As StatementSyntax, trackLineNumber As Boolean, body As BoundBlock, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UnstructuredExceptionHandlingStatement, syntax, hasErrors OrElse body.NonNullAndHasErrors())
       Debug.Assert(body IsNot Nothing, $"Field '{NameOf(body)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4823,7 +4203,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property containsOnError As Boolean
     Public ReadOnly Property containsResume As Boolean
@@ -4839,12 +4218,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUnstructuredExceptionHandlingCatchFilter : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, activeHandlerLocal As BoundLocal, resumeTargetLocal As BoundLocal, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UnstructuredExceptionHandlingCatchFilter, syntax, type, hasErrors OrElse activeHandlerLocal.NonNullAndHasErrors() OrElse resumeTargetLocal.NonNullAndHasErrors())
       Debug.Assert(activeHandlerLocal IsNot Nothing, $"Field '{NameOf(activeHandlerLocal)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4855,7 +4231,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property activeHandlerLocal As BoundLocal
     Public ReadOnly Property resumeTargetLocal As BoundLocal
@@ -4868,12 +4243,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUnstructuredExceptionOnErrorSwitch : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, value As BoundExpression, jumps As ImmutableArray(Of BoundGotoStatement), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UnstructuredExceptionOnErrorSwitch, syntax, hasErrors OrElse value.NonNullAndHasErrors() OrElse jumps.NonNullAndHasErrors())
       Debug.Assert(value IsNot Nothing, $"Field '{NameOf(value)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4883,7 +4255,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property value As BoundExpression
     Public ReadOnly Property jumps As ImmutableArray(Of BoundGotoStatement)
@@ -4896,12 +4267,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundUnstructuredExceptionResumeSwitch : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, resumeTargetTemporary As BoundLocal, resumeLabel As BoundLabelStatement, resumeNextLabel As BoundLabelStatement, jumps As ImmutableArray(Of BoundGotoStatement), Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.UnstructuredExceptionResumeSwitch, syntax, hasErrors OrElse resumeTargetTemporary.NonNullAndHasErrors() OrElse resumeLabel.NonNullAndHasErrors() OrElse resumeNextLabel.NonNullAndHasErrors() OrElse jumps.NonNullAndHasErrors())
       Debug.Assert(resumeTargetTemporary IsNot Nothing, $"Field '{NameOf(resumeTargetTemporary)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4915,7 +4283,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property resumeTargetTemporary As BoundLocal
     Public ReadOnly Property resumeLabel As BoundLabelStatement
@@ -4930,12 +4297,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundAwaitOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, operand As BoundExpression, awaitableInstancePlaceholder As BoundRValuePlaceholder, getAwaiter As BoundExpression, awaiterInstancePlaceholder As BoundLValuePlaceholder, isCompleted As BoundExpression, getResult As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.AwaitOperator, syntax, type, hasErrors OrElse operand.NonNullAndHasErrors() OrElse awaitableInstancePlaceholder.NonNullAndHasErrors() OrElse getAwaiter.NonNullAndHasErrors() OrElse awaiterInstancePlaceholder.NonNullAndHasErrors() OrElse isCompleted.NonNullAndHasErrors() OrElse getResult.NonNullAndHasErrors())
       Debug.Assert(operand IsNot Nothing, $"Field '{NameOf(operand)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4954,7 +4318,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property operand As BoundExpression
     Public ReadOnly Property awaitableInstancePlaceholder As BoundRValuePlaceholder
@@ -4971,12 +4334,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundSpillSequence : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, locals As ImmutableArray(Of LocalSymbol), spillFields As ImmutableArray(Of FieldSymbol), statements As ImmutableArray(Of BoundStatement), valueOpt As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.SpillSequence, syntax, type, hasErrors OrElse statements.NonNullAndHasErrors() OrElse valueOpt.NonNullAndHasErrors())
       Debug.Assert(Not locals.IsDefault, $"Field '{NameOf(locals)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -4989,7 +4349,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property locals As ImmutableArray(Of LocalSymbol)
     Public ReadOnly Property spillFields As ImmutableArray(Of FieldSymbol)
@@ -5004,46 +4363,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundStopStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(BoundKind.StopStatement, syntax, hasErrors)
-
     End Sub
     Public Sub New(syntax As SyntaxNode)
       MyBase.New(BoundKind.StopStatement, syntax)
-
     End Sub
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
       Return visitor.VisitStopStatement(Me)
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundEndStatement : Inherits BoundStatement
-
     Public Sub New(syntax As SyntaxNode, hasErrors As Boolean)
       MyBase.New(BoundKind.EndStatement, syntax, hasErrors)
-
     End Sub
     Public Sub New(syntax As SyntaxNode)
       MyBase.New(BoundKind.EndStatement, syntax)
-
     End Sub
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
       Return visitor.VisitEndStatement(Me)
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundMidResult : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, original As BoundExpression, start As BoundExpression, lengthOpt As BoundExpression, source As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.MidResult, syntax, type, hasErrors OrElse original.NonNullAndHasErrors() OrElse start.NonNullAndHasErrors() OrElse lengthOpt.NonNullAndHasErrors() OrElse source.NonNullAndHasErrors())
       Debug.Assert(original IsNot Nothing, $"Field '{NameOf(original)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5057,7 +4403,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property original As BoundExpression
     Public ReadOnly Property start As BoundExpression
@@ -5072,12 +4417,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundConditionalAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, receiver As BoundExpression, placeholder As BoundRValuePlaceholder, accessExpression As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ConditionalAccess, syntax, type, hasErrors OrElse receiver.NonNullAndHasErrors() OrElse placeholder.NonNullAndHasErrors() OrElse accessExpression.NonNullAndHasErrors())
       Debug.Assert(receiver IsNot Nothing, $"Field '{NameOf(receiver)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5099,12 +4441,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundConditionalAccessReceiverPlaceholder : Inherits BoundRValuePlaceholderBase
-
     Public Sub New(syntax As SyntaxNode, placeholderId As Integer, type As TypeSymbol, hasErrors As Boolean)
       MyBase.New(BoundKind.ConditionalAccessReceiverPlaceholder, syntax, type, hasErrors)
       Debug.Assert(type IsNot Nothing, $"Field '{NameOf(type)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5112,7 +4451,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public Sub New(syntax As SyntaxNode, placeholderId As Integer, type As TypeSymbol)
       MyBase.New(BoundKind.ConditionalAccessReceiverPlaceholder, syntax, type)
@@ -5130,12 +4468,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundLoweredConditionalAccess : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, receiverOrCondition As BoundExpression, captureReceiver As Boolean, placeholderId As Integer, whenNotNull As BoundExpression, whenNullOpt As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.LoweredConditionalAccess, syntax, type, hasErrors OrElse receiverOrCondition.NonNullAndHasErrors() OrElse whenNotNull.NonNullAndHasErrors() OrElse whenNullOpt.NonNullAndHasErrors())
       Debug.Assert(receiverOrCondition IsNot Nothing, $"Field '{NameOf(receiverOrCondition)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5149,7 +4484,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property receiverOrCondition As BoundExpression
     Public ReadOnly Property captureReceiver As Boolean
@@ -5165,12 +4499,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundComplexConditionalAccessReceiver : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, valueTypeReceiver As BoundExpression, referenceTypeReceiver As BoundExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.ComplexConditionalAccessReceiver, syntax, type, hasErrors OrElse valueTypeReceiver.NonNullAndHasErrors() OrElse referenceTypeReceiver.NonNullAndHasErrors())
       Debug.Assert(valueTypeReceiver IsNot Nothing, $"Field '{NameOf(valueTypeReceiver)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5181,7 +4512,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property valueTypeReceiver As BoundExpression
     Public ReadOnly Property referenceTypeReceiver As BoundExpression
@@ -5194,12 +4524,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundNameOfOperator : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, argument As BoundExpression, constantValueOpt As ConstantValue, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.NameOfOperator, syntax, type, hasErrors OrElse argument.NonNullAndHasErrors())
       Debug.Assert(argument IsNot Nothing, $"Field '{NameOf(argument)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5209,7 +4536,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property argument As BoundExpression
     Public Overrides ReadOnly Property constantValueOpt As ConstantValue
@@ -5222,12 +4548,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundTypeAsValueExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, expression As BoundTypeExpression, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.TypeAsValueExpression, syntax, type, hasErrors OrElse expression.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5236,7 +4559,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property expression As BoundTypeExpression
     Public Overrides Function Accept(visitor As BoundTreeVisitor) As BoundNode
@@ -5248,12 +4570,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundInterpolatedStringExpression : Inherits BoundExpression
-
     Public Sub New(syntax As SyntaxNode, contents As ImmutableArray(Of BoundNode), binder As Binder, type As TypeSymbol, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.InterpolatedStringExpression, syntax, type, hasErrors OrElse contents.NonNullAndHasErrors())
       Debug.Assert(Not contents.IsDefault, $"Field '{NameOf(contents)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5264,7 +4583,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Validate()
     End Sub
     Private Partial Sub Validate()
-
     End Sub
     Public ReadOnly Property contents As ImmutableArray(Of BoundNode)
     Public ReadOnly Property binder As Binder
@@ -5277,12 +4595,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
-
   Friend NotInheritable Partial Class BoundInterpolation : Inherits BoundNode
-
     Public Sub New(syntax As SyntaxNode, expression As BoundExpression, alignmentOpt As BoundExpression, formatStringOpt As BoundLiteral, Optional hasErrors As Boolean = False)
       MyBase.New(BoundKind.Interpolation, syntax, hasErrors OrElse expression.NonNullAndHasErrors() OrElse alignmentOpt.NonNullAndHasErrors() OrElse formatStringOpt.NonNullAndHasErrors())
       Debug.Assert(expression IsNot Nothing, $"Field '{NameOf(expression)}' cannot be null (use Null=""allow"" in BoundNodes.xml to remove this check)")
@@ -5302,18 +4617,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If Me.WasCompilerGenerated Then result.SetWasCompilerGenerated()
       Return result
     End Function
-
   End Class
 
 
-
-
   Friend MustInherit Partial Class BoundTreeVisitor(Of A,R)
-
     <MethodImpl(MethodImplOptions.NoInlining)>
     Friend Function VisitInternal(node As BoundNode, arg As A) As R
       Select Case node.Kind
-
         Case BoundKind.TypeArguments                                   : Return VisitTypeArguments(CType(node, BoundTypeArguments), arg)
         Case BoundKind.OmittedArgument                                 : Return VisitOmittedArgument(CType(node, BoundOmittedArgument), arg)
         Case BoundKind.LValueToRValueWrapper                           : Return VisitLValueToRValueWrapper(CType(node, BoundLValueToRValueWrapper), arg)
@@ -5492,1559 +4802,1171 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       End Select
       Return DefaultVisit(node, arg)
     End Function
-
   End Class
   Friend MustInherit Partial Class BoundTreeVisitor(Of A,R)
-
     Public Overridable Function VisitTypeArguments(node As BoundTypeArguments, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitOmittedArgument(node As BoundOmittedArgument, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLValueToRValueWrapper(node As BoundLValueToRValueWrapper, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitWithLValueExpressionPlaceholder(node As BoundWithLValueExpressionPlaceholder, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitWithRValueExpressionPlaceholder(node As BoundWithRValueExpressionPlaceholder, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRValuePlaceholder(node As BoundRValuePlaceholder, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLValuePlaceholder(node As BoundLValuePlaceholder, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitDup(node As BoundDup, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitBadExpression(node As BoundBadExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitBadStatement(node As BoundBadStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitParenthesized(node As BoundParenthesized, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitBadVariable(node As BoundBadVariable, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitArrayAccess(node As BoundArrayAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitArrayLength(node As BoundArrayLength, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitGetType(node As BoundGetType, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitFieldInfo(node As BoundFieldInfo, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMethodInfo(node As BoundMethodInfo, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTypeExpression(node As BoundTypeExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTypeOrValueExpression(node As BoundTypeOrValueExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitNamespaceExpression(node As BoundNamespaceExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMethodDefIndex(node As BoundMethodDefIndex, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMaximumMethodDefIndex(node As BoundMaximumMethodDefIndex, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitInstrumentationPayloadRoot(node As BoundInstrumentationPayloadRoot, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitModuleVersionId(node As BoundModuleVersionId, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitModuleVersionIdString(node As BoundModuleVersionIdString, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSourceDocumentIndex(node As BoundSourceDocumentIndex, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUnaryOperator(node As BoundUnaryOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUserDefinedUnaryOperator(node As BoundUserDefinedUnaryOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitNullableIsTrueOperator(node As BoundNullableIsTrueOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitBinaryOperator(node As BoundBinaryOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUserDefinedBinaryOperator(node As BoundUserDefinedBinaryOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUserDefinedShortCircuitingOperator(node As BoundUserDefinedShortCircuitingOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitCompoundAssignmentTargetPlaceholder(node As BoundCompoundAssignmentTargetPlaceholder, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAssignmentOperator(node As BoundAssignmentOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitReferenceAssignment(node As BoundReferenceAssignment, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAddressOfOperator(node As BoundAddressOfOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTernaryConditionalExpression(node As BoundTernaryConditionalExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitBinaryConditionalExpression(node As BoundBinaryConditionalExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitConversion(node As BoundConversion, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRelaxationLambda(node As BoundRelaxationLambda, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitConvertedTupleElements(node As BoundConvertedTupleElements, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUserDefinedConversion(node As BoundUserDefinedConversion, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitDirectCast(node As BoundDirectCast, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTryCast(node As BoundTryCast, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTypeOf(node As BoundTypeOf, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSequencePoint(node As BoundSequencePoint, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSequencePointExpression(node As BoundSequencePointExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSequencePointWithSpan(node As BoundSequencePointWithSpan, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitNoOpStatement(node As BoundNoOpStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMethodGroup(node As BoundMethodGroup, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitPropertyGroup(node As BoundPropertyGroup, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitReturnStatement(node As BoundReturnStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitYieldStatement(node As BoundYieldStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitThrowStatement(node As BoundThrowStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRedimStatement(node As BoundRedimStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRedimClause(node As BoundRedimClause, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitEraseStatement(node As BoundEraseStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitCall(node As BoundCall, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAttribute(node As BoundAttribute, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLateMemberAccess(node As BoundLateMemberAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLateInvocation(node As BoundLateInvocation, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLateAddressOfOperator(node As BoundLateAddressOfOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTupleLiteral(node As BoundTupleLiteral, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitConvertedTupleLiteral(node As BoundConvertedTupleLiteral, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitObjectCreationExpression(node As BoundObjectCreationExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitNoPiaObjectCreationExpression(node As BoundNoPiaObjectCreationExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAnonymousTypeCreationExpression(node As BoundAnonymousTypeCreationExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAnonymousTypePropertyAccess(node As BoundAnonymousTypePropertyAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAnonymousTypeFieldInitializer(node As BoundAnonymousTypeFieldInitializer, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitObjectInitializerExpression(node As BoundObjectInitializerExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitCollectionInitializerExpression(node As BoundCollectionInitializerExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitNewT(node As BoundNewT, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitDelegateCreationExpression(node As BoundDelegateCreationExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitArrayCreation(node As BoundArrayCreation, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitArrayLiteral(node As BoundArrayLiteral, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitArrayInitialization(node As BoundArrayInitialization, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitFieldAccess(node As BoundFieldAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitPropertyAccess(node As BoundPropertyAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitEventAccess(node As BoundEventAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitBlock(node As BoundBlock, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitStateMachineScope(node As BoundStateMachineScope, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLocalDeclaration(node As BoundLocalDeclaration, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAsNewLocalDeclarations(node As BoundAsNewLocalDeclarations, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitDimStatement(node As BoundDimStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitInitializer(node As BoundInitializer, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitFieldInitializer(node As BoundFieldInitializer, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitPropertyInitializer(node As BoundPropertyInitializer, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitParameterEqualsValue(node As BoundParameterEqualsValue, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitGlobalStatementInitializer(node As BoundGlobalStatementInitializer, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSequence(node As BoundSequence, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitExpressionStatement(node As BoundExpressionStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitIfStatement(node As BoundIfStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSelectStatement(node As BoundSelectStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitCaseBlock(node As BoundCaseBlock, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitCaseStatement(node As BoundCaseStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSimpleCaseClause(node As BoundSimpleCaseClause, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRangeCaseClause(node As BoundRangeCaseClause, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRelationalCaseClause(node As BoundRelationalCaseClause, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitDoLoopStatement(node As BoundDoLoopStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitWhileStatement(node As BoundWhileStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitForToUserDefinedOperators(node As BoundForToUserDefinedOperators, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitForToStatement(node As BoundForToStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitForEachStatement(node As BoundForEachStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitExitStatement(node As BoundExitStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitContinueStatement(node As BoundContinueStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTryStatement(node As BoundTryStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitCatchBlock(node As BoundCatchBlock, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLiteral(node As BoundLiteral, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMeReference(node As BoundMeReference, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitValueTypeMeReference(node As BoundValueTypeMeReference, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMyBaseReference(node As BoundMyBaseReference, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMyClassReference(node As BoundMyClassReference, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitPreviousSubmissionReference(node As BoundPreviousSubmissionReference, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitHostObjectMemberReference(node As BoundHostObjectMemberReference, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLocal(node As BoundLocal, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitPseudoVariable(node As BoundPseudoVariable, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitParameter(node As BoundParameter, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitByRefArgumentPlaceholder(node As BoundByRefArgumentPlaceholder, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitByRefArgumentWithCopyBack(node As BoundByRefArgumentWithCopyBack, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLateBoundArgumentSupportingAssignmentWithCapture(node As BoundLateBoundArgumentSupportingAssignmentWithCapture, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLabelStatement(node As BoundLabelStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLabel(node As BoundLabel, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitGotoStatement(node As BoundGotoStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitStatementList(node As BoundStatementList, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitConditionalGoto(node As BoundConditionalGoto, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitWithStatement(node As BoundWithStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUnboundLambda(node As UnboundLambda, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLambda(node As BoundLambda, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitQueryExpression(node As BoundQueryExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitQuerySource(node As BoundQuerySource, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitToQueryableCollectionConversion(node As BoundToQueryableCollectionConversion, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitQueryableSource(node As BoundQueryableSource, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitQueryClause(node As BoundQueryClause, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitOrdering(node As BoundOrdering, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitQueryLambda(node As BoundQueryLambda, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRangeVariableAssignment(node As BoundRangeVariableAssignment, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitGroupTypeInferenceLambda(node As GroupTypeInferenceLambda, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAggregateClause(node As BoundAggregateClause, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitGroupAggregation(node As BoundGroupAggregation, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRangeVariable(node As BoundRangeVariable, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAddHandlerStatement(node As BoundAddHandlerStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRemoveHandlerStatement(node As BoundRemoveHandlerStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitRaiseEventStatement(node As BoundRaiseEventStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUsingStatement(node As BoundUsingStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSyncLockStatement(node As BoundSyncLockStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlName(node As BoundXmlName, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlNamespace(node As BoundXmlNamespace, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlDocument(node As BoundXmlDocument, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlDeclaration(node As BoundXmlDeclaration, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlProcessingInstruction(node As BoundXmlProcessingInstruction, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlComment(node As BoundXmlComment, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlAttribute(node As BoundXmlAttribute, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlElement(node As BoundXmlElement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlMemberAccess(node As BoundXmlMemberAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlEmbeddedExpression(node As BoundXmlEmbeddedExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitXmlCData(node As BoundXmlCData, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitResumeStatement(node As BoundResumeStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitOnErrorStatement(node As BoundOnErrorStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionHandlingStatement(node As BoundUnstructuredExceptionHandlingStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionHandlingCatchFilter(node As BoundUnstructuredExceptionHandlingCatchFilter, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionOnErrorSwitch(node As BoundUnstructuredExceptionOnErrorSwitch, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionResumeSwitch(node As BoundUnstructuredExceptionResumeSwitch, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitAwaitOperator(node As BoundAwaitOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitSpillSequence(node As BoundSpillSequence, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitStopStatement(node As BoundStopStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitEndStatement(node As BoundEndStatement, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitMidResult(node As BoundMidResult, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitConditionalAccess(node As BoundConditionalAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitConditionalAccessReceiverPlaceholder(node As BoundConditionalAccessReceiverPlaceholder, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitLoweredConditionalAccess(node As BoundLoweredConditionalAccess, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitComplexConditionalAccessReceiver(node As BoundComplexConditionalAccessReceiver, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitNameOfOperator(node As BoundNameOfOperator, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitTypeAsValueExpression(node As BoundTypeAsValueExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitInterpolatedStringExpression(node As BoundInterpolatedStringExpression, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
     Public Overridable Function VisitInterpolation(node As BoundInterpolation, arg As A) As R
       Return Me.DefaultVisit(node,arg)
-
     End Function
-
   End Class
   Friend MustInherit Partial Class BoundTreeVisitor
-
     Public Overridable Function VisitTypeArguments(node As BoundTypeArguments) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitOmittedArgument(node As BoundOmittedArgument) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLValueToRValueWrapper(node As BoundLValueToRValueWrapper) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitWithLValueExpressionPlaceholder(node As BoundWithLValueExpressionPlaceholder) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitWithRValueExpressionPlaceholder(node As BoundWithRValueExpressionPlaceholder) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRValuePlaceholder(node As BoundRValuePlaceholder) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLValuePlaceholder(node As BoundLValuePlaceholder) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitDup(node As BoundDup) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitBadExpression(node As BoundBadExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitBadStatement(node As BoundBadStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitParenthesized(node As BoundParenthesized) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitBadVariable(node As BoundBadVariable) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitArrayAccess(node As BoundArrayAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitArrayLength(node As BoundArrayLength) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitGetType(node As BoundGetType) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitFieldInfo(node As BoundFieldInfo) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMethodInfo(node As BoundMethodInfo) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTypeExpression(node As BoundTypeExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTypeOrValueExpression(node As BoundTypeOrValueExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitNamespaceExpression(node As BoundNamespaceExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMethodDefIndex(node As BoundMethodDefIndex) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMaximumMethodDefIndex(node As BoundMaximumMethodDefIndex) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitInstrumentationPayloadRoot(node As BoundInstrumentationPayloadRoot) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitModuleVersionId(node As BoundModuleVersionId) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitModuleVersionIdString(node As BoundModuleVersionIdString) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSourceDocumentIndex(node As BoundSourceDocumentIndex) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUnaryOperator(node As BoundUnaryOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUserDefinedUnaryOperator(node As BoundUserDefinedUnaryOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitNullableIsTrueOperator(node As BoundNullableIsTrueOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitBinaryOperator(node As BoundBinaryOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUserDefinedBinaryOperator(node As BoundUserDefinedBinaryOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUserDefinedShortCircuitingOperator(node As BoundUserDefinedShortCircuitingOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitCompoundAssignmentTargetPlaceholder(node As BoundCompoundAssignmentTargetPlaceholder) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAssignmentOperator(node As BoundAssignmentOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitReferenceAssignment(node As BoundReferenceAssignment) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAddressOfOperator(node As BoundAddressOfOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTernaryConditionalExpression(node As BoundTernaryConditionalExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitBinaryConditionalExpression(node As BoundBinaryConditionalExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitConversion(node As BoundConversion) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRelaxationLambda(node As BoundRelaxationLambda) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitConvertedTupleElements(node As BoundConvertedTupleElements) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUserDefinedConversion(node As BoundUserDefinedConversion) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitDirectCast(node As BoundDirectCast) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTryCast(node As BoundTryCast) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTypeOf(node As BoundTypeOf) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSequencePoint(node As BoundSequencePoint) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSequencePointExpression(node As BoundSequencePointExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSequencePointWithSpan(node As BoundSequencePointWithSpan) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitNoOpStatement(node As BoundNoOpStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMethodGroup(node As BoundMethodGroup) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitPropertyGroup(node As BoundPropertyGroup) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitReturnStatement(node As BoundReturnStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitYieldStatement(node As BoundYieldStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitThrowStatement(node As BoundThrowStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRedimStatement(node As BoundRedimStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRedimClause(node As BoundRedimClause) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitEraseStatement(node As BoundEraseStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitCall(node As BoundCall) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAttribute(node As BoundAttribute) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLateMemberAccess(node As BoundLateMemberAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLateInvocation(node As BoundLateInvocation) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLateAddressOfOperator(node As BoundLateAddressOfOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTupleLiteral(node As BoundTupleLiteral) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitConvertedTupleLiteral(node As BoundConvertedTupleLiteral) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitObjectCreationExpression(node As BoundObjectCreationExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitNoPiaObjectCreationExpression(node As BoundNoPiaObjectCreationExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAnonymousTypeCreationExpression(node As BoundAnonymousTypeCreationExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAnonymousTypePropertyAccess(node As BoundAnonymousTypePropertyAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAnonymousTypeFieldInitializer(node As BoundAnonymousTypeFieldInitializer) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitObjectInitializerExpression(node As BoundObjectInitializerExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitCollectionInitializerExpression(node As BoundCollectionInitializerExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitNewT(node As BoundNewT) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitDelegateCreationExpression(node As BoundDelegateCreationExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitArrayCreation(node As BoundArrayCreation) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitArrayLiteral(node As BoundArrayLiteral) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitArrayInitialization(node As BoundArrayInitialization) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitFieldAccess(node As BoundFieldAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitPropertyAccess(node As BoundPropertyAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitEventAccess(node As BoundEventAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitBlock(node As BoundBlock) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitStateMachineScope(node As BoundStateMachineScope) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLocalDeclaration(node As BoundLocalDeclaration) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAsNewLocalDeclarations(node As BoundAsNewLocalDeclarations) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitDimStatement(node As BoundDimStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitInitializer(node As BoundInitializer) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitFieldInitializer(node As BoundFieldInitializer) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitPropertyInitializer(node As BoundPropertyInitializer) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitParameterEqualsValue(node As BoundParameterEqualsValue) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitGlobalStatementInitializer(node As BoundGlobalStatementInitializer) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSequence(node As BoundSequence) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitExpressionStatement(node As BoundExpressionStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitIfStatement(node As BoundIfStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSelectStatement(node As BoundSelectStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitCaseBlock(node As BoundCaseBlock) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitCaseStatement(node As BoundCaseStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSimpleCaseClause(node As BoundSimpleCaseClause) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRangeCaseClause(node As BoundRangeCaseClause) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRelationalCaseClause(node As BoundRelationalCaseClause) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitDoLoopStatement(node As BoundDoLoopStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitWhileStatement(node As BoundWhileStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitForToUserDefinedOperators(node As BoundForToUserDefinedOperators) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitForToStatement(node As BoundForToStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitForEachStatement(node As BoundForEachStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitExitStatement(node As BoundExitStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitContinueStatement(node As BoundContinueStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTryStatement(node As BoundTryStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitCatchBlock(node As BoundCatchBlock) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLiteral(node As BoundLiteral) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMeReference(node As BoundMeReference) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitValueTypeMeReference(node As BoundValueTypeMeReference) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMyBaseReference(node As BoundMyBaseReference) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMyClassReference(node As BoundMyClassReference) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitPreviousSubmissionReference(node As BoundPreviousSubmissionReference) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitHostObjectMemberReference(node As BoundHostObjectMemberReference) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLocal(node As BoundLocal) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitPseudoVariable(node As BoundPseudoVariable) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitParameter(node As BoundParameter) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitByRefArgumentPlaceholder(node As BoundByRefArgumentPlaceholder) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitByRefArgumentWithCopyBack(node As BoundByRefArgumentWithCopyBack) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLateBoundArgumentSupportingAssignmentWithCapture(node As BoundLateBoundArgumentSupportingAssignmentWithCapture) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLabelStatement(node As BoundLabelStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLabel(node As BoundLabel) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitGotoStatement(node As BoundGotoStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitStatementList(node As BoundStatementList) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitConditionalGoto(node As BoundConditionalGoto) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitWithStatement(node As BoundWithStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUnboundLambda(node As UnboundLambda) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLambda(node As BoundLambda) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitQueryExpression(node As BoundQueryExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitQuerySource(node As BoundQuerySource) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitToQueryableCollectionConversion(node As BoundToQueryableCollectionConversion) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitQueryableSource(node As BoundQueryableSource) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitQueryClause(node As BoundQueryClause) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitOrdering(node As BoundOrdering) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitQueryLambda(node As BoundQueryLambda) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRangeVariableAssignment(node As BoundRangeVariableAssignment) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitGroupTypeInferenceLambda(node As GroupTypeInferenceLambda) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAggregateClause(node As BoundAggregateClause) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitGroupAggregation(node As BoundGroupAggregation) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRangeVariable(node As BoundRangeVariable) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAddHandlerStatement(node As BoundAddHandlerStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRemoveHandlerStatement(node As BoundRemoveHandlerStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitRaiseEventStatement(node As BoundRaiseEventStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUsingStatement(node As BoundUsingStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSyncLockStatement(node As BoundSyncLockStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlName(node As BoundXmlName) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlNamespace(node As BoundXmlNamespace) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlDocument(node As BoundXmlDocument) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlDeclaration(node As BoundXmlDeclaration) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlProcessingInstruction(node As BoundXmlProcessingInstruction) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlComment(node As BoundXmlComment) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlAttribute(node As BoundXmlAttribute) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlElement(node As BoundXmlElement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlMemberAccess(node As BoundXmlMemberAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlEmbeddedExpression(node As BoundXmlEmbeddedExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitXmlCData(node As BoundXmlCData) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitResumeStatement(node As BoundResumeStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitOnErrorStatement(node As BoundOnErrorStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionHandlingStatement(node As BoundUnstructuredExceptionHandlingStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionHandlingCatchFilter(node As BoundUnstructuredExceptionHandlingCatchFilter) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionOnErrorSwitch(node As BoundUnstructuredExceptionOnErrorSwitch) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitUnstructuredExceptionResumeSwitch(node As BoundUnstructuredExceptionResumeSwitch) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitAwaitOperator(node As BoundAwaitOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitSpillSequence(node As BoundSpillSequence) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitStopStatement(node As BoundStopStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitEndStatement(node As BoundEndStatement) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitMidResult(node As BoundMidResult) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitConditionalAccess(node As BoundConditionalAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitConditionalAccessReceiverPlaceholder(node As BoundConditionalAccessReceiverPlaceholder) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitLoweredConditionalAccess(node As BoundLoweredConditionalAccess) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitComplexConditionalAccessReceiver(node As BoundComplexConditionalAccessReceiver) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitNameOfOperator(node As BoundNameOfOperator) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitTypeAsValueExpression(node As BoundTypeAsValueExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitInterpolatedStringExpression(node As BoundInterpolatedStringExpression) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
     Public Overridable Function VisitInterpolation(node As BoundInterpolation) As BoundNode
       Return Me.DefaultVisit(node)
-
     End Function
-
   End Class
 
-
   Friend MustInherit Partial Class BoundTreeWalker : Inherits BoundTreeVisitor
-
     Public Overrides Function VisitTypeArguments(node As BoundTypeArguments) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitOmittedArgument(node As BoundOmittedArgument) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitLValueToRValueWrapper(node As BoundLValueToRValueWrapper) As BoundNode
       Me.Visit(node.UnderlyingLValue)
       Return Nothing
-
     End Function
     Public Overrides Function VisitWithLValueExpressionPlaceholder(node As BoundWithLValueExpressionPlaceholder) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitWithRValueExpressionPlaceholder(node As BoundWithRValueExpressionPlaceholder) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitRValuePlaceholder(node As BoundRValuePlaceholder) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitLValuePlaceholder(node As BoundLValuePlaceholder) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitDup(node As BoundDup) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitBadExpression(node As BoundBadExpression) As BoundNode
       Me.VisitList(node.ChildBoundNodes)
       Return Nothing
-
     End Function
     Public Overrides Function VisitBadStatement(node As BoundBadStatement) As BoundNode
       Me.VisitList(node.ChildBoundNodes)
       Return Nothing
-
     End Function
     Public Overrides Function VisitParenthesized(node As BoundParenthesized) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitBadVariable(node As BoundBadVariable) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitArrayAccess(node As BoundArrayAccess) As BoundNode
       Me.Visit(node.Expression)
       Me.VisitList(node.Indices)
       Return Nothing
-
     End Function
     Public Overrides Function VisitArrayLength(node As BoundArrayLength) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitGetType(node As BoundGetType) As BoundNode
       Me.Visit(node.SourceType)
       Return Nothing
-
     End Function
     Public Overrides Function VisitFieldInfo(node As BoundFieldInfo) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitMethodInfo(node As BoundMethodInfo) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitTypeExpression(node As BoundTypeExpression) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitTypeOrValueExpression(node As BoundTypeOrValueExpression) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitNamespaceExpression(node As BoundNamespaceExpression) As BoundNode
       Me.Visit(node.UnevaluatedReceiverOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitMethodDefIndex(node As BoundMethodDefIndex) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitMaximumMethodDefIndex(node As BoundMaximumMethodDefIndex) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitInstrumentationPayloadRoot(node As BoundInstrumentationPayloadRoot) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitModuleVersionId(node As BoundModuleVersionId) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitModuleVersionIdString(node As BoundModuleVersionIdString) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitSourceDocumentIndex(node As BoundSourceDocumentIndex) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitUnaryOperator(node As BoundUnaryOperator) As BoundNode
       Me.Visit(node.Operand)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUserDefinedUnaryOperator(node As BoundUserDefinedUnaryOperator) As BoundNode
       Me.Visit(node.UnderlyingExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitNullableIsTrueOperator(node As BoundNullableIsTrueOperator) As BoundNode
       Me.Visit(node.Operand)
       Return Nothing
-
     End Function
     Public Overrides Function VisitBinaryOperator(node As BoundBinaryOperator) As BoundNode
       Me.Visit(node.Left)
       Me.Visit(node.Right)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUserDefinedBinaryOperator(node As BoundUserDefinedBinaryOperator) As BoundNode
       Me.Visit(node.UnderlyingExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUserDefinedShortCircuitingOperator(node As BoundUserDefinedShortCircuitingOperator) As BoundNode
       Me.Visit(node.LeftOperand)
@@ -7052,362 +5974,297 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.LeftTest)
       Me.Visit(node.BitwiseOperator)
       Return Nothing
-
     End Function
     Public Overrides Function VisitCompoundAssignmentTargetPlaceholder(node As BoundCompoundAssignmentTargetPlaceholder) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitAssignmentOperator(node As BoundAssignmentOperator) As BoundNode
       Me.Visit(node.Left)
       Me.Visit(node.LeftOnTheRightOpt)
       Me.Visit(node.Right)
       Return Nothing
-
     End Function
     Public Overrides Function VisitReferenceAssignment(node As BoundReferenceAssignment) As BoundNode
       Me.Visit(node.ByRefLocal)
       Me.Visit(node.LValue)
       Return Nothing
-
     End Function
     Public Overrides Function VisitAddressOfOperator(node As BoundAddressOfOperator) As BoundNode
       Me.Visit(node.MethodGroup)
       Return Nothing
-
     End Function
     Public Overrides Function VisitTernaryConditionalExpression(node As BoundTernaryConditionalExpression) As BoundNode
       Me.Visit(node.Condition)
       Me.Visit(node.WhenTrue)
       Me.Visit(node.WhenFalse)
       Return Nothing
-
     End Function
     Public Overrides Function VisitBinaryConditionalExpression(node As BoundBinaryConditionalExpression) As BoundNode
       Me.Visit(node.TestExpression)
       Me.Visit(node.ElseExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitConversion(node As BoundConversion) As BoundNode
       Me.Visit(node.Operand)
       Me.Visit(node.ExtendedInfoOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRelaxationLambda(node As BoundRelaxationLambda) As BoundNode
       Me.Visit(node.Lambda)
       Me.Visit(node.ReceiverPlaceholderOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitConvertedTupleElements(node As BoundConvertedTupleElements) As BoundNode
       Me.VisitList(node.ElementPlaceholders)
       Me.VisitList(node.ConvertedElements)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUserDefinedConversion(node As BoundUserDefinedConversion) As BoundNode
       Me.Visit(node.UnderlyingExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitDirectCast(node As BoundDirectCast) As BoundNode
       Me.Visit(node.Operand)
       Me.Visit(node.RelaxationLambdaOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitTryCast(node As BoundTryCast) As BoundNode
       Me.Visit(node.Operand)
       Me.Visit(node.RelaxationLambdaOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitTypeOf(node As BoundTypeOf) As BoundNode
       Me.Visit(node.Operand)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSequencePoint(node As BoundSequencePoint) As BoundNode
       Me.Visit(node.StatementOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSequencePointExpression(node As BoundSequencePointExpression) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSequencePointWithSpan(node As BoundSequencePointWithSpan) As BoundNode
       Me.Visit(node.StatementOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitNoOpStatement(node As BoundNoOpStatement) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitMethodGroup(node As BoundMethodGroup) As BoundNode
       Me.Visit(node.TypeArgumentsOpt)
       Me.Visit(node.ReceiverOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitPropertyGroup(node As BoundPropertyGroup) As BoundNode
       Me.Visit(node.ReceiverOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitReturnStatement(node As BoundReturnStatement) As BoundNode
       Me.Visit(node.ExpressionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitYieldStatement(node As BoundYieldStatement) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitThrowStatement(node As BoundThrowStatement) As BoundNode
       Me.Visit(node.ExpressionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRedimStatement(node As BoundRedimStatement) As BoundNode
       Me.VisitList(node.Clauses)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRedimClause(node As BoundRedimClause) As BoundNode
       Me.Visit(node.Operand)
       Me.VisitList(node.Indices)
       Return Nothing
-
     End Function
     Public Overrides Function VisitEraseStatement(node As BoundEraseStatement) As BoundNode
       Me.VisitList(node.Clauses)
       Return Nothing
-
     End Function
     Public Overrides Function VisitCall(node As BoundCall) As BoundNode
       Me.Visit(node.ReceiverOpt)
       Me.VisitList(node.Arguments)
       Return Nothing
-
     End Function
     Public Overrides Function VisitAttribute(node As BoundAttribute) As BoundNode
       Me.VisitList(node.ConstructorArguments)
       Me.VisitList(node.NamedArguments)
       Return Nothing
-
     End Function
     Public Overrides Function VisitLateMemberAccess(node As BoundLateMemberAccess) As BoundNode
       Me.Visit(node.ReceiverOpt)
       Me.Visit(node.TypeArgumentsOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitLateInvocation(node As BoundLateInvocation) As BoundNode
       Me.Visit(node.Member)
       Me.VisitList(node.ArgumentsOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitLateAddressOfOperator(node As BoundLateAddressOfOperator) As BoundNode
       Me.Visit(node.MemberAccess)
       Return Nothing
-
     End Function
     Public Overrides Function VisitTupleLiteral(node As BoundTupleLiteral) As BoundNode
       Me.VisitList(node.Arguments)
       Return Nothing
-
     End Function
     Public Overrides Function VisitConvertedTupleLiteral(node As BoundConvertedTupleLiteral) As BoundNode
       Me.VisitList(node.Arguments)
       Return Nothing
-
     End Function
     Public Overrides Function VisitObjectCreationExpression(node As BoundObjectCreationExpression) As BoundNode
       Me.VisitList(node.Arguments)
       Me.Visit(node.InitializerOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitNoPiaObjectCreationExpression(node As BoundNoPiaObjectCreationExpression) As BoundNode
       Me.Visit(node.InitializerOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitAnonymousTypeCreationExpression(node As BoundAnonymousTypeCreationExpression) As BoundNode
       Me.VisitList(node.Declarations)
       Me.VisitList(node.Arguments)
       Return Nothing
-
     End Function
     Public Overrides Function VisitAnonymousTypePropertyAccess(node As BoundAnonymousTypePropertyAccess) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitAnonymousTypeFieldInitializer(node As BoundAnonymousTypeFieldInitializer) As BoundNode
       Me.Visit(node.Value)
       Return Nothing
-
     End Function
     Public Overrides Function VisitObjectInitializerExpression(node As BoundObjectInitializerExpression) As BoundNode
       Me.Visit(node.PlaceholderOpt)
       Me.VisitList(node.Initializers)
       Return Nothing
-
     End Function
     Public Overrides Function VisitCollectionInitializerExpression(node As BoundCollectionInitializerExpression) As BoundNode
       Me.Visit(node.PlaceholderOpt)
       Me.VisitList(node.Initializers)
       Return Nothing
-
     End Function
     Public Overrides Function VisitNewT(node As BoundNewT) As BoundNode
       Me.Visit(node.InitializerOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitDelegateCreationExpression(node As BoundDelegateCreationExpression) As BoundNode
       Me.Visit(node.ReceiverOpt)
       Me.Visit(node.RelaxationLambdaOpt)
       Me.Visit(node.RelaxationReceiverPlaceholderOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitArrayCreation(node As BoundArrayCreation) As BoundNode
       Me.VisitList(node.Bounds)
       Me.Visit(node.InitializerOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitArrayLiteral(node As BoundArrayLiteral) As BoundNode
       Me.VisitList(node.Bounds)
       Me.Visit(node.Initializer)
       Return Nothing
-
     End Function
     Public Overrides Function VisitArrayInitialization(node As BoundArrayInitialization) As BoundNode
       Me.VisitList(node.Initializers)
       Return Nothing
-
     End Function
     Public Overrides Function VisitFieldAccess(node As BoundFieldAccess) As BoundNode
       Me.Visit(node.ReceiverOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitPropertyAccess(node As BoundPropertyAccess) As BoundNode
       Me.Visit(node.ReceiverOpt)
       Me.VisitList(node.Arguments)
       Return Nothing
-
     End Function
     Public Overrides Function VisitEventAccess(node As BoundEventAccess) As BoundNode
       Me.Visit(node.ReceiverOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitBlock(node As BoundBlock) As BoundNode
       Me.VisitList(node.Statements)
       Return Nothing
-
     End Function
     Public Overrides Function VisitStateMachineScope(node As BoundStateMachineScope) As BoundNode
       Me.Visit(node.Statement)
       Return Nothing
-
     End Function
     Public Overrides Function VisitLocalDeclaration(node As BoundLocalDeclaration) As BoundNode
       Me.Visit(node.DeclarationInitializerOpt)
       Me.Visit(node.IdentifierInitializerOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitAsNewLocalDeclarations(node As BoundAsNewLocalDeclarations) As BoundNode
       Me.VisitList(node.LocalDeclarations)
       Me.Visit(node.Initializer)
       Return Nothing
-
     End Function
     Public Overrides Function VisitDimStatement(node As BoundDimStatement) As BoundNode
       Me.VisitList(node.LocalDeclarations)
       Me.Visit(node.InitializerOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitInitializer(node As BoundInitializer) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitFieldInitializer(node As BoundFieldInitializer) As BoundNode
       Me.Visit(node.MemberAccessExpressionOpt)
       Me.Visit(node.InitialValue)
       Return Nothing
-
     End Function
     Public Overrides Function VisitPropertyInitializer(node As BoundPropertyInitializer) As BoundNode
       Me.Visit(node.MemberAccessExpressionOpt)
       Me.Visit(node.InitialValue)
       Return Nothing
-
     End Function
     Public Overrides Function VisitParameterEqualsValue(node As BoundParameterEqualsValue) As BoundNode
       Me.Visit(node.Value)
       Return Nothing
-
     End Function
     Public Overrides Function VisitGlobalStatementInitializer(node As BoundGlobalStatementInitializer) As BoundNode
       Me.Visit(node.Statement)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSequence(node As BoundSequence) As BoundNode
       Me.VisitList(node.SideEffects)
       Me.Visit(node.ValueOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitExpressionStatement(node As BoundExpressionStatement) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitIfStatement(node As BoundIfStatement) As BoundNode
       Me.Visit(node.Condition)
       Me.Visit(node.Consequence)
       Me.Visit(node.AlternativeOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSelectStatement(node As BoundSelectStatement) As BoundNode
       Me.Visit(node.ExpressionStatement)
       Me.Visit(node.ExprPlaceholderOpt)
       Me.VisitList(node.CaseBlocks)
       Return Nothing
-
     End Function
     Public Overrides Function VisitCaseBlock(node As BoundCaseBlock) As BoundNode
       Me.Visit(node.CaseStatement)
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitCaseStatement(node As BoundCaseStatement) As BoundNode
       Me.VisitList(node.CaseClauses)
       Me.Visit(node.ConditionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSimpleCaseClause(node As BoundSimpleCaseClause) As BoundNode
       Me.Visit(node.ValueOpt)
       Me.Visit(node.ConditionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRangeCaseClause(node As BoundRangeCaseClause) As BoundNode
       Me.Visit(node.LowerBoundOpt)
@@ -7415,26 +6272,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.LowerBoundConditionOpt)
       Me.Visit(node.UpperBoundConditionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRelationalCaseClause(node As BoundRelationalCaseClause) As BoundNode
       Me.Visit(node.ValueOpt)
       Me.Visit(node.ConditionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitDoLoopStatement(node As BoundDoLoopStatement) As BoundNode
       Me.Visit(node.TopConditionOpt)
       Me.Visit(node.BottomConditionOpt)
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitWhileStatement(node As BoundWhileStatement) As BoundNode
       Me.Visit(node.Condition)
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitForToUserDefinedOperators(node As BoundForToUserDefinedOperators) As BoundNode
       Me.Visit(node.LeftOperandPlaceholder)
@@ -7444,7 +6297,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.LessThanOrEqual)
       Me.Visit(node.GreaterThanOrEqual)
       Return Nothing
-
     End Function
     Public Overrides Function VisitForToStatement(node As BoundForToStatement) As BoundNode
       Me.Visit(node.InitialValue)
@@ -7455,7 +6307,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.Body)
       Me.VisitList(node.NextVariablesOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitForEachStatement(node As BoundForEachStatement) As BoundNode
       Me.Visit(node.Collection)
@@ -7463,22 +6314,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.Body)
       Me.VisitList(node.NextVariablesOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitExitStatement(node As BoundExitStatement) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitContinueStatement(node As BoundContinueStatement) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitTryStatement(node As BoundTryStatement) As BoundNode
       Me.Visit(node.TryBlock)
       Me.VisitList(node.CatchBlocks)
       Me.Visit(node.FinallyBlockOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitCatchBlock(node As BoundCatchBlock) As BoundNode
       Me.Visit(node.ExceptionSourceOpt)
@@ -7486,51 +6333,39 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.ExceptionFilterOpt)
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitLiteral(node As BoundLiteral) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitMeReference(node As BoundMeReference) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitValueTypeMeReference(node As BoundValueTypeMeReference) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitMyBaseReference(node As BoundMyBaseReference) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitMyClassReference(node As BoundMyClassReference) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitPreviousSubmissionReference(node As BoundPreviousSubmissionReference) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitHostObjectMemberReference(node As BoundHostObjectMemberReference) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitLocal(node As BoundLocal) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitPseudoVariable(node As BoundPseudoVariable) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitParameter(node As BoundParameter) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitByRefArgumentPlaceholder(node As BoundByRefArgumentPlaceholder) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitByRefArgumentWithCopyBack(node As BoundByRefArgumentWithCopyBack) As BoundNode
       Me.Visit(node.OriginalArgument)
@@ -7539,229 +6374,186 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.OutConversion)
       Me.Visit(node.OutPlaceholder)
       Return Nothing
-
     End Function
     Public Overrides Function VisitLateBoundArgumentSupportingAssignmentWithCapture(node As BoundLateBoundArgumentSupportingAssignmentWithCapture) As BoundNode
       Me.Visit(node.OriginalArgument)
       Return Nothing
-
     End Function
     Public Overrides Function VisitLabelStatement(node As BoundLabelStatement) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitLabel(node As BoundLabel) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitGotoStatement(node As BoundGotoStatement) As BoundNode
       Me.Visit(node.LabelExpressionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitStatementList(node As BoundStatementList) As BoundNode
       Me.VisitList(node.Statements)
       Return Nothing
-
     End Function
     Public Overrides Function VisitConditionalGoto(node As BoundConditionalGoto) As BoundNode
       Me.Visit(node.Condition)
       Return Nothing
-
     End Function
     Public Overrides Function VisitWithStatement(node As BoundWithStatement) As BoundNode
       Me.Visit(node.OriginalExpression)
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUnboundLambda(node As UnboundLambda) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitLambda(node As BoundLambda) As BoundNode
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitQueryExpression(node As BoundQueryExpression) As BoundNode
       Me.Visit(node.LastOperator)
       Return Nothing
-
     End Function
     Public Overrides Function VisitQuerySource(node As BoundQuerySource) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitToQueryableCollectionConversion(node As BoundToQueryableCollectionConversion) As BoundNode
       Me.Visit(node.ConversionCall)
       Return Nothing
-
     End Function
     Public Overrides Function VisitQueryableSource(node As BoundQueryableSource) As BoundNode
       Me.Visit(node.Source)
       Return Nothing
-
     End Function
     Public Overrides Function VisitQueryClause(node As BoundQueryClause) As BoundNode
       Me.Visit(node.UnderlyingExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitOrdering(node As BoundOrdering) As BoundNode
       Me.Visit(node.UnderlyingExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitQueryLambda(node As BoundQueryLambda) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRangeVariableAssignment(node As BoundRangeVariableAssignment) As BoundNode
       Me.Visit(node.Value)
       Return Nothing
-
     End Function
     Public Overrides Function VisitGroupTypeInferenceLambda(node As GroupTypeInferenceLambda) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitAggregateClause(node As BoundAggregateClause) As BoundNode
       Me.Visit(node.CapturedGroupOpt)
       Me.Visit(node.GroupPlaceholderOpt)
       Me.Visit(node.UnderlyingExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitGroupAggregation(node As BoundGroupAggregation) As BoundNode
       Me.Visit(node.Group)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRangeVariable(node As BoundRangeVariable) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitAddHandlerStatement(node As BoundAddHandlerStatement) As BoundNode
       Me.Visit(node.EventAccess)
       Me.Visit(node.Handler)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRemoveHandlerStatement(node As BoundRemoveHandlerStatement) As BoundNode
       Me.Visit(node.EventAccess)
       Me.Visit(node.Handler)
       Return Nothing
-
     End Function
     Public Overrides Function VisitRaiseEventStatement(node As BoundRaiseEventStatement) As BoundNode
       Me.Visit(node.EventInvocation)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUsingStatement(node As BoundUsingStatement) As BoundNode
       Me.VisitList(node.ResourceList)
       Me.Visit(node.ResourceExpressionOpt)
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSyncLockStatement(node As BoundSyncLockStatement) As BoundNode
       Me.Visit(node.LockExpression)
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlName(node As BoundXmlName) As BoundNode
       Me.Visit(node.XmlNamespace)
       Me.Visit(node.LocalName)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlNamespace(node As BoundXmlNamespace) As BoundNode
       Me.Visit(node.XmlNamespace)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlDocument(node As BoundXmlDocument) As BoundNode
       Me.Visit(node.Declaration)
       Me.VisitList(node.ChildNodes)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlDeclaration(node As BoundXmlDeclaration) As BoundNode
       Me.Visit(node.Version)
       Me.Visit(node.Encoding)
       Me.Visit(node.Standalone)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlProcessingInstruction(node As BoundXmlProcessingInstruction) As BoundNode
       Me.Visit(node.Target)
       Me.Visit(node.Data)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlComment(node As BoundXmlComment) As BoundNode
       Me.Visit(node.Value)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlAttribute(node As BoundXmlAttribute) As BoundNode
       Me.Visit(node.Name)
       Me.Visit(node.Value)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlElement(node As BoundXmlElement) As BoundNode
       Me.Visit(node.Argument)
       Me.VisitList(node.ChildNodes)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlMemberAccess(node As BoundXmlMemberAccess) As BoundNode
       Me.Visit(node.MemberAccess)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlEmbeddedExpression(node As BoundXmlEmbeddedExpression) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitXmlCData(node As BoundXmlCData) As BoundNode
       Me.Visit(node.Value)
       Return Nothing
-
     End Function
     Public Overrides Function VisitResumeStatement(node As BoundResumeStatement) As BoundNode
       Me.Visit(node.LabelExpressionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitOnErrorStatement(node As BoundOnErrorStatement) As BoundNode
       Me.Visit(node.LabelExpressionOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUnstructuredExceptionHandlingStatement(node As BoundUnstructuredExceptionHandlingStatement) As BoundNode
       Me.Visit(node.Body)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUnstructuredExceptionHandlingCatchFilter(node As BoundUnstructuredExceptionHandlingCatchFilter) As BoundNode
       Me.Visit(node.ActiveHandlerLocal)
       Me.Visit(node.ResumeTargetLocal)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUnstructuredExceptionOnErrorSwitch(node As BoundUnstructuredExceptionOnErrorSwitch) As BoundNode
       Me.Visit(node.Value)
       Me.VisitList(node.Jumps)
       Return Nothing
-
     End Function
     Public Overrides Function VisitUnstructuredExceptionResumeSwitch(node As BoundUnstructuredExceptionResumeSwitch) As BoundNode
       Me.Visit(node.ResumeTargetTemporary)
@@ -7769,7 +6561,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.ResumeNextLabel)
       Me.VisitList(node.Jumps)
       Return Nothing
-
     End Function
     Public Overrides Function VisitAwaitOperator(node As BoundAwaitOperator) As BoundNode
       Me.Visit(node.Operand)
@@ -7779,21 +6570,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.IsCompleted)
       Me.Visit(node.GetResult)
       Return Nothing
-
     End Function
     Public Overrides Function VisitSpillSequence(node As BoundSpillSequence) As BoundNode
       Me.VisitList(node.Statements)
       Me.Visit(node.ValueOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitStopStatement(node As BoundStopStatement) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitEndStatement(node As BoundEndStatement) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitMidResult(node As BoundMidResult) As BoundNode
       Me.Visit(node.Original)
@@ -7801,70 +6588,53 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Me.Visit(node.LengthOpt)
       Me.Visit(node.Source)
       Return Nothing
-
     End Function
     Public Overrides Function VisitConditionalAccess(node As BoundConditionalAccess) As BoundNode
       Me.Visit(node.Receiver)
       Me.Visit(node.Placeholder)
       Me.Visit(node.AccessExpression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitConditionalAccessReceiverPlaceholder(node As BoundConditionalAccessReceiverPlaceholder) As BoundNode
       Return Nothing
-
     End Function
     Public Overrides Function VisitLoweredConditionalAccess(node As BoundLoweredConditionalAccess) As BoundNode
       Me.Visit(node.ReceiverOrCondition)
       Me.Visit(node.WhenNotNull)
       Me.Visit(node.WhenNullOpt)
       Return Nothing
-
     End Function
     Public Overrides Function VisitComplexConditionalAccessReceiver(node As BoundComplexConditionalAccessReceiver) As BoundNode
       Me.Visit(node.ValueTypeReceiver)
       Me.Visit(node.ReferenceTypeReceiver)
       Return Nothing
-
     End Function
     Public Overrides Function VisitNameOfOperator(node As BoundNameOfOperator) As BoundNode
       Me.Visit(node.Argument)
       Return Nothing
-
     End Function
     Public Overrides Function VisitTypeAsValueExpression(node As BoundTypeAsValueExpression) As BoundNode
       Me.Visit(node.Expression)
       Return Nothing
-
     End Function
     Public Overrides Function VisitInterpolatedStringExpression(node As BoundInterpolatedStringExpression) As BoundNode
       Me.VisitList(node.Contents)
       Return Nothing
-
     End Function
     Public Overrides Function VisitInterpolation(node As BoundInterpolation) As BoundNode
       Me.Visit(node.Expression)
       Me.Visit(node.AlignmentOpt)
       Me.Visit(node.FormatStringOpt)
       Return Nothing
-
     End Function
-
   End Class
-
 
   Friend MustInherit Partial Class BoundTreeRewriter
-
-
   End Class
-
 
   Friend NotInheritable Class BoundTreeDumperNodeProducer : Inherits BoundTreeVisitor(Of Object, TreeDumperNode)
 
-
-
     Private Sub New()
-
     End Sub
     Public Shared Function MakeTree(node As BoundNode) As TreeDumperNode
       Return (New BoundTreeDumperNodeProducer()).Visit(node, Nothing)
@@ -7873,159 +6643,133 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Public Overrides Function VisitTypeArguments(node As BoundTypeArguments, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeArguments", Nothing, {
           New TreeDumperNode("arguments", node.Arguments, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitOmittedArgument(node As BoundOmittedArgument, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("omittedArgument", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLValueToRValueWrapper(node As BoundLValueToRValueWrapper, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lValueToRValueWrapper", Nothing, {
           New TreeDumperNode("underlyingLValue", Nothing, { Visit(node.UnderlyingLValue, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitWithLValueExpressionPlaceholder(node As BoundWithLValueExpressionPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("withLValueExpressionPlaceholder", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitWithRValueExpressionPlaceholder(node As BoundWithRValueExpressionPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("withRValueExpressionPlaceholder", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitRValuePlaceholder(node As BoundRValuePlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rValuePlaceholder", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLValuePlaceholder(node As BoundLValuePlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lValuePlaceholder", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitDup(node As BoundDup, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("dup", Nothing, {
           New TreeDumperNode("isReference", node.IsReference, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitBadExpression(node As BoundBadExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("badExpression", Nothing, {
           New TreeDumperNode("resultKind", node.ResultKind, Nothing),
           New TreeDumperNode("symbols", node.Symbols, Nothing),
           New TreeDumperNode("childBoundNodes", Nothing, From x In node.ChildBoundNodes Select Visit(x, Nothing)),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitBadStatement(node As BoundBadStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("badStatement", Nothing, {
-          New TreeDumperNode("childBoundNodes", Nothing, From x In node.ChildBoundNodes Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("childBoundNodes", Nothing, From x In node.ChildBoundNodes Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitParenthesized(node As BoundParenthesized, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("parenthesized", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitBadVariable(node As BoundBadVariable, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("badVariable", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitArrayAccess(node As BoundArrayAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayAccess", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("indices", Nothing, From x In node.Indices Select Visit(x, Nothing)),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitArrayLength(node As BoundArrayLength, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayLength", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitGetType(node As BoundGetType, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[getType]", Nothing, {
           New TreeDumperNode("sourceType", Nothing, { Visit(node.SourceType, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitFieldInfo(node As BoundFieldInfo, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("fieldInfo", Nothing, {
           New TreeDumperNode("field", node.Field, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitMethodInfo(node As BoundMethodInfo, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("methodInfo", Nothing, {
           New TreeDumperNode("method", node.Method, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitTypeExpression(node As BoundTypeExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeExpression", Nothing, {
           New TreeDumperNode("unevaluatedReceiverOpt", Nothing, { Visit(node.UnevaluatedReceiverOpt, Nothing) }),
           New TreeDumperNode("aliasOpt", node.AliasOpt, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitTypeOrValueExpression(node As BoundTypeOrValueExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeOrValueExpression", Nothing, {
           New TreeDumperNode("data", node.Data, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitNamespaceExpression(node As BoundNamespaceExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("namespaceExpression", Nothing, {
           New TreeDumperNode("unevaluatedReceiverOpt", Nothing, { Visit(node.UnevaluatedReceiverOpt, Nothing) }),
           New TreeDumperNode("aliasOpt", node.AliasOpt, Nothing),
           New TreeDumperNode("namespaceSymbol", node.NamespaceSymbol, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitMethodDefIndex(node As BoundMethodDefIndex, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("methodDefIndex", Nothing, {
           New TreeDumperNode("method", node.Method, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitMaximumMethodDefIndex(node As BoundMaximumMethodDefIndex, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("maximumMethodDefIndex", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitInstrumentationPayloadRoot(node As BoundInstrumentationPayloadRoot, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("instrumentationPayloadRoot", Nothing, {
           New TreeDumperNode("analysisKind", node.AnalysisKind, Nothing),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitModuleVersionId(node As BoundModuleVersionId, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("moduleVersionId", Nothing, {
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitModuleVersionIdString(node As BoundModuleVersionIdString, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("moduleVersionIdString", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitSourceDocumentIndex(node As BoundSourceDocumentIndex, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sourceDocumentIndex", Nothing, {
           New TreeDumperNode("document", node.Document, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitUnaryOperator(node As BoundUnaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unaryOperator", Nothing, {
@@ -8033,21 +6777,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("operand", Nothing, { Visit(node.Operand, Nothing) }),
           New TreeDumperNode("checked", node.Checked, Nothing),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitUserDefinedUnaryOperator(node As BoundUserDefinedUnaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedUnaryOperator", Nothing, {
           New TreeDumperNode("operatorKind", node.OperatorKind, Nothing),
           New TreeDumperNode("underlyingExpression", Nothing, { Visit(node.UnderlyingExpression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitNullableIsTrueOperator(node As BoundNullableIsTrueOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("nullableIsTrueOperator", Nothing, {
           New TreeDumperNode("operand", Nothing, { Visit(node.Operand, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitBinaryOperator(node As BoundBinaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("binaryOperator", Nothing, {
@@ -8056,16 +6797,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("right", Nothing, { Visit(node.Right, Nothing) }),
           New TreeDumperNode("checked", node.Checked, Nothing),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitUserDefinedBinaryOperator(node As BoundUserDefinedBinaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedBinaryOperator", Nothing, {
           New TreeDumperNode("operatorKind", node.OperatorKind, Nothing),
           New TreeDumperNode("underlyingExpression", Nothing, { Visit(node.UnderlyingExpression, Nothing) }),
           New TreeDumperNode("checked", node.Checked, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitUserDefinedShortCircuitingOperator(node As BoundUserDefinedShortCircuitingOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedShortCircuitingOperator", Nothing, {
@@ -8073,13 +6812,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("leftOperandPlaceholder", Nothing, { Visit(node.LeftOperandPlaceholder, Nothing) }),
           New TreeDumperNode("leftTest", Nothing, { Visit(node.LeftTest, Nothing) }),
           New TreeDumperNode("bitwiseOperator", Nothing, { Visit(node.BitwiseOperator, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitCompoundAssignmentTargetPlaceholder(node As BoundCompoundAssignmentTargetPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("compoundAssignmentTargetPlaceholder", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAssignmentOperator(node As BoundAssignmentOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("assignmentOperator", Nothing, {
@@ -8087,23 +6824,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("leftOnTheRightOpt", Nothing, { Visit(node.LeftOnTheRightOpt, Nothing) }),
           New TreeDumperNode("right", Nothing, { Visit(node.Right, Nothing) }),
           New TreeDumperNode("suppressObjectClone", node.SuppressObjectClone, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitReferenceAssignment(node As BoundReferenceAssignment, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("referenceAssignment", Nothing, {
           New TreeDumperNode("byRefLocal", Nothing, { Visit(node.ByRefLocal, Nothing) }),
           New TreeDumperNode("lValue", Nothing, { Visit(node.LValue, Nothing) }),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAddressOfOperator(node As BoundAddressOfOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("addressOfOperator", Nothing, {
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("methodGroup", Nothing, { Visit(node.MethodGroup, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitTernaryConditionalExpression(node As BoundTernaryConditionalExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("ternaryConditionalExpression", Nothing, {
@@ -8111,8 +6845,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("whenTrue", Nothing, { Visit(node.WhenTrue, Nothing) }),
           New TreeDumperNode("whenFalse", Nothing, { Visit(node.WhenFalse, Nothing) }),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitBinaryConditionalExpression(node As BoundBinaryConditionalExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("binaryConditionalExpression", Nothing, {
@@ -8121,8 +6854,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("testExpressionPlaceholder", Nothing, { Visit(node.TestExpressionPlaceholder, Nothing) }),
           New TreeDumperNode("elseExpression", Nothing, { Visit(node.ElseExpression, Nothing) }),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitConversion(node As BoundConversion, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conversion", Nothing, {
@@ -8132,27 +6864,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("explicitCastInCode", node.ExplicitCastInCode, Nothing),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("extendedInfoOpt", Nothing, { Visit(node.ExtendedInfoOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitRelaxationLambda(node As BoundRelaxationLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("relaxationLambda", Nothing, {
           New TreeDumperNode("lambda", Nothing, { Visit(node.Lambda, Nothing) }),
-          New TreeDumperNode("receiverPlaceholderOpt", Nothing, { Visit(node.ReceiverPlaceholderOpt, Nothing) })
-      })
+          New TreeDumperNode("receiverPlaceholderOpt", Nothing, { Visit(node.ReceiverPlaceholderOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitConvertedTupleElements(node As BoundConvertedTupleElements, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("convertedTupleElements", Nothing, {
           New TreeDumperNode("elementPlaceholders", Nothing, From x In node.ElementPlaceholders Select Visit(x, Nothing)),
-          New TreeDumperNode("convertedElements", Nothing, From x In node.ConvertedElements Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("convertedElements", Nothing, From x In node.ConvertedElements Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitUserDefinedConversion(node As BoundUserDefinedConversion, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedConversion", Nothing, {
           New TreeDumperNode("underlyingExpression", Nothing, { Visit(node.UnderlyingExpression, Nothing) }),
           New TreeDumperNode("inOutConversionFlags", node.InOutConversionFlags, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitDirectCast(node As BoundDirectCast, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[directCast]", Nothing, {
@@ -8161,8 +6889,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("suppressVirtualCalls", node.SuppressVirtualCalls, Nothing),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("relaxationLambdaOpt", Nothing, { Visit(node.RelaxationLambdaOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitTryCast(node As BoundTryCast, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[tryCast]", Nothing, {
@@ -8170,38 +6897,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("conversionKind", node.ConversionKind, Nothing),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("relaxationLambdaOpt", Nothing, { Visit(node.RelaxationLambdaOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitTypeOf(node As BoundTypeOf, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[typeOf]", Nothing, {
           New TreeDumperNode("operand", Nothing, { Visit(node.Operand, Nothing) }),
           New TreeDumperNode("isTypeOfIsNotExpression", node.IsTypeOfIsNotExpression, Nothing),
           New TreeDumperNode("targetType", node.TargetType, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitSequencePoint(node As BoundSequencePoint, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequencePoint", Nothing, {
-          New TreeDumperNode("statementOpt", Nothing, { Visit(node.StatementOpt, Nothing) })
-      })
+          New TreeDumperNode("statementOpt", Nothing, { Visit(node.StatementOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitSequencePointExpression(node As BoundSequencePointExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequencePointExpression", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitSequencePointWithSpan(node As BoundSequencePointWithSpan, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequencePointWithSpan", Nothing, {
           New TreeDumperNode("statementOpt", Nothing, { Visit(node.StatementOpt, Nothing) }),
-          New TreeDumperNode("span", node.Span, Nothing)
-      })
+          New TreeDumperNode("span", node.Span, Nothing)      })
     End Function
     Public Overrides Function VisitNoOpStatement(node As BoundNoOpStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("noOpStatement", Nothing, {
-          New TreeDumperNode("flavor", node.Flavor, Nothing)
-      })
+          New TreeDumperNode("flavor", node.Flavor, Nothing)      })
     End Function
     Public Overrides Function VisitMethodGroup(node As BoundMethodGroup, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("methodGroup", Nothing, {
@@ -8211,8 +6932,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("resultKind", node.ResultKind, Nothing),
           New TreeDumperNode("receiverOpt", Nothing, { Visit(node.ReceiverOpt, Nothing) }),
           New TreeDumperNode("qualificationKind", node.QualificationKind, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitPropertyGroup(node As BoundPropertyGroup, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("propertyGroup", Nothing, {
@@ -8220,43 +6940,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("resultKind", node.ResultKind, Nothing),
           New TreeDumperNode("receiverOpt", Nothing, { Visit(node.ReceiverOpt, Nothing) }),
           New TreeDumperNode("qualificationKind", node.QualificationKind, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitReturnStatement(node As BoundReturnStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("returnStatement", Nothing, {
           New TreeDumperNode("expressionOpt", Nothing, { Visit(node.ExpressionOpt, Nothing) }),
           New TreeDumperNode("functionLocalOpt", node.FunctionLocalOpt, Nothing),
-          New TreeDumperNode("exitLabelOpt", node.ExitLabelOpt, Nothing)
-      })
+          New TreeDumperNode("exitLabelOpt", node.ExitLabelOpt, Nothing)      })
     End Function
     Public Overrides Function VisitYieldStatement(node As BoundYieldStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("yieldStatement", Nothing, {
-          New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) })
-      })
+          New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) })      })
     End Function
     Public Overrides Function VisitThrowStatement(node As BoundThrowStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("throwStatement", Nothing, {
-          New TreeDumperNode("expressionOpt", Nothing, { Visit(node.ExpressionOpt, Nothing) })
-      })
+          New TreeDumperNode("expressionOpt", Nothing, { Visit(node.ExpressionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitRedimStatement(node As BoundRedimStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("redimStatement", Nothing, {
-          New TreeDumperNode("clauses", Nothing, From x In node.Clauses Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("clauses", Nothing, From x In node.Clauses Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitRedimClause(node As BoundRedimClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("redimClause", Nothing, {
           New TreeDumperNode("operand", Nothing, { Visit(node.Operand, Nothing) }),
           New TreeDumperNode("indices", Nothing, From x In node.Indices Select Visit(x, Nothing)),
           New TreeDumperNode("arrayTypeOpt", node.ArrayTypeOpt, Nothing),
-          New TreeDumperNode("preserve", node.Preserve, Nothing)
-      })
+          New TreeDumperNode("preserve", node.Preserve, Nothing)      })
     End Function
     Public Overrides Function VisitEraseStatement(node As BoundEraseStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("eraseStatement", Nothing, {
-          New TreeDumperNode("clauses", Nothing, From x In node.Clauses Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("clauses", Nothing, From x In node.Clauses Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitCall(node As BoundCall, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[call]", Nothing, {
@@ -8268,8 +6981,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("suppressObjectClone", node.SuppressObjectClone, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAttribute(node As BoundAttribute, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("attribute", Nothing, {
@@ -8277,8 +6989,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constructorArguments", Nothing, From x In node.ConstructorArguments Select Visit(x, Nothing)),
           New TreeDumperNode("namedArguments", Nothing, From x In node.NamedArguments Select Visit(x, Nothing)),
           New TreeDumperNode("resultKind", node.ResultKind, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLateMemberAccess(node As BoundLateMemberAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateMemberAccess", Nothing, {
@@ -8287,8 +6998,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("receiverOpt", Nothing, { Visit(node.ReceiverOpt, Nothing) }),
           New TreeDumperNode("typeArgumentsOpt", Nothing, { Visit(node.TypeArgumentsOpt, Nothing) }),
           New TreeDumperNode("accessKind", node.AccessKind, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLateInvocation(node As BoundLateInvocation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateInvocation", Nothing, {
@@ -8297,15 +7007,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("argumentNamesOpt", node.ArgumentNamesOpt, Nothing),
           New TreeDumperNode("accessKind", node.AccessKind, Nothing),
           New TreeDumperNode("methodOrPropertyGroupOpt", Nothing, { Visit(node.MethodOrPropertyGroupOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLateAddressOfOperator(node As BoundLateAddressOfOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateAddressOfOperator", Nothing, {
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("memberAccess", Nothing, { Visit(node.MemberAccess, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitTupleLiteral(node As BoundTupleLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("tupleLiteral", Nothing, {
@@ -8313,15 +7021,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("argumentNamesOpt", node.ArgumentNamesOpt, Nothing),
           New TreeDumperNode("inferredNamesOpt", node.InferredNamesOpt, Nothing),
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitConvertedTupleLiteral(node As BoundConvertedTupleLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("convertedTupleLiteral", Nothing, {
           New TreeDumperNode("naturalTypeOpt", node.NaturalTypeOpt, Nothing),
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitObjectCreationExpression(node As BoundObjectCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("objectCreationExpression", Nothing, {
@@ -8330,37 +7036,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
           New TreeDumperNode("defaultArguments", node.DefaultArguments, Nothing),
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitNoPiaObjectCreationExpression(node As BoundNoPiaObjectCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("noPiaObjectCreationExpression", Nothing, {
           New TreeDumperNode("guidString", node.GuidString, Nothing),
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAnonymousTypeCreationExpression(node As BoundAnonymousTypeCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("anonymousTypeCreationExpression", Nothing, {
           New TreeDumperNode("binderOpt", node.BinderOpt, Nothing),
           New TreeDumperNode("declarations", Nothing, From x In node.Declarations Select Visit(x, Nothing)),
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAnonymousTypePropertyAccess(node As BoundAnonymousTypePropertyAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("anonymousTypePropertyAccess", Nothing, {
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("propertyIndex", node.PropertyIndex, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAnonymousTypeFieldInitializer(node As BoundAnonymousTypeFieldInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("anonymousTypeFieldInitializer", Nothing, {
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitObjectInitializerExpression(node As BoundObjectInitializerExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("objectInitializerExpression", Nothing, {
@@ -8368,21 +7069,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("placeholderOpt", Nothing, { Visit(node.PlaceholderOpt, Nothing) }),
           New TreeDumperNode("initializers", Nothing, From x In node.Initializers Select Visit(x, Nothing)),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitCollectionInitializerExpression(node As BoundCollectionInitializerExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("collectionInitializerExpression", Nothing, {
           New TreeDumperNode("placeholderOpt", Nothing, { Visit(node.PlaceholderOpt, Nothing) }),
           New TreeDumperNode("initializers", Nothing, From x In node.Initializers Select Visit(x, Nothing)),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitNewT(node As BoundNewT, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("newT", Nothing, {
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitDelegateCreationExpression(node As BoundDelegateCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("delegateCreationExpression", Nothing, {
@@ -8391,8 +7089,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("relaxationLambdaOpt", Nothing, { Visit(node.RelaxationLambdaOpt, Nothing) }),
           New TreeDumperNode("relaxationReceiverPlaceholderOpt", Nothing, { Visit(node.RelaxationReceiverPlaceholderOpt, Nothing) }),
           New TreeDumperNode("methodGroupOpt", Nothing, { Visit(node.MethodGroupOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitArrayCreation(node As BoundArrayCreation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayCreation", Nothing, {
@@ -8401,8 +7098,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) }),
           New TreeDumperNode("arrayLiteralOpt", Nothing, { Visit(node.ArrayLiteralOpt, Nothing) }),
           New TreeDumperNode("arrayLiteralConversion", node.ArrayLiteralConversion, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitArrayLiteral(node As BoundArrayLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayLiteral", Nothing, {
@@ -8412,14 +7108,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("bounds", Nothing, From x In node.Bounds Select Visit(x, Nothing)),
           New TreeDumperNode("initializer", Nothing, { Visit(node.Initializer, Nothing) }),
           New TreeDumperNode("binder", node.Binder, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitArrayInitialization(node As BoundArrayInitialization, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayInitialization", Nothing, {
           New TreeDumperNode("initializers", Nothing, From x In node.Initializers Select Visit(x, Nothing)),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitFieldAccess(node As BoundFieldAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("fieldAccess", Nothing, {
@@ -8428,8 +7122,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("suppressVirtualCalls", node.SuppressVirtualCalls, Nothing),
           New TreeDumperNode("constantsInProgressOpt", node.ConstantsInProgressOpt, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitPropertyAccess(node As BoundPropertyAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("propertyAccess", Nothing, {
@@ -8441,48 +7134,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("receiverOpt", Nothing, { Visit(node.ReceiverOpt, Nothing) }),
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
           New TreeDumperNode("defaultArguments", node.DefaultArguments, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitEventAccess(node As BoundEventAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("eventAccess", Nothing, {
           New TreeDumperNode("receiverOpt", Nothing, { Visit(node.ReceiverOpt, Nothing) }),
           New TreeDumperNode("eventSymbol", node.EventSymbol, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitBlock(node As BoundBlock, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("block", Nothing, {
           New TreeDumperNode("statementListSyntax", node.StatementListSyntax, Nothing),
           New TreeDumperNode("locals", node.Locals, Nothing),
-          New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitStateMachineScope(node As BoundStateMachineScope, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("stateMachineScope", Nothing, {
           New TreeDumperNode("fields", node.Fields, Nothing),
-          New TreeDumperNode("statement", Nothing, { Visit(node.Statement, Nothing) })
-      })
+          New TreeDumperNode("statement", Nothing, { Visit(node.Statement, Nothing) })      })
     End Function
     Public Overrides Function VisitLocalDeclaration(node As BoundLocalDeclaration, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("localDeclaration", Nothing, {
           New TreeDumperNode("localSymbol", node.LocalSymbol, Nothing),
           New TreeDumperNode("declarationInitializerOpt", Nothing, { Visit(node.DeclarationInitializerOpt, Nothing) }),
           New TreeDumperNode("identifierInitializerOpt", Nothing, { Visit(node.IdentifierInitializerOpt, Nothing) }),
-          New TreeDumperNode("initializedByAsNew", node.InitializedByAsNew, Nothing)
-      })
+          New TreeDumperNode("initializedByAsNew", node.InitializedByAsNew, Nothing)      })
     End Function
     Public Overrides Function VisitAsNewLocalDeclarations(node As BoundAsNewLocalDeclarations, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("asNewLocalDeclarations", Nothing, {
           New TreeDumperNode("localDeclarations", Nothing, From x In node.LocalDeclarations Select Visit(x, Nothing)),
-          New TreeDumperNode("initializer", Nothing, { Visit(node.Initializer, Nothing) })
-      })
+          New TreeDumperNode("initializer", Nothing, { Visit(node.Initializer, Nothing) })      })
     End Function
     Public Overrides Function VisitDimStatement(node As BoundDimStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("dimStatement", Nothing, {
           New TreeDumperNode("localDeclarations", Nothing, From x In node.LocalDeclarations Select Visit(x, Nothing)),
-          New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) })
-      })
+          New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitInitializer(node As BoundInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("initializer", Nothing, Array.Empty(Of TreeDumperNode)())
@@ -8491,46 +7177,39 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Return New TreeDumperNode("fieldInitializer", Nothing, {
           New TreeDumperNode("initializedFields", node.InitializedFields, Nothing),
           New TreeDumperNode("memberAccessExpressionOpt", Nothing, { Visit(node.MemberAccessExpressionOpt, Nothing) }),
-          New TreeDumperNode("initialValue", Nothing, { Visit(node.InitialValue, Nothing) })
-      })
+          New TreeDumperNode("initialValue", Nothing, { Visit(node.InitialValue, Nothing) })      })
     End Function
     Public Overrides Function VisitPropertyInitializer(node As BoundPropertyInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("propertyInitializer", Nothing, {
           New TreeDumperNode("initializedProperties", node.InitializedProperties, Nothing),
           New TreeDumperNode("memberAccessExpressionOpt", Nothing, { Visit(node.MemberAccessExpressionOpt, Nothing) }),
-          New TreeDumperNode("initialValue", Nothing, { Visit(node.InitialValue, Nothing) })
-      })
+          New TreeDumperNode("initialValue", Nothing, { Visit(node.InitialValue, Nothing) })      })
     End Function
     Public Overrides Function VisitParameterEqualsValue(node As BoundParameterEqualsValue, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("parameterEqualsValue", Nothing, {
           New TreeDumperNode("parameter", node.Parameter, Nothing),
-          New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) })
-      })
+          New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) })      })
     End Function
     Public Overrides Function VisitGlobalStatementInitializer(node As BoundGlobalStatementInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("globalStatementInitializer", Nothing, {
-          New TreeDumperNode("statement", Nothing, { Visit(node.Statement, Nothing) })
-      })
+          New TreeDumperNode("statement", Nothing, { Visit(node.Statement, Nothing) })      })
     End Function
     Public Overrides Function VisitSequence(node As BoundSequence, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequence", Nothing, {
           New TreeDumperNode("locals", node.Locals, Nothing),
           New TreeDumperNode("sideEffects", Nothing, From x In node.SideEffects Select Visit(x, Nothing)),
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitExpressionStatement(node As BoundExpressionStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("expressionStatement", Nothing, {
-          New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) })
-      })
+          New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) })      })
     End Function
     Public Overrides Function VisitIfStatement(node As BoundIfStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("ifStatement", Nothing, {
           New TreeDumperNode("condition", Nothing, { Visit(node.Condition, Nothing) }),
           New TreeDumperNode("consequence", Nothing, { Visit(node.Consequence, Nothing) }),
-          New TreeDumperNode("alternativeOpt", Nothing, { Visit(node.AlternativeOpt, Nothing) })
-      })
+          New TreeDumperNode("alternativeOpt", Nothing, { Visit(node.AlternativeOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitSelectStatement(node As BoundSelectStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("selectStatement", Nothing, {
@@ -8538,41 +7217,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("exprPlaceholderOpt", Nothing, { Visit(node.ExprPlaceholderOpt, Nothing) }),
           New TreeDumperNode("caseBlocks", Nothing, From x In node.CaseBlocks Select Visit(x, Nothing)),
           New TreeDumperNode("recommendSwitchTable", node.RecommendSwitchTable, Nothing),
-          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
-      })
+          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)      })
     End Function
     Public Overrides Function VisitCaseBlock(node As BoundCaseBlock, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("caseBlock", Nothing, {
           New TreeDumperNode("caseStatement", Nothing, { Visit(node.CaseStatement, Nothing) }),
-          New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })
-      })
+          New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })      })
     End Function
     Public Overrides Function VisitCaseStatement(node As BoundCaseStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("caseStatement", Nothing, {
           New TreeDumperNode("caseClauses", Nothing, From x In node.CaseClauses Select Visit(x, Nothing)),
-          New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })
-      })
+          New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitSimpleCaseClause(node As BoundSimpleCaseClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("simpleCaseClause", Nothing, {
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
-          New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })
-      })
+          New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitRangeCaseClause(node As BoundRangeCaseClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rangeCaseClause", Nothing, {
           New TreeDumperNode("lowerBoundOpt", Nothing, { Visit(node.LowerBoundOpt, Nothing) }),
           New TreeDumperNode("upperBoundOpt", Nothing, { Visit(node.UpperBoundOpt, Nothing) }),
           New TreeDumperNode("lowerBoundConditionOpt", Nothing, { Visit(node.LowerBoundConditionOpt, Nothing) }),
-          New TreeDumperNode("upperBoundConditionOpt", Nothing, { Visit(node.UpperBoundConditionOpt, Nothing) })
-      })
+          New TreeDumperNode("upperBoundConditionOpt", Nothing, { Visit(node.UpperBoundConditionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitRelationalCaseClause(node As BoundRelationalCaseClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("relationalCaseClause", Nothing, {
           New TreeDumperNode("operatorKind", node.OperatorKind, Nothing),
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
-          New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })
-      })
+          New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitDoLoopStatement(node As BoundDoLoopStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("doLoopStatement", Nothing, {
@@ -8582,16 +7255,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("bottomConditionIsUntil", node.BottomConditionIsUntil, Nothing),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
-          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
-      })
+          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)      })
     End Function
     Public Overrides Function VisitWhileStatement(node As BoundWhileStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("whileStatement", Nothing, {
           New TreeDumperNode("condition", Nothing, { Visit(node.Condition, Nothing) }),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
-          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
-      })
+          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)      })
     End Function
     Public Overrides Function VisitForToUserDefinedOperators(node As BoundForToUserDefinedOperators, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("forToUserDefinedOperators", Nothing, {
@@ -8600,8 +7271,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("addition", Nothing, { Visit(node.Addition, Nothing) }),
           New TreeDumperNode("subtraction", Nothing, { Visit(node.Subtraction, Nothing) }),
           New TreeDumperNode("lessThanOrEqual", Nothing, { Visit(node.LessThanOrEqual, Nothing) }),
-          New TreeDumperNode("greaterThanOrEqual", Nothing, { Visit(node.GreaterThanOrEqual, Nothing) })
-      })
+          New TreeDumperNode("greaterThanOrEqual", Nothing, { Visit(node.GreaterThanOrEqual, Nothing) })      })
     End Function
     Public Overrides Function VisitForToStatement(node As BoundForToStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("forToStatement", Nothing, {
@@ -8615,8 +7285,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
           New TreeDumperNode("nextVariablesOpt", Nothing, From x In node.NextVariablesOpt Select Visit(x, Nothing)),
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
-          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
-      })
+          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)      })
     End Function
     Public Overrides Function VisitForEachStatement(node As BoundForEachStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("forEachStatement", Nothing, {
@@ -8627,26 +7296,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
           New TreeDumperNode("nextVariablesOpt", Nothing, From x In node.NextVariablesOpt Select Visit(x, Nothing)),
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
-          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
-      })
+          New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)      })
     End Function
     Public Overrides Function VisitExitStatement(node As BoundExitStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("exitStatement", Nothing, {
-          New TreeDumperNode("label", node.Label, Nothing)
-      })
+          New TreeDumperNode("label", node.Label, Nothing)      })
     End Function
     Public Overrides Function VisitContinueStatement(node As BoundContinueStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("continueStatement", Nothing, {
-          New TreeDumperNode("label", node.Label, Nothing)
-      })
+          New TreeDumperNode("label", node.Label, Nothing)      })
     End Function
     Public Overrides Function VisitTryStatement(node As BoundTryStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("tryStatement", Nothing, {
           New TreeDumperNode("tryBlock", Nothing, { Visit(node.TryBlock, Nothing) }),
           New TreeDumperNode("catchBlocks", Nothing, From x In node.CatchBlocks Select Visit(x, Nothing)),
           New TreeDumperNode("finallyBlockOpt", Nothing, { Visit(node.FinallyBlockOpt, Nothing) }),
-          New TreeDumperNode("exitLabelOpt", node.ExitLabelOpt, Nothing)
-      })
+          New TreeDumperNode("exitLabelOpt", node.ExitLabelOpt, Nothing)      })
     End Function
     Public Overrides Function VisitCatchBlock(node As BoundCatchBlock, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("catchBlock", Nothing, {
@@ -8655,74 +7320,62 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("errorLineNumberOpt", Nothing, { Visit(node.ErrorLineNumberOpt, Nothing) }),
           New TreeDumperNode("exceptionFilterOpt", Nothing, { Visit(node.ExceptionFilterOpt, Nothing) }),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
-          New TreeDumperNode("isSynthesizedAsyncCatchAll", node.IsSynthesizedAsyncCatchAll, Nothing)
-      })
+          New TreeDumperNode("isSynthesizedAsyncCatchAll", node.IsSynthesizedAsyncCatchAll, Nothing)      })
     End Function
     Public Overrides Function VisitLiteral(node As BoundLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("literal", Nothing, {
           New TreeDumperNode("value", node.Value, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitMeReference(node As BoundMeReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("meReference", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitValueTypeMeReference(node As BoundValueTypeMeReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("valueTypeMeReference", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitMyBaseReference(node As BoundMyBaseReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("myBaseReference", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitMyClassReference(node As BoundMyClassReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("myClassReference", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitPreviousSubmissionReference(node As BoundPreviousSubmissionReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("previousSubmissionReference", Nothing, {
           New TreeDumperNode("sourceType", node.SourceType, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitHostObjectMemberReference(node As BoundHostObjectMemberReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("hostObjectMemberReference", Nothing, {
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLocal(node As BoundLocal, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("local", Nothing, {
           New TreeDumperNode("localSymbol", node.LocalSymbol, Nothing),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitPseudoVariable(node As BoundPseudoVariable, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("pseudoVariable", Nothing, {
           New TreeDumperNode("localSymbol", node.LocalSymbol, Nothing),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("emitExpressions", node.EmitExpressions, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitParameter(node As BoundParameter, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("parameter", Nothing, {
           New TreeDumperNode("parameterSymbol", node.ParameterSymbol, Nothing),
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("suppressVirtualCalls", node.SuppressVirtualCalls, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitByRefArgumentPlaceholder(node As BoundByRefArgumentPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("byRefArgumentPlaceholder", Nothing, {
           New TreeDumperNode("isOut", node.IsOut, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitByRefArgumentWithCopyBack(node As BoundByRefArgumentWithCopyBack, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("byRefArgumentWithCopyBack", Nothing, {
@@ -8731,51 +7384,43 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("inPlaceholder", Nothing, { Visit(node.InPlaceholder, Nothing) }),
           New TreeDumperNode("outConversion", Nothing, { Visit(node.OutConversion, Nothing) }),
           New TreeDumperNode("outPlaceholder", Nothing, { Visit(node.OutPlaceholder, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLateBoundArgumentSupportingAssignmentWithCapture(node As BoundLateBoundArgumentSupportingAssignmentWithCapture, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateBoundArgumentSupportingAssignmentWithCapture", Nothing, {
           New TreeDumperNode("originalArgument", Nothing, { Visit(node.OriginalArgument, Nothing) }),
           New TreeDumperNode("localSymbol", node.LocalSymbol, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLabelStatement(node As BoundLabelStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("labelStatement", Nothing, {
-          New TreeDumperNode("label", node.Label, Nothing)
-      })
+          New TreeDumperNode("label", node.Label, Nothing)      })
     End Function
     Public Overrides Function VisitLabel(node As BoundLabel, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("label", Nothing, {
           New TreeDumperNode("label", node.Label, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitGotoStatement(node As BoundGotoStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("gotoStatement", Nothing, {
           New TreeDumperNode("label", node.Label, Nothing),
-          New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })
-      })
+          New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitStatementList(node As BoundStatementList, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("statementList", Nothing, {
-          New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitConditionalGoto(node As BoundConditionalGoto, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conditionalGoto", Nothing, {
           New TreeDumperNode("condition", Nothing, { Visit(node.Condition, Nothing) }),
           New TreeDumperNode("jumpIfTrue", node.JumpIfTrue, Nothing),
-          New TreeDumperNode("label", node.Label, Nothing)
-      })
+          New TreeDumperNode("label", node.Label, Nothing)      })
     End Function
     Public Overrides Function VisitWithStatement(node As BoundWithStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("withStatement", Nothing, {
           New TreeDumperNode("originalExpression", Nothing, { Visit(node.OriginalExpression, Nothing) }),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
-          New TreeDumperNode("binder", node.Binder, Nothing)
-      })
+          New TreeDumperNode("binder", node.Binder, Nothing)      })
     End Function
     Public Overrides Function VisitUnboundLambda(node As UnboundLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unboundLambda", Nothing, {
@@ -8784,8 +7429,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("parameters", node.Parameters, Nothing),
           New TreeDumperNode("returnType", node.ReturnType, Nothing),
           New TreeDumperNode("bindingCache", node.BindingCache, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLambda(node As BoundLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lambda", Nothing, {
@@ -8795,26 +7439,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("lambdaBinderOpt", node.LambdaBinderOpt, Nothing),
           New TreeDumperNode("delegateRelaxation", node.DelegateRelaxation, Nothing),
           New TreeDumperNode("methodConversionKind", node.MethodConversionKind, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitQueryExpression(node As BoundQueryExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryExpression", Nothing, {
           New TreeDumperNode("lastOperator", Nothing, { Visit(node.LastOperator, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitQuerySource(node As BoundQuerySource, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("querySource", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitToQueryableCollectionConversion(node As BoundToQueryableCollectionConversion, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("toQueryableCollectionConversion", Nothing, {
           New TreeDumperNode("conversionCall", Nothing, { Visit(node.ConversionCall, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitQueryableSource(node As BoundQueryableSource, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryableSource", Nothing, {
@@ -8823,8 +7463,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("rangeVariables", node.RangeVariables, Nothing),
           New TreeDumperNode("compoundVariableType", node.CompoundVariableType, Nothing),
           New TreeDumperNode("binders", node.Binders, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitQueryClause(node As BoundQueryClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryClause", Nothing, {
@@ -8832,14 +7471,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("rangeVariables", node.RangeVariables, Nothing),
           New TreeDumperNode("compoundVariableType", node.CompoundVariableType, Nothing),
           New TreeDumperNode("binders", node.Binders, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitOrdering(node As BoundOrdering, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("ordering", Nothing, {
           New TreeDumperNode("underlyingExpression", Nothing, { Visit(node.UnderlyingExpression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitQueryLambda(node As BoundQueryLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryLambda", Nothing, {
@@ -8847,23 +7484,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("rangeVariables", node.RangeVariables, Nothing),
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("exprIsOperandOfConditionalBranch", node.ExprIsOperandOfConditionalBranch, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitRangeVariableAssignment(node As BoundRangeVariableAssignment, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rangeVariableAssignment", Nothing, {
           New TreeDumperNode("rangeVariable", node.RangeVariable, Nothing),
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitGroupTypeInferenceLambda(node As GroupTypeInferenceLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("groupTypeInferenceLambda", Nothing, {
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("parameters", node.Parameters, Nothing),
           New TreeDumperNode("compilation", node.Compilation, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAggregateClause(node As BoundAggregateClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("aggregateClause", Nothing, {
@@ -8873,38 +7507,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("rangeVariables", node.RangeVariables, Nothing),
           New TreeDumperNode("compoundVariableType", node.CompoundVariableType, Nothing),
           New TreeDumperNode("binders", node.Binders, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitGroupAggregation(node As BoundGroupAggregation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("groupAggregation", Nothing, {
           New TreeDumperNode("group", Nothing, { Visit(node.Group, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitRangeVariable(node As BoundRangeVariable, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rangeVariable", Nothing, {
           New TreeDumperNode("rangeVariable", node.RangeVariable, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitAddHandlerStatement(node As BoundAddHandlerStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("addHandlerStatement", Nothing, {
           New TreeDumperNode("eventAccess", Nothing, { Visit(node.EventAccess, Nothing) }),
-          New TreeDumperNode("handler", Nothing, { Visit(node.Handler, Nothing) })
-      })
+          New TreeDumperNode("handler", Nothing, { Visit(node.Handler, Nothing) })      })
     End Function
     Public Overrides Function VisitRemoveHandlerStatement(node As BoundRemoveHandlerStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("removeHandlerStatement", Nothing, {
           New TreeDumperNode("eventAccess", Nothing, { Visit(node.EventAccess, Nothing) }),
-          New TreeDumperNode("handler", Nothing, { Visit(node.Handler, Nothing) })
-      })
+          New TreeDumperNode("handler", Nothing, { Visit(node.Handler, Nothing) })      })
     End Function
     Public Overrides Function VisitRaiseEventStatement(node As BoundRaiseEventStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("raiseEventStatement", Nothing, {
           New TreeDumperNode("eventSymbol", node.EventSymbol, Nothing),
-          New TreeDumperNode("eventInvocation", Nothing, { Visit(node.EventInvocation, Nothing) })
-      })
+          New TreeDumperNode("eventInvocation", Nothing, { Visit(node.EventInvocation, Nothing) })      })
     End Function
     Public Overrides Function VisitUsingStatement(node As BoundUsingStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("usingStatement", Nothing, {
@@ -8912,37 +7540,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("resourceExpressionOpt", Nothing, { Visit(node.ResourceExpressionOpt, Nothing) }),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
           New TreeDumperNode("usingInfo", node.UsingInfo, Nothing),
-          New TreeDumperNode("locals", node.Locals, Nothing)
-      })
+          New TreeDumperNode("locals", node.Locals, Nothing)      })
     End Function
     Public Overrides Function VisitSyncLockStatement(node As BoundSyncLockStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("syncLockStatement", Nothing, {
           New TreeDumperNode("lockExpression", Nothing, { Visit(node.LockExpression, Nothing) }),
-          New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })
-      })
+          New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })      })
     End Function
     Public Overrides Function VisitXmlName(node As BoundXmlName, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlName", Nothing, {
           New TreeDumperNode("xmlNamespace", Nothing, { Visit(node.XmlNamespace, Nothing) }),
           New TreeDumperNode("localName", Nothing, { Visit(node.LocalName, Nothing) }),
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlNamespace(node As BoundXmlNamespace, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlNamespace", Nothing, {
           New TreeDumperNode("xmlNamespace", Nothing, { Visit(node.XmlNamespace, Nothing) }),
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlDocument(node As BoundXmlDocument, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlDocument", Nothing, {
           New TreeDumperNode("declaration", Nothing, { Visit(node.Declaration, Nothing) }),
           New TreeDumperNode("childNodes", Nothing, From x In node.ChildNodes Select Visit(x, Nothing)),
           New TreeDumperNode("rewriterInfo", node.RewriterInfo, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlDeclaration(node As BoundXmlDeclaration, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlDeclaration", Nothing, {
@@ -8950,23 +7573,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("encoding", Nothing, { Visit(node.Encoding, Nothing) }),
           New TreeDumperNode("standalone", Nothing, { Visit(node.Standalone, Nothing) }),
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlProcessingInstruction(node As BoundXmlProcessingInstruction, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlProcessingInstruction", Nothing, {
           New TreeDumperNode("target", Nothing, { Visit(node.Target, Nothing) }),
           New TreeDumperNode("data", Nothing, { Visit(node.Data, Nothing) }),
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlComment(node As BoundXmlComment, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlComment", Nothing, {
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlAttribute(node As BoundXmlAttribute, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlAttribute", Nothing, {
@@ -8974,49 +7594,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
           New TreeDumperNode("matchesImport", node.MatchesImport, Nothing),
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlElement(node As BoundXmlElement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlElement", Nothing, {
           New TreeDumperNode("argument", Nothing, { Visit(node.Argument, Nothing) }),
           New TreeDumperNode("childNodes", Nothing, From x In node.ChildNodes Select Visit(x, Nothing)),
           New TreeDumperNode("rewriterInfo", node.RewriterInfo, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlMemberAccess(node As BoundXmlMemberAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlMemberAccess", Nothing, {
           New TreeDumperNode("memberAccess", Nothing, { Visit(node.MemberAccess, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlEmbeddedExpression(node As BoundXmlEmbeddedExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlEmbeddedExpression", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitXmlCData(node As BoundXmlCData, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlCData", Nothing, {
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitResumeStatement(node As BoundResumeStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("resumeStatement", Nothing, {
           New TreeDumperNode("resumeKind", node.ResumeKind, Nothing),
           New TreeDumperNode("labelOpt", node.LabelOpt, Nothing),
-          New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })
-      })
+          New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitOnErrorStatement(node As BoundOnErrorStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("onErrorStatement", Nothing, {
           New TreeDumperNode("onErrorKind", node.OnErrorKind, Nothing),
           New TreeDumperNode("labelOpt", node.LabelOpt, Nothing),
-          New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })
-      })
+          New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })      })
     End Function
     Public Overrides Function VisitUnstructuredExceptionHandlingStatement(node As BoundUnstructuredExceptionHandlingStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionHandlingStatement", Nothing, {
@@ -9024,29 +7637,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("containsResume", node.ContainsResume, Nothing),
           New TreeDumperNode("resumeWithoutLabelOpt", node.ResumeWithoutLabelOpt, Nothing),
           New TreeDumperNode("trackLineNumber", node.TrackLineNumber, Nothing),
-          New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })
-      })
+          New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })      })
     End Function
     Public Overrides Function VisitUnstructuredExceptionHandlingCatchFilter(node As BoundUnstructuredExceptionHandlingCatchFilter, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionHandlingCatchFilter", Nothing, {
           New TreeDumperNode("activeHandlerLocal", Nothing, { Visit(node.ActiveHandlerLocal, Nothing) }),
           New TreeDumperNode("resumeTargetLocal", Nothing, { Visit(node.ResumeTargetLocal, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitUnstructuredExceptionOnErrorSwitch(node As BoundUnstructuredExceptionOnErrorSwitch, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionOnErrorSwitch", Nothing, {
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
-          New TreeDumperNode("jumps", Nothing, From x In node.Jumps Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("jumps", Nothing, From x In node.Jumps Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitUnstructuredExceptionResumeSwitch(node As BoundUnstructuredExceptionResumeSwitch, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionResumeSwitch", Nothing, {
           New TreeDumperNode("resumeTargetTemporary", Nothing, { Visit(node.ResumeTargetTemporary, Nothing) }),
           New TreeDumperNode("resumeLabel", Nothing, { Visit(node.ResumeLabel, Nothing) }),
           New TreeDumperNode("resumeNextLabel", Nothing, { Visit(node.ResumeNextLabel, Nothing) }),
-          New TreeDumperNode("jumps", Nothing, From x In node.Jumps Select Visit(x, Nothing))
-      })
+          New TreeDumperNode("jumps", Nothing, From x In node.Jumps Select Visit(x, Nothing))      })
     End Function
     Public Overrides Function VisitAwaitOperator(node As BoundAwaitOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("awaitOperator", Nothing, {
@@ -9056,8 +7665,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("awaiterInstancePlaceholder", Nothing, { Visit(node.AwaiterInstancePlaceholder, Nothing) }),
           New TreeDumperNode("isCompleted", Nothing, { Visit(node.IsCompleted, Nothing) }),
           New TreeDumperNode("getResult", Nothing, { Visit(node.GetResult, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitSpillSequence(node As BoundSpillSequence, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("spillSequence", Nothing, {
@@ -9065,8 +7673,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("spillFields", node.SpillFields, Nothing),
           New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing)),
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitStopStatement(node As BoundStopStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("stopStatement", Nothing, Array.Empty(Of TreeDumperNode)())
@@ -9080,22 +7687,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("start", Nothing, { Visit(node.Start, Nothing) }),
           New TreeDumperNode("lengthOpt", Nothing, { Visit(node.LengthOpt, Nothing) }),
           New TreeDumperNode("source", Nothing, { Visit(node.Source, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitConditionalAccess(node As BoundConditionalAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conditionalAccess", Nothing, {
           New TreeDumperNode("receiver", Nothing, { Visit(node.Receiver, Nothing) }),
           New TreeDumperNode("placeholder", Nothing, { Visit(node.Placeholder, Nothing) }),
           New TreeDumperNode("accessExpression", Nothing, { Visit(node.AccessExpression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitConditionalAccessReceiverPlaceholder(node As BoundConditionalAccessReceiverPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conditionalAccessReceiverPlaceholder", Nothing, {
           New TreeDumperNode("placeholderId", node.PlaceholderId, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitLoweredConditionalAccess(node As BoundLoweredConditionalAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("loweredConditionalAccess", Nothing, {
@@ -9104,44 +7708,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("placeholderId", node.PlaceholderId, Nothing),
           New TreeDumperNode("whenNotNull", Nothing, { Visit(node.WhenNotNull, Nothing) }),
           New TreeDumperNode("whenNullOpt", Nothing, { Visit(node.WhenNullOpt, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitComplexConditionalAccessReceiver(node As BoundComplexConditionalAccessReceiver, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("complexConditionalAccessReceiver", Nothing, {
           New TreeDumperNode("valueTypeReceiver", Nothing, { Visit(node.ValueTypeReceiver, Nothing) }),
           New TreeDumperNode("referenceTypeReceiver", Nothing, { Visit(node.ReferenceTypeReceiver, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitNameOfOperator(node As BoundNameOfOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("nameOfOperator", Nothing, {
           New TreeDumperNode("argument", Nothing, { Visit(node.Argument, Nothing) }),
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitTypeAsValueExpression(node As BoundTypeAsValueExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeAsValueExpression", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitInterpolatedStringExpression(node As BoundInterpolatedStringExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("interpolatedStringExpression", Nothing, {
           New TreeDumperNode("contents", Nothing, From x In node.Contents Select Visit(x, Nothing)),
           New TreeDumperNode("binder", node.Binder, Nothing),
-          New TreeDumperNode("type", node.Type, Nothing)
-      })
+          New TreeDumperNode("type", node.Type, Nothing)      })
     End Function
     Public Overrides Function VisitInterpolation(node As BoundInterpolation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("interpolation", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("alignmentOpt", Nothing, { Visit(node.AlignmentOpt, Nothing) }),
-          New TreeDumperNode("formatStringOpt", Nothing, { Visit(node.FormatStringOpt, Nothing) })
-      })
+          New TreeDumperNode("formatStringOpt", Nothing, { Visit(node.FormatStringOpt, Nothing) })      })
     End Function
-
   End Class
-
 End Namespace

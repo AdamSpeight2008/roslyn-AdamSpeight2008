@@ -26,32 +26,31 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public void Blank()
         {
             if (_NeedsIndent) EOL();
-            EOL();
+            //EOL();
         }
-        public void Undent()
-        {
-            _indent -= _indent > 0 ? _levelSize : 0;
-            _writer.Flush();
-            _NeedsIndent = _indent > 0;
-        }
-        public void Indent()
-        {
-            _indent += _indent < _maxLevel ? _levelSize : 0;
-            _writer.Flush();
-            _NeedsIndent = _indent > 0;
-        }
+        public Action Undent() =>
+            () =>
+            {
+                _indent -= _indent > 0 ? _levelSize : 0;
+                _writer.Flush();
+                _NeedsIndent = _indent > 0;
+            };
+
+        public Action Indent() =>
+            () =>
+            {
+                _indent += _indent < _maxLevel ? _levelSize : 0;
+                _writer.Flush();
+                _NeedsIndent = _indent > 0;
+            };
+
         public void EOL() => Write(null, true);
         public void Write(string text, bool eol)
         {
-            if(!string.IsNullOrEmpty(text))
-                if(_NeedsIndent)  { _writer.Write(new string(' ', _indent)); }
-            if (eol)
-                if (text != null)
-                    _writer.WriteLine(text);
-                else
-                    _writer.WriteLine();
-            else
-                _writer.Write(text); 
+            var notEmpty = !string.IsNullOrEmpty(text);
+            if (notEmpty && _NeedsIndent)  _writer.Write(new string(' ', _indent));
+            if (notEmpty) _writer.Write(text);
+            if (eol) _writer.WriteLine();
             _NeedsIndent = eol;
             _writer.Flush();
         }

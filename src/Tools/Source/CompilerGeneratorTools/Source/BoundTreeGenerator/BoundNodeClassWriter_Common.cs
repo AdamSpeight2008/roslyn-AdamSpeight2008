@@ -33,14 +33,12 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 _o.Blank();
                 InsideNamespace(
                     Lang.InsideNamespace(), _o,
-                    new Action[] {
                 () => Write_Kinds_Enum(),
                 () => WriteTypes(),
                 () => WriteVisitor(),
                 () => WriteWalker(),
                 () => WriteRewriter(),
                 () => WriteTreeDumperNodeProducer()
-                    }
                );
             }
             catch (Exception e)
@@ -55,11 +53,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         }
 
         protected Dictionary<string, bool> _valueTypes;
+        protected readonly TargetLanguage _targetLang;
         protected readonly Dictionary<string, string> _typeMap;
         protected readonly IndentedWriter _o;
         protected readonly Tree _tree;
         public    readonly LangSpecific Lang;
-        protected readonly TargetLanguage _targetLang;
 
         internal BoundNodeClassWriter(Tree tree, TargetLanguage targetLang, IndentedWriter indenter, LangSpecific lang)
         {
@@ -72,7 +70,6 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             _o.Lang = Lang;
             _o.Lang._iw = _o;
             InitializeValueTypes();
-           
         }
 
         public bool IsNodeOrNodeList(string typeName) => IsNode(typeName) || IsNodeList(typeName);
@@ -144,7 +141,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         #region "Imports and Namespace"
 
-        protected void NamespaceImports(params string[] namespaces) => namespaces.ForAll(null, (ns,eolLast)=>Lang.ImportNamespace(ns, _o, eolLast))();
+        protected void NamespaceImports(params string[] namespaces) => namespaces.ForAll(null, (ns,eolLast)=>Lang.ImportNamespace(ns, _o, true))();
 
         protected void LanguageSpecificImportedNamespaces() => NamespaceImports(Lang.ImportedNamespaces().ToArray());
 
@@ -158,10 +155,9 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         protected virtual void InsideNamespace(string ns, IndentedWriter iw,params Action[] bodylines)
         {
-            Exts.Body(
-                pre: Exts.Output($"{Lang.Namespace()} {ns}",iw, false),
-                act: bodylines.ForAll(null,(bodyline,hasEoL)=> bodyline?.Indented(iw)()),
-                suf: Exts.Output(Lang.End_Namespace, iw, false), iw);
+            $"{Lang.Namespace()} {ns}".Output(iw).WithBody(
+            bodylines.ForAll(null,(bodyline,__)=> bodyline?.Indented(iw)()),
+            Lang.End_Namespace.Output(iw))();
         }
         #endregion
         #endregion
@@ -205,7 +201,6 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         protected Func<string> Or<T>(IEnumerable<T> items, Func<T, string> func)  => SeparatedList($" {Lang.OrElse()} ", items, func);
 
         protected Func<string> AndAlso<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList($" {Lang.AndAlso()} ", items, func);
- 
 
         protected void ParenList(IEnumerable<string> items)
         {
@@ -217,11 +212,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         {
             if (items == null)throw new ArgumentNullException(nameof(items));
             if (func == null) throw new ArgumentNullException(nameof(func));
-            Parens(SeparatedList(", ",items, func).Output(_o))();
+            InParens(SeparatedList(", ",items, func).Output(_o))();
         }
 
-        protected Action Parens(Action act, bool eol = false)
-        => ()=>Exts.Body($"{_o.Lang.LParens()}".Output(_o), act, _o.Lang.RParens().Output(_o, eol),_o);
+        protected Action InParens(Action act, bool eol = false)
+            => $"(".Output(_o).WithBody(act, ")".Output(_o, eol));
 
         #endregion
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-//using static BoundTreeGenerator.Exts; 
+using static Roslyn.Compilers.Internal.BoundTreeGenerator.Exts; 
 
 namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 {
@@ -22,8 +22,8 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public override string Partial()    => "Partial";
         public override string Abstract()   => "MustInherit";
         public override string Sealed()     => "NotInheritable";
-        public string Sub()                => "Sub";
-        public string Function()           => "Function";
+        public string Sub()                 => "Sub";
+        public string Function()            => "Function";
         private string End()                => "End";
         public override string @public()    => "Public";
         public override string @private()   => "Private";
@@ -53,8 +53,12 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public override string EnumBase(string baseType) => AsType(baseType);
         public override string AsType(string typename, bool isNew = false) => (typename == null) ? "" : $"As {(isNew ? @New() + " " : "")}{typename}";
         public override Func<string> MyBaseNew() => ()=>"MyBase.New";
-        #endregion
-
+        public override string Attribute(string attribute) => $"<{attribute}>";
+        public override string CommentMarker() => "'";
+        public override string NameAsType(string name, string typename, bool isNew = false) => $"{name.ToCamelCase(this)} {AsType(typename, isNew)}";
+        public override string EscapeKeyword(string name) => $"[{name}]";
+        public override string Generics(string genericParams) => $"(Of {genericParams})";
+        public override string Inherits(string inheritsFrom) => $" : {Inherits()}{inheritsFrom}";
         public override string InsideNamespace() => "Microsoft.CodeAnalysis.VisualBasic";
         public override IEnumerable<string> ImportedNamespaces()
         {
@@ -62,23 +66,18 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             yield return "Microsoft.CodeAnalysis.VisualBasic.Symbols";
             yield return "Microsoft.CodeAnalysis.VisualBasic.Syntax";
         }
-        public override string Attribute(string attribute) => $"<{attribute}>";
-        public override string CommentMarker() => "'";
-        public override string NameAsType(string name, string typename, bool isNew = false) => $"{name.ToCamelCase(this)} {AsType(typename, isNew)}";
-        public override string EscapeKeyword(string name) => $"[{name}]";
-        public override string Generics(string genericParams) => $"(Of {genericParams})";
-        public override string Inherits(string inheritsFrom) => $" : {Inherits()}{inheritsFrom}";
+        #endregion
 
-        private Func<string> End_(string text) => () => $"{End()} {text}";
-        private Func<string> End_Class() => End_(this.Class());
-        public Func<string> End_Select() => End_(this.Select());
-        public Func<string> End_Sub() => End_(this.Sub());
-        public override string End_Enum() => End_(this.Enum())();
-        public Func<string> End_Function() => End_(Function());
-        public override string End_Namespace =>  End_(this.Namespace())();
+        private string End_(string text)    => $"{End()} {text}";
+        private string End_Class            => End_(this.Class());
+        public string End_Select            => End_(this.Select());
+        public string End_Sub               => End_(this.Sub());
+        public string End_Function          => End_(Function());
+        public override string End_Namespace=> End_(this.Namespace());
+        public override string End_Enum     => End_(this.Enum());
 
         public override void WriteClass(IndentedWriter iw,string modifiers, string classname, string genericParams = null, string inherits = null, Action body = null)
-            =>  base.WriteClass(iw,modifiers, classname, genericParams, inherits, body.Indented(iw),End_Class().Output(_iw,true));
+            =>  base.WriteClass(iw,modifiers, classname, genericParams, inherits, body.Indented(iw),End_Class.Output(_iw,true));
 
         private static HashSet<string> s_keywords =
             new HashSet<string>(
@@ -108,8 +107,6 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public override bool IsKeyword(string name) => s_keywords.Contains(name.ToLower());
         public override string @override() => "Override";
         public override string @overridable() => "Overridable";
-
-
     }
 
     internal sealed class BoundNodeClassWriter_VB : BoundNodeClassWriter
@@ -117,33 +114,27 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         internal BoundNodeClassWriter_VB(TextWriter writer, Tree tree)
             : base(tree, TargetLanguage.VB, new IndentedWriter(levelSize: 2,writer), new VBLangSpecific()) { }
 
-        #region "block creation helpers"
-
         Func<string> ReturnType(string type) => () => Lang.AsType(type);
 
-        #region "method creation helpers"
         private Action MethodHeader(string modifiers, string methodKind, string methodName, string[] parameters, string returns)
             => () =>
             {
                 if (modifiers != null) Write_Modifier(modifiers);
                 $"{ methodKind} {methodName}".Output(_o)();
                 ParenList(parameters);
-                if (returns != null) $" {ReturnType(returns)()}".Output(_o, false)();
+                if (returns != null) $" {ReturnType(returns)()}".Output(_o)();
             };
 
         private void F(string modifier, string name, string[] parameters, string returns, Action body) =>
-          Exts.Body(MethodHeader(modifier, ((VBLangSpecific)Lang).Function(), name, parameters, returns), body.Indented(_o),
-                    ((VBLangSpecific)Lang).End_Function().Output(_o,true), _o);
+          Exts.WithBody(MethodHeader(modifier, ((VBLangSpecific)Lang).Function(), name, parameters, returns), body.Indented(_o,true,true),
+                    ((VBLangSpecific)Lang).End_Function.Output(_o,true))();
 
-        private void S(string modifier, string name, string[] parameters, Action body) =>
-            Exts.Body(MethodHeader( modifier,((VBLangSpecific)Lang).Sub(), name, parameters, null), body.Indented(_o),
-                     ((VBLangSpecific)Lang).End_Sub().Output(_o, true), _o);
+        private void S(string modifier, string name, string[] parameters, Action body)
+            => MethodHeader( modifier,((VBLangSpecific)Lang).Sub(), name, parameters, null).WithBody( body.Indented(_o,true,false),
+                     ((VBLangSpecific)Lang).End_Sub.Output(_o, true))();
 
-        #endregion
         private void Friend_MustInherit_Partial_Class(string className, string genericParams, string inherits, Action body)
             => Lang.WriteClass(_o, $"{Lang.Friend()} {Lang.Abstract()} {Lang.Partial()}", className, genericParams, inherits, body);
-
-        #endregion
 
         private void WriteArgumentsToMethod(string head, string prefix, IEnumerable<Field> fx, TreeType node, string postfix, string foot = null)
         {
@@ -152,7 +143,9 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 (baseField, __) =>
                 {
                     var value = FieldNullHandling(node, baseField.Name) == NullHandling.Always ? Lang.@null() : baseField.Name.ToCamelCase(Lang);
-                    $"{prefix}{value}{postfix}".Output(_o)();
+                    prefix?.Output(_o)();
+                    value?.Output(_o)();
+                    postfix?.Output(_o)();
                 })();
         }
 
@@ -179,22 +172,21 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 Lang.@New(), SubMewParameters(node, isPublic, hasErrorsIsOptional),
                 () =>
                 {
-                    Lang.MyBaseNew().Output(_o,false)();
+                    Lang.MyBaseNew().Output(_o)();
                     Action src = null;
                     if (isPublic) { src = whenPublic; } else { src =()=> NonPublic(); };
-                    Parens(src, true)();
+                    InParens(src, true)();
                     WriteNullChecks(node);
-
-                    Fields(node).ForAll(()=>_o.EOL(),(field, eolLast) => AssignmentTo(node, field).Code(_o, eolLast))();
+                    Fields(node).ForAll(null,(field, eolLast) => AssignmentTo(node, field).Code(_o, true))();
 
                     hasValidate = HasValidate(node);
-
-                    if (hasValidate) EOL().__(()=>"Validate()".Code(_o, false))();
+                    
+                    if (hasValidate) { "Validate()".Code(_o, true); }
                 });
 
             if (hasValidate && whenHasValidate != null) whenHasValidate();
 
-            void NonPublic() => WriteArgumentsToMethod("kind, syntax", ", ", AllSpecifiableFields(BaseType(node)), node, "", whenNonPublic);
+            void NonPublic() => WriteArgumentsToMethod("kind, syntax", ", ", AllSpecifiableFields(BaseType(node)), node, null, whenNonPublic);
         }
                
         protected override void WriteConstructorWithHasErrors(TreeType node, bool isPublic, bool hasErrorsIsOptional)
@@ -205,7 +197,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
             void IsPublic()   // Base call has bound kind, syntax, all fields in base type, plus merged HasErrors.
             {
-                WriteArgumentsToMethod($"BoundKind.{node.Name.StripBound()}, syntax, ", "", AllSpecifiableFields(BaseType(node)), node, ", ");
+                WriteArgumentsToMethod($"BoundKind.{node.Name.StripBound()}, syntax, ", null, AllSpecifiableFields(BaseType(node)), node, ", ");
                 Or((new[] { "hasErrors" }).Concat(
                         AllNodeOrNodeListFields(node).Select(field=>field.Name.ToCamelCase(Lang) + ".NonNullAndHasErrors()")), x => x).Output(_o)();
             }
@@ -217,7 +209,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         {
             WriteConstructor(node, isPublic, null, ()=> Public(), null);
             // Base call has bound kind, syntax, fields.
-            void  Public() => WriteArgumentsToMethod($"BoundKind.{node.Name.StripBound()}, syntax", ", ", AllSpecifiableFields(BaseType(node)), node, "");
+            void  Public() => WriteArgumentsToMethod($"BoundKind.{node.Name.StripBound()}, syntax", ", ", AllSpecifiableFields(BaseType(node)), node, null);
         }
         #endregion
 
@@ -226,7 +218,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             var fieldName = field.Name.ToCamelCase(Lang);
             "Debug.Assert(".Output(_o)();
             if (isROArray) { $"Not {fieldName}.IsDefault".Output(_o)(); } else { $"{fieldName} IsNot {Lang.@null()}".Output(_o)(); }
-                $", $\"Field '{Lang._NameOf(fieldName)}' cannot be null (use Null=\"\"allow\"\" in BoundNodes.xml to remove this check)\")".Output(_o,eolLast)();
+            $", $\"Field '{Lang._NameOf(fieldName)}' cannot be null (use Null=\"\"allow\"\" in BoundNodes.xml to remove this check)\")".Output(_o,eolLast)();
         }
 
         protected override void WriteField(Field field)
@@ -279,11 +271,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                    new[] { $"{Lang.@this()}.Syntax" }.
                    Concat(AllSpecifiableFields(node).Select(f => f.Name.ToCamelCase(Lang)).
                    Concat(new[] { $"{Lang.@this()}.HasErrors" })));
-                _o.Lang.EOS().Output( _o, true)();
+                _o.Lang.EOS.Output( _o, true)();
 
             }
             // Helpers
-            void IfThen(Func<string> cmp, Action a)  { $"{Lang.@if()} {cmp()} {Lang.@then()} ".Output(_o, false)(); a(); }
+            void IfThen(Func<string> cmp, Action a)  { $"{Lang.@if()} {cmp()} {Lang.@then()} ".Output(_o)(); a(); }
             
             string WriteComparision(Field field) => $"{(IsValueType(field.Type) ? $"=" : "Is")} {Lang.@this()}.{ field.Name})";
         }
@@ -304,8 +296,8 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                  });
 
             Action SelectCase()
-                => ()=>Exts.Body(pre: $"Select Case {_node}.Kind".Output(_o, true),
-                             Exts.Indented(CaseClauses(), _o), ((VBLangSpecific)Lang).End_Select().EOL(_o),_o);
+                => $"Select Case {_node}.Kind".Output(_o).WithBody(
+                       CaseClauses().Indented( _o,true,true), ((VBLangSpecific)Lang).End_Select.Output(_o,true));
 
             Action CaseClauses()
             {
@@ -331,7 +323,8 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
             void WriteVisitor(Node node, string[] parameters, string returns, string argument) =>
                 F($"{Lang.@public()} {Lang.overridable()}", $"Visit{node.Name.StripBound()}", parameters.ToArray(), returns,
-                  Return($"{Lang.@this()}.DefaultVisit({argument})",true));
+                  Return($"{Lang.@this()}.DefaultVisit({argument})",false
+                  ));
 
          }
 
@@ -347,7 +340,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             Action Internal()
                 => _tree.Types.OfType<Node>().ForAll(null,(node,__)=>
                     F($"{Lang.@public()} {Lang.@overrides()}", Visit(node), Parameters(NodeAs(node)).ToArray(), boundNode,
-                      Visiting(node).__(Return(Lang.@null(),true))));
+                      Visiting(node).__(Return(Lang.@null(),false))));
 
             Action Visiting(Node node)
                 => AllFields(node).Where(f => IsDerivedOrListOfDerived(boundNode, f.Type) && !SkipInVisitor(f)).
@@ -381,7 +374,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
             Action Write_InnerTree(Node node) 
                 => $"{Lang.@return()} {Lang.New()} TreeDumperNode".Output(_o).__(
-                    Parens(() =>
+                    InParens(() =>
                     {
                         $"\"{UseAsVariableName(node.Name)}\", {Lang.@null()}, ".Output(_o)();
                         var allFields = AllFields(node).ToArray();
@@ -400,7 +393,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 allFields.ForAll(null,
                 (field,eolLast)=>
                 {
-                    $"{Lang.@New()} TreeDumperNode".Output(_o).__(Parens(WithField(field)))();
+                    $"{Lang.@New()} TreeDumperNode".Output(_o).__(InParens(WithField(field)))();
                     if (eolLast) ",".Output(_o, true)();
                 }).Indented(_o,false).InBraces(_o)();
             }
