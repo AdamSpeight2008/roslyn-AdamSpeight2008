@@ -14,8 +14,15 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         protected const string _node = "node";
 
         //protected static Func<string> NullFunc = () => null;
+        protected string public_override() => $"{_o.Lang.@public()} {_o.Lang.@override()}";
+        protected string internal_abstract_partial() => _o.Lang.@internal() + " " + _o.Lang.Abstract() + " " + _o.Lang.Partial();
+        protected void Assignment(string type, string id, string expr,bool eol = true)
+        {
+            if (type != null) $"{type} ".Output(_o)();
+            $"{id} = {expr}".Code(_o, eol);
+        }
 
-        protected string[] SubMewParameters(TreeType node, bool isPublic, bool? hasErrorsIsOptional = default(bool?))
+        protected string[] SubNewParameters(TreeType node, bool isPublic, bool? hasErrorsIsOptional = default(bool?))
         {
             var fields = OutputFirstParameters(isPublic).Concat(from field in AllSpecifiableFields(node) select Parameter(field.Name, field.Type));
             if (hasErrorsIsOptional.HasValue) { Include_HasError(); };
@@ -54,7 +61,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         {
             if (!(node is AbstractNode) && !(node is Node)) return;
             _o.Blank();
-            Lang.WriteClass(_o, $"{Lang.Friend()} {_GetModifiers(node)}{Lang.Partial()}", node.Name, null, node.Base, Internals);
+            Lang.WriteClass(_o, $"{Lang.Friend()} {_GetModifiers(node)}{Lang.Partial()}", node.Name, null, node.Base,Internals);
 
             void Internals()
             {
@@ -66,7 +73,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 if (concrete) WriteConstructor(node, true, hasChildNodes);
                 var _fields = Fields(node).ToList();
                 if (_fields.Count > 0)
-                    foreach (var field in Fields(node))  WriteField(field);
+                    foreach (var field in Fields(node))
+                    {
+                        WriteField(field);
+                        _o.EOL();
+                    }
                 if (node is Node)
                 {
                     WriteAccept(node.Name);

@@ -155,8 +155,8 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         protected virtual void InsideNamespace(string ns, IndentedWriter iw,params Action[] bodylines)
         {
-            $"{Lang.Namespace()} {ns}".Output(iw).WithBody(
-            bodylines.ForAll(null,(bodyline,__)=> bodyline?.Indented(iw)()),
+            $"{Lang.Namespace()} {ns}".Output(iw,true).WithBody(
+                Lang.GetCodeBlockBody(bodylines.ForAll(null,(bodyline,__)=> bodyline?.Indented(iw)())),
             Lang.End_Namespace.Output(iw))();
         }
         #endregion
@@ -202,17 +202,17 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         protected Func<string> AndAlso<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList($" {Lang.AndAlso()} ", items, func);
 
-        protected void ParenList(IEnumerable<string> items)
+        protected string ParenList(IEnumerable<string> items)
         {
             if (items == null) items = new String[] { }; // throw new ArgumentNullException(nameof(items));
-            ParenList(items, x => x);
+            return ParenList(items, x => x);
         }
 
-        protected void ParenList<T>(IEnumerable<T> items, Func<T, string> func)
+        protected string ParenList<T>(IEnumerable<T> items, Func<T, string> func)
         {
             if (items == null)throw new ArgumentNullException(nameof(items));
             if (func == null) throw new ArgumentNullException(nameof(func));
-            InParens(SeparatedList(", ",items, func).Output(_o))();
+            return $"({SeparatedList(", ",items, func)()})";
         }
 
         protected Action InParens(Action act, bool eol = false)

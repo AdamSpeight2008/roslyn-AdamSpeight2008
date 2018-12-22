@@ -24,6 +24,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         #region "Keywords"
         public abstract string @bool();
+        public abstract string @internal();
         public abstract string @private();
         public abstract string @public();
         public abstract string @protected();
@@ -71,7 +72,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public abstract string NameAsType(string name, string typename, bool isNew = false);
         public abstract string AsType(string typename, bool isNew = false);
         public abstract string @overridable();
-        public abstract void WriteClass(IndentedWriter iw, string modifiers, string classname, string genericParams = null, string inherits = null, Action body = null);
+        public abstract void WriteClass(IndentedWriter iw, string modifiers, string classname, string genericParams, string inherits, Action body);
         #endregion
 
         #region "Virtual Methods"
@@ -91,9 +92,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                   $"{modifiers} {Class()} {classname}".Output(_iw)();
                   if (genericParams != null) Generics(genericParams).Output(_iw)();
                   if (inherits      != null) Inherits(inherits).Output(_iw)();
+                  iw.EOL();
               },
               body,
               endClass)();
+
         public void ImportNamespace(string nsName, IndentedWriter iw, bool eol) => $"{Imports()} {nsName}".Code(iw,eol);
         public string _NameOf(string name) => $"{{{@_nameof_()}({name})}}";
         public string FixKeyword(string name) => IsKeyword(name) ? EscapeKeyword(name) : name;

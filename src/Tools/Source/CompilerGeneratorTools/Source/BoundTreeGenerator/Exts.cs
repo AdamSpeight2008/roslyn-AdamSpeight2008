@@ -32,8 +32,10 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             => Code(() => code, iw, eol);
 
         public static void Code(this Func<string> code, IndentedWriter iw, bool eol)
-            => code().Output(iw).__(iw.Lang.EOS.Output(iw, eol))();
- 
+        {
+            code().Output(iw)();
+            if (eol) iw.Lang.EOS.Output(iw, eol)();
+        } 
         #endregion
 
         public static Action __(this Action a, Action b) => () => { a(); b(); };
@@ -42,7 +44,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             =>  iw.Indent().WithBody(onNewLines ?  act.NewLined(iw, eolThenSuf) : act, iw.Undent());
  
         public static Action InBraces(this Action content, IndentedWriter iw)
-            => "{".Output(iw).WithBody(content.Indented(iw), "}".Output(iw));
+            => "{".Output(iw,true).WithBody(content.Indented(iw,false,false), "}".Output(iw));
 
         public static Action Output(this string text, IndentedWriter iw, bool eol = false)=>()=>iw.Write(text, eol);
         public static Action Output(this Func<string> text, IndentedWriter iw, bool eol = false) => Output(text(), iw, eol);

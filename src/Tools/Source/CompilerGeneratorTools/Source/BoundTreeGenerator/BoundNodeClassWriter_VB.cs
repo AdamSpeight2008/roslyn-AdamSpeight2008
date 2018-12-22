@@ -12,8 +12,9 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
     public sealed class VBLangSpecific : LangSpecific
     {
         internal VBLangSpecific(): base() { }
-   
+
         #region "language specific"
+        public override string @internal()  => "Friend";
         public override string @overrides() => "Overrides";
         public override string Namespace()  => "Namespace";
         public override string Class()      => "Class";
@@ -169,7 +170,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             var hasValidate = false;
             // A public constructor does not have an explicit kind parameter.
             S(OutIsPublic(isPublic),
-                Lang.@New(), SubMewParameters(node, isPublic, hasErrorsIsOptional),
+                Lang.@New(), SubNewParameters(node, isPublic, hasErrorsIsOptional),
                 () =>
                 {
                     Lang.MyBaseNew().Output(_o)();
@@ -355,7 +356,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         protected override void WriteTreeDumperNodeProducer()
         {
-            Lang.WriteClass(_o, $"{Lang.Friend()} {Lang.Sealed()}", "BoundTreeDumperNodeProducer",
+            Lang.WriteClass(_o, $"{Lang.Friend()} {Lang.Sealed()}", "BoundTreeDumperNodeProducer", genericParams: null,
                 inherits: $"BoundTreeVisitor{Lang.Generics("Object, TreeDumperNode")}",
                 body: () =>
                 {
