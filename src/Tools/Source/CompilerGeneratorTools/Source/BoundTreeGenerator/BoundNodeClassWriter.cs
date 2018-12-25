@@ -12,16 +12,15 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
     {
         protected const string boundNode = "BoundNode";
         protected const string _node = "node";
-
-        //protected static Func<string> NullFunc = () => null;
         protected string public_override() => $"{_o.Lang.@public()} {_o.Lang.@override()}";
         protected string internal_abstract_partial() => _o.Lang.@internal() + " " + _o.Lang.Abstract() + " " + _o.Lang.Partial();
-        protected void Assignment(string type, string id, string expr,bool eol = true)
-        {
-            if (type != null) $"{type} ".Output(_o)();
-            $"{id} = {expr}".Code(_o, eol);
-        }
 
+        protected string Assignment(string id, string expr, bool eol = true) => $"{id} = {expr}";
+        protected string Declaration(string id) => $"{Lang.Decl()} {id}";
+        protected string Invocation(string type, string args) => $"{Lang.New()} {type}{args}";
+        protected string EqualsExpr(string expr) => $" = {expr}";
+        protected string Spaces(int x) => new string(' ', x < 0 ? 0 : x);
+        
         protected string[] SubNewParameters(TreeType node, bool isPublic, bool? hasErrorsIsOptional = default(bool?))
         {
             var fields = OutputFirstParameters(isPublic).Concat(from field in AllSpecifiableFields(node) select Parameter(field.Name, field.Type));
@@ -45,12 +44,9 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         {
             // Write the null checks for any fields that can't be null.
             var nullCheckFields = AllFields(node).Where(f => FieldNullHandling(node, f.Name) == NullHandling.Disallow);
-            nullCheckFields.ForAll(null,
-                (field, __) =>
-                {
-                    var isROArray = (GetGenericType(field.Type) == "ImmutableArray");
-                    Write_DebugAssert_Nulls(isROArray, field, true);
-                })();
+            nullCheckFields.ForAll(null, (field, __) => {
+                var isROArray = (GetGenericType(field.Type) == "ImmutableArray");
+                Write_DebugAssert_Nulls(isROArray, field, true); })();
         }
         protected Action ApplyToTreeNodes(Action<Node,bool> a) => _tree.Types.OfType<Node>().ForAll(null, a);
 
@@ -74,10 +70,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 var _fields = Fields(node).ToList();
                 if (_fields.Count > 0)
                     foreach (var field in Fields(node))
-                    {
-                        WriteField(field);
-                        _o.EOL();
-                    }
+                        WriteField(field, true);
                 if (node is Node)
                 {
                     WriteAccept(node.Name);
@@ -113,26 +106,22 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                                     select f;
         }
         // AlwaysNull fields are those that have Null="Always" specified (possibly in an override).
-        protected IEnumerable<Field> AllAlwaysNullFields(TreeType node) => from f in AllFields(node) where FieldNullHandling(node, f.Name) == NullHandling.Always select f;
+        protected IEnumerable<Field> AllAlwaysNullFields(TreeType node)
+            => from f in AllFields(node) where FieldNullHandling(node, f.Name) == NullHandling.Always select f;
         // Specifiable fields are those that aren't always null.
-        protected IEnumerable<Field> AllSpecifiableFields(TreeType node) => from f in AllFields(node) where FieldNullHandling(node, f.Name) != NullHandling.Always select f;
+        protected IEnumerable<Field> AllSpecifiableFields(TreeType node)
+            => from f in AllFields(node) where FieldNullHandling(node, f.Name) != NullHandling.Always select f;
         protected IEnumerable<Field> AllNodeOrNodeListFields(TreeType node) => AllFields(node).Where(field => IsDerivedOrListOfDerived("BoundNode", field.Type));
         protected IEnumerable<Field> AllTypeFields(TreeType node) => AllFields(node).Where(field => field.Type == "TypeSymbol");
         #endregion
 
         #region "Enumeration (Enums)"
-
         protected void E(string modifier, string name, string enumType, Action body)
-            => $"{modifier} {Lang.Enum()} {name} {Lang.EnumBase(enumType)}".Output(_o).WithBody(
-                act: body.Indented(_o,eolThenSuf:true),
-                suf: Lang.End_Enum.Output(_o))();
+            => $"{modifier} {Lang.Enum()} {name} {Lang.EnumBase(enumType)}".Output(_o).WithBody(body.Indented(_o,eolThenSuf:true),Lang.End_Enum.Output(_o))();
 
         protected void Write_Kinds_Enum()=>
-            E( Lang.Friend(), "BoundKind", Lang.@byte(),
-               Lang.GetCodeBlockBody(ApplyToTreeNodes(
-                    (node, eolLast) => _o.Write($"{Lang.FixKeyword(node.Name.StripBound())}{Lang.EnumStatementEnding}", eolLast)))
-             );
- 
+            E( Lang.Friend(), "BoundKind", Lang.@byte(), Lang.GetCodeBlockBody(ApplyToTreeNodes((node, eolLast)
+                =>_o.Write($"{Lang.FixKeyword(node.Name.StripBound())}{Lang.EnumStatementEnding}", eolLast))));
         #endregion
 
         protected abstract void WriteConstructorWithHasErrors(TreeType node, bool isPublic, bool hasErrorsIsOptional);
@@ -141,22 +130,157 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         protected abstract void WriteConstructorWithoutHasErrors(TreeType node, bool isPublic);
         protected abstract void Write_DebugAssert_Nulls(bool isROArray, Field field,bool eolLast);
         #region "protected virtual"
+        protected abstract void CreateConstructor(string name);
+        protected abstract void S(string modifier, string name, string[] parameters, Action body);
+        protected abstract void F(string modifiers, string methodName, string[] parameters, string returns, Action basecall = null, Action body=null);
 
-        protected abstract void WriteField(Field field);
+        protected abstract void WriteField(Field field, bool eol = true);
         protected abstract void WriteAccept(string name);
-        protected abstract void Write_Update(Node node, bool emitNew);
+        protected virtual void Write_Update(Node node, bool emitNew)
+        {
+            Internals();
+
+            void Internals()
+            {
+                var modifier = emitNew ? $" {Lang.@shadows()}" : "";
+                F($"{Lang.@public()}{modifier}",
+                  "Update",
+                  AllSpecifiableFields(node).Select(field => Lang.NameAsType(field.Name, field.Type)).ToArray(),
+                  node.Name,
+                  null,
+                  () =>
+                    {
+                        if (!AllSpecifiableFields(node).Any())
+                            Return(Lang.@this(), false)();
+                        else
+                        {
+                            IfThen(AndAlso(AllSpecifiableFields(node), field => $"({field.Name.ToCamelCase(Lang)} {WriteComparision(field)}"), Return(Lang.@this(), true));
+                            NewDeclaration();
+                            IfThen(() => $"{Lang.@this()}.WasCompilerGenerated", "result.SetWasCompilerGenerated()".Output(_o, true));
+                            Return("result", false)();
+                        };
+                    });
+            }
+            void NewDeclaration()
+            {
+                var p = ParenList( new[] { $"{Lang.@this()}.Syntax" }.
+                                   Concat(AllSpecifiableFields(node).Select(f => f.Name.ToCamelCase(Lang)).
+                                   Concat(new[] { $"{Lang.@this()}.HasErrors" })));
+
+                (Declaration("result") +" As "+ Invocation(node.Name, p)).Code(_o, true);
+            }
+            // Helpers
+            void IfThen(Func<string> cmp, Action a) { $"{Lang.@if()} {cmp()} {Lang.@then()} ".Output(_o)(); a(); }
+
+            string WriteComparision(Field field) => $"{(IsValueType(field.Type) ? $"=" : "Is")} {Lang.@this()}.{ field.Name})";
+        }
+        protected void Declaration(string prefix, string field, string typeName, string value, bool isNew, bool eol, int width = 0)
+        {
+            width = width <= 0 ? field.Length : width;
+            var result = prefix ?? "";
+            result += $" {Lang.NameAsType(field, typeName, isNew: isNew).PadLeft(width)}";
+            if (value != null) result += $" = {value}";
+            result.Output(_o, eol)();
+        }
         protected abstract void WriteVisitor();
-        protected abstract void WriteWalker();
-        protected abstract void WriteTreeDumperNodeProducer();
+
+        protected void Friend_MustInherit_Partial_Class(string className, string genericParams, string inherits, Action body)
+           => Lang.WriteClass(_o, $"{Lang.Friend()} {Lang.Abstract()} {Lang.Partial()}", className, genericParams, inherits, body);
+
+        protected void WriteWalker()
+        {
+           Friend_MustInherit_Partial_Class("BoundTreeWalker", null, "BoundTreeVisitor", Internal());
+
+            Action Internal()
+                => _tree.Types.OfType<Node>().ForAll(null, (node, __)
+                   => F($"{Lang.@public()} {Lang.@overrides()}", Visit(node), Parameters(NodeAs(node)).ToArray(), boundNode,
+                      body:Visiting(node).__(Return(Lang.@null(), true))));
+
+            Action Visiting(Node node)
+                => AllFields(node).Where(f => IsDerivedOrListOfDerived(boundNode, f.Type) && !SkipInVisitor(f)).
+                   ForAll(null, (field, __) =>
+                   {
+                       var member = IsNodeList(field.Type) ? "List" : "";
+                       $"{Lang.@this()}.Visit{member}(node.{field.Name})".Code(_o, true);
+                   });
+        }
         protected abstract void WriteRewriter();
         protected abstract bool IsImmutableArray(string typeName);
         protected abstract bool IsNodeList(string typeName);
-        protected virtual string GetGenericType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-        protected virtual string GetElementType(string typeName) => throw new UnexpectedTargetLanguage(nameof(_targetLang));
-
+        protected abstract string GetGenericType(string typeName);
+        protected abstract string GetElementType(string typeName);
 
         protected abstract void InitializeValueTypes(ref Dictionary<string, bool> _valueTypes);
         #endregion
+
+        protected abstract void WriteTreeDumperNodeProducer();
+
+        protected void WriteTreeDumperNodeProducer(string name, string arr)
+        {
+            Lang.WriteClass(_o, $"{Lang.Friend()} {Lang.Sealed()}", "BoundTreeDumperNodeProducer", genericParams: null,
+                inherits: $"BoundTreeVisitor{Lang.Generics("Object, TreeDumperNode")}",
+                body: () =>
+                {
+                    CreateConstructor(name);
+                    Write_MakeTree();
+                    Write_Functions();
+                });
+
+            void Write_Functions()
+            {
+                ApplyToTreeNodes((node, eolLast) => F($"{Lang.@public()} {Lang.@overrides()}", Visit(node),
+                    Parameters(NodeAs(node), Lang.NameAsType("arg", "Object")).ToArray(), "TreeDumperNode", null,
+                    Write_InnerTree(node)))();
+            }
+
+            Action Write_InnerTree(Node node) =>
+            () => Return($"{Lang.New()} TreeDumperNode",false).__(
+                InParens(() =>
+                {
+                    $"\"{UseAsVariableName(node.Name)}\", {Lang.@null()}, ".Output(_o)();
+                    var allFields = AllFields(node).ToArray();
+                    if (allFields.Length > 0)
+                        BraceField(allFields);
+                    else
+                        $"Array.Empty{Lang.Generics("TreeDumperNode")}()".Output(_o)();
+                })).Code(_o, false);
+
+            void Write_MakeTree() =>
+              F($"{Lang.@public()} {Lang.@shared()}", "MakeTree", Parameters(NodeAsBoundNode()), "TreeDumperNode", null,
+              Return($"({Lang.@New()} BoundTreeDumperNodeProducer()).Visit(node, {Lang.@null()})",false));
+
+            void BraceField(Field[] allFields)
+            {
+                TreeDumperNodeArray().Output(_o)();
+                allFields.ForAll(null,
+                (field, eolLast) =>
+                {
+                    $"{Lang.@New()} TreeDumperNode".Output(_o)();
+                    InParens(WithField(field))();
+                    if (eolLast)  ",".Output(_o)();
+                    _o.EOL();
+                }).Indented(_o, false).InBraces(_o)();
+            }
+
+            Action WithField(Field field)
+                => () =>
+                {
+                    $"\"{_Field(field)}\", ".Output(_o)();
+                    if (IsDerivedType(boundNode, field.Type))
+                        $"{Lang.@null()}, {TreeDumperNodeArray()}{{ Visit({_node}.{field.Name}, {Lang.@null()}) }}".Output(_o)();
+                    else if (IsListOfDerived(boundNode, field.Type))
+                        $"{Lang.@null()}, {Lang.@from()} x {Lang.@In()} {_node}.{field.Name} {Lang.@Select()} Visit(x, {Lang.@null()})".Output(_o)();
+                    else
+                        $"node.{field.Name}, {Lang.@null()}".Output(_o)();
+                };
+            string TreeDumperNodeArray() => (arr != null)? $"{Lang.New()} {arr}" : String.Empty;
+        }
+
+        protected string _Field(Field field) => field.Name.ToCamelCase(Lang);
+        protected string UseAsVariableName(string name) => name.StripBound().ToCamelCase(Lang);
+        protected string NodeAsBoundNode() => Lang.NameAsType(_node, boundNode);
+        protected string NodeAs(Node node) => Lang.NameAsType(_node, node.Name);
+        protected string Visit(Node node)  => $"Visit{node.Name.StripBound()}";
 
         #region "protected bool"
         protected bool IsDerivedOrListOfDerived(string baseType, string derivedType) => IsDerivedType(baseType, derivedType) || IsListOfDerived(baseType, derivedType);

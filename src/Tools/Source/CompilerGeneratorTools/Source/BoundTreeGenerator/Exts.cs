@@ -35,7 +35,12 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         {
             code().Output(iw)();
             if (eol) iw.Lang.EOS.Output(iw, eol)();
-        } 
+        }
+        public static void Code(this Action code, IndentedWriter iw, bool eol = true)
+        {
+            code();
+            if (eol) iw.Lang.EOS.Output(iw, eol)();
+        }
         #endregion
 
         public static Action __(this Action a, Action b) => () => { a(); b(); };

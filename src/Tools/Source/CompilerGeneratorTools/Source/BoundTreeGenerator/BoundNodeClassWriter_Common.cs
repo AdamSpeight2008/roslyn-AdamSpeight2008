@@ -132,6 +132,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         }
 
         protected void Write_Modifier(string text) => $"{text} ".Output(_o)();
+        //protected abstract Action MethodHeader(string modifiers, string methodKind, string methodName, string[] parameters, string returns);
 
         #region "Statement Handling"
         protected Action Return(string text, bool eol) => ()=> $"{Lang.@return()} {text}".Code(_o,eol);
@@ -202,21 +203,16 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         protected Func<string> AndAlso<T>(IEnumerable<T> items, Func<T, string> func) => SeparatedList($" {Lang.AndAlso()} ", items, func);
 
-        protected string ParenList(IEnumerable<string> items)
-        {
-            if (items == null) items = new String[] { }; // throw new ArgumentNullException(nameof(items));
-            return ParenList(items, x => x);
-        }
+        protected string ParenList(IEnumerable<string> items) => ParenList(items ?? new String[] { }, x => x);
 
         protected string ParenList<T>(IEnumerable<T> items, Func<T, string> func)
         {
-            if (items == null)throw new ArgumentNullException(nameof(items));
-            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            if (func  == null) throw new ArgumentNullException(nameof(func));
             return $"({SeparatedList(", ",items, func)()})";
         }
 
-        protected Action InParens(Action act, bool eol = false)
-            => $"(".Output(_o).WithBody(act, ")".Output(_o, eol));
+        protected Action InParens(Action act, bool eol = false) => $"(".Output(_o).WithBody(act, ")".Output(_o, eol));
 
         #endregion
 

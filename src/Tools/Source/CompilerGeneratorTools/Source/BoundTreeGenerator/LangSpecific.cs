@@ -59,6 +59,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public abstract string @from();
         public abstract string @In();
         public abstract string @Select();
+        public abstract string Decl();
         #endregion
 
         #region "Abstract Methods"

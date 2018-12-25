@@ -49,6 +49,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
         public override string @from()          => "from";
         public override string @In()            => "in";
         public override string @Select()        => "select";
+        public override string Decl() => "var";
         public override Func<string> MyBaseNew() => () => "base.new";
 
         public override IEnumerable<string> ImportedNamespaces()
@@ -68,8 +69,6 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         public override string NameAsType(string name, string typename, bool isNew = false) => $"{typename} {name}";
         public override string EnumStatementEnding => ",";
-        //public override void End_Namespace() { }
-        //public override void InsideNamespace(string ns, Func<Action> body, IndentedWriter iw) => base.InsideNamespace(ns, body.Braced(iw), iw);
         public override string @override() => "override";
 
         #endregion
@@ -110,7 +109,6 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
 
         protected override void ReadOnly_Property(Field field) { }
 
-
         protected override void InitializeValueTypes(ref Dictionary<string, bool> _valueTypes)
         {
             _valueTypes.Add("bool", true);
@@ -126,8 +124,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             _valueTypes.Add("Boolean", true);
         }
 
-
-        private void F(string modifiers, string methodName, string[] parameters, string returns, Action basecall, Action body = null)
+        protected override void F(string modifiers, string methodName, string[] parameters, string returns,Action basecall, Action body)
         {
             Exts.WithBody(pre:
                 () => {
@@ -148,7 +145,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             if (statement != null) $" => {statement}".Code(_o, true);
         }
 
-        private void MethodHeader(string modifiers, string methodName, string[] parameters, string returns, bool startNewLine)
+         void MethodHeader(string modifiers, string methodName, string[] parameters, string returns, bool startNewLine)
         {
             if (modifiers != null) $"{modifiers}".Output(_o)();
             if (returns != null) $" {returns}".Output(_o)();
@@ -165,7 +162,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                {
                    WriteNullChecks(node);
                    foreach (var field in Fields(node))
-                       $"this.{(IsPropertyOverrides(field) ? "" : "")}{field.Name} = {HandleField(node, field)}".Code(_o, true);
+                       $"{_o.Lang.@this()}.{(IsPropertyOverrides(field) ? "" : "")}{field.Name} = {HandleField(node, field)}".Code(_o, true);
                });
 
             Action thisBaseCall()
@@ -200,30 +197,24 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
               {
                   WriteNullChecks(node);
                   foreach (var field in Fields(node))
-                      Assignment("", $"{Lang.@this()}.{(IsPropertyOverrides(field) ? "" : "")}{field.Name}", $"{HandleField(node, field)}");
+                      Assignment($"{Lang.@this()}.{(IsPropertyOverrides(field) ? "" : "")}{field.Name}", $"{HandleField(node, field)}");
 
               });
 
             Action CallToBase()
             {
-                return () =>
+                var args = "";
+                if (isPublic)
                 {
-                    var args = "";
-                    if (isPublic)
-                    {
-                        // Base call has bound kind, syntax, fields.
-                        args = $"BoundKind.{node.Name.StripBound()}, syntax";
-                        args += WriteFields(", ", AllSpecifiableFields(BaseType(node)), node, "");
-
-                    }
-                    else
-                    {
-                        // Base call has kind, syntax, fields
-                        args = "kind, syntax";
-                        args += WriteFields(", ", AllSpecifiableFields(BaseType(node)), node, "");
-                    }
-                    args.Output(_o)();
-                };
+                    // Base call has bound kind, syntax, fields.
+                    args = $"BoundKind.{node.Name.StripBound()}, syntax" + WriteFields(", ", AllSpecifiableFields(BaseType(node)), node, "");
+                }
+                else
+                {
+                    // Base call has kind, syntax, fields
+                    args = "kind, syntax" + WriteFields(", ", AllSpecifiableFields(BaseType(node)), node, "");
+                }
+                return args.Output(_o);
             }
         }
 
@@ -245,15 +236,15 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
             $", \"Field '{member}' cannot be null (use Null=\\\"allow\\\" in BoundNodes.xml to remove this check)\")".Code(_o, eolLast);
         }
 
-        protected override void WriteField(Field field) =>
-            $"{Lang.@public()} {(IsPropertyOverrides(field) ? Lang.overrides() : "")} {(IsNew(field) ? Lang.New() + " " : "")}{field.Type} {field.Name} {{ get; }}".Output(_o)();
+        protected override void WriteField(Field field, bool eol = true) =>
+            $"{Lang.@public()} {(IsPropertyOverrides(field) ? Lang.overrides() : "")} {(IsNew(field) ? Lang.New() + " " : "")}{field.Type} {field.Name} {{ get; }}".Output(_o,eol)();
 
         protected override void WriteAccept(string name) =>
             Fa(public_override(), "Accept", Parameters(Parameter("visitor", "BoundTreeVisitor")), "BoundNode", null, statement: $"visitor.Visit{name.StripBound()}(this)");
 
         protected override void Write_Update(Node node, Boolean emitNew)
         {
-            var newobj = emitNew ? " new" : "";
+            var newobj = emitNew ? $" {Lang.New()}" : "";
             F(Lang.@public(), "Update", Parameters(AllSpecifiableFields(node).Select(field => Parameter(field.Name, field.Type)).ToArray()), node.Name, null,
               body: () =>
              {
@@ -262,12 +253,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                  {
                      $"{Lang.@if()} ".Output(_o, false)();
                      InParens(() => AndAlso(_fields, field => $"{field.Name.ToCamelCase(_o.Lang)} == {Lang.@this()}.{ field.Name}").Output(_o, false)())();
-                     $" {Lang.@return()} {Lang.@this()}".Code(_o, true);
+                     Return(Lang.@this(), true)();
                  }
-                 Assignment("var", "result", $"{Lang.New()} {node.Name}",false);
-                 var fields = new[] { $"{Lang.@this()}.Syntax" }.Concat(AllSpecifiableFields(node).Select(f => f.Name)).Concat(new[] { $"{Lang.@this()}.HasErrors" });
-                 ParenList(fields).Code(_o, true);
-                 Assignment(null, "result.WasCompilerGenerated", $"{Lang.@this()}.WasCompilerGenerated");
+                 var fields = ParenList(new[] { $"{Lang.@this()}.Syntax" }.Concat(AllSpecifiableFields(node).Select(f => f.Name)).Concat(new[] { $"{Lang.@this()}.HasErrors" }));
+                 (Declaration("result")+ EqualsExpr(Invocation($"{node.Name}", fields))).Code(_o,true);
+                 Assignment("result.WasCompilerGenerated", $"{Lang.@this()}.WasCompilerGenerated");
                  Return("result", true)();
              });
         }
@@ -278,13 +268,10 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 body: () =>
                 {
                     Lang.Attribute("MethodImpl(MethodImplOptions.NoInlining)").Output(_o, true)();
-                    F("internal", "VisitInternal", Parameters(Parameter("node", "BoundNode"), Parameter("arg", "A")), "R", null,
-                       body: _Switch_()
-                                ); // end method
+                    F("internal", "VisitInternal", Parameters(Parameter("node", "BoundNode"), Parameter("arg", "A")), "R", null, _Switch_()); // end method
                 }); // end class
 
-            Action _Switch_()=> $"switch ({_node}.Kind)".Output(_o,true).WithBody(
-                (CaseClauses().__(DefaultReturn())), null);
+            Action _Switch_()=> $"switch ({_node}.Kind)".Output(_o,true).WithBody(CaseClauses().__(DefaultReturn()), null);
 
             Action CaseClauses()
             {
@@ -319,80 +306,23 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                   statement: $"{Lang.@this()}.DefaultVisit(node)")));
         }
 
-        private void ThisVisit(Field field) => $"{Lang.@this()}.Visit{(IsNodeList(field.Type) ? "List" : "")}(node.{field.Name})".Output(_o, false);
-
-        protected override void WriteWalker()
+        protected override void CreateConstructor(string name)
         {
-            Lang.WriteClass(_o, internal_abstract_partial(), "BoundTreeWalker", genericParams: null,
-                 inherits: "BoundTreeVisitor",
-                 body: ApplyToTreeNodes((node, eolLast) =>
-                  Fa(public_override(), $"Visit{node.Name.StripBound()}", Parameters(Parameter("node", node.Name)), "BoundNode", null, "null"))
-                );
+            MethodHeader(Lang.@private(), name, null, null, false);
+            Lang.GetCodeBlockBody(Exts.NotUsed)();
+            _o.EOL();
         }
 
         protected override void WriteTreeDumperNodeProducer()
+            => base.WriteTreeDumperNodeProducer("BoundTreeDumperNodeProducer","TreeDumperNode[]");
+
+        protected override void S(string modifier, string name, string[] parameters, Action body)
         {
-            Lang.WriteClass(_o, "internal sealed", "BoundTreeDumperNodeProducer",
-                genericParams: null,
-                inherits: $"BoundTreeVisitor{Lang.Generics("object, TreeDumperNode")}",
-                body: () =>
-                {
-                    F("private", "BoundTreeDumperNodeProducer", Parameters(), null, null,
-                        body: null);
-
-                    Fa("public static", "MakeTree", Parameters(Parameter("node", "BoundNode")), "TreeDumperNode", null,
-                    statement: $" (new BoundTreeDumperNodeProducer()).Visit(node, null)");
-
-                    foreach (var node in _tree.Types.OfType<Node>())
-                    {
-                        var strip = node.Name.StripBound();
-                        F(public_override(), $"Visit{strip}", Parameters(Parameter("node", node.Name), Lang.NameAsType("arg", "object")), "TreeDumperNode", null,
-                      body: () =>
-                       {
-                           $"return new TreeDumperNode(\"{strip}\", null, ".Output(_o)();
-                           var allFields = AllFields(node).ToArray();
-                           if (allFields.Length > 0)
-                           {
-                               "new TreeDumperNode[]".Output(_o)();
-                               Exts.InBraces(() =>
-                               {
-                                   for (var i = 0; i < allFields.Length; ++i)
-                                   {
-                                       var field = allFields[i];
-                                       $"new TreeDumperNode(\"{field.Name}\", ".Output(_o)();
-                                       if (IsDerivedType("BoundNode", field.Type))
-                                           $"null, new TreeDumperNode[] {{ Visit(node.{field.Name}, null) }})".Output(_o)();
-                                       else if (IsListOfDerived("BoundNode", field.Type))
-                                       {
-                                           if (IsImmutableArray(field.Type) && FieldNullHandling(node, field.Name) == NullHandling.Disallow)
-                                           {
-                                               $"null, from x in node.{field.Name} select Visit(x, null))".Output(_o)();
-                                           }
-                                           else
-                                           {
-                                               $"null, node.{field.Name}.IsDefault ? Array.Empty<TreeDumperNode>() : from x in node.{field.Name} select Visit(x, null))".Output(_o)();
-                                           }
-                                       }
-                                       else
-                                           $"node.{ field.Name}, null)".Output(_o)();
-
-                                       if (i == allFields.Length - 1)
-                                           _o.Blank();
-                                       else
-                                           ",".Output(_o)();
-                                   }
-                               }, _o)();
-                           }
-                           else
-                           {
-                               "Array.Empty<TreeDumperNode>()".Output(_o)();
-                           }
-                           Exts.Code(() => ")", _o, true);
-                       });
-                    }
-                });
+            MethodHeader(modifier, name, parameters, "void", true);
+            Lang.GetCodeBlockBody(body)();
+            _o.EOL();
         }
-
+ 
         protected override void WriteRewriter()
         {
             _o.Blank();
@@ -418,7 +348,7 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                     hadField = true;
                     var expr = "";
                     expr = SkipInVisitor(field) ? $"node.{field.Name}" : $"({field.Type}){Lang.@this()}.Visit{(IsNodeList(field.Type) ? "List" : "")}(node.{field.Name})";
-                    Assignment(field.Type, camel, expr);
+                    (Declaration(camel) + EqualsExpr(expr)).Code(_o, true);
                 }
             }
             void WritePart2(Node node, ref bool hadField)
@@ -429,14 +359,12 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                 if (hadField)
                 {
                     foreach (var field in fields)
-                        Assignment("var", field.Name, $"{Lang.@this()}.VisitType(node.{field.Name})");
+                        (Declaration(field.Name) + EqualsExpr($"{Lang.@this()}.VisitType(node.{field.Name})")).Code(_o,true);
                     var args = ParenList(AllSpecifiableFields(node), f => IsDerivedOrListOfDerived("BoundNode", f.Type) || f.Type == "TypeSymbol" ? f.Name : $"node.{f.Name}");
                     result = $"{Lang.@return()} node.Update{args}";
                 }
                 else
-                {
                     result = $"{Lang.@return()} node";
-                }
                 result.Code(_o, true);
             }
         }
