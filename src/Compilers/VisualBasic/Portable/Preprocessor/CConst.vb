@@ -30,45 +30,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Friend Shared Function TryCreate(value As Object) As CConst
-            If value Is Nothing Then
-                Return CreateNothing()
-            End If
+            If value Is Nothing Then Return CreateNothing()
 
             Dim specialType = SpecialTypeExtensions.FromRuntimeTypeOfLiteralValue(value)
             Select Case specialType
-                Case SpecialType.System_Boolean
-                    Return Create(Convert.ToBoolean(value))
-                Case SpecialType.System_Byte
-                    Return Create(Convert.ToByte(value))
-                Case SpecialType.System_Char
-                    Return Create(Convert.ToChar(value))
-                Case SpecialType.System_DateTime
-                    Return Create(Convert.ToDateTime(value))
-                Case SpecialType.System_Decimal
-                    Return Create(Convert.ToDecimal(value))
-                Case SpecialType.System_Double
-                    Return Create(Convert.ToDouble(value))
-                Case SpecialType.System_Int16
-                    Return Create(Convert.ToInt16(value))
-                Case SpecialType.System_Int32
-                    Return Create(Convert.ToInt32(value))
-                Case SpecialType.System_Int64
-                    Return Create(Convert.ToInt64(value))
-                Case SpecialType.System_SByte
-                    Return Create(Convert.ToSByte(value))
-                Case SpecialType.System_Single
-                    Return Create(Convert.ToSingle(value))
-                Case SpecialType.System_String
-                    Return Create(Convert.ToString(value))
-                Case SpecialType.System_UInt16
-                    Return Create(Convert.ToUInt16(value))
-                Case SpecialType.System_UInt32
-                    Return Create(Convert.ToUInt32(value))
-                Case SpecialType.System_UInt64
-                    Return Create(Convert.ToUInt64(value))
-                Case Else
-                    Return Nothing
+                Case SpecialType.System_Boolean     : Return Create(Convert.ToBoolean(value))
+                Case SpecialType.System_Byte        : Return Create(Convert.ToByte(value))
+                Case SpecialType.System_Char        : Return Create(Convert.ToChar(value))
+                Case SpecialType.System_DateTime    : Return Create(Convert.ToDateTime(value))
+                Case SpecialType.System_Decimal     : Return Create(Convert.ToDecimal(value))
+                Case SpecialType.System_Double      : Return Create(Convert.ToDouble(value))
+                Case SpecialType.System_Int16       : Return Create(Convert.ToInt16(value))
+                Case SpecialType.System_Int32       : Return Create(Convert.ToInt32(value))
+                Case SpecialType.System_Int64       : Return Create(Convert.ToInt64(value))
+                Case SpecialType.System_SByte       : Return Create(Convert.ToSByte(value))
+                Case SpecialType.System_Single      : Return Create(Convert.ToSingle(value))
+                Case SpecialType.System_String      : Return Create(Convert.ToString(value))
+                Case SpecialType.System_UInt16      : Return Create(Convert.ToUInt16(value))
+                Case SpecialType.System_UInt32      : Return Create(Convert.ToUInt32(value))
+                Case SpecialType.System_UInt64      : Return Create(Convert.ToUInt64(value))
             End Select
+            Return Nothing
         End Function
 
         Friend Shared Function CreateNothing() As CConst(Of Object)
@@ -176,17 +158,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Inherits CConst
 
         Private ReadOnly _specialType As SpecialType
-        Private ReadOnly _value As T
 
         Friend Sub New(value As T, specialType As SpecialType)
-            _value = value
+            Me.Value = value
             _specialType = specialType
         End Sub
 
         Private Sub New(value As T, specialType As SpecialType, id As ERRID)
             MyBase.New(id)
 
-            _value = value
+            Me.Value = value
             _specialType = specialType
         End Sub
 
@@ -198,18 +179,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Public Overrides ReadOnly Property ValueAsObject As Object
             Get
-                Return _value
+                Return Value
             End Get
         End Property
 
         Public ReadOnly Property Value As T
-            Get
-                Return _value
-            End Get
-        End Property
 
         Public Overrides Function WithError(id As ERRID) As CConst
-            Return New CConst(Of T)(_value, _specialType, id)
+            Return New CConst(Of T)(Value, _specialType, id)
         End Function
     End Class
 

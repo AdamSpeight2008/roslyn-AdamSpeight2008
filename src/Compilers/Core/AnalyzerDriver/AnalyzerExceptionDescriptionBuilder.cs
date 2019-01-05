@@ -14,35 +14,19 @@ namespace Microsoft.CodeAnalysis.Diagnostics
 
         public static string CreateDiagnosticDescription(this Exception exception)
         {
-            var aggregateException = exception as AggregateException;
-            if (aggregateException != null)
-            {
-                var flattened = aggregateException.Flatten();
-                return string.Join(s_separator, flattened.InnerExceptions.Select(e => GetExceptionMessage(e)));
-            }
-
-            if (exception != null)
-            {
-                return string.Join(s_separator, GetExceptionMessage(exception), CreateDiagnosticDescription(exception.InnerException));
-            }
-
-            return string.Empty;
-        }
+            if (exception is AggregateException aggregateException)
+                return string.Join(s_separator, aggregateException.Flatten().InnerExceptions.Select(e => GetExceptionMessage(e)));
+            if (exception == null) return string.Empty;
+            return string.Join(s_separator, GetExceptionMessage(exception), CreateDiagnosticDescription(exception.InnerException));
+         }
 
         private static string GetExceptionMessage(Exception exception)
         {
-            var fileNotFoundException = exception as FileNotFoundException;
-            if (fileNotFoundException == null)
-            {
+            if (!(exception is FileNotFoundException fileNotFoundException))
                 return exception.ToString();
-            }
 
             var fusionLog = DesktopShim.FileNotFoundException.TryGetFusionLog(fileNotFoundException);
-            if (fusionLog == null)
-            {
-                return exception.ToString();
-            }
-
+            if (fusionLog == null) return exception.ToString();
             return string.Join(s_separator, fileNotFoundException.Message, fusionLog);
         }
     }

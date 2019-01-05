@@ -23,7 +23,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Private Shared ReadOnly s_hasDirectivesFunction As Func(Of SyntaxToken, Boolean) = Function(n) n.ContainsDirectives
 
         Public Function GetNextDirective(Optional predicate As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing) As DirectiveTriviaSyntax
-            Dim token = CType(MyBase.ParentTrivia.Token, SyntaxToken)
+            Dim token = MyBase.ParentTrivia.Token
 
             Dim [next] As Boolean = False
             Do While (token.Kind <> SyntaxKind.None)
@@ -31,16 +31,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 For Each tr In token.LeadingTrivia
                     If [next] Then
                         If tr.IsDirective Then
-                            Dim d As DirectiveTriviaSyntax = DirectCast(tr.GetStructure, DirectiveTriviaSyntax)
-                            If ((predicate Is Nothing) OrElse predicate.Invoke(d)) Then
-                                Return d
-                            End If
+                            Dim d = DirectCast(tr.GetStructure, DirectiveTriviaSyntax)
+                            If ((predicate Is Nothing) OrElse predicate.Invoke(d)) Then Return d
                         End If
                         Continue For
                     End If
-                    If (tr.UnderlyingNode Is MyBase.Green) Then
-                        [next] = True
-                    End If
+                    If (tr.UnderlyingNode Is MyBase.Green) Then [next] = True
                 Next
                 token = token.GetNextToken(s_hasDirectivesFunction)
             Loop
@@ -48,17 +44,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
 
         Public Function GetPreviousDirective(Optional predicate As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing) As DirectiveTriviaSyntax
-            Dim token As SyntaxToken = CType(MyBase.ParentTrivia.Token, SyntaxToken)
+            Dim token As SyntaxToken = MyBase.ParentTrivia.Token
 
             Dim [next] As Boolean = False
             Do While (token.Kind <> SyntaxKind.None)
                 For Each tr In token.LeadingTrivia.Reverse()
                     If [next] Then
                         If tr.IsDirective Then
-                            Dim d As DirectiveTriviaSyntax = DirectCast(tr.GetStructure, DirectiveTriviaSyntax)
-                            If ((predicate Is Nothing) OrElse predicate.Invoke(d)) Then
-                                Return d
-                            End If
+                            Dim d = DirectCast(tr.GetStructure, DirectiveTriviaSyntax)
+                            If ((predicate Is Nothing) OrElse predicate.Invoke(d)) Then Return d
                         End If
                     ElseIf (tr.UnderlyingNode Is MyBase.Green) Then
                         [next] = True
@@ -87,45 +81,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Property
     End Class
 
-    Public Partial Class MethodBaseSyntax
-
-        Friend ReadOnly Property AsClauseInternal As AsClauseSyntax
-            Get
-                Select Case Me.Kind
-                    Case SyntaxKind.SubStatement, SyntaxKind.FunctionStatement
-                        Return DirectCast(Me, MethodStatementSyntax).AsClause
-
-                    Case SyntaxKind.SubLambdaHeader, SyntaxKind.FunctionLambdaHeader
-                        Return DirectCast(Me, LambdaHeaderSyntax).AsClause
-
-                    Case SyntaxKind.DeclareSubStatement, SyntaxKind.DeclareFunctionStatement
-                        Return DirectCast(Me, DeclareStatementSyntax).AsClause
-
-                    Case SyntaxKind.DelegateSubStatement, SyntaxKind.DelegateFunctionStatement
-                        Return DirectCast(Me, DelegateStatementSyntax).AsClause
-
-                    Case SyntaxKind.EventStatement
-                        Return DirectCast(Me, EventStatementSyntax).AsClause
-
-                    Case SyntaxKind.OperatorStatement
-                        Return DirectCast(Me, OperatorStatementSyntax).AsClause
-
-                    Case SyntaxKind.PropertyStatement
-                        Return DirectCast(Me, PropertyStatementSyntax).AsClause
-
-                    Case SyntaxKind.SubNewStatement,
-                        SyntaxKind.GetAccessorStatement,
-                        SyntaxKind.SetAccessorStatement,
-                        SyntaxKind.AddHandlerAccessorStatement,
-                        SyntaxKind.RemoveHandlerAccessorStatement,
-                        SyntaxKind.RaiseEventAccessorStatement
-                        Return Nothing
-
-                    Case Else
-                        Throw ExceptionUtilities.UnexpectedValue(Me.Kind)
-                End Select
-            End Get
-        End Property
+    Partial Public Class MethodBaseSyntax
+      Friend ReadOnly Property AsClauseInternal As AsClauseSyntax
+        Get
+          Select Case Me.Kind
+            Case SyntaxKind.SubStatement, SyntaxKind.FunctionStatement                  : Return DirectCast(Me, MethodStatementSyntax).AsClause
+            Case SyntaxKind.SubLambdaHeader, SyntaxKind.FunctionLambdaHeader            : Return DirectCast(Me, LambdaHeaderSyntax).AsClause
+            Case SyntaxKind.DeclareSubStatement, SyntaxKind.DeclareFunctionStatement    : Return DirectCast(Me, DeclareStatementSyntax).AsClause
+            Case SyntaxKind.DelegateSubStatement, SyntaxKind.DelegateFunctionStatement  : Return DirectCast(Me, DelegateStatementSyntax).AsClause
+            Case SyntaxKind.EventStatement                                              : Return DirectCast(Me, EventStatementSyntax).AsClause
+            Case SyntaxKind.OperatorStatement                                           : Return DirectCast(Me, OperatorStatementSyntax).AsClause
+            Case SyntaxKind.PropertyStatement                                           : Return DirectCast(Me, PropertyStatementSyntax).AsClause
+            Case SyntaxKind.SubNewStatement,
+                 SyntaxKind.GetAccessorStatement,
+                 SyntaxKind.SetAccessorStatement,
+                 SyntaxKind.AddHandlerAccessorStatement,
+                 SyntaxKind.RemoveHandlerAccessorStatement,
+                 SyntaxKind.RaiseEventAccessorStatement                                 : Return Nothing
+          End Select
+          Throw ExceptionUtilities.UnexpectedValue(Me.Kind)
+        End Get
+      End Property
 
     End Class
 

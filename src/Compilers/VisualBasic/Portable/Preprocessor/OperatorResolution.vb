@@ -25,40 +25,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' It only exists because tables and enum have different order
         Private Function TypeCodeToIndex(specialType As SpecialType) As Integer
             Select Case specialType
-                Case SpecialType.None
-                    Return 0
-                Case SpecialType.System_Boolean
-                    Return 1
-                Case SpecialType.System_SByte
-                    Return 2
-                Case SpecialType.System_Byte
-                    Return 3
-                Case SpecialType.System_Int16
-                    Return 4
-                Case SpecialType.System_UInt16
-                    Return 5
-                Case SpecialType.System_Int32
-                    Return 6
-                Case SpecialType.System_UInt32
-                    Return 7
-                Case SpecialType.System_Int64
-                    Return 8
-                Case SpecialType.System_UInt64
-                    Return 9
-                Case SpecialType.System_Decimal
-                    Return 10
-                Case SpecialType.System_Single
-                    Return 11
-                Case SpecialType.System_Double
-                    Return 12
-                Case SpecialType.System_DateTime
-                    Return 13
-                Case SpecialType.System_Char
-                    Return 14
-                Case SpecialType.System_String
-                    Return 15
-                Case SpecialType.System_Object
-                    Return 16
+                Case SpecialType.None               : Return 0
+                Case SpecialType.System_Boolean     : Return 1
+                Case SpecialType.System_SByte       : Return 2
+                Case SpecialType.System_Byte        : Return 3
+                Case SpecialType.System_Int16       : Return 4
+                Case SpecialType.System_UInt16      : Return 5
+                Case SpecialType.System_Int32       : Return 6
+                Case SpecialType.System_UInt32      : Return 7
+                Case SpecialType.System_Int64       : Return 8
+                Case SpecialType.System_UInt64      : Return 9
+                Case SpecialType.System_Decimal     : Return 10
+                Case SpecialType.System_Single      : Return 11
+                Case SpecialType.System_Double      : Return 12
+                Case SpecialType.System_DateTime    : Return 13
+                Case SpecialType.System_Char        : Return 14
+                Case SpecialType.System_String      : Return 15
+                Case SpecialType.System_Object      : Return 16
             End Select
             Throw ExceptionUtilities.UnexpectedValue(specialType)
         End Function
@@ -73,22 +56,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' BEGIN intrinsic operator tables
             ' ****************************************************************************************/
 
-            Const t_r4 As Byte = CType(SpecialType.System_Single, Byte)
-            Const t_r8 As Byte = CType(SpecialType.System_Double, Byte)
+            Const t_r4  As Byte = CType(SpecialType.System_Single, Byte)
+            Const t_r8  As Byte = CType(SpecialType.System_Double, Byte)
             Const t_dec As Byte = CType(SpecialType.System_Decimal, Byte)
             Const t_str As Byte = CType(SpecialType.System_String, Byte)
 
             Const t_bad As Byte = CType(SpecialType.None, Byte)
-            Const t_i1 As Byte = CType(SpecialType.System_SByte, Byte)
-            Const t_i2 As Byte = CType(SpecialType.System_Int16, Byte)
-            Const t_i4 As Byte = CType(SpecialType.System_Int32, Byte)
-            Const t_i8 As Byte = CType(SpecialType.System_Int64, Byte)
+            Const t_i1  As Byte = CType(SpecialType.System_SByte, Byte)
+            Const t_i2  As Byte = CType(SpecialType.System_Int16, Byte)
+            Const t_i4  As Byte = CType(SpecialType.System_Int32, Byte)
+            Const t_i8  As Byte = CType(SpecialType.System_Int64, Byte)
             Const t_ui1 As Byte = CType(SpecialType.System_Byte, Byte)
             Const t_ui2 As Byte = CType(SpecialType.System_UInt16, Byte)
             Const t_ui4 As Byte = CType(SpecialType.System_UInt32, Byte)
             Const t_ui8 As Byte = CType(SpecialType.System_UInt64, Byte)
 
-            Const t_ref As Byte = CType(SpecialType.System_Object, Byte)
+            Const t_ref  As Byte = CType(SpecialType.System_Object, Byte)
             Const t_bool As Byte = CType(SpecialType.System_Boolean, Byte)
             Const t_date As Byte = CType(SpecialType.System_DateTime, Byte)
             Const t_char As Byte = CType(SpecialType.System_Char, Byte)

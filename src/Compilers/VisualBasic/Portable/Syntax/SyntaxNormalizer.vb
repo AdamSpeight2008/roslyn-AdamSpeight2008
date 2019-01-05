@@ -42,13 +42,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         Private Sub New(consideredSpan As TextSpan, indentWhitespace As String, eolWhitespace As String, useElasticTrivia As Boolean, useDefaultCasing As Boolean)
             MyBase.New(visitIntoStructuredTrivia:=True)
 
-            Me._consideredSpan = consideredSpan
-            Me._indentWhitespace = indentWhitespace
-            Me._useElasticTrivia = useElasticTrivia
-            Me._eolTrivia = If(useElasticTrivia, SyntaxFactory.ElasticEndOfLine(eolWhitespace), SyntaxFactory.EndOfLine(eolWhitespace))
-            Me._useDefaultCasing = useDefaultCasing
+            _consideredSpan = consideredSpan
+            _indentWhitespace = indentWhitespace
+            _useElasticTrivia = useElasticTrivia
+            _eolTrivia = If(useElasticTrivia, SyntaxFactory.ElasticEndOfLine(eolWhitespace), SyntaxFactory.EndOfLine(eolWhitespace))
+            _useDefaultCasing = useDefaultCasing
 
-            Me._afterLineBreak = True
+            _afterLineBreak = True
         End Sub
 
         Friend Shared Function Normalize(Of TNode As SyntaxNode)(node As TNode, indentWhitespace As String, eolWhitespace As String, useElasticTrivia As Boolean, useDefaultCasing As Boolean) As SyntaxNode
@@ -92,8 +92,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
             End If
 
             For i As Integer = _indentations.Count To count
-                Dim text As String = If(i = 0, "", _indentations(i - 1).ToString() + Me._indentWhitespace)
-                _indentations.Add(If(Me._useElasticTrivia, SyntaxFactory.ElasticWhitespace(text), SyntaxFactory.Whitespace(text)))
+                Dim text As String = If(i = 0, "", _indentations(i - 1).ToString() + _indentWhitespace)
+                _indentations.Add(If(_useElasticTrivia, SyntaxFactory.ElasticWhitespace(text), SyntaxFactory.Whitespace(text)))
             Next
 
             Return _indentations(count)
@@ -141,7 +141,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
                 Dim nextToken As SyntaxToken = GetNextRelevantToken(token)
 
-                Me._afterIndentation = False
+                _afterIndentation = False
 
                 ' we only add one of the line breaks to trivia of this token. The remaining ones will be leading trivia 
                 ' for the next token
@@ -170,7 +170,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 Return newToken
 
             Finally
-                Me._previousToken = token
+                _previousToken = token
             End Try
 
             Return token
@@ -224,8 +224,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                     End If
 
                     If _afterLineBreak And Not isTrailing Then
-                        If Not _afterIndentation AndAlso Me.NeedsIndentAfterLineBreak(trivia) Then
-                            currentTriviaList.Add(Me.GetIndentation(GetIndentationDepth(trivia)))
+                        If Not _afterIndentation AndAlso NeedsIndentAfterLineBreak(trivia) Then
+                            currentTriviaList.Add(GetIndentation(GetIndentationDepth(trivia)))
                             _afterIndentation = True
                         End If
 
@@ -236,7 +236,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                     End If
 
                     If trivia.HasStructure Then
-                        Dim structuredTrivia As SyntaxTrivia = Me.VisitStructuredTrivia(trivia)
+                        Dim structuredTrivia As SyntaxTrivia = VisitStructuredTrivia(trivia)
                         currentTriviaList.Add(structuredTrivia)
                     Else
                         ' in structured trivia, the xml doc ''' token contains leading whitespace as text
@@ -276,7 +276,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
                 End If
 
                 If mustBeIndented Then
-                    currentTriviaList.Add(Me.GetIndentation(depth))
+                    currentTriviaList.Add(GetIndentation(depth))
                     _afterIndentation = True
                     _afterLineBreak = False
                 End If
@@ -321,8 +321,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' of these blocks (e.g. the if statement), it is a level less
         ''' </summary>
         Private Function GetIndentationDepth() As Integer
-            Debug.Assert(Me._indentationDepth >= 0)
-            Return Me._indentationDepth
+            Debug.Assert(_indentationDepth >= 0)
+            Return _indentationDepth
         End Function
 
         Private Function GetIndentationDepth(trivia As SyntaxTrivia) As Integer
@@ -334,7 +334,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
 
         Private Function GetSpace() As SyntaxTrivia
-            Return If(Me._useElasticTrivia, SyntaxFactory.ElasticSpace, SyntaxFactory.Space)
+            Return If(_useElasticTrivia, SyntaxFactory.ElasticSpace, SyntaxFactory.Space)
         End Function
 
         Private Function GetEndOfLine() As SyntaxTrivia
@@ -650,16 +650,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         End Function
 
         Private Overloads Function VisitStructuredTrivia(trivia As SyntaxTrivia) As SyntaxTrivia
-            Dim oldIsInStructuredTrivia As Boolean = Me._isInStructuredTrivia
-            Me._isInStructuredTrivia = True
+            Dim oldIsInStructuredTrivia As Boolean = _isInStructuredTrivia
+            _isInStructuredTrivia = True
 
-            Dim oldPreviousToken = Me._previousToken
-            Me._previousToken = Nothing
+            Dim oldPreviousToken = _previousToken
+            _previousToken = Nothing
 
             Dim result As SyntaxTrivia = VisitTrivia(trivia)
 
-            Me._isInStructuredTrivia = oldIsInStructuredTrivia
-            Me._previousToken = oldPreviousToken
+            _isInStructuredTrivia = oldIsInStructuredTrivia
+            _previousToken = oldPreviousToken
 
             Return result
         End Function
@@ -698,7 +698,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
         Private Sub AddLinebreaksAfterTokenIfNeeded(node As SyntaxToken, linebreaksAfterToken As Integer)
             If Not EndsWithColonSeparator(node) Then
-                Me._lineBreaksAfterToken(node) = linebreaksAfterToken
+                _lineBreaksAfterToken(node) = linebreaksAfterToken
             End If
         End Sub
 

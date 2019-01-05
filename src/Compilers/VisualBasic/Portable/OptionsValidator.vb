@@ -21,47 +21,44 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim importsClauseArray = importsClauses.Select(AddressOf StringExtensions.Unquote).ToArray()
 
-            If importsClauseArray.Length > 0 Then
-                ' Create a file with Import statement for each imported name, and parse it. Use two newlines
-                ' after each to avoid issues with implicit line continuation.
-                Dim importFileText As String = importsClauseArray.Select(Function(name) "Imports " + name + vbCrLf + vbCrLf).Aggregate(Function(a, b) a & b)
-                Dim tree = VisualBasicSyntaxTree.ParseText(SourceText.From(importFileText), VisualBasicParseOptions.Default, "")
+            If importsClauseArray.Length <= 0 Then Return Array.Empty(Of GlobalImport)
+            ' Create a file with Import statement for each imported name, and parse it. Use two newlines
+            ' after each to avoid issues with implicit line continuation.
+            Dim importFileText As String = importsClauseArray.Select(Function(name) "Imports " + name + vbCrLf + vbCrLf).Aggregate(Function(a, b) a & b)
+            Dim tree = VisualBasicSyntaxTree.ParseText(SourceText.From(importFileText), VisualBasicParseOptions.Default, "")
 
-                ' Extract all the parsed imports back out.
-                Dim parsedImportList As New List(Of GlobalImport)
-                Dim importList As SyntaxList(Of ImportsStatementSyntax) = tree.GetCompilationUnitRoot().Imports
-                For i = 0 To importList.Count - 1
-                    Dim statement = importList(i)
-                    Dim importsClausesSyntaxList As SeparatedSyntaxList(Of ImportsClauseSyntax) = statement.ImportsClauses
+            ' Extract all the parsed imports back out.
+            Dim parsedImportList As New List(Of GlobalImport)
+            Dim importList As SyntaxList(Of ImportsStatementSyntax) = tree.GetCompilationUnitRoot().Imports
+            For i = 0 To importList.Count - 1
+                Dim statement = importList(i)
+                Dim importsClausesSyntaxList As SeparatedSyntaxList(Of ImportsClauseSyntax) = statement.ImportsClauses
 
-                    If importsClauses.Count > 0 Then
-                        Dim clause As ImportsClauseSyntax = importsClausesSyntaxList(0)
-                        Dim syntaxErrors As IEnumerable(Of Diagnostic) = clause.GetSyntaxErrors(tree)
+                If importsClauses.Count > 0 Then
+                    Dim clause As ImportsClauseSyntax = importsClausesSyntaxList(0)
+                    Dim syntaxErrors As IEnumerable(Of Diagnostic) = clause.GetSyntaxErrors(tree)
 
-                        If importsClausesSyntaxList.Count > 1 Then
-                            ' Only allow one import clause per name. If more than one is found, report "expected end of statement".
-                            syntaxErrors = syntaxErrors.Concat(New VBDiagnostic(New DiagnosticInfo(MessageProvider.Instance, ERRID.ERR_ExpectedEOS), importsClausesSyntaxList(1).GetLocation()))
-                        End If
-
-                        Dim import = New GlobalImport(clause, importsClauseArray(i))
-
-                        Dim errors = From diag In syntaxErrors
-                                     Select import.MapDiagnostic(diag)
-
-                        diagnostics.AddRange(errors)
-
-                        If Not errors.Any(Function(diag) diag.Severity = DiagnosticSeverity.Error) Then
-                            ' only add imports without syntax errors.
-                            parsedImportList.Add(import)
-                        End If
-
+                    If importsClausesSyntaxList.Count > 1 Then
+                        ' Only allow one import clause per name. If more than one is found, report "expected end of statement".
+                        syntaxErrors = syntaxErrors.Concat(New VBDiagnostic(New DiagnosticInfo(MessageProvider.Instance, ERRID.ERR_ExpectedEOS), importsClausesSyntaxList(1).GetLocation()))
                     End If
-                Next
 
-                Return parsedImportList.ToArray()
-            Else
-                Return Array.Empty(Of GlobalImport)
-            End If
+                    Dim import = New GlobalImport(clause, importsClauseArray(i))
+
+                    Dim errors = From diag In syntaxErrors
+                                 Select import.MapDiagnostic(diag)
+
+                    diagnostics.AddRange(errors)
+
+                    If Not errors.Any(Function(diag) diag.Severity = DiagnosticSeverity.Error) Then
+                        ' only add imports without syntax errors.
+                        parsedImportList.Add(import)
+                    End If
+
+                End If
+            Next
+
+            Return parsedImportList.ToArray()
         End Function
 
         ''' <summary>

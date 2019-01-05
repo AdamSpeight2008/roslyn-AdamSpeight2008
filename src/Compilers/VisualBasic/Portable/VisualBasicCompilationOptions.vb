@@ -744,14 +744,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">The cryptography key file path. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the public key is different; otherwise current instance.</returns>        
         Public Shadows Function WithCryptoPublicKey(value As ImmutableArray(Of Byte)) As VisualBasicCompilationOptions
-            If value.IsDefault Then
-                value = ImmutableArray(Of Byte).Empty
-            End If
-
-            If value = Me.CryptoPublicKey Then
-                Return Me
-            End If
-
+            If value.IsDefault Then value = ImmutableArray(Of Byte).Empty
+            If value = Me.CryptoPublicKey Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.CryptoPublicKey = value}
         End Function
 
@@ -761,10 +755,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">The delay signing setting. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the delay sign is different; otherwise current instance.</returns>        
         Public Shadows Function WithDelaySign(value As Boolean?) As VisualBasicCompilationOptions
-            If value = Me.DelaySign Then
-                Return Me
-            End If
-
+            If value = Me.DelaySign Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.DelaySign = value}
         End Function
 
@@ -774,18 +765,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">The platform setting. <see cref="Microsoft.CodeAnalysis.Platform"/></param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the platform is different; otherwise current instance.</returns>        
         Public Shadows Function WithPlatform(value As Platform) As VisualBasicCompilationOptions
-            If value = Me.Platform Then
-                Return Me
-            End If
-
+            If value = Me.Platform Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.Platform = value}
         End Function
 
         Public Shadows Function WithPublicSign(value As Boolean) As VisualBasicCompilationOptions
-            If value = Me.PublicSign Then
-                Return Me
-            End If
-
+            If value = Me.PublicSign Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.PublicSign = value}
         End Function
 
@@ -828,10 +813,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">The Report Warning setting. <see cref="Microsoft.CodeAnalysis.ReportDiagnostic"/></param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the report warning is different; otherwise current instance.</returns>        
         Public Shadows Function WithGeneralDiagnosticOption(value As ReportDiagnostic) As VisualBasicCompilationOptions
-            If value = Me.GeneralDiagnosticOption Then
-                Return Me
-            End If
-
+            If value = Me.GeneralDiagnosticOption Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.GeneralDiagnosticOption = value}
         End Function
 
@@ -841,14 +823,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">Specific report warnings. <see cref="Microsoft.CodeAnalysis.ReportDiagnostic"/></param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the dictionary of report warning is different; otherwise current instance.</returns>        
         Public Shadows Function WithSpecificDiagnosticOptions(value As ImmutableDictionary(Of String, ReportDiagnostic)) As VisualBasicCompilationOptions
-            If value Is Nothing Then
-                value = ImmutableDictionary(Of String, ReportDiagnostic).Empty
-            End If
-
-            If value Is Me.SpecificDiagnosticOptions Then
-                Return Me
-            End If
-
+            If value Is Nothing Then value = ImmutableDictionary(Of String, ReportDiagnostic).Empty
+            If value Is Me.SpecificDiagnosticOptions Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.SpecificDiagnosticOptions = value}
         End Function
 
@@ -867,10 +843,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">Report suppressed diagnostics setting.</param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the value is different from the current value; otherwise current instance.</returns>        
         Public Shadows Function WithReportSuppressedDiagnostics(value As Boolean) As VisualBasicCompilationOptions
-            If value = Me.ReportSuppressedDiagnostics Then
-                Return Me
-            End If
-
+            If value = Me.ReportSuppressedDiagnostics Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.ReportSuppressedDiagnostics = value}
         End Function
 
@@ -879,10 +852,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <returns>A new instance of <see cref="VisualBasicCompilationOptions"/>, if the value is different; otherwise the current instance.</returns>        
         Public Shadows Function WithOptimizationLevel(value As OptimizationLevel) As VisualBasicCompilationOptions
-            If value = Me.OptimizationLevel Then
-                Return Me
-            End If
-
+            If value = Me.OptimizationLevel Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.OptimizationLevel = value}
         End Function
 
@@ -891,18 +861,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         ''' <returns>A new instance of <see cref="VisualBasicCompilationOptions"/>, if the value is different; otherwise the current instance.</returns>        
         Public Shadows Function WithMetadataImportOptions(value As MetadataImportOptions) As VisualBasicCompilationOptions
-            If value = Me.MetadataImportOptions Then
-                Return Me
-            End If
-
+            If value = Me.MetadataImportOptions Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.MetadataImportOptions = value}
         End Function
 
         Friend Function WithReferencesSupersedeLowerVersions(value As Boolean) As VisualBasicCompilationOptions
-            If value = Me.ReferencesSupersedeLowerVersions Then
-                Return Me
-            End If
-
+            If value = Me.ReferencesSupersedeLowerVersions Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.ReferencesSupersedeLowerVersions_internal_protected_set = value}
         End Function
 
@@ -912,52 +876,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="options">The parse option setting. <see cref="Microsoft.CodeAnalysis.VisualBasic.VisualBasicParseOptions"/></param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the parse options is different; otherwise current instance.</returns>        
         Public Function WithParseOptions(options As VisualBasicParseOptions) As VisualBasicCompilationOptions
-            If options Is Me.ParseOptions Then
-                Return Me
-            End If
-
+            If options Is Me.ParseOptions Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {._parseOptions = options}
         End Function
 
         Public Shadows Function WithXmlReferenceResolver(resolver As XmlReferenceResolver) As VisualBasicCompilationOptions
-            If resolver Is Me.XmlReferenceResolver Then
-                Return Me
-            End If
-
+            If resolver Is Me.XmlReferenceResolver Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.XmlReferenceResolver = resolver}
         End Function
 
         Public Shadows Function WithSourceReferenceResolver(resolver As SourceReferenceResolver) As VisualBasicCompilationOptions
-            If resolver Is Me.SourceReferenceResolver Then
-                Return Me
-            End If
-
+            If resolver Is Me.SourceReferenceResolver Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.SourceReferenceResolver = resolver}
         End Function
 
         Public Shadows Function WithMetadataReferenceResolver(resolver As MetadataReferenceResolver) As VisualBasicCompilationOptions
-            If resolver Is Me.MetadataReferenceResolver Then
-                Return Me
-            End If
-
+            If resolver Is Me.MetadataReferenceResolver Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.MetadataReferenceResolver = resolver}
         End Function
 
         Public Shadows Function WithAssemblyIdentityComparer(comparer As AssemblyIdentityComparer) As VisualBasicCompilationOptions
             comparer = If(comparer, AssemblyIdentityComparer.Default)
-
-            If comparer Is Me.AssemblyIdentityComparer Then
-                Return Me
-            End If
-
+            If comparer Is Me.AssemblyIdentityComparer Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.AssemblyIdentityComparer = comparer}
         End Function
 
         Public Shadows Function WithStrongNameProvider(provider As StrongNameProvider) As VisualBasicCompilationOptions
-            If provider Is Me.StrongNameProvider Then
-                Return Me
-            End If
-
+            If provider Is Me.StrongNameProvider Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.StrongNameProvider = provider}
         End Function
 
@@ -997,57 +942,43 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return WithStrongNameProvider(provider)
         End Function
 
+
+        Private Function InvalidSwitch(SwitchName As String, SwitchValue As String) As Diagnostic
+           return Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, SwitchName,SwitchValue)
+        End Function
         Friend Overrides Sub ValidateOptions(builder As ArrayBuilder(Of Diagnostic))
             ValidateOptions(builder, MessageProvider.Instance)
 
-            If ParseOptions IsNot Nothing Then
-                builder.AddRange(ParseOptions.Errors)
-            End If
+            If ParseOptions IsNot Nothing Then builder.AddRange(ParseOptions.Errors)
 
             If Me.EmbedVbCoreRuntime AndAlso Me.OutputKind.IsNetModule() Then
                 builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_VBCoreNetModuleConflict))
             End If
 
-            If Not Platform.IsValid() Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(Platform), Platform.ToString()))
-            End If
+            If Not Platform.IsValid() Then builder.Add(InvalidSwitch(NameOf(Platform), Platform.ToString()))
 
             If ModuleName IsNot Nothing Then
                 MetadataHelpers.CheckAssemblyOrModuleName(ModuleName, MessageProvider.Instance, ERRID.ERR_BadModuleName, builder)
             End If
 
-            If Not OutputKind.IsValid() Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(OutputKind), OutputKind.ToString()))
-            End If
+            If Not OutputKind.IsValid() Then builder.Add(InvalidSwitch(NameOf(OutputKind), OutputKind.ToString()))
 
-            If Not OptimizationLevel.IsValid() Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(OptimizationLevel), OptimizationLevel.ToString()))
-            End If
+            If Not OptimizationLevel.IsValid() Then builder.Add(InvalidSwitch(NameOf(OptimizationLevel), OptimizationLevel.ToString()))
 
-            If ScriptClassName Is Nothing OrElse Not ScriptClassName.IsValidClrTypeName() Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(ScriptClassName), If(ScriptClassName, "Nothing")))
-            End If
+            If ScriptClassName Is Nothing OrElse Not ScriptClassName.IsValidClrTypeName() Then builder.Add(InvalidSwitch(NameOf(ScriptClassName), If(ScriptClassName, "Nothing")))
 
-            If MainTypeName IsNot Nothing AndAlso Not MainTypeName.IsValidClrTypeName() Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(MainTypeName), MainTypeName))
-            End If
+            If MainTypeName IsNot Nothing AndAlso Not MainTypeName.IsValidClrTypeName() Then builder.Add(InvalidSwitch(NameOf(MainTypeName), MainTypeName))
 
-            If Not String.IsNullOrEmpty(RootNamespace) AndAlso Not OptionsValidator.IsValidNamespaceName(RootNamespace) Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(RootNamespace), RootNamespace))
-            End If
+            If Not String.IsNullOrEmpty(RootNamespace) AndAlso Not OptionsValidator.IsValidNamespaceName(RootNamespace) Then builder.Add(InvalidSwitch(NameOf(RootNamespace), RootNamespace))
 
-            If Not OptionStrict.IsValid Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(OptionStrict), OptionStrict.ToString()))
-            End If
+            If Not OptionStrict.IsValid Then builder.Add(InvalidSwitch(NameOf(OptionStrict), OptionStrict.ToString()))
 
             If Platform = Platform.AnyCpu32BitPreferred AndAlso OutputKind.IsValid() AndAlso
                  Not (OutputKind = OutputKind.ConsoleApplication OrElse OutputKind = OutputKind.WindowsApplication OrElse OutputKind = OutputKind.WindowsRuntimeApplication) Then
                 builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_LibAnycpu32bitPreferredConflict, NameOf(Platform), Platform.ToString()))
             End If
 
-            If Not MetadataImportOptions.IsValid() Then
-                builder.Add(Diagnostic.Create(MessageProvider.Instance, ERRID.ERR_InvalidSwitchValue, NameOf(MetadataImportOptions), MetadataImportOptions.ToString()))
-            End If
+            If Not MetadataImportOptions.IsValid() Then builder.Add(InvalidSwitch(NameOf(MetadataImportOptions), MetadataImportOptions.ToString()))
 
             ' TODO: add check for 
             '          (kind == 'arm' || kind == 'appcontainer' || kind == 'winmdobj') &&
@@ -1060,13 +991,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="other">A VisualBasicCompilationOptions to compare with this object</param>
         ''' <returns>A boolean value.  True if the current object is equal to the other parameter; otherwise, False.</returns>
         Public Overloads Function Equals(other As VisualBasicCompilationOptions) As Boolean Implements IEquatable(Of VisualBasicCompilationOptions).Equals
-            If Me Is other Then
-                Return True
-            End If
-
-            If Not MyBase.EqualsHelper(other) Then
-                Return False
-            End If
+            If Me Is other Then Return True
+            If Not MyBase.EqualsHelper(other) Then Return False
 
             Return If(Me.GlobalImports.IsDefault, other.GlobalImports.IsDefault, Me.GlobalImports.SequenceEqual(other.GlobalImports)) AndAlso
                    String.Equals(Me.RootNamespace, other.RootNamespace, StringComparison.Ordinal) AndAlso

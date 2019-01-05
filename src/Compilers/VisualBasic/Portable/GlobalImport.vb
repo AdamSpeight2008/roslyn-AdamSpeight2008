@@ -15,13 +15,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Implements IEquatable(Of GlobalImport)
 
         Private ReadOnly _clause As SyntaxReference
-        Private ReadOnly _importedName As String
 
         Friend Sub New(clause As ImportsClauseSyntax, importedName As String)
             Debug.Assert(clause IsNot Nothing)
             Debug.Assert(importedName IsNot Nothing)
             _clause = clause.SyntaxTree.GetReference(clause)
-            _importedName = importedName
+            Name = importedName
         End Sub
 
         ''' <summary>
@@ -43,10 +42,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' The import name.
         ''' </summary>
         Public ReadOnly Property Name As String
-            Get
-                Return _importedName
-            End Get
-        End Property
 
         ''' <summary>
         ''' Parses a specified string to create a GlobalImport instance.
@@ -108,22 +103,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' Map a diagnostic to the diagnostic we want to give.
         Friend Function MapDiagnostic(unmappedDiag As Diagnostic) As Diagnostic
             If unmappedDiag.Code = ERRID.WRN_UndefinedOrEmptyNamespaceOrClass1 Then
-                Return New VBDiagnostic(ErrorFactory.ErrorInfo(ERRID.WRN_UndefinedOrEmptyProjectNamespaceOrClass1, _importedName), NoLocation.Singleton)
+                Return New VBDiagnostic(ErrorFactory.ErrorInfo(ERRID.WRN_UndefinedOrEmptyProjectNamespaceOrClass1, Name), NoLocation.Singleton)
             Else
                 ' Determine the text of the import, plus the startIndex/length within that text
                 ' that the error is.
                 Dim unmappedSpan = unmappedDiag.Location.SourceSpan
                 Dim startindex = unmappedSpan.Start - _clause.Span.Start
                 Dim length = unmappedSpan.Length
-                If (startindex < 0 OrElse length <= 0 OrElse startindex >= _importedName.Length) Then
+                If (startindex < 0 OrElse length <= 0 OrElse startindex >= Name.Length) Then
                     ' startIndex, length are bad for some reason. Used the whole import text instead.
                     startindex = 0
-                    length = _importedName.Length
+                    length = Name.Length
                 End If
-                length = Math.Min(_importedName.Length - startindex, length)
+                length = Math.Min(Name.Length - startindex, length)
 
                 ' Create a diagnostic with no location that wrapped the actual parser diagnostic.
-                Return New VBDiagnostic(New ImportDiagnosticInfo(DirectCast(unmappedDiag, DiagnosticWithInfo).Info, _importedName, startindex, length), NoLocation.Singleton)
+                Return New VBDiagnostic(New ImportDiagnosticInfo(DirectCast(unmappedDiag, DiagnosticWithInfo).Info, Name, startindex, length), NoLocation.Singleton)
             End If
         End Function
 

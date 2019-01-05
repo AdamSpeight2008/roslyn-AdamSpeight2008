@@ -39,16 +39,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="symbols">An ImmutableArray of KeyValue pairs representing existing symbols.</param>
         ''' <returns>Array of symbols that include VBC_VER and TARGET.</returns>
         Public Function AddPredefinedPreprocessorSymbols(kind As OutputKind, symbols As ImmutableArray(Of KeyValuePair(Of String, Object))) As ImmutableArray(Of KeyValuePair(Of String, Object))
-            If Not kind.IsValid Then
-                Throw New ArgumentOutOfRangeException(NameOf(kind))
-            End If
-
-            Const CompilerVersionSymbol = "VBC_VER"
+            If Not kind.IsValid Then Throw New ArgumentOutOfRangeException(NameOf(kind))
+             Const CompilerVersionSymbol = "VBC_VER"
             Const TargetSymbol = "TARGET"
 
-            If symbols.IsDefault Then
-                symbols = ImmutableArray(Of KeyValuePair(Of String, Object)).Empty
-            End If
+            If symbols.IsDefault Then symbols = ImmutableArray(Of KeyValuePair(Of String, Object)).Empty
 
             If symbols.FirstOrDefault(Function(entry) IdentifierComparison.Equals(entry.Key, CompilerVersionSymbol)).Key Is Nothing Then
                 ' This number should always line up with the current version of the compilerString

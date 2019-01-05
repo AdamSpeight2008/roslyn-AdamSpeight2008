@@ -1,126 +1,109 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-Imports Microsoft.CodeAnalysis.Text
-Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
-Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic
+  Friend NotInheritable Class StringConstants
+    Private Sub New()
+    End Sub
 
-    Friend NotInheritable Class StringConstants
+    #Region "non localizable strings"
+    Friend Const AnonymousMethodName                        = "<anonymous method>"
+    Friend Const AnonymousTypeName                          = "<anonymous type>"
+    Friend Const AsEnumerableMethod                         = "AsEnumerable"
+    Friend Const AsQueryableMethod                          = "AsQueryable"
+    Friend Const CastMethod                                 = "Cast"
+    Friend Const DelegateConstructorInstanceParameterName   = "TargetObject"
+    Friend Const DelegateConstructorMethodParameterName     = "TargetMethod"
+    Friend Const DelegateMethodCallbackParameterName        = "DelegateCallback"
+    Friend Const DelegateMethodInstanceParameterName        = "DelegateAsyncState"
+    Friend Const DelegateMethodResultParameterName          = "DelegateAsyncResult"
+    Friend Const DelegateStubParameterPrefix                = "a"
+    Friend Const DistinctMethod                             = "Distinct"
+    Friend Const ElementAtMethod                            = "ElementAtOrDefault"
+    Friend Const Group                                      = "$VB$Group"
+    Friend Const GroupByMethod                              = "GroupBy"
+    Friend Const GroupJoinMethod                            = "GroupJoin"
+    Friend Const It                                         = "$VB$It"
+    Friend Const It1                                        = "$VB$It1"
+    Friend Const It2                                        = "$VB$It2"
+    Friend Const ItAnonymous                                = "$VB$ItAnonymous"
+    Friend Const JoinMethod                                 = "Join"
+    Friend Const Lambda                                     = "Lambda"
+    Friend Const NamedSymbolErrorName                       = "?"
+    Friend Const OrderByDescendingMethod                    = "OrderByDescending"
+    Friend Const OrderByMethod                              = "OrderBy"
+    Friend Const SelectManyMethod                           = "SelectMany"
+    Friend Const SelectMethod                               = "Select"
+    Friend Const SkipMethod                                 = "Skip"
+    Friend Const SkipWhileMethod                            = "SkipWhile"
+    Friend Const TakeMethod                                 = "Take"
+    Friend Const TakeWhileMethod                            = "TakeWhile"
+    Friend Const ThenByDescendingMethod                     = "ThenByDescending"
+    Friend Const ThenByMethod                               = "ThenBy"
+    Friend Const UnnamedNamespaceErrName                    = "<Default>"
+    Friend Const WhereMethod                                = "Where"
+    #End Region
+    ' EE recognized names (prefixes):
+    Friend Const ClosureVariablePrefix                      = "$VB$Closure_"
+    Friend Const DisplayClassPrefix                         = "_Closure$__"
+    Friend Const HoistedMeName                              = "$VB$Me"
+    Friend Const HoistedUserVariablePrefix                  = "$VB$Local_"
+    Friend Const HoistedSpecialVariablePrefix               = "$VB$NonLocal_" ' prefixes Me and Closure variables when hoisted
+    Friend Const HoistedWithLocalPrefix                     = "$W"
+    Friend Const StateMachineHoistedUserVariablePrefix      = "$VB$ResumableLocal_"
+    Friend Const StateMachineTypeNamePrefix                 = "VB$StateMachine_"
+    
+    ' Do not change the following strings. Other teams (FxCop) use this string to identify lambda functions in its analysis
+    ' If you have to change this string, please contact the VB language PM and consider the impact of that break.
+    Friend Const BaseMethodWrapperNamePrefix                = "$VB$ClosureStub_"
+    Friend Const DisplayClassGenericParameterNamePrefix     = "$CLS"
+    Friend Const LambdaMethodNamePrefix                     = "_Lambda$__"
 
-        Private Sub New()
-        End Sub
+    #Region "Dependant String: Microsoft.VisualStudio.VIL.VisualStudioHost.AsyncReturnStackFrame"
+    Friend Const AutoPropertyValueParameterName             = "AutoPropertyValue"
+    Friend Const DefaultXmlnsPrefix                         = ""
+    Friend Const DefaultXmlNamespace                        = ""    
+    Friend Const DelegateRelaxationDisplayClassPrefix       = DisplayClassPrefix & "R"
+    Friend Const DelegateRelaxationMethodNamePrefix         = LambdaMethodNamePrefix & "R"
+    Friend Const DelegateRelaxationCacheFieldPrefix         = "$IR"
+    Friend Const HoistedSynthesizedLocalPrefix              = "$S"
+    Friend Const IteratorCurrentFieldName                   = "$Current"
+    Friend Const IteratorInitialThreadIdName                = "$InitialThreadId"
+    Friend Const IteratorParameterProxyPrefix               = "$P_"
+    Friend Const LambdaCacheFieldPrefix                     = "$I"
+    Friend Const PropertyGetPrefix                          = "get_"
+    Friend Const PropertySetPrefix                          = "set_"
+    Friend Const ReusableHoistedLocalFieldName              = "$U"
+    Friend Const StateMachineAwaiterFieldPrefix             = "$A"
+    Friend Const StateMachineExpressionCapturePrefix        = "$V"
+    Friend Const StateMachineBuilderFieldName               = "$Builder"
+    Friend Const StateMachineStateFieldName                 = "$State"
+    Friend Const StateMachineTypeParameterPrefix            = "SM$"
+    Friend Const StaticLocalFieldNamePrefix                 = "$STATIC$"    
+    Friend Const ValueParameterName                         = "Value"   
+    Friend Const ValueProperty                              = "Value"
+    Friend Const WinMdPropertySetPrefix                     = "put_"    
+    Friend Const WithEventsValueParameterName               = "WithEventsValue"    
+    Friend Const XmlPrefix                                  = "xml"
+    Friend Const XmlNamespace                               = "http://www.w3.org/XML/1998/namespace"
+    Friend Const XmlnsPrefix                                = "xmlns"
+    Friend Const XmlnsNamespace                             = "http://www.w3.org/2000/xmlns/"
+    Friend Const XmlAddMethodName                           = "Add"
+    Friend Const XmlGetMethodName                           = "Get"
+    Friend Const XmlElementsMethodName                      = "Elements"
+    Friend Const XmlDescendantsMethodName                   = "Descendants"
+    Friend Const XmlAttributeValueMethodName                = "AttributeValue"
+    Friend Const XmlCreateAttributeMethodName               = "CreateAttribute"
+    Friend Const XmlCreateNamespaceAttributeMethodName      = "CreateNamespaceAttribute"
+    Friend Const XmlRemoveNamespaceAttributesMethodName     = "RemoveNamespaceAttributes"
+    #End Region
+  End Class
 
-        ' non localizable strings
-        Friend Const AnonymousTypeName As String = "<anonymous type>"
-        Friend Const AnonymousMethodName As String = "<anonymous method>"
-        Friend Const AsEnumerableMethod As String = "AsEnumerable"
-        Friend Const AsQueryableMethod As String = "AsQueryable"
-        Friend Const DistinctMethod As String = "Distinct"
-        Friend Const CastMethod As String = "Cast"
-        Friend Const DelegateConstructorInstanceParameterName As String = "TargetObject"
-        Friend Const DelegateConstructorMethodParameterName As String = "TargetMethod"
-        Friend Const DelegateMethodCallbackParameterName As String = "DelegateCallback"
-        Friend Const DelegateMethodInstanceParameterName As String = "DelegateAsyncState"
-        Friend Const DelegateMethodResultParameterName As String = "DelegateAsyncResult"
-        Friend Const DelegateStubParameterPrefix As String = "a"
-        Friend Const ElementAtMethod As String = "ElementAtOrDefault"
-        Friend Const Group As String = "$VB$Group"
-        Friend Const GroupByMethod As String = "GroupBy"
-        Friend Const GroupJoinMethod As String = "GroupJoin"
-        Friend Const It As String = "$VB$It"
-        Friend Const It1 As String = "$VB$It1"
-        Friend Const It2 As String = "$VB$It2"
-        Friend Const ItAnonymous As String = "$VB$ItAnonymous"
-        Friend Const JoinMethod As String = "Join"
-        Friend Const Lambda As String = "Lambda"
-        Friend Const NamedSymbolErrorName As String = "?"
-        Friend Const OrderByDescendingMethod As String = "OrderByDescending"
-        Friend Const OrderByMethod As String = "OrderBy"
-        Friend Const SelectManyMethod As String = "SelectMany"
-        Friend Const SelectMethod As String = "Select"
-        Friend Const SkipMethod As String = "Skip"
-        Friend Const SkipWhileMethod As String = "SkipWhile"
-        Friend Const TakeMethod As String = "Take"
-        Friend Const TakeWhileMethod As String = "TakeWhile"
-        Friend Const ThenByDescendingMethod As String = "ThenByDescending"
-        Friend Const ThenByMethod As String = "ThenBy"
-        Friend Const UnnamedNamespaceErrName As String = "<Default>"
-        Friend Const WhereMethod As String = "Where"
+  Friend Module Constants
+    Friend Const ATTACH_LISTENER_PREFIX = "add_"
+    Friend Const REMOVE_LISTENER_PREFIX = "remove_"
+    Friend Const FIRE_LISTENER_PREFIX   = "raise_"
+    Friend Const EVENT_DELEGATE_SUFFIX  = "EventHandler"
+    Friend Const EVENT_VARIABLE_SUFFIX  = "Event"
+  End Module
 
-        ' EE recognized names (prefixes):
-        Friend Const HoistedMeName As String = "$VB$Me"
-        Friend Const HoistedUserVariablePrefix As String = "$VB$Local_"
-        Friend Const HoistedSpecialVariablePrefix As String = "$VB$NonLocal_" ' prefixes Me and Closure variables when hoisted
-        Friend Const HoistedWithLocalPrefix As String = "$W"
-        Friend Const StateMachineHoistedUserVariablePrefix As String = "$VB$ResumableLocal_"
-        Friend Const ClosureVariablePrefix As String = "$VB$Closure_"
-        Friend Const DisplayClassPrefix As String = "_Closure$__"
-        Friend Const StateMachineTypeNamePrefix As String = "VB$StateMachine_"
-
-        ' Do not change the following strings. Other teams (FxCop) use this string to identify lambda functions in its analysis
-        ' If you have to change this string, please contact the VB language PM and consider the impact of that break.
-        Friend Const LambdaMethodNamePrefix As String = "_Lambda$__"
-        Friend Const DisplayClassGenericParameterNamePrefix As String = "$CLS"
-        Friend Const BaseMethodWrapperNamePrefix As String = "$VB$ClosureStub_"
-
-        ' Microsoft.VisualStudio.VIL.VisualStudioHost.AsyncReturnStackFrame depends on these names.
-        Friend Const StateMachineBuilderFieldName As String = "$Builder"
-        Friend Const StateMachineStateFieldName As String = "$State"
-
-        Friend Const DelegateRelaxationDisplayClassPrefix As String = DisplayClassPrefix & "R"
-        Friend Const DelegateRelaxationMethodNamePrefix As String = LambdaMethodNamePrefix & "R"
-        Friend Const HoistedSynthesizedLocalPrefix As String = "$S"
-        Friend Const LambdaCacheFieldPrefix As String = "$I"
-        Friend Const DelegateRelaxationCacheFieldPrefix As String = "$IR"
-        Friend Const StateMachineAwaiterFieldPrefix As String = "$A"
-        Friend Const ReusableHoistedLocalFieldName As String = "$U"
-        Friend Const StateMachineExpressionCapturePrefix As String = "$V"
-
-        Friend Const StateMachineTypeParameterPrefix As String = "SM$"
-
-        Friend Const IteratorCurrentFieldName As String = "$Current"
-        Friend Const IteratorInitialThreadIdName As String = "$InitialThreadId"
-        Friend Const IteratorParameterProxyPrefix As String = "$P_"
-
-        Friend Const StaticLocalFieldNamePrefix = "$STATIC$"
-
-        Friend Const PropertyGetPrefix As String = "get_"
-        Friend Const PropertySetPrefix As String = "set_"
-        Friend Const WinMdPropertySetPrefix As String = "put_"
-
-        Friend Const ValueParameterName As String = "Value"
-        Friend Const WithEventsValueParameterName As String = "WithEventsValue"
-        Friend Const AutoPropertyValueParameterName As String = "AutoPropertyValue"
-
-        Friend Const DefaultXmlnsPrefix As String = ""
-        Friend Const DefaultXmlNamespace As String = ""
-        Friend Const XmlPrefix As String = "xml"
-        Friend Const XmlNamespace As String = "http://www.w3.org/XML/1998/namespace"
-        Friend Const XmlnsPrefix As String = "xmlns"
-        Friend Const XmlnsNamespace As String = "http://www.w3.org/2000/xmlns/"
-
-        Friend Const XmlAddMethodName As String = "Add"
-        Friend Const XmlGetMethodName As String = "Get"
-        Friend Const XmlElementsMethodName As String = "Elements"
-        Friend Const XmlDescendantsMethodName As String = "Descendants"
-        Friend Const XmlAttributeValueMethodName As String = "AttributeValue"
-        Friend Const XmlCreateAttributeMethodName As String = "CreateAttribute"
-        Friend Const XmlCreateNamespaceAttributeMethodName As String = "CreateNamespaceAttribute"
-        Friend Const XmlRemoveNamespaceAttributesMethodName As String = "RemoveNamespaceAttributes"
-
-        Friend Const ValueProperty As String = "Value"
-
-    End Class
-
-    Friend Module Constants
-        Friend Const ATTACH_LISTENER_PREFIX As String = "add_"
-
-        Friend Const REMOVE_LISTENER_PREFIX As String = "remove_"
-
-        Friend Const FIRE_LISTENER_PREFIX As String = "raise_"
-
-        Friend Const EVENT_DELEGATE_SUFFIX As String = "EventHandler"
-
-        Friend Const EVENT_VARIABLE_SUFFIX As String = "Event"
-    End Module
 End Namespace

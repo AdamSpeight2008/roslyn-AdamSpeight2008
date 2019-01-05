@@ -14,7 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Inherits ParseOptions
         Implements IEquatable(Of VisualBasicParseOptions)
 
-        Public Shared ReadOnly Property [Default] As VisualBasicParseOptions = New VisualBasicParseOptions()
+        Public Shared ReadOnly Property [Default] As New VisualBasicParseOptions()
         Private Shared s_defaultPreprocessorSymbols As ImmutableArray(Of KeyValuePair(Of String, Object))
 
         Private _features As ImmutableDictionary(Of String, String)
@@ -189,14 +189,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="symbols">An ImmutableArray of KeyValuePair representing pre-processor symbols.</param>
         ''' <returns>A new instance of VisualBasicParseOptions.</returns>
         Public Shadows Function WithPreprocessorSymbols(symbols As ImmutableArray(Of KeyValuePair(Of String, Object))) As VisualBasicParseOptions
-            If symbols.IsDefault Then
-                symbols = ImmutableArray(Of KeyValuePair(Of String, Object)).Empty
-            End If
-
-            If symbols.Equals(Me.PreprocessorSymbols) Then
-                Return Me
-            End If
-
+            If symbols.IsDefault Then symbols = ImmutableArray(Of KeyValuePair(Of String, Object)).Empty
+            If symbols.Equals(PreprocessorSymbols) Then Return Me
             Return New VisualBasicParseOptions(Me) With {._preprocessorSymbols = symbols}
         End Function
 
@@ -227,11 +221,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </summary>
         Public Shadows Function WithFeatures(features As IEnumerable(Of KeyValuePair(Of String, String))) As VisualBasicParseOptions
             ' there are currently no parse options for experimental features
-            If features Is Nothing Then
-                Return New VisualBasicParseOptions(Me) With {._features = ImmutableDictionary(Of String, String).Empty}
-            Else
-                Return New VisualBasicParseOptions(Me) With {._features = features.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase)}
-            End If
+            Return New VisualBasicParseOptions(Me) With 
+            { ._features = If(features Is Nothing, ImmutableDictionary(Of String, String).Empty, 
+                              features.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase))}
         End Function
 
         Public Overrides ReadOnly Property Features As IReadOnlyDictionary(Of String, String)
@@ -272,22 +264,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="other">An VisualBasicParseOptions object to compare with this object</param>
         ''' <returns>A boolean value.  True if the current object is equal to the other parameter; otherwise, False.</returns>
         Public Overloads Function Equals(other As VisualBasicParseOptions) As Boolean Implements IEquatable(Of VisualBasicParseOptions).Equals
-            If Me Is other Then
-                Return True
-            End If
-
-            If Not MyBase.EqualsHelper(other) Then
-                Return False
-            End If
-
-            If Me.SpecifiedLanguageVersion <> other.SpecifiedLanguageVersion Then
-                Return False
-            End If
-
-            If Not Me.PreprocessorSymbols.SequenceEqual(other.PreprocessorSymbols) Then
-                Return False
-            End If
-
+            If Me Is other Then Return True
+            If Not MyBase.EqualsHelper(other) Then Return False
+            If Me.SpecifiedLanguageVersion <> other.SpecifiedLanguageVersion Then Return False
+            If Not Me.PreprocessorSymbols.SequenceEqual(other.PreprocessorSymbols) Then Return False
             Return True
         End Function
 

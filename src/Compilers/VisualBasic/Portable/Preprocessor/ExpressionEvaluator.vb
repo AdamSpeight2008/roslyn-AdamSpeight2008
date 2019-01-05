@@ -20,22 +20,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Shared Sub New()
 
-            Const _____Byte = CType(SpecialType.System_Byte, Byte)
-            Const ____SByte = CType(SpecialType.System_SByte, Byte)
-            Const ____Int16 = CType(SpecialType.System_Int16, Byte)
-            Const ___UInt16 = CType(SpecialType.System_UInt16, Byte)
-            Const ____Int32 = CType(SpecialType.System_Int32, Byte)
-            Const ___UInt32 = CType(SpecialType.System_UInt32, Byte)
-            Const ____Int64 = CType(SpecialType.System_Int64, Byte)
-            Const ___UInt64 = CType(SpecialType.System_UInt64, Byte)
-            Const ___Single = CType(SpecialType.System_Single, Byte)
-            Const ___Double = CType(SpecialType.System_Double, Byte)
-            Const __Decimal = CType(SpecialType.System_Decimal, Byte)
+            Const _____Byte = CType(SpecialType.System_Byte,     Byte)
+            Const ____SByte = CType(SpecialType.System_SByte,    Byte)
+            Const ____Int16 = CType(SpecialType.System_Int16,    Byte)
+            Const ___UInt16 = CType(SpecialType.System_UInt16,   Byte)
+            Const ____Int32 = CType(SpecialType.System_Int32,    Byte)
+            Const ___UInt32 = CType(SpecialType.System_UInt32,   Byte)
+            Const ____Int64 = CType(SpecialType.System_Int64,    Byte)
+            Const ___UInt64 = CType(SpecialType.System_UInt64,   Byte)
+            Const ___Single = CType(SpecialType.System_Single,   Byte)
+            Const ___Double = CType(SpecialType.System_Double,   Byte)
+            Const __Decimal = CType(SpecialType.System_Decimal,  Byte)
             Const _DateTime = CType(SpecialType.System_DateTime, Byte)
-            Const _____Char = CType(SpecialType.System_Char, Byte)
-            Const __Boolean = CType(SpecialType.System_Boolean, Byte)
-            Const ___String = CType(SpecialType.System_String, Byte)
-            Const ___Object = CType(SpecialType.System_Object, Byte)
+            Const _____Char = CType(SpecialType.System_Char,     Byte)
+            Const __Boolean = CType(SpecialType.System_Boolean,  Byte)
+            Const ___String = CType(SpecialType.System_String,   Byte)
+            Const ___Object = CType(SpecialType.System_Object,   Byte)
 
             '    _____Byte, ____SByte, ____Int16, ___UInt16, ____Int32, ___UInt32, ____Int64, ___UInt64, ___Single, ___Double, __Decimal, _DateTime, _____Char, __Boolean, ___String, ___Object
             s_dominantType =
@@ -70,71 +70,47 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Shared Function TypeCodeToDominantTypeIndex(specialType As SpecialType) As Integer
             Select Case specialType
-                Case SpecialType.System_Byte
-                    Return 0
-                Case SpecialType.System_SByte
-                    Return 1
-                Case SpecialType.System_Int16
-                    Return 2
-                Case SpecialType.System_UInt16
-                    Return 3
-                Case SpecialType.System_Int32
-                    Return 4
-                Case SpecialType.System_UInt32
-                    Return 5
-                Case SpecialType.System_Int64
-                    Return 6
-                Case SpecialType.System_UInt64
-                    Return 7
-                Case SpecialType.System_Single
-                    Return 8
-                Case SpecialType.System_Double
-                    Return 9
-                Case SpecialType.System_Decimal
-                    Return 10
-                Case SpecialType.System_DateTime
-                    Return 11
-                Case SpecialType.System_Char
-                    Return 12
-                Case SpecialType.System_Boolean
-                    Return 13
-                Case SpecialType.System_String
-                    Return 14
-                Case SpecialType.System_Object
-                    Return 15
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(specialType)
+                Case SpecialType.System_Byte        : Return 0
+                Case SpecialType.System_SByte       : Return 1
+                Case SpecialType.System_Int16       : Return 2
+                Case SpecialType.System_UInt16      : Return 3
+                Case SpecialType.System_Int32       : Return 4
+                Case SpecialType.System_UInt32      : Return 5
+                Case SpecialType.System_Int64       : Return 6
+                Case SpecialType.System_UInt64      : Return 7
+                Case SpecialType.System_Single      : Return 8
+                Case SpecialType.System_Double      : Return 9
+                Case SpecialType.System_Decimal     : Return 10
+                Case SpecialType.System_DateTime    : Return 11
+                Case SpecialType.System_Char        : Return 12
+                Case SpecialType.System_Boolean     : Return 13
+                Case SpecialType.System_String      : Return 14
+                Case SpecialType.System_Object      : Return 15
             End Select
+            Throw ExceptionUtilities.UnexpectedValue(specialType)
         End Function
 
         Private Sub New(symbols As ImmutableDictionary(Of String, CConst))
             _symbols = symbols
         End Sub
 
-        Public Shared Function EvaluateCondition(expr As ExpressionSyntax,
-                    Optional symbols As ImmutableDictionary(Of String, CConst) = Nothing) As CConst
+        Public Shared Function EvaluateCondition(
+                                                  expr As ExpressionSyntax,
+                                         Optional symbols As ImmutableDictionary(Of String, CConst) = Nothing
+                                                ) As CConst
 
-            If expr.ContainsDiagnostics Then
-                Return New BadCConst(0)
-            End If
-
+            If expr.ContainsDiagnostics Then Return New BadCConst(0)
             Dim value = EvaluateExpression(expr, symbols)
-            If value.IsBad Then
-                Return value
-            End If
-
+            If value.IsBad Then Return value
             Return ConvertToBool(value, expr)
         End Function
 
-        Public Shared Function EvaluateExpression(expr As ExpressionSyntax,
-                                                  Optional symbols As ImmutableDictionary(Of String, CConst) = Nothing) As CConst
-
-            If expr.ContainsDiagnostics Then
-                Return New BadCConst(0)
-            End If
-
+        Public Shared Function EvaluateExpression(
+                                                   expr As ExpressionSyntax,
+                                          Optional symbols As ImmutableDictionary(Of String, CConst) = Nothing
+                                                 ) As CConst
+            If expr.ContainsDiagnostics Then Return New BadCConst(0)
             Dim eval As New ExpressionEvaluator(symbols)
-
             Return eval.EvaluateExpressionInternal(expr)
         End Function
 
@@ -143,12 +119,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Select Case expr.Kind
                 Case SyntaxKind.TrueLiteralExpression,
-                    SyntaxKind.FalseLiteralExpression,
-                    SyntaxKind.CharacterLiteralExpression,
-                    SyntaxKind.DateLiteralExpression,
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxKind.NothingLiteralExpression,
-                    SyntaxKind.StringLiteralExpression
+                     SyntaxKind.FalseLiteralExpression,
+                     SyntaxKind.CharacterLiteralExpression,
+                     SyntaxKind.DateLiteralExpression,
+                     SyntaxKind.NumericLiteralExpression,
+                     SyntaxKind.NothingLiteralExpression,
+                     SyntaxKind.StringLiteralExpression
 
                     Return EvaluateLiteralExpression(DirectCast(expr, LiteralExpressionSyntax))
 
@@ -177,26 +153,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Return EvaluateUnaryExpression(DirectCast(expr, UnaryExpressionSyntax))
 
                 Case SyntaxKind.AddExpression,
-                    SyntaxKind.SubtractExpression,
-                    SyntaxKind.MultiplyExpression,
-                    SyntaxKind.DivideExpression,
-                    SyntaxKind.IntegerDivideExpression,
-                    SyntaxKind.ModuloExpression,
-                    SyntaxKind.ExponentiateExpression,
-                    SyntaxKind.EqualsExpression,
-                    SyntaxKind.NotEqualsExpression,
-                    SyntaxKind.LessThanExpression,
-                    SyntaxKind.GreaterThanExpression,
-                    SyntaxKind.LessThanOrEqualExpression,
-                    SyntaxKind.GreaterThanOrEqualExpression,
-                    SyntaxKind.ConcatenateExpression,
-                    SyntaxKind.AndExpression,
-                    SyntaxKind.OrExpression,
-                    SyntaxKind.ExclusiveOrExpression,
-                    SyntaxKind.AndAlsoExpression,
-                    SyntaxKind.OrElseExpression,
-                    SyntaxKind.LeftShiftExpression,
-                    SyntaxKind.RightShiftExpression
+                     SyntaxKind.SubtractExpression,
+                     SyntaxKind.MultiplyExpression,
+                     SyntaxKind.DivideExpression,
+                     SyntaxKind.IntegerDivideExpression,
+                     SyntaxKind.ModuloExpression,
+                     SyntaxKind.ExponentiateExpression,
+                     SyntaxKind.EqualsExpression,
+                     SyntaxKind.NotEqualsExpression,
+                     SyntaxKind.LessThanExpression,
+                     SyntaxKind.GreaterThanExpression,
+                     SyntaxKind.LessThanOrEqualExpression,
+                     SyntaxKind.GreaterThanOrEqualExpression,
+                     SyntaxKind.ConcatenateExpression,
+                     SyntaxKind.AndExpression,
+                     SyntaxKind.OrExpression,
+                     SyntaxKind.ExclusiveOrExpression,
+                     SyntaxKind.AndAlsoExpression,
+                     SyntaxKind.OrElseExpression,
+                     SyntaxKind.LeftShiftExpression,
+                     SyntaxKind.RightShiftExpression
 
                     Return EvaluateBinaryExpression(DirectCast(expr, BinaryExpressionSyntax))
 
@@ -297,109 +273,50 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Shared Function GetDisplayString(typeChar As TypeCharacter) As String
             Select Case typeChar
-                Case TypeCharacter.Integer
-                    Return "%"
-
-                Case TypeCharacter.Long
-                    Return "&"
-
-                Case TypeCharacter.Decimal
-                    Return "@"
-
-                Case TypeCharacter.Single
-                    Return "!"
-
-                Case TypeCharacter.Double
-                    Return "#"
-
-                Case TypeCharacter.String
-                    Return "$"
-
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(typeChar)
+                Case TypeCharacter.Integer  : Return "%"
+                Case TypeCharacter.Long     : Return "&"
+                Case TypeCharacter.Decimal  : Return "@"
+                Case TypeCharacter.Single   : Return "!"
+                Case TypeCharacter.Double   : Return "#"
+                Case TypeCharacter.String   : Return "$"
             End Select
+            Throw ExceptionUtilities.UnexpectedValue(typeChar)
         End Function
 
         Private Shared Function AsTypeCharacter(specialType As SpecialType) As TypeCharacter
             Select Case specialType
-                Case SpecialType.System_Int32
-                    Return TypeCharacter.Integer
-
-                Case SpecialType.System_Int64
-                    Return TypeCharacter.Long
-
-                Case SpecialType.System_Decimal
-                    Return TypeCharacter.Decimal
-
-                Case SpecialType.System_Single
-                    Return TypeCharacter.Single
-
-                Case SpecialType.System_Double
-                    Return TypeCharacter.Double
-
-                Case SpecialType.System_String
-                    Return TypeCharacter.String
-
-                Case Else
-                    Return TypeCharacter.None
+                Case SpecialType.System_Int32   : Return TypeCharacter.Integer
+                Case SpecialType.System_Int64   : Return TypeCharacter.Long
+                Case SpecialType.System_Decimal : Return TypeCharacter.Decimal
+                Case SpecialType.System_Single  : Return TypeCharacter.Single
+                Case SpecialType.System_Double  : Return TypeCharacter.Double
+                Case SpecialType.System_String  : Return TypeCharacter.String
             End Select
+            Return TypeCharacter.None
         End Function
 
         Private Shared Function GetSpecialType(predefinedType As PredefinedTypeSyntax) As SpecialType
             Dim kind = predefinedType.Keyword.Kind
             Select Case (kind)
-                Case SyntaxKind.ShortKeyword
-                    Return SpecialType.System_Int16
-
-                Case SyntaxKind.UShortKeyword
-                    Return SpecialType.System_UInt16
-
-                Case SyntaxKind.IntegerKeyword
-                    Return SpecialType.System_Int32
-
-                Case SyntaxKind.UIntegerKeyword
-                    Return SpecialType.System_UInt32
-
-                Case SyntaxKind.LongKeyword
-                    Return SpecialType.System_Int64
-
-                Case SyntaxKind.ULongKeyword
-                    Return SpecialType.System_UInt64
-
-                Case SyntaxKind.DecimalKeyword
-                    Return SpecialType.System_Decimal
-
-                Case SyntaxKind.SingleKeyword
-                    Return SpecialType.System_Single
-
-                Case SyntaxKind.DoubleKeyword
-                    Return SpecialType.System_Double
-
-                Case SyntaxKind.SByteKeyword
-                    Return SpecialType.System_SByte
-
-                Case SyntaxKind.ByteKeyword
-                    Return SpecialType.System_Byte
-
-                Case SyntaxKind.BooleanKeyword
-                    Return SpecialType.System_Boolean
-
-                Case SyntaxKind.CharKeyword
-                    Return SpecialType.System_Char
-
-                Case SyntaxKind.DateKeyword
-                    Return SpecialType.System_DateTime
-
-                Case SyntaxKind.StringKeyword
-                    Return SpecialType.System_String
-
+                Case SyntaxKind.ShortKeyword    : Return SpecialType.System_Int16
+                Case SyntaxKind.UShortKeyword   : Return SpecialType.System_UInt16
+                Case SyntaxKind.IntegerKeyword  : Return SpecialType.System_Int32
+                Case SyntaxKind.UIntegerKeyword : Return SpecialType.System_UInt32
+                Case SyntaxKind.LongKeyword     : Return SpecialType.System_Int64
+                Case SyntaxKind.ULongKeyword    : Return SpecialType.System_UInt64
+                Case SyntaxKind.DecimalKeyword  : Return SpecialType.System_Decimal
+                Case SyntaxKind.SingleKeyword   : Return SpecialType.System_Single
+                Case SyntaxKind.DoubleKeyword   : Return SpecialType.System_Double
+                Case SyntaxKind.SByteKeyword    : Return SpecialType.System_SByte
+                Case SyntaxKind.ByteKeyword     : Return SpecialType.System_Byte
+                Case SyntaxKind.BooleanKeyword  : Return SpecialType.System_Boolean
+                Case SyntaxKind.CharKeyword     : Return SpecialType.System_Char
+                Case SyntaxKind.DateKeyword     : Return SpecialType.System_DateTime
+                Case SyntaxKind.StringKeyword   : Return SpecialType.System_String
                 Case SyntaxKind.VariantKeyword,
-                    SyntaxKind.ObjectKeyword
-                    Return SpecialType.System_Object
-
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(kind)
+                     SyntaxKind.ObjectKeyword   : Return SpecialType.System_Object
             End Select
+            Throw ExceptionUtilities.UnexpectedValue(kind)
         End Function
 
         Private Function EvaluateTryCastExpression(expr As CastExpressionSyntax) As CConst
@@ -705,16 +622,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Select Case toSpecialType
-                Case SpecialType.System_Boolean
-                    Return ConvertToBool(value, expr)
-                Case SpecialType.System_Char
-                    Return ConvertToChar(value, expr)
-                Case SpecialType.System_DateTime
-                    Return ConvertToDate(value, expr)
-                Case SpecialType.System_Object
-                    Return ConvertToObject(value, expr)
-                Case SpecialType.System_String
-                    Return ConvertToString(value, expr)
+                Case SpecialType.System_Boolean     : Return ConvertToBool(value, expr)
+                Case SpecialType.System_Char        : Return ConvertToChar(value, expr)
+                Case SpecialType.System_DateTime    : Return ConvertToDate(value, expr)
+                Case SpecialType.System_Object      : Return ConvertToObject(value, expr)
+                Case SpecialType.System_String      : Return ConvertToString(value, expr)
                 Case Else
                     Return ReportSemanticError(ERRID.ERR_CannotConvertValue2, expr, fromSpecialType.GetDisplayName(), toSpecialType.GetDisplayName())
             End Select
@@ -903,30 +815,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                             Return CConst.Create(Not Nothing)
                         End If
                         Select Case specialType
-                            Case SpecialType.System_Boolean
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of Boolean)).Value))
-                            Case SpecialType.System_Byte
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of Byte)).Value))
-                            Case SpecialType.System_Decimal
-                                Return CConst.Create(Not CLng(DirectCast(val, CConst(Of Decimal)).Value))
-                            Case SpecialType.System_Double
-                                Return CConst.Create(Not CLng(DirectCast(val, CConst(Of Double)).Value))
-                            Case SpecialType.System_Int16
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of Int16)).Value))
-                            Case SpecialType.System_Int32
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of Int32)).Value))
-                            Case SpecialType.System_Int64
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of Int64)).Value))
-                            Case SpecialType.System_SByte
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of SByte)).Value))
-                            Case SpecialType.System_Single
-                                Return CConst.Create(Not CLng(DirectCast(val, CConst(Of Single)).Value))
-                            Case SpecialType.System_UInt16
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of UInt16)).Value))
-                            Case SpecialType.System_UInt32
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of UInt32)).Value))
-                            Case SpecialType.System_UInt64
-                                Return CConst.Create(Not (DirectCast(val, CConst(Of UInt64)).Value))
+                            Case SpecialType.System_Boolean : Return CConst.Create(Not (DirectCast(val, CConst(Of Boolean)).Value))
+                            Case SpecialType.System_Byte    : Return CConst.Create(Not (DirectCast(val, CConst(Of Byte)).Value))
+                            Case SpecialType.System_Decimal : Return CConst.Create(Not CLng(DirectCast(val, CConst(Of Decimal)).Value))
+                            Case SpecialType.System_Double  : Return CConst.Create(Not CLng(DirectCast(val, CConst(Of Double)).Value))
+                            Case SpecialType.System_Int16   : Return CConst.Create(Not (DirectCast(val, CConst(Of Int16)).Value))
+                            Case SpecialType.System_Int32   : Return CConst.Create(Not (DirectCast(val, CConst(Of Int32)).Value))
+                            Case SpecialType.System_Int64   : Return CConst.Create(Not (DirectCast(val, CConst(Of Int64)).Value))
+                            Case SpecialType.System_SByte   : Return CConst.Create(Not (DirectCast(val, CConst(Of SByte)).Value))
+                            Case SpecialType.System_Single  : Return CConst.Create(Not CLng(DirectCast(val, CConst(Of Single)).Value))
+                            Case SpecialType.System_UInt16  : Return CConst.Create(Not (DirectCast(val, CConst(Of UInt16)).Value))
+                            Case SpecialType.System_UInt32  : Return CConst.Create(Not (DirectCast(val, CConst(Of UInt32)).Value))
+                            Case SpecialType.System_UInt64  : Return CConst.Create(Not (DirectCast(val, CConst(Of UInt64)).Value))
                             Case Else
                                 Throw ExceptionUtilities.UnexpectedValue(specialType)
                         End Select
@@ -1100,16 +1000,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Shared Function PerformCompileTimeBinaryOperation(opcode As SyntaxKind,
                                                                   resultType As SpecialType,
                                                                   left As CConst,
-                                                                  right As CConst,
+                                                                  righ As CConst,
                                                                   expr As ExpressionSyntax) As CConst
 
             Debug.Assert(opcode = SyntaxKind.LeftShiftExpression OrElse
                      opcode = SyntaxKind.RightShiftExpression OrElse
-                     left.SpecialType = right.SpecialType, "Binary operation on mismatched types.")
+                     left.SpecialType = righ.SpecialType, "Binary operation on mismatched types.")
 
             If left.SpecialType.IsIntegralType() OrElse left.SpecialType = SpecialType.System_Char OrElse left.SpecialType = SpecialType.System_DateTime Then
                 Dim LeftValue As Int64 = TypeHelpers.UncheckedCLng(left)
-                Dim RightValue As Int64 = TypeHelpers.UncheckedCLng(right)
+                Dim RightValue As Int64 = TypeHelpers.UncheckedCLng(righ)
 
                 If resultType = SpecialType.System_Boolean Then
                     Dim ComparisonSucceeds As Boolean = False
@@ -1275,29 +1175,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
             ElseIf left.SpecialType.IsFloatingType() Then
                 Dim LeftValue As Double = CDbl(left.ValueAsObject)
-                Dim RightValue As Double = CDbl(right.ValueAsObject)
+                Dim RightValue As Double = CDbl(righ.ValueAsObject)
 
                 If resultType = SpecialType.System_Boolean Then
                     Dim ComparisonSucceeds As Boolean = False
                     Select Case (opcode)
-                        Case SyntaxKind.EqualsExpression
-                            ComparisonSucceeds = LeftValue = RightValue
-
-                        Case SyntaxKind.NotEqualsExpression
-                            ComparisonSucceeds = LeftValue <> RightValue
-
-                        Case SyntaxKind.LessThanOrEqualExpression
-                            ComparisonSucceeds = LeftValue <= RightValue
-
-                        Case SyntaxKind.GreaterThanOrEqualExpression
-                            ComparisonSucceeds = LeftValue >= RightValue
-
-                        Case SyntaxKind.LessThanExpression
-                            ComparisonSucceeds = LeftValue < RightValue
-
-                        Case SyntaxKind.GreaterThanExpression
-                            ComparisonSucceeds = LeftValue > RightValue
-
+                        Case SyntaxKind.EqualsExpression                : ComparisonSucceeds = LeftValue = RightValue
+                        Case SyntaxKind.NotEqualsExpression             : ComparisonSucceeds = LeftValue <> RightValue
+                        Case SyntaxKind.LessThanOrEqualExpression       : ComparisonSucceeds = LeftValue <= RightValue
+                        Case SyntaxKind.GreaterThanOrEqualExpression    : ComparisonSucceeds = LeftValue >= RightValue
+                        Case SyntaxKind.LessThanExpression              : ComparisonSucceeds = LeftValue < RightValue
+                        Case SyntaxKind.GreaterThanExpression           : ComparisonSucceeds = LeftValue > RightValue
                         Case Else
                             Throw ExceptionUtilities.UnexpectedValue(opcode)
                     End Select
@@ -1308,15 +1196,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     Dim overflow As Boolean = False
 
                     Select Case (opcode)
-                        Case SyntaxKind.AddExpression
-                            resultValue = LeftValue + RightValue
-
-                        Case SyntaxKind.SubtractExpression
-                            resultValue = LeftValue - RightValue
-
-                        Case SyntaxKind.MultiplyExpression
-                            resultValue = LeftValue * RightValue
-
+                        Case SyntaxKind.AddExpression       : resultValue = LeftValue + RightValue
+                        Case SyntaxKind.SubtractExpression  : resultValue = LeftValue - RightValue
+                        Case SyntaxKind.MultiplyExpression  : resultValue = LeftValue * RightValue
                         Case SyntaxKind.ExponentiateExpression
                             'IS_DBL_INFINITY(RightValue) 
                             If (
@@ -1404,30 +1286,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
             ElseIf left.SpecialType = SpecialType.System_Decimal Then
                 Dim LeftValue As Decimal = CDec(left.ValueAsObject)
-                Dim RightValue As Decimal = CDec(right.ValueAsObject)
+                Dim RightValue As Decimal = CDec(righ.ValueAsObject)
 
                 If resultType = SpecialType.System_Boolean Then
                     Dim ComparisonSucceeds As Boolean = False
                     Dim ComparisonResult As Integer = LeftValue.CompareTo(RightValue)
 
                     Select Case (opcode)
-                        Case SyntaxKind.EqualsExpression
-                            ComparisonSucceeds = (ComparisonResult = 0)
-
-                        Case SyntaxKind.NotEqualsExpression
-                            ComparisonSucceeds = Not (ComparisonResult = 0)
-
-                        Case SyntaxKind.LessThanOrEqualExpression
-                            ComparisonSucceeds = (ComparisonResult <= 0)
-
-                        Case SyntaxKind.GreaterThanOrEqualExpression
-                            ComparisonSucceeds = (ComparisonResult >= 0)
-
-                        Case SyntaxKind.LessThanExpression
-                            ComparisonSucceeds = (ComparisonResult < 0)
-
-                        Case SyntaxKind.GreaterThanExpression
-                            ComparisonSucceeds = (ComparisonResult > 0)
+                        Case SyntaxKind.EqualsExpression                : ComparisonSucceeds = (ComparisonResult = 0)
+                        Case SyntaxKind.NotEqualsExpression             : ComparisonSucceeds = (ComparisonResult <> 0)
+                        Case SyntaxKind.LessThanOrEqualExpression       : ComparisonSucceeds = (ComparisonResult <= 0)
+                        Case SyntaxKind.GreaterThanOrEqualExpression    : ComparisonSucceeds = (ComparisonResult >= 0)
+                        Case SyntaxKind.LessThanExpression              : ComparisonSucceeds = (ComparisonResult < 0)
+                        Case SyntaxKind.GreaterThanExpression           : ComparisonSucceeds = (ComparisonResult > 0)
 
                         Case Else
                             Throw ExceptionUtilities.UnexpectedValue(opcode)
@@ -1489,45 +1360,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ElseIf left.SpecialType = SpecialType.System_String Then
 
                 ' Nothing strings should be treated the same as ""
-                Dim LeftSpelling = If(CStr(left.ValueAsObject), "")
-                Dim RightSpelling = If(CStr(right.ValueAsObject), "")
+                Dim LSpelling = If(CStr(left.ValueAsObject), "")
+                Dim RSpelling = If(CStr(righ.ValueAsObject), "")
 
                 Select Case (opcode)
                     Case SyntaxKind.ConcatenateExpression
-                        Dim ResultString As String = String.Concat(LeftSpelling, RightSpelling)
+                        Dim ResultString As String = String.Concat(LSpelling, RSpelling)
                         Return CConst.Create(ResultString)
 
                     Case SyntaxKind.GreaterThanExpression,
-                        SyntaxKind.LessThanExpression,
-                        SyntaxKind.GreaterThanOrEqualExpression,
-                        SyntaxKind.LessThanOrEqualExpression,
-                        SyntaxKind.EqualsExpression,
-                        SyntaxKind.NotEqualsExpression
+                         SyntaxKind.LessThanExpression,
+                         SyntaxKind.GreaterThanOrEqualExpression,
+                         SyntaxKind.LessThanOrEqualExpression,
+                         SyntaxKind.EqualsExpression,
+                         SyntaxKind.NotEqualsExpression
 
                         Dim StringComparisonSucceeds As Boolean = False
 
                         ' // ignore Option Text when conditional compilation(b112186)
-                        Dim ComparisonResult = StringComparer.Ordinal.Compare(LeftSpelling, RightSpelling)
+                        Dim ComparisonResult = StringComparer.Ordinal.Compare(LSpelling, RSpelling)
 
                         Select Case (opcode)
-                            Case SyntaxKind.EqualsExpression
-                                StringComparisonSucceeds = ComparisonResult = 0
-
-                            Case SyntaxKind.NotEqualsExpression
-                                StringComparisonSucceeds = ComparisonResult <> 0
-
-                            Case SyntaxKind.GreaterThanExpression
-                                StringComparisonSucceeds = ComparisonResult > 0
-
-                            Case SyntaxKind.GreaterThanOrEqualExpression
-                                StringComparisonSucceeds = ComparisonResult >= 0
-
-                            Case SyntaxKind.LessThanExpression
-                                StringComparisonSucceeds = ComparisonResult < 0
-
-                            Case SyntaxKind.LessThanOrEqualExpression
-                                StringComparisonSucceeds = ComparisonResult <= 0
-
+                            Case SyntaxKind.EqualsExpression                : StringComparisonSucceeds = ComparisonResult = 0
+                            Case SyntaxKind.NotEqualsExpression             : StringComparisonSucceeds = ComparisonResult <> 0
+                            Case SyntaxKind.GreaterThanExpression           : StringComparisonSucceeds = ComparisonResult > 0
+                            Case SyntaxKind.GreaterThanOrEqualExpression    : StringComparisonSucceeds = ComparisonResult >= 0
+                            Case SyntaxKind.LessThanExpression              : StringComparisonSucceeds = ComparisonResult < 0
+                            Case SyntaxKind.LessThanOrEqualExpression       : StringComparisonSucceeds = ComparisonResult <= 0
                         End Select
                         Return CConst.Create(StringComparisonSucceeds)
 
@@ -1536,10 +1395,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End Select
 
             ElseIf left.SpecialType = SpecialType.System_Boolean Then
-                Dim LeftValue As Boolean = CBool(left.ValueAsObject)
-                Dim RightValue As Boolean = CBool(right.ValueAsObject)
-
-                Dim OperationSucceeds As Boolean = False
+                Dim LeftValue  = CBool(left.ValueAsObject)
+                Dim RightValue = CBool(righ.ValueAsObject)
+                Dim OperationSucceeds = False
 
                 Select Case (opcode)
                     Case SyntaxKind.EqualsExpression
@@ -1550,27 +1408,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     ' // Amazingly, False > True.
 
-                    Case SyntaxKind.GreaterThanExpression
-                        OperationSucceeds = LeftValue = False AndAlso RightValue <> False
-
-                    Case SyntaxKind.GreaterThanOrEqualExpression
-                        OperationSucceeds = LeftValue = False OrElse RightValue <> False
-
-                    Case SyntaxKind.LessThanExpression
-                        OperationSucceeds = LeftValue <> False AndAlso RightValue = False
-
-                    Case SyntaxKind.LessThanOrEqualExpression
-                        OperationSucceeds = LeftValue <> False OrElse RightValue = False
-
-                    Case SyntaxKind.ExclusiveOrExpression
-                        OperationSucceeds = LeftValue Xor RightValue
-
-                    Case SyntaxKind.OrElseExpression, SyntaxKind.OrExpression
-                        OperationSucceeds = LeftValue Or RightValue
-
-                    Case SyntaxKind.AndAlsoExpression, SyntaxKind.AndExpression
-                        OperationSucceeds = LeftValue And RightValue
-
+                    Case SyntaxKind.GreaterThanExpression           : OperationSucceeds = LeftValue = False AndAlso RightValue <> False
+                    Case SyntaxKind.GreaterThanOrEqualExpression    : OperationSucceeds = LeftValue = False OrElse RightValue <> False
+                    Case SyntaxKind.LessThanExpression              : OperationSucceeds = LeftValue <> False AndAlso RightValue = False
+                    Case SyntaxKind.LessThanOrEqualExpression       : OperationSucceeds = LeftValue <> False OrElse RightValue = False
+                    Case SyntaxKind.ExclusiveOrExpression           : OperationSucceeds = LeftValue Xor RightValue
+                    Case SyntaxKind.OrElseExpression,
+                         SyntaxKind.OrExpression                    : OperationSucceeds = LeftValue Or RightValue
+                    Case SyntaxKind.AndAlsoExpression,
+                         SyntaxKind.AndExpression                   : OperationSucceeds = LeftValue And RightValue
                     Case Else
                         Throw ExceptionUtilities.UnexpectedValue(opcode)
                 End Select

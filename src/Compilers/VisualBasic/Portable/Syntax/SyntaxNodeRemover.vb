@@ -9,26 +9,16 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
-
-    Public Class SyntaxNodeRemover
-        Friend Shared Function RemoveNodes(Of TRoot As SyntaxNode)(root As TRoot, nodes As IEnumerable(Of SyntaxNode), options As SyntaxRemoveOptions) As TRoot
-            Dim nodesToRemove As SyntaxNode() = nodes.ToArray()
-
-            If nodesToRemove.Length = 0 Then
-                Return root
-            End If
-
-            Dim remover = New SyntaxRemover(nodes.ToArray(), options)
-            Dim result = remover.Visit(root)
-
-            Dim residualTrivia = remover.ResidualTrivia
-
-            If residualTrivia.Count > 0 Then
-                result = result.WithTrailingTrivia(result.GetTrailingTrivia().Concat(residualTrivia))
-            End If
-
-            Return DirectCast(result, TRoot)
-        End Function
+  Public Class SyntaxNodeRemover
+    Friend Shared Function RemoveNodes(Of TRoot As SyntaxNode)(root As TRoot, nodes As IEnumerable(Of SyntaxNode), options As SyntaxRemoveOptions) As TRoot
+      Dim nodesToRemove As SyntaxNode() = nodes.ToArray()
+      If nodesToRemove.Length = 0 Then Return root
+      Dim remover As New SyntaxRemover(nodes.ToArray(), options)
+      Dim result = remover.Visit(root)
+      Dim residualTrivia = remover.ResidualTrivia
+      If residualTrivia.Count > 0 Then result = result.WithTrailingTrivia(result.GetTrailingTrivia().Concat(residualTrivia))
+      Return DirectCast(result, TRoot)
+    End Function
 
         Private Class SyntaxRemover
             Inherits VisualBasicSyntaxRewriter
@@ -65,19 +55,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
             Friend ReadOnly Property ResidualTrivia As SyntaxTriviaList
                 Get
-                    If Me._residualTrivia IsNot Nothing Then
-                        Return Me._residualTrivia.ToList()
-                    Else
-                        Return Nothing
-                    End If
+                    If Me._residualTrivia Is Nothing Then                        Return Nothing
+                    Return Me._residualTrivia.ToList()
                 End Get
             End Property
 
             Private Sub AddResidualTrivia(trivia As SyntaxTriviaList, Optional requiresNewLine As Boolean = False)
-                If requiresNewLine Then
-                    AddEndOfLine()
-                End If
-
+                If requiresNewLine Then AddEndOfLine()
                 Me._residualTrivia.Add(trivia)
             End Sub
 
