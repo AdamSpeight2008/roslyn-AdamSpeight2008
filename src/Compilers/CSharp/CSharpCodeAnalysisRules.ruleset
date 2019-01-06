@@ -1,7 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Diagnostic rules for the CSharpCodeAnalysis (Portable and Desktop) projects" Description="Enables rules specific to these projects." ToolsVersion="14.0">
-  <!-- Include default rules -->
-  <Include Path="..\..\..\build\Rulesets\Roslyn_BuildRules.ruleset" Action="Default" />
+<RuleSet Name="Diagnostic rules for the CSharpCodeAnalysis (Portable and Desktop) projects" Description="Enables rules specific to these projects." ToolsVersion="16.0">
+  <Include Path="..\..\..\build\rulesets\roslyn_buildrules.ruleset" Action="Default" />
+  <Include Path="..\core\codeanalysisrules.ruleset" Action="Default" />
+  <Include Path="..\visualbasic\basiccodeanalysisrules.ruleset" Action="Default" />
+  <Include Path="allrules.ruleset" Action="Default" />
+  <Include Path="basiccorrectnessrules.ruleset" Action="Default" />
+  <Include Path="basicdesignguidelinerules.ruleset" Action="Default" />
+  <Include Path="concurrencycheckrules.ruleset" Action="Default" />
+  <Include Path="concurrencyrules.ruleset" Action="Default" />
+  <Include Path="csharpcodeanalysisrules.ruleset" Action="Default" />
+  <Include Path="extendedcorrectnessrules.ruleset" Action="Default" />
+  <Include Path="extendeddesignguidelinerules.ruleset" Action="Default" />
+  <Include Path="globalizationrules.ruleset" Action="Default" />
+  <Include Path="minimumrecommendedrules.ruleset" Action="Default" />
+  <Include Path="securityrules.ruleset" Action="Default" />
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1806" Action="Warning" />
+  </Rules>
   <Rules AnalyzerId="Roslyn.Diagnostics.Analyzers.CSharp" RuleNamespace="Roslyn.Diagnostics.Analyzers.CSharp">
     <Rule Id="RS0013" Action="Warning" />
   </Rules>

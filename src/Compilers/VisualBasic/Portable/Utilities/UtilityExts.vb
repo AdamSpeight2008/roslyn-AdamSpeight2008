@@ -13,7 +13,42 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
   Friend Module UtilityExts
-    #Region "Comparision"
+    <Extension> Friend Function IsAnyOf(x As Char, x0 As Char, x1 As Char) As Boolean
+      Return (x=x0) Or (x=x1)
+    End Function
+    <Extension> Friend Function IsAnyOf(x As Char, x0 As Char, x1 As Char,
+                                                   x2 As Char            ) As Boolean
+      Return (x=x0) Or (x=x1) Or (x=x2)
+    End Function
+    <Extension> Friend Function IsAnyOf(x As Char, x0 As Char, x1 As Char,
+                                                   x2 As Char, x3 As Char) As Boolean
+      Return (x=x0) Or (x=x1) Or (x=x2) Or (x=x3)
+    End Function
+    <Extension> Friend Function IsAnyOf(x As Char, x0 As Char, x1 As Char,
+                                                   x2 As Char, x3 As Char,
+                                                   x4 As Char) As Boolean
+      Return (x=x0) Or (x=x1) Or (x=x2) Or (x=x3) Or (x=x4)
+    End Function
+    <Extension> Friend Function IsAnyOf(x As Char, x0 As Char, x1 As Char,
+                                                   x2 As Char, x3 As Char,
+                                                   x4 As Char, x5 As Char) As Boolean
+      Return (x=x0) Or (x=x1) Or (x=x2) Or (x=x3) Or (x=x4) Or (x=x5)
+    End Function
+    <Extension> Friend Function IsAnyOf(x As Char, x0 As Char, x1 As Char,
+                                                   x2 As Char, x3 As Char,
+                                                   x4 As Char, x5 As Char,
+                                                   x6 As Char) As Boolean
+      Return (x=x0) Or (x=x1) Or (x=x2) Or (x=x3) Or (x=x4) Or (x=x5) Or (x=x6)
+    End Function
+   <Extension> Friend Function IsAnyOf(x As Char, x0 As Char, x1 As Char,
+                                                  x2 As Char, x3 As Char,
+                                                  x4 As Char, x5 As Char,
+                                                  x6 As Char, x7 As Char) As Boolean
+      Return (x=x0) Or (x=x1) Or (x=x2) Or (x=x3) Or (x=x4) Or (x=x5) Or (x=x6) Or (x=x7)
+    End Function
+
+
+#Region "Comparision"
     <Extension>
     Friend Function InRange(value As SByte, x As SByte, y As SByte) As Boolean
       Return (x <= value) AndAlso (value <= y)
