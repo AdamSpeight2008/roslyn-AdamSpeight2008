@@ -6,204 +6,203 @@ Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.PooledObjects
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
-    ''' <summary>
-    ''' A class representing Visual Basic compilation Options.
-    ''' </summary>
-    Public NotInheritable Class VisualBasicCompilationOptions
-        Inherits CompilationOptions
-        Implements IEquatable(Of VisualBasicCompilationOptions)
 
-        Private _globalImports As ImmutableArray(Of GlobalImport)
-        Private _rootNamespace As String
-        Private _optionStrict As OptionStrict
-        Private _optionInfer As Boolean
-        Private _optionExplicit As Boolean
-        Private _optionCompareText As Boolean
-        Private _embedVbCoreRuntime As Boolean
-        Private _parseOptions As VisualBasicParseOptions
+  ''' <summary> A class representing Visual Basic compilation Options. </summary>
+  Public NotInheritable Class VisualBasicCompilationOptions
+  Inherits CompilationOptions
+  Implements IEquatable(Of VisualBasicCompilationOptions)
 
-        ' The assemblies emitted by the expression compiler should never contain embedded declarations -
-        ' those should come from the user's code.
-        Private _suppressEmbeddedDeclarations As Boolean
+  Private _globalImports        As ImmutableArray(Of GlobalImport)
+  Private _rootNamespace        As String
+  Private _optionStrict         As OptionStrict
+  Private _optionInfer          As Boolean
+  Private _optionExplicit       As Boolean
+  Private _optionCompareText    As Boolean
+  Private _embedVbCoreRuntime   As Boolean
+  Private _parseOptions         As VisualBasicParseOptions
 
-        Private _ignoreCorLibraryDuplicatedTypes As Boolean
+  ' The assemblies emitted by the expression compiler should never contain embedded declarations -
+  ' those should come from the user's code.
+  Private _suppressEmbeddedDeclarations As Boolean
+
+  Private _ignoreCorLibraryDuplicatedTypes As Boolean
 
 #Disable Warning RS0026 ' Do not add multiple overloads with optional parameters
-        ''' <summary>
-        ''' Initializes a new instance of the VisualBasicCompilationOptions type with various options.
-        ''' </summary>
-        ''' <param name="outputKind">The compilation output kind. <see cref="CodeAnalysis.OutputKind"/></param>
-        ''' <param name="moduleName">An optional parameter to specify the name of the assembly that this module will be a part of.</param>
-        ''' <param name="mainTypeName">An optional parameter to specify the class or module that contains the Sub Main procedure.</param>
-        ''' <param name="scriptClassName">An optional parameter to specify an alternate DefaultScriptClassName object to be used.</param>
-        ''' <param name="globalImports">An optional collection of GlobalImports <see cref="GlobalImports"/> .</param>
-        ''' <param name="rootNamespace">An optional parameter to specify the name of the default root namespace.</param>
-        ''' <param name="optionStrict">An optional parameter to specify the default Option Strict behavior. <see cref="VisualBasic.OptionStrict"/></param>
-        ''' <param name="optionInfer">An optional parameter to specify default Option Infer behavior.</param>
-        ''' <param name="optionExplicit">An optional parameter to specify the default Option Explicit behavior.</param>
-        ''' <param name="optionCompareText">An optional parameter to specify the default Option Compare Text behavior.</param>
-        ''' <param name="embedVbCoreRuntime">An optional parameter to specify the embedded Visual Basic Core Runtime behavior.</param>
-        ''' <param name="checkOverflow">An optional parameter to specify enabling/disabling overflow checking.</param>
-        ''' <param name="concurrentBuild">An optional parameter to specify enabling/disabling concurrent build.</param>
-        ''' <param name="cryptoKeyContainer">An optional parameter to specify a key container name for a key pair to give an assembly a strong name.</param>
-        ''' <param name="cryptoKeyFile">An optional parameter to specify a file containing a key or key pair to give an assembly a strong name.</param>
-        ''' <param name="cryptoPublicKey">An optional parameter to specify a public key used to give an assembly a strong name.</param>
-        ''' <param name="delaySign">An optional parameter to specify whether the assembly will be fully or partially signed.</param>
-        ''' <param name="platform">An optional parameter to specify which platform version of common language runtime (CLR) can run compilation. <see cref="CodeAnalysis.Platform"/></param>
-        ''' <param name="generalDiagnosticOption">An optional parameter to specify the general warning level.</param>
-        ''' <param name="specificDiagnosticOptions">An optional collection representing specific warnings that differ from general warning behavior.</param>
-        ''' <param name="optimizationLevel">An optional parameter to enabled/disable optimizations. </param>
-        ''' <param name="parseOptions">An optional parameter to specify the parse options. <see cref="VisualBasicParseOptions"/></param>
-        ''' <param name="xmlReferenceResolver">An optional parameter to specify the XML file resolver.</param>
-        ''' <param name="sourceReferenceResolver">An optional parameter to specify the source file resolver.</param>
-        ''' <param name="metadataReferenceResolver">An optional parameter to specify <see cref="CodeAnalysis.MetadataReferenceResolver"/>.</param>
-        ''' <param name="assemblyIdentityComparer">An optional parameter to specify <see cref="CodeAnalysis.AssemblyIdentityComparer"/>.</param>
-        ''' <param name="strongNameProvider">An optional parameter to specify <see cref="CodeAnalysis.StrongNameProvider"/>.</param>
-        ''' <param name="publicSign">An optional parameter to specify whether the assembly will be public signed.</param>
-        ''' <param name="reportSuppressedDiagnostics">An optional parameter to specify whether or not suppressed diagnostics should be reported.</param>
-        ''' <param name="metadataImportOptions">An optional parameter to specify metadata import options.</param>
-        Public Sub New(
-            outputKind As OutputKind,
-            Optional moduleName As String = Nothing,
-            Optional mainTypeName As String = Nothing,
-            Optional scriptClassName As String = WellKnownMemberNames.DefaultScriptClassName,
-            Optional globalImports As IEnumerable(Of GlobalImport) = Nothing,
-            Optional rootNamespace As String = Nothing,
-            Optional optionStrict As OptionStrict = OptionStrict.Off,
-            Optional optionInfer As Boolean = True,
-            Optional optionExplicit As Boolean = True,
-            Optional optionCompareText As Boolean = False,
-            Optional parseOptions As VisualBasicParseOptions = Nothing,
-            Optional embedVbCoreRuntime As Boolean = False,
-            Optional optimizationLevel As OptimizationLevel = OptimizationLevel.Debug,
-            Optional checkOverflow As Boolean = True,
-            Optional cryptoKeyContainer As String = Nothing,
-            Optional cryptoKeyFile As String = Nothing,
-            Optional cryptoPublicKey As ImmutableArray(Of Byte) = Nothing,
-            Optional delaySign As Boolean? = Nothing,
-            Optional platform As Platform = Platform.AnyCpu,
-            Optional generalDiagnosticOption As ReportDiagnostic = ReportDiagnostic.Default,
-            Optional specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)) = Nothing,
-            Optional concurrentBuild As Boolean = True,
-            Optional deterministic As Boolean = False,
-            Optional xmlReferenceResolver As XmlReferenceResolver = Nothing,
-            Optional sourceReferenceResolver As SourceReferenceResolver = Nothing,
-            Optional metadataReferenceResolver As MetadataReferenceResolver = Nothing,
-            Optional assemblyIdentityComparer As AssemblyIdentityComparer = Nothing,
-            Optional strongNameProvider As StrongNameProvider = Nothing,
-            Optional publicSign As Boolean = False,
-            Optional reportSuppressedDiagnostics As Boolean = False,
-            Optional metadataImportOptions As MetadataImportOptions = MetadataImportOptions.Public)
+  ''' <summary>
+  ''' Initializes a new instance of the VisualBasicCompilationOptions type with various options.
+  ''' </summary>
+  ''' <param name="outputKind">The compilation output kind. <see cref="CodeAnalysis.OutputKind"/></param>
+  ''' <param name="moduleName">An optional parameter to specify the name of the assembly that this module will be a part of.</param>
+  ''' <param name="mainTypeName">An optional parameter to specify the class or module that contains the Sub Main procedure.</param>
+  ''' <param name="scriptClassName">An optional parameter to specify an alternate DefaultScriptClassName object to be used.</param>
+  ''' <param name="globalImports">An optional collection of GlobalImports <see cref="GlobalImports"/> .</param>
+  ''' <param name="rootNamespace">An optional parameter to specify the name of the default root namespace.</param>
+  ''' <param name="optionStrict">An optional parameter to specify the default Option Strict behavior. <see cref="VisualBasic.OptionStrict"/></param>
+  ''' <param name="optionInfer">An optional parameter to specify default Option Infer behavior.</param>
+  ''' <param name="optionExplicit">An optional parameter to specify the default Option Explicit behavior.</param>
+  ''' <param name="optionCompareText">An optional parameter to specify the default Option Compare Text behavior.</param>
+  ''' <param name="embedVbCoreRuntime">An optional parameter to specify the embedded Visual Basic Core Runtime behavior.</param>
+  ''' <param name="checkOverflow">An optional parameter to specify enabling/disabling overflow checking.</param>
+  ''' <param name="concurrentBuild">An optional parameter to specify enabling/disabling concurrent build.</param>
+  ''' <param name="cryptoKeyContainer">An optional parameter to specify a key container name for a key pair to give an assembly a strong name.</param>
+  ''' <param name="cryptoKeyFile">An optional parameter to specify a file containing a key or key pair to give an assembly a strong name.</param>
+  ''' <param name="cryptoPublicKey">An optional parameter to specify a public key used to give an assembly a strong name.</param>
+  ''' <param name="delaySign">An optional parameter to specify whether the assembly will be fully or partially signed.</param>
+  ''' <param name="platform">An optional parameter to specify which platform version of common language runtime (CLR) can run compilation. <see cref="CodeAnalysis.Platform"/></param>
+  ''' <param name="generalDiagnosticOption">An optional parameter to specify the general warning level.</param>
+  ''' <param name="specificDiagnosticOptions">An optional collection representing specific warnings that differ from general warning behavior.</param>
+  ''' <param name="optimizationLevel">An optional parameter to enabled/disable optimizations. </param>
+  ''' <param name="parseOptions">An optional parameter to specify the parse options. <see cref="VisualBasicParseOptions"/></param>
+  ''' <param name="xmlReferenceResolver">An optional parameter to specify the XML file resolver.</param>
+  ''' <param name="sourceReferenceResolver">An optional parameter to specify the source file resolver.</param>
+  ''' <param name="metadataReferenceResolver">An optional parameter to specify <see cref="CodeAnalysis.MetadataReferenceResolver"/>.</param>
+  ''' <param name="assemblyIdentityComparer">An optional parameter to specify <see cref="CodeAnalysis.AssemblyIdentityComparer"/>.</param>
+  ''' <param name="strongNameProvider">An optional parameter to specify <see cref="CodeAnalysis.StrongNameProvider"/>.</param>
+  ''' <param name="publicSign">An optional parameter to specify whether the assembly will be public signed.</param>
+  ''' <param name="reportSuppressedDiagnostics">An optional parameter to specify whether or not suppressed diagnostics should be reported.</param>
+  ''' <param name="metadataImportOptions">An optional parameter to specify metadata import options.</param>
+  Public Sub New(
+    outputKind As OutputKind,
+    Optional moduleName                   As String = Nothing,
+    Optional mainTypeName                 As String = Nothing,
+    Optional scriptClassName              As String = WellKnownMemberNames.DefaultScriptClassName,
+    Optional globalImports                As IEnumerable(Of GlobalImport) = Nothing,
+    Optional rootNamespace                As String = Nothing,
+    Optional optionStrict                 As OptionStrict = OptionStrict.Off,
+    Optional optionInfer                  As Boolean = True,
+    Optional optionExplicit               As Boolean = True,
+    Optional optionCompareText            As Boolean = False,
+    Optional parseOptions                 As VisualBasicParseOptions = Nothing,
+    Optional embedVbCoreRuntime           As Boolean = False,
+    Optional optimizationLevel            As OptimizationLevel = OptimizationLevel.Debug,
+    Optional checkOverflow                As Boolean = True,
+    Optional cryptoKeyContainer           As String = Nothing,
+    Optional cryptoKeyFile                As String = Nothing,
+    Optional cryptoPublicKey              As ImmutableArray(Of Byte) = Nothing,
+    Optional delaySign                    As Boolean? = Nothing,
+    Optional platform                     As Platform = Platform.AnyCpu,
+    Optional generalDiagnosticOption      As ReportDiagnostic = ReportDiagnostic.Default,
+    Optional specificDiagnosticOptions    As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)) = Nothing,
+    Optional concurrentBuild              As Boolean = True,
+    Optional deterministic                As Boolean = False,
+    Optional xmlReferenceResolver         As XmlReferenceResolver = Nothing,
+    Optional sourceReferenceResolver      As SourceReferenceResolver = Nothing,
+    Optional metadataReferenceResolver    As MetadataReferenceResolver = Nothing,
+    Optional assemblyIdentityComparer     As AssemblyIdentityComparer = Nothing,
+    Optional strongNameProvider           As StrongNameProvider = Nothing,
+    Optional publicSign                   As Boolean = False,
+    Optional reportSuppressedDiagnostics  As Boolean = False,
+    Optional metadataImportOptions        As MetadataImportOptions = MetadataImportOptions.Public)
 
-            MyClass.New(
-                outputKind,
-                reportSuppressedDiagnostics,
-                moduleName,
-                mainTypeName,
-                scriptClassName,
-                globalImports,
-                rootNamespace,
-                optionStrict,
-                optionInfer,
-                optionExplicit,
-                optionCompareText,
-                parseOptions,
-                embedVbCoreRuntime,
-                optimizationLevel,
-                checkOverflow,
-                cryptoKeyContainer,
-                cryptoKeyFile,
-                cryptoPublicKey,
-                delaySign,
-                publicSign,
-                platform,
-                generalDiagnosticOption,
-                specificDiagnosticOptions,
-                concurrentBuild,
-                deterministic:=deterministic,
-                currentLocalTime:=Nothing,
-                suppressEmbeddedDeclarations:=False,
-                debugPlusMode:=False,
-                xmlReferenceResolver:=xmlReferenceResolver,
-                sourceReferenceResolver:=sourceReferenceResolver,
-                metadataReferenceResolver:=metadataReferenceResolver,
-                assemblyIdentityComparer:=assemblyIdentityComparer,
-                strongNameProvider:=strongNameProvider,
-                metadataImportOptions:=metadataImportOptions,
-                referencesSupersedeLowerVersions:=False,
-                ignoreCorLibraryDuplicatedTypes:=False)
-
-        End Sub
+    MyClass.New(
+      outputKind,
+      reportSuppressedDiagnostics,
+      moduleName,
+      mainTypeName,
+      scriptClassName,
+      globalImports,
+      rootNamespace,
+      optionStrict,
+      optionInfer,
+      optionExplicit,
+      optionCompareText,
+      parseOptions,
+      embedVbCoreRuntime,
+      optimizationLevel,
+      checkOverflow,
+      cryptoKeyContainer,
+      cryptoKeyFile,
+      cryptoPublicKey,
+      delaySign,
+      publicSign,
+      platform,
+      generalDiagnosticOption,
+      specificDiagnosticOptions,
+      concurrentBuild,
+      deterministic:=deterministic,
+      currentLocalTime:=Nothing,
+      suppressEmbeddedDeclarations:=False,
+      debugPlusMode:=False,
+      xmlReferenceResolver:=xmlReferenceResolver,
+      sourceReferenceResolver:=sourceReferenceResolver,
+      metadataReferenceResolver:=metadataReferenceResolver,
+      assemblyIdentityComparer:=assemblyIdentityComparer,
+      strongNameProvider:=strongNameProvider,
+      metadataImportOptions:=metadataImportOptions,
+      referencesSupersedeLowerVersions:=False,
+      ignoreCorLibraryDuplicatedTypes:=False
+    )
+  End Sub
 #Enable Warning RS0026 ' Do not add multiple overloads with optional parameters
 
-        '' 15.6 BACKCOMPAT OVERLOAD -- DO NOT TOUCH
-        <EditorBrowsable(EditorBrowsableState.Never)>
-        Public Sub New(
-            outputKind As OutputKind,
-            moduleName As String,
-            mainTypeName As String,
-            scriptClassName As String,
-            globalImports As IEnumerable(Of GlobalImport),
-            rootNamespace As String,
-            optionStrict As OptionStrict,
-            optionInfer As Boolean,
-            optionExplicit As Boolean,
-            optionCompareText As Boolean,
-            parseOptions As VisualBasicParseOptions,
-            embedVbCoreRuntime As Boolean,
-            optimizationLevel As OptimizationLevel,
-            checkOverflow As Boolean,
-            cryptoKeyContainer As String,
-            cryptoKeyFile As String,
-            cryptoPublicKey As ImmutableArray(Of Byte),
-            delaySign As Boolean?,
-            platform As Platform,
-            generalDiagnosticOption As ReportDiagnostic,
-            specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)),
-            concurrentBuild As Boolean,
-            deterministic As Boolean,
-            xmlReferenceResolver As XmlReferenceResolver,
-            sourceReferenceResolver As SourceReferenceResolver,
-            metadataReferenceResolver As MetadataReferenceResolver,
-            assemblyIdentityComparer As AssemblyIdentityComparer,
-            strongNameProvider As StrongNameProvider,
-            publicSign As Boolean,
-            reportSuppressedDiagnostics As Boolean)
-
-            MyClass.New(
-                outputKind,
-                moduleName,
-                mainTypeName,
-                scriptClassName,
-                globalImports,
-                rootNamespace,
-                optionStrict,
-                optionInfer,
-                optionExplicit,
-                optionCompareText,
-                parseOptions,
-                embedVbCoreRuntime,
-                optimizationLevel,
-                checkOverflow,
-                cryptoKeyContainer,
-                cryptoKeyFile,
-                cryptoPublicKey,
-                delaySign,
-                platform,
-                generalDiagnosticOption,
-                specificDiagnosticOptions,
-                concurrentBuild,
-                deterministic,
-                xmlReferenceResolver,
-                sourceReferenceResolver,
-                metadataReferenceResolver,
-                assemblyIdentityComparer,
-                strongNameProvider,
-                publicSign,
-                reportSuppressedDiagnostics,
-                MetadataImportOptions.Public)
-
-        End Sub
+  '' 15.6 BACKCOMPAT OVERLOAD -- DO NOT TOUCH
+  <EditorBrowsable(EditorBrowsableState.Never)>
+  Public Sub New(
+    outputKind As OutputKind,
+    moduleName As String,
+    mainTypeName As String,
+    scriptClassName As String,
+    globalImports As IEnumerable(Of GlobalImport),
+    rootNamespace As String,
+    optionStrict As OptionStrict,
+    optionInfer As Boolean,
+    optionExplicit As Boolean,
+    optionCompareText As Boolean,
+    parseOptions As VisualBasicParseOptions,
+    embedVbCoreRuntime As Boolean,
+    optimizationLevel As OptimizationLevel,
+    checkOverflow As Boolean,
+    cryptoKeyContainer As String,
+    cryptoKeyFile As String,
+    cryptoPublicKey As ImmutableArray(Of Byte),
+    delaySign As Boolean?,
+    platform As Platform,
+    generalDiagnosticOption As ReportDiagnostic,
+    specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)),
+    concurrentBuild As Boolean,
+    deterministic As Boolean,
+    xmlReferenceResolver As XmlReferenceResolver,
+    sourceReferenceResolver As SourceReferenceResolver,
+    metadataReferenceResolver As MetadataReferenceResolver,
+    assemblyIdentityComparer As AssemblyIdentityComparer,
+    strongNameProvider As StrongNameProvider,
+    publicSign As Boolean,
+    reportSuppressedDiagnostics As Boolean)
+    
+    MyClass.New(
+      outputKind,
+      moduleName,
+      mainTypeName,
+      scriptClassName,
+      globalImports,
+      rootNamespace,
+      optionStrict,
+      optionInfer,
+      optionExplicit,
+      optionCompareText,
+      parseOptions,
+      embedVbCoreRuntime,
+      optimizationLevel,
+      checkOverflow,
+      cryptoKeyContainer,
+      cryptoKeyFile,
+      cryptoPublicKey,
+      delaySign,
+      platform,
+      generalDiagnosticOption,
+      specificDiagnosticOptions,
+      concurrentBuild,
+      deterministic,
+      xmlReferenceResolver,
+      sourceReferenceResolver,
+      metadataReferenceResolver,
+      assemblyIdentityComparer,
+      strongNameProvider,
+      publicSign,
+      reportSuppressedDiagnostics,
+      MetadataImportOptions.Public)
+      
+  End Sub
 
         Private Sub New(
             outputKind As OutputKind,
@@ -460,6 +459,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
+        #Region "With Methods"
+
         ''' <summary>
         ''' Creates a new VisualBasicCompilationOptions instance with a different OutputKind specified.
         ''' </summary>
@@ -588,10 +589,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">The Option Explicit setting. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the option explicit is different; otherwise current instance.</returns>        
         Public Shadows Function WithOptionExplicit(value As Boolean) As VisualBasicCompilationOptions
-            If value = Me.OptionExplicit Then
-                Return Me
-            End If
-
+            If value = Me.OptionExplicit Then  Return Me
             Return New VisualBasicCompilationOptions(Me) With {._optionExplicit = value}
         End Function
 
@@ -601,10 +599,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">The Option Compare Text setting. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the option compare text is different; otherwise current instance.</returns>        
         Public Shadows Function WithOptionCompareText(value As Boolean) As VisualBasicCompilationOptions
-            If value = Me.OptionCompareText Then
-                Return Me
-            End If
-
+            If value = Me.OptionCompareText Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {._optionCompareText = value}
         End Function
 
@@ -614,10 +609,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="value">The Embed VB Core Runtime setting. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the embed vb core runtime is different; otherwise current instance.</returns>        
         Public Shadows Function WithEmbedVbCoreRuntime(value As Boolean) As VisualBasicCompilationOptions
-            If value = Me.EmbedVbCoreRuntime Then
-                Return Me
-            End If
-
+            If value = Me.EmbedVbCoreRuntime Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {._embedVbCoreRuntime = value}
         End Function
 
@@ -627,10 +619,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="enabled">The overflow check setting. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the overflow check is different; otherwise current instance.</returns>        
         Public Shadows Function WithOverflowChecks(enabled As Boolean) As VisualBasicCompilationOptions
-            If enabled = Me.CheckOverflow Then
-                Return Me
-            End If
-
+            If enabled = Me.CheckOverflow Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.CheckOverflow = enabled}
         End Function
 
@@ -640,10 +629,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="concurrentBuild">The concurrent build setting. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the concurrent build is different; otherwise current instance.</returns>        
         Public Shadows Function WithConcurrentBuild(concurrentBuild As Boolean) As VisualBasicCompilationOptions
-            If concurrentBuild = Me.ConcurrentBuild Then
-                Return Me
-            End If
-
+            If concurrentBuild = Me.ConcurrentBuild Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.ConcurrentBuild = concurrentBuild}
         End Function
 
@@ -653,18 +639,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <returns> A new instance of VisualBasicCompilationOptions, if the deterministic mode is different; otherwise the current instance.</returns>
         ''' </summary>
         Public Shadows Function WithDeterministic(deterministic As Boolean) As VisualBasicCompilationOptions
-            If deterministic = Me.Deterministic Then
-                Return Me
-            End If
-
+            If deterministic = Me.Deterministic Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.Deterministic = deterministic}
         End Function
 
         Friend Function WithCurrentLocalTime(value As Date) As VisualBasicCompilationOptions
-            If value.Equals(CurrentLocalTime) Then
-                Return Me
-            End If
-
+            If value.Equals(CurrentLocalTime) Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.CurrentLocalTime_internal_protected_set = value}
         End Function
 
@@ -674,10 +654,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="debugPlusMode">The extended custom debug information setting. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the extended custom debug information is different; otherwise current instance.</returns>        
         Friend Function WithDebugPlusMode(debugPlusMode As Boolean) As VisualBasicCompilationOptions
-            If debugPlusMode = Me.DebugPlusMode Then
-                Return Me
-            End If
-
+            If debugPlusMode = Me.DebugPlusMode Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.DebugPlusMode_internal_protected_set = debugPlusMode}
         End Function
 
@@ -688,10 +665,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the embedded declaration suppression setting is different; otherwise current instance.</returns>
         ''' <remarks>Only expected to be called from the expression compiler.</remarks>
         Friend Function WithSuppressEmbeddedDeclarations(suppressEmbeddedDeclarations As Boolean) As VisualBasicCompilationOptions
-            If suppressEmbeddedDeclarations = _suppressEmbeddedDeclarations Then
-                Return Me
-            End If
-
+            If suppressEmbeddedDeclarations = _suppressEmbeddedDeclarations Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {._suppressEmbeddedDeclarations = suppressEmbeddedDeclarations}
         End Function
 
@@ -701,10 +675,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="ignoreCorLibraryDuplicatedTypes">The ignoreCorLibraryDuplicatedTypes setting. </param>
         ''' <remarks>Only expected to be called from the expression compiler and interactive.</remarks>
         Friend Function WithIgnoreCorLibraryDuplicatedTypes(ignoreCorLibraryDuplicatedTypes As Boolean) As VisualBasicCompilationOptions
-            If ignoreCorLibraryDuplicatedTypes = _ignoreCorLibraryDuplicatedTypes Then
-                Return Me
-            End If
-
+            If ignoreCorLibraryDuplicatedTypes = _ignoreCorLibraryDuplicatedTypes Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {._ignoreCorLibraryDuplicatedTypes = ignoreCorLibraryDuplicatedTypes}
         End Function
 
@@ -714,10 +685,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="name">The name of the cryptography key container. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the cryptography key container name is different; otherwise current instance.</returns>        
         Public Shadows Function WithCryptoKeyContainer(name As String) As VisualBasicCompilationOptions
-            If String.Equals(name, Me.CryptoKeyContainer, StringComparison.Ordinal) Then
-                Return Me
-            End If
-
+            If String.Equals(name, Me.CryptoKeyContainer, StringComparison.Ordinal) Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.CryptoKeyContainer = name}
         End Function
 
@@ -727,14 +695,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="path">The cryptography key file path. </param>        
         ''' <returns>A new instance of VisualBasicCompilationOptions, if the cryptography key path is different; otherwise current instance.</returns>        
         Public Shadows Function WithCryptoKeyFile(path As String) As VisualBasicCompilationOptions
-            If String.IsNullOrEmpty(path) Then
-                path = Nothing
-            End If
-
-            If String.Equals(path, Me.CryptoKeyFile, StringComparison.Ordinal) Then
-                Return Me
-            End If
-
+            If String.IsNullOrEmpty(path) Then  path = Nothing
+            If String.Equals(path, Me.CryptoKeyFile, StringComparison.Ordinal) Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.CryptoKeyFile = path}
         End Function
 
@@ -773,40 +735,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If value = Me.PublicSign Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.PublicSign = value}
         End Function
-
-        Protected Overrides Function CommonWithConcurrentBuild(concurrent As Boolean) As CompilationOptions
-            Return Me.WithConcurrentBuild(concurrent)
-        End Function
-
-        Protected Overrides Function CommonWithDeterministic(deterministic As Boolean) As CompilationOptions
-            Return Me.WithDeterministic(deterministic)
-        End Function
-
-        Protected Overrides Function CommonWithGeneralDiagnosticOption(value As ReportDiagnostic) As CompilationOptions
-            Return Me.WithGeneralDiagnosticOption(value)
-        End Function
-
-        Protected Overrides Function CommonWithSpecificDiagnosticOptions(specificDiagnosticOptions As ImmutableDictionary(Of String, ReportDiagnostic)) As CompilationOptions
-            Return Me.WithSpecificDiagnosticOptions(specificDiagnosticOptions)
-        End Function
-
-        Protected Overrides Function CommonWithSpecificDiagnosticOptions(specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic))) As CompilationOptions
-            Return Me.WithSpecificDiagnosticOptions(specificDiagnosticOptions)
-        End Function
-
-        Protected Overrides Function CommonWithReportSuppressedDiagnostics(reportSuppressedDiagnostics As Boolean) As CompilationOptions
-            Return Me.WithReportSuppressedDiagnostics(reportSuppressedDiagnostics)
-        End Function
-
-        Protected Overrides Function CommonWithMetadataImportOptions(value As MetadataImportOptions) As CompilationOptions
-            Return WithMetadataImportOptions(value)
-        End Function
-
-        <Obsolete>
-        Protected Overrides Function CommonWithFeatures(features As ImmutableArray(Of String)) As CompilationOptions
-            Throw New NotImplementedException()
-        End Function
-
+ 
         ''' <summary>
         ''' Creates a new <see cref="VisualBasicCompilationOptions"/> instance with a different report warning specified.
         ''' </summary>
@@ -905,8 +834,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If provider Is Me.StrongNameProvider Then Return Me
             Return New VisualBasicCompilationOptions(Me) With {.StrongNameProvider = provider}
         End Function
+#End Region
+       #Region "Common With Methods"
+        Protected Overrides Function CommonWithConcurrentBuild(concurrent As Boolean) As CompilationOptions
+            Return Me.WithConcurrentBuild(concurrent)
+        End Function
 
-        Protected Overrides Function CommonWithOutputKind(kind As OutputKind) As CompilationOptions
+        Protected Overrides Function CommonWithDeterministic(deterministic As Boolean) As CompilationOptions
+            Return Me.WithDeterministic(deterministic)
+        End Function
+
+        Protected Overrides Function CommonWithGeneralDiagnosticOption(value As ReportDiagnostic) As CompilationOptions
+            Return Me.WithGeneralDiagnosticOption(value)
+        End Function
+
+        Protected Overrides Function CommonWithSpecificDiagnosticOptions(specificDiagnosticOptions As ImmutableDictionary(Of String, ReportDiagnostic)) As CompilationOptions
+            Return Me.WithSpecificDiagnosticOptions(specificDiagnosticOptions)
+        End Function
+
+        Protected Overrides Function CommonWithSpecificDiagnosticOptions(specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic))) As CompilationOptions
+            Return Me.WithSpecificDiagnosticOptions(specificDiagnosticOptions)
+        End Function
+
+        Protected Overrides Function CommonWithReportSuppressedDiagnostics(reportSuppressedDiagnostics As Boolean) As CompilationOptions
+            Return Me.WithReportSuppressedDiagnostics(reportSuppressedDiagnostics)
+        End Function
+
+        Protected Overrides Function CommonWithMetadataImportOptions(value As MetadataImportOptions) As CompilationOptions
+            Return WithMetadataImportOptions(value)
+        End Function
+
+        <Obsolete>
+        Protected Overrides Function CommonWithFeatures(features As ImmutableArray(Of String)) As CompilationOptions
+            Throw New NotImplementedException()
+        End Function
+         Protected Overrides Function CommonWithOutputKind(kind As OutputKind) As CompilationOptions
             Return WithOutputKind(kind)
         End Function
 
@@ -941,6 +903,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Protected Overrides Function CommonWithStrongNameProvider(provider As StrongNameProvider) As CompilationOptions
             Return WithStrongNameProvider(provider)
         End Function
+       #End Region
 
 
         Private Function InvalidSwitch(SwitchName As String, SwitchValue As String) As Diagnostic
@@ -1041,34 +1004,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         '' 1.1 BACKCOMPAT OVERLOAD -- DO NOT TOUCH
         <EditorBrowsable(EditorBrowsableState.Never)>
         Public Sub New(
-            outputKind As OutputKind,
-            moduleName As String,
-            mainTypeName As String,
-            scriptClassName As String,
-            globalImports As IEnumerable(Of GlobalImport),
-            rootNamespace As String,
-            optionStrict As OptionStrict,
-            optionInfer As Boolean,
-            optionExplicit As Boolean,
-            optionCompareText As Boolean,
-            parseOptions As VisualBasicParseOptions,
-            embedVbCoreRuntime As Boolean,
-            optimizationLevel As OptimizationLevel,
-            checkOverflow As Boolean,
-            cryptoKeyContainer As String,
-            cryptoKeyFile As String,
-            cryptoPublicKey As ImmutableArray(Of Byte),
-            delaySign As Boolean?,
-            platform As Platform,
-            generalDiagnosticOption As ReportDiagnostic,
-            specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)),
-            concurrentBuild As Boolean,
-            deterministic As Boolean,
-            xmlReferenceResolver As XmlReferenceResolver,
-            sourceReferenceResolver As SourceReferenceResolver,
-            metadataReferenceResolver As MetadataReferenceResolver,
-            assemblyIdentityComparer As AssemblyIdentityComparer,
-            strongNameProvider As StrongNameProvider)
+            outputKind                  As OutputKind,
+            moduleName                  As String,
+            mainTypeName                As String,
+            scriptClassName             As String,
+            globalImports               As IEnumerable(Of GlobalImport),
+            rootNamespace               As String,
+            optionStrict                As OptionStrict,
+            optionInfer                 As Boolean,
+            optionExplicit              As Boolean,
+            optionCompareText           As Boolean,
+            parseOptions                As VisualBasicParseOptions,
+            embedVbCoreRuntime          As Boolean,
+            optimizationLevel           As OptimizationLevel,
+            checkOverflow               As Boolean,
+            cryptoKeyContainer          As String,
+            cryptoKeyFile               As String,
+            cryptoPublicKey             As ImmutableArray(Of Byte),
+            delaySign                   As Boolean?,
+            platform                    As Platform,
+            generalDiagnosticOption     As ReportDiagnostic,
+            specificDiagnosticOptions   As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)),
+            concurrentBuild             As Boolean,
+            deterministic               As Boolean,
+            xmlReferenceResolver        As XmlReferenceResolver,
+            sourceReferenceResolver     As SourceReferenceResolver,
+            metadataReferenceResolver   As MetadataReferenceResolver,
+            assemblyIdentityComparer    As AssemblyIdentityComparer,
+            strongNameProvider          As StrongNameProvider)
 
             MyClass.New(
                 outputKind,
@@ -1106,33 +1069,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ' 1.0 BACKCOMPAT OVERLOAD -- DO NOT TOUCH
         <EditorBrowsable(EditorBrowsableState.Never)>
         Public Sub New(
-            outputKind As OutputKind,
-            moduleName As String,
-            mainTypeName As String,
-            scriptClassName As String,
-            globalImports As IEnumerable(Of GlobalImport),
-            rootNamespace As String,
-            optionStrict As OptionStrict,
-            optionInfer As Boolean,
-            optionExplicit As Boolean,
-            optionCompareText As Boolean,
-            parseOptions As VisualBasicParseOptions,
-            embedVbCoreRuntime As Boolean,
-            optimizationLevel As OptimizationLevel,
-            checkOverflow As Boolean,
-            cryptoKeyContainer As String,
-            cryptoKeyFile As String,
-            cryptoPublicKey As ImmutableArray(Of Byte),
-            delaySign As Boolean?,
-            platform As Platform,
-            generalDiagnosticOption As ReportDiagnostic,
-            specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)),
-            concurrentBuild As Boolean,
-            xmlReferenceResolver As XmlReferenceResolver,
-            sourceReferenceResolver As SourceReferenceResolver,
-            metadataReferenceResolver As MetadataReferenceResolver,
-            assemblyIdentityComparer As AssemblyIdentityComparer,
-            strongNameProvider As StrongNameProvider)
+            outputKind                  As OutputKind,
+            moduleName                  As String,
+            mainTypeName                As String,
+            scriptClassName             As String,
+            globalImports               As IEnumerable(Of GlobalImport),
+            rootNamespace               As String,
+            optionStrict                As OptionStrict,
+            optionInfer                 As Boolean,
+            optionExplicit              As Boolean,
+            optionCompareText           As Boolean,
+            parseOptions                As VisualBasicParseOptions,
+            embedVbCoreRuntime          As Boolean,
+            optimizationLevel           As OptimizationLevel,
+            checkOverflow               As Boolean,
+            cryptoKeyContainer          As String,
+            cryptoKeyFile               As String,
+            cryptoPublicKey             As ImmutableArray(Of Byte),
+            delaySign                   As Boolean?,
+            platform                    As Platform,
+            generalDiagnosticOption     As ReportDiagnostic,
+            specificDiagnosticOptions   As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)),
+            concurrentBuild             As Boolean,
+            xmlReferenceResolver        As XmlReferenceResolver,
+            sourceReferenceResolver     As SourceReferenceResolver,
+            metadataReferenceResolver   As MetadataReferenceResolver,
+            assemblyIdentityComparer    As AssemblyIdentityComparer,
+            strongNameProvider          As StrongNameProvider)
 
             MyClass.New(
                 outputKind,
@@ -1172,34 +1135,34 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         <EditorBrowsable(EditorBrowsableState.Never)>
         Public Sub New(
             outputKind As OutputKind,
-            reportSuppressedDiagnostics As Boolean,
-            Optional moduleName As String = Nothing,
-            Optional mainTypeName As String = Nothing,
-            Optional scriptClassName As String = WellKnownMemberNames.DefaultScriptClassName,
-            Optional globalImports As IEnumerable(Of GlobalImport) = Nothing,
-            Optional rootNamespace As String = Nothing,
-            Optional optionStrict As OptionStrict = OptionStrict.Off,
-            Optional optionInfer As Boolean = True,
-            Optional optionExplicit As Boolean = True,
-            Optional optionCompareText As Boolean = False,
-            Optional parseOptions As VisualBasicParseOptions = Nothing,
-            Optional embedVbCoreRuntime As Boolean = False,
-            Optional optimizationLevel As OptimizationLevel = OptimizationLevel.Debug,
-            Optional checkOverflow As Boolean = True,
-            Optional cryptoKeyContainer As String = Nothing,
-            Optional cryptoKeyFile As String = Nothing,
-            Optional cryptoPublicKey As ImmutableArray(Of Byte) = Nothing,
-            Optional delaySign As Boolean? = Nothing,
-            Optional platform As Platform = Platform.AnyCpu,
-            Optional generalDiagnosticOption As ReportDiagnostic = ReportDiagnostic.Default,
-            Optional specificDiagnosticOptions As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)) = Nothing,
-            Optional concurrentBuild As Boolean = True,
-            Optional deterministic As Boolean = False,
-            Optional xmlReferenceResolver As XmlReferenceResolver = Nothing,
-            Optional sourceReferenceResolver As SourceReferenceResolver = Nothing,
-            Optional metadataReferenceResolver As MetadataReferenceResolver = Nothing,
-            Optional assemblyIdentityComparer As AssemblyIdentityComparer = Nothing,
-            Optional strongNameProvider As StrongNameProvider = Nothing)
+            reportSuppressedDiagnostics         As Boolean,
+            Optional moduleName                 As String = Nothing,
+            Optional mainTypeName               As String = Nothing,
+            Optional scriptClassName            As String = WellKnownMemberNames.DefaultScriptClassName,
+            Optional globalImports              As IEnumerable(Of GlobalImport) = Nothing,
+            Optional rootNamespace              As String = Nothing,
+            Optional optionStrict               As OptionStrict = OptionStrict.Off,
+            Optional optionInfer                As Boolean = True,
+            Optional optionExplicit             As Boolean = True,
+            Optional optionCompareText          As Boolean = False,
+            Optional parseOptions               As VisualBasicParseOptions = Nothing,
+            Optional embedVbCoreRuntime         As Boolean = False,
+            Optional optimizationLevel          As OptimizationLevel = OptimizationLevel.Debug,
+            Optional checkOverflow              As Boolean = True,
+            Optional cryptoKeyContainer         As String = Nothing,
+            Optional cryptoKeyFile              As String = Nothing,
+            Optional cryptoPublicKey            As ImmutableArray(Of Byte) = Nothing,
+            Optional delaySign                  As Boolean? = Nothing,
+            Optional platform                   As Platform = Platform.AnyCpu,
+            Optional generalDiagnosticOption    As ReportDiagnostic = ReportDiagnostic.Default,
+            Optional specificDiagnosticOptions  As IEnumerable(Of KeyValuePair(Of String, ReportDiagnostic)) = Nothing,
+            Optional concurrentBuild            As Boolean = True,
+            Optional deterministic              As Boolean = False,
+            Optional xmlReferenceResolver       As XmlReferenceResolver = Nothing,
+            Optional sourceReferenceResolver    As SourceReferenceResolver = Nothing,
+            Optional metadataReferenceResolver  As MetadataReferenceResolver = Nothing,
+            Optional assemblyIdentityComparer   As AssemblyIdentityComparer = Nothing,
+            Optional strongNameProvider         As StrongNameProvider = Nothing)
 
             MyClass.New(
                 outputKind,
@@ -1240,38 +1203,41 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ignoreCorLibraryDuplicatedTypes:=False)
 
         End Sub
+
 #Enable Warning RS0027 ' Public API with optional parameter(s) should have the most parameters amongst its public overloads
 
-        Protected Overrides Function CommonWithModuleName(moduleName As String) As CompilationOptions
-            Return WithModuleName(moduleName)
-        End Function
+    Protected Overrides Function CommonWithModuleName(moduleName As String) As CompilationOptions
+      Return WithModuleName(moduleName)
+    End Function
 
-        Protected Overrides Function CommonWithMainTypeName(mainTypeName As String) As CompilationOptions
-            Return WithMainTypeName(mainTypeName)
-        End Function
+    Protected Overrides Function CommonWithMainTypeName(mainTypeName As String) As CompilationOptions
+      Return WithMainTypeName(mainTypeName)
+    End Function
 
-        Protected Overrides Function CommonWithScriptClassName(scriptClassName As String) As CompilationOptions
-            Return WithScriptClassName(scriptClassName)
-        End Function
+    Protected Overrides Function CommonWithScriptClassName(scriptClassName As String) As CompilationOptions
+      Return WithScriptClassName(scriptClassName)
+    End Function
 
-        Protected Overrides Function CommonWithCryptoKeyContainer(cryptoKeyContainer As String) As CompilationOptions
-            Return WithCryptoKeyContainer(cryptoKeyContainer)
-        End Function
+    Protected Overrides Function CommonWithCryptoKeyContainer(cryptoKeyContainer As String) As CompilationOptions
+      Return WithCryptoKeyContainer(cryptoKeyContainer)
+    End Function
 
-        Protected Overrides Function CommonWithCryptoKeyFile(cryptoKeyFile As String) As CompilationOptions
-            Return WithCryptoKeyFile(cryptoKeyFile)
-        End Function
+    Protected Overrides Function CommonWithCryptoKeyFile(cryptoKeyFile As String) As CompilationOptions
+      Return WithCryptoKeyFile(cryptoKeyFile)
+    End Function
 
-        Protected Overrides Function CommonWithCryptoPublicKey(cryptoPublicKey As ImmutableArray(Of Byte)) As CompilationOptions
-            Return WithCryptoPublicKey(cryptoPublicKey)
-        End Function
+    Protected Overrides Function CommonWithCryptoPublicKey(cryptoPublicKey As ImmutableArray(Of Byte)) As CompilationOptions
+      Return WithCryptoPublicKey(cryptoPublicKey)
+    End Function
 
-        Protected Overrides Function CommonWithDelaySign(delaySign As Boolean?) As CompilationOptions
-            Return WithDelaySign(delaySign)
-        End Function
+    Protected Overrides Function CommonWithDelaySign(delaySign As Boolean?) As CompilationOptions
+      Return WithDelaySign(delaySign)
+    End Function
 
-        Protected Overrides Function CommonWithCheckOverflow(checkOverflow As Boolean) As CompilationOptions
-            Return WithOverflowChecks(checkOverflow)
-        End Function
-    End Class
+    Protected Overrides Function CommonWithCheckOverflow(checkOverflow As Boolean) As CompilationOptions
+      Return WithOverflowChecks(checkOverflow)
+    End Function
+
+  End Class
+
 End Namespace
