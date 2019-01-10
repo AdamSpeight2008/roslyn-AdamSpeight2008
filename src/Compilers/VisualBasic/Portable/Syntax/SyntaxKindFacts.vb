@@ -4,79 +4,68 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
-    Partial Public Class SyntaxFacts
+  Partial Public Class SyntaxFacts
 
-        ''' <summary>
-        ''' Determine if the kind represents a reserved keyword
-        ''' </summary>
-        Public Shared Function IsReservedKeyword(kind As SyntaxKind) As Boolean
-            Return kind - SyntaxKind.AddHandlerKeyword <=
-                    SyntaxKind.WendKeyword - SyntaxKind.AddHandlerKeyword OrElse kind = SyntaxKind.NameOfKeyword
-        End Function
+    ''' <summary> Determine if the kind represents a reserved keyword. </summary>
+    Public Shared Function IsReservedKeyword(kind As SyntaxKind) As Boolean
+      Return kind - SyntaxKind.AddHandlerKeyword <=
+             SyntaxKind.WendKeyword - SyntaxKind.AddHandlerKeyword OrElse kind = SyntaxKind.NameOfKeyword
+    End Function
 
-        ''' <summary>
-        ''' Determine if the kind represents a contextual keyword
-        ''' </summary>
-        Public Shared Function IsContextualKeyword(kind As SyntaxKind) As Boolean
-            Return kind = SyntaxKind.ReferenceKeyword OrElse
-                (SyntaxKind.AggregateKeyword <= kind AndAlso kind <= SyntaxKind.YieldKeyword)
-        End Function
+    ''' <summary> Determine if the kind represents a contextual keyword. </summary>
+    Public Shared Function IsContextualKeyword(kind As SyntaxKind) As Boolean
+      Return kind = SyntaxKind.ReferenceKeyword OrElse
+             (SyntaxKind.AggregateKeyword <= kind AndAlso kind <= SyntaxKind.YieldKeyword)
+    End Function
 
-        ''' <summary>
-        ''' Determine if the token instance represents 'Me', 'MyBase' or 'MyClass' keywords
-        ''' </summary>
-        Public Shared Function IsInstanceExpression(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case SyntaxKind.MeKeyword,
-                     SyntaxKind.MyClassKeyword,
-                     SyntaxKind.MyBaseKeyword
-                    Return True
-                Case Else
-                    Return False
-            End Select
-        End Function
+    ''' <summary> Determine if the token instance represents 'Me', 'MyBase' or 'MyClass' keywords. </summary>
+    Public Shared Function IsInstanceExpression(kind As SyntaxKind) As Boolean
+      Select Case kind
+             Case SyntaxKind.MeKeyword,
+                  SyntaxKind.MyClassKeyword,
+                  SyntaxKind.MyBaseKeyword
+                  Return True
+             Case Else
+      End Select
+      Return False
+    End Function
 
-        ''' <summary>
-        ''' Return correspondent expression syntax for 'Me', 'MyBase' and 'MyClass' 
-        ''' keywords or SyntaxKind.None for other syntax kinds
-        ''' </summary>
-        Public Shared Function GetInstanceExpression(kind As SyntaxKind) As SyntaxKind
-            Select Case kind
-                Case SyntaxKind.MeKeyword
-                    Return SyntaxKind.MeExpression
-                Case SyntaxKind.MyClassKeyword
-                    Return SyntaxKind.MyClassExpression
-                Case SyntaxKind.MyBaseKeyword
-                    Return SyntaxKind.MyBaseExpression
-                Case Else
-                    Return SyntaxKind.None
-            End Select
-        End Function
+    ''' <summary>
+    ''' Return correspondent expression syntax for 'Me', 'MyBase' and 'MyClass' 
+    ''' keywords or SyntaxKind.None for other syntax kinds
+    ''' </summary>
+    Public Shared Function GetInstanceExpression(kind As SyntaxKind) As SyntaxKind
+      Select Case kind
+             Case SyntaxKind.MeKeyword      : Return SyntaxKind.MeExpression
+             Case SyntaxKind.MyClassKeyword : Return SyntaxKind.MyClassExpression
+             Case SyntaxKind.MyBaseKeyword  : Return SyntaxKind.MyBaseExpression
+      End Select
+      Return SyntaxKind.None
+    End Function
 
-        ''' <summary>
-        ''' Determine if the token instance represents a preprocessor keyword
-        ''' </summary>
-        Public Shared Function IsPreprocessorKeyword(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case SyntaxKind.IfKeyword,
-                    SyntaxKind.ElseIfKeyword,
-                    SyntaxKind.ElseKeyword,
-                    SyntaxKind.EndIfKeyword,
-                    SyntaxKind.RegionKeyword,
-                    SyntaxKind.EndKeyword,
-                    SyntaxKind.ConstKeyword,
-                    SyntaxKind.ReferenceKeyword,
-                    SyntaxKind.EnableKeyword,
-                    SyntaxKind.DisableKeyword,
-                    SyntaxKind.ExternalSourceKeyword,
-                    SyntaxKind.ExternalChecksumKeyword
-                    Return True
-                Case Else
-                    Return False
-            End Select
-        End Function
+    ''' <summary> Determine if the token instance represents a preprocessor keyword. </summary>
+    Public Shared Function IsPreprocessorKeyword(kind As SyntaxKind) As Boolean
+      Select Case kind
+             Case SyntaxKind.IfKeyword,
+                  SyntaxKind.ElseIfKeyword,
+                  SyntaxKind.ElseKeyword,
+                  SyntaxKind.EndIfKeyword,
+                  SyntaxKind.RegionKeyword,
+                  SyntaxKind.EndKeyword,
+                  SyntaxKind.ConstKeyword,
+                  SyntaxKind.ReferenceKeyword,
+                  SyntaxKind.EnableKeyword,
+                  SyntaxKind.DisableKeyword,
+                  SyntaxKind.ExternalSourceKeyword,
+                  SyntaxKind.ExternalChecksumKeyword
+                  Return True
+             Case Else
+                  Return False
+      End Select
+    End Function
 
-        Private Shared ReadOnly s_reservedKeywords As SyntaxKind() = New SyntaxKind() {
+    Private Shared ReadOnly s_reservedKeywords As SyntaxKind() =
+      {
             SyntaxKind.AddressOfKeyword,
             SyntaxKind.AddHandlerKeyword,
             SyntaxKind.AliasKeyword,
@@ -231,15 +220,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             SyntaxKind.GosubKeyword,
             SyntaxKind.VariantKeyword,
             SyntaxKind.WendKeyword
-            }
-        ''' <summary>
-        ''' Get all reserved keywords
-        ''' </summary>
-        Public Shared Function GetReservedKeywordKinds() As IEnumerable(Of SyntaxKind)
-            Return s_reservedKeywords
-        End Function
+       }
 
-        Private Shared ReadOnly s_contextualKeywords As SyntaxKind() = New SyntaxKind() {
+    ''' <summary> Get all reserved keywords. </summary>
+    Public Shared Function GetReservedKeywordKinds() As IEnumerable(Of SyntaxKind)
+      Return s_reservedKeywords
+    End Function
+
+    Private Shared ReadOnly s_contextualKeywords As SyntaxKind()=
+      {
             SyntaxKind.AggregateKeyword,
             SyntaxKind.AllKeyword,
             SyntaxKind.AnsiKeyword,
@@ -288,90 +277,89 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             SyntaxKind.IteratorKeyword,
             SyntaxKind.YieldKeyword
             }
-        ''' <summary>
-        ''' Get contextual keywords
-        ''' </summary>
-        Public Shared Function GetContextualKeywordKinds() As IEnumerable(Of SyntaxKind)
-            Return s_contextualKeywords
-        End Function
 
-        Private Shared ReadOnly s_punctuationKinds As SyntaxKind() = New SyntaxKind() {
-            SyntaxKind.ExclamationToken,
-            SyntaxKind.AtToken,
-            SyntaxKind.CommaToken,
-            SyntaxKind.HashToken,
-            SyntaxKind.AmpersandToken,
-            SyntaxKind.SingleQuoteToken,
-            SyntaxKind.OpenParenToken,
-            SyntaxKind.CloseParenToken,
-            SyntaxKind.OpenBraceToken,
-            SyntaxKind.CloseBraceToken,
-            SyntaxKind.SemicolonToken,
-            SyntaxKind.AsteriskToken,
-            SyntaxKind.PlusToken,
-            SyntaxKind.MinusToken,
-            SyntaxKind.DotToken,
-            SyntaxKind.SlashToken,
-            SyntaxKind.ColonToken,
-            SyntaxKind.LessThanToken,
-            SyntaxKind.LessThanEqualsToken,
-            SyntaxKind.LessThanGreaterThanToken,
-            SyntaxKind.EqualsToken,
-            SyntaxKind.GreaterThanToken,
-            SyntaxKind.GreaterThanEqualsToken,
-            SyntaxKind.BackslashToken,
-            SyntaxKind.CaretToken,
-            SyntaxKind.ColonEqualsToken,
-            SyntaxKind.AmpersandEqualsToken,
-            SyntaxKind.AsteriskEqualsToken,
-            SyntaxKind.PlusEqualsToken,
-            SyntaxKind.MinusEqualsToken,
-            SyntaxKind.SlashEqualsToken,
-            SyntaxKind.BackslashEqualsToken,
-            SyntaxKind.CaretEqualsToken,
-            SyntaxKind.LessThanLessThanToken,
-            SyntaxKind.GreaterThanGreaterThanToken,
-            SyntaxKind.LessThanLessThanEqualsToken,
-            SyntaxKind.GreaterThanGreaterThanEqualsToken,
-            SyntaxKind.QuestionToken,
-            SyntaxKind.DoubleQuoteToken,
-            SyntaxKind.StatementTerminatorToken,
-            SyntaxKind.EndOfFileToken,
-            SyntaxKind.EmptyToken
-            }
-        ''' <summary>
-        ''' Get punctuations
-        ''' </summary>
-        Public Shared Function GetPunctuationKinds() As IEnumerable(Of SyntaxKind)
-            Return s_punctuationKinds
-        End Function
+    ''' <summary> Get contextual keywords. </summary>
+    Public Shared Function GetContextualKeywordKinds() As IEnumerable(Of SyntaxKind)
+      Return s_contextualKeywords
+    End Function
 
-        Private Shared ReadOnly s_preprocessorKeywords As SyntaxKind() = New SyntaxKind() {
-                                                            SyntaxKind.IfKeyword,
-                                                            SyntaxKind.ThenKeyword,
-                                                            SyntaxKind.ElseIfKeyword,
-                                                            SyntaxKind.ElseKeyword,
-                                                            SyntaxKind.EndIfKeyword,
-                                                            SyntaxKind.EndKeyword,
-                                                            SyntaxKind.RegionKeyword,
-                                                            SyntaxKind.ConstKeyword,
-                                                            SyntaxKind.ReferenceKeyword,
-                                                            SyntaxKind.EnableKeyword,
-                                                            SyntaxKind.DisableKeyword,
-                                                            SyntaxKind.WarningKeyword,
-                                                            SyntaxKind.ExternalSourceKeyword,
-                                                            SyntaxKind.ExternalChecksumKeyword}
+    Private Shared ReadOnly s_punctuationKinds As SyntaxKind() =
+      {
+        SyntaxKind.ExclamationToken,
+        SyntaxKind.AtToken,
+        SyntaxKind.CommaToken,
+        SyntaxKind.HashToken,
+        SyntaxKind.AmpersandToken,
+        SyntaxKind.SingleQuoteToken,
+        SyntaxKind.OpenParenToken,
+        SyntaxKind.CloseParenToken,
+        SyntaxKind.OpenBraceToken,
+        SyntaxKind.CloseBraceToken,
+        SyntaxKind.SemicolonToken,
+        SyntaxKind.AsteriskToken,
+        SyntaxKind.PlusToken,
+        SyntaxKind.MinusToken,
+        SyntaxKind.DotToken,
+        SyntaxKind.SlashToken,
+        SyntaxKind.ColonToken,
+        SyntaxKind.LessThanToken,
+        SyntaxKind.LessThanEqualsToken,
+        SyntaxKind.LessThanGreaterThanToken,
+        SyntaxKind.EqualsToken,
+        SyntaxKind.GreaterThanToken,
+        SyntaxKind.GreaterThanEqualsToken,
+        SyntaxKind.BackslashToken,
+        SyntaxKind.CaretToken,
+        SyntaxKind.ColonEqualsToken,
+        SyntaxKind.AmpersandEqualsToken,
+        SyntaxKind.AsteriskEqualsToken,
+        SyntaxKind.PlusEqualsToken,
+        SyntaxKind.MinusEqualsToken,
+        SyntaxKind.SlashEqualsToken,
+        SyntaxKind.BackslashEqualsToken,
+        SyntaxKind.CaretEqualsToken,
+        SyntaxKind.LessThanLessThanToken,
+        SyntaxKind.GreaterThanGreaterThanToken,
+        SyntaxKind.LessThanLessThanEqualsToken,
+        SyntaxKind.GreaterThanGreaterThanEqualsToken,
+        SyntaxKind.QuestionToken,
+        SyntaxKind.DoubleQuoteToken,
+        SyntaxKind.StatementTerminatorToken,
+        SyntaxKind.EndOfFileToken,
+        SyntaxKind.EmptyToken
+      }
 
-        ''' <summary>
-        ''' Get preprocessor keywords
-        ''' </summary>
-        Public Shared Function GetPreprocessorKeywordKinds() As IEnumerable(Of SyntaxKind)
-            Return s_preprocessorKeywords
-        End Function
+      ''' <summary> Get punctuations </summary>
+      Public Shared Function GetPunctuationKinds() As IEnumerable(Of SyntaxKind)
+        Return s_punctuationKinds
+      End Function
 
-        Friend Shared Function IsSpecifier(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case SyntaxKind.PublicKeyword,
+      Private Shared ReadOnly s_preprocessorKeywords As SyntaxKind() =
+        {
+          SyntaxKind.IfKeyword,
+          SyntaxKind.ThenKeyword,
+          SyntaxKind.ElseIfKeyword,
+          SyntaxKind.ElseKeyword,
+          SyntaxKind.EndIfKeyword,
+          SyntaxKind.EndKeyword,
+          SyntaxKind.RegionKeyword,
+          SyntaxKind.ConstKeyword,
+          SyntaxKind.ReferenceKeyword,
+          SyntaxKind.EnableKeyword,
+          SyntaxKind.DisableKeyword,
+          SyntaxKind.WarningKeyword,
+          SyntaxKind.ExternalSourceKeyword,
+          SyntaxKind.ExternalChecksumKeyword
+        }
+
+      ''' <summary> Get preprocessor keywords </summary>
+      Public Shared Function GetPreprocessorKeywordKinds() As IEnumerable(Of SyntaxKind)
+        Return s_preprocessorKeywords
+      End Function
+
+      Friend Shared Function IsSpecifier(kind As SyntaxKind) As Boolean
+        Select Case kind
+               Case SyntaxKind.PublicKeyword,
                     SyntaxKind.PrivateKeyword,
                     SyntaxKind.ProtectedKeyword,
                     SyntaxKind.FriendKeyword,
@@ -398,57 +386,48 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     SyntaxKind.AsyncKeyword,
                     SyntaxKind.IteratorKeyword
                     Return True
-            End Select
+        End Select
+        Return False
+      End Function
 
-            Return False
-        End Function
+      Friend Shared Function CanStartSpecifierDeclaration(kind As SyntaxKind) As Boolean
+        Select Case kind
+          Case SyntaxKind.PropertyKeyword,
+               SyntaxKind.IdentifierToken,
+               SyntaxKind.EnumKeyword,
+               SyntaxKind.ModuleKeyword,
+               SyntaxKind.StructureKeyword,
+               SyntaxKind.InterfaceKeyword,
+               SyntaxKind.ClassKeyword,
+               SyntaxKind.DeclareKeyword,
+               SyntaxKind.EventKeyword,
+               SyntaxKind.SubKeyword,
+               SyntaxKind.FunctionKeyword,
+               SyntaxKind.OperatorKeyword,
+               SyntaxKind.DelegateKeyword
+               Return True
+        End Select
+        Return False
+      End Function
 
-        Friend Shared Function CanStartSpecifierDeclaration(kind As SyntaxKind) As Boolean
-
-            Select Case kind
-
-                Case SyntaxKind.PropertyKeyword,
-                   SyntaxKind.IdentifierToken,
-                   SyntaxKind.EnumKeyword,
-                   SyntaxKind.ModuleKeyword,
-                   SyntaxKind.StructureKeyword,
-                   SyntaxKind.InterfaceKeyword,
-                   SyntaxKind.ClassKeyword,
-                   SyntaxKind.DeclareKeyword,
-                   SyntaxKind.EventKeyword,
-                   SyntaxKind.SubKeyword,
-                   SyntaxKind.FunctionKeyword,
-                   SyntaxKind.OperatorKeyword,
-                   SyntaxKind.DelegateKeyword
-
-                    Return True
-            End Select
-
-            Return False
-        End Function
-
-        ' Test whether a given token is a relational operator.
-
-        Public Shared Function IsRelationalOperator(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case _
-                    SyntaxKind.LessThanToken,
+      ' Test whether a given token is a relational operator.
+      Public Shared Function IsRelationalOperator(kind As SyntaxKind) As Boolean
+        Select Case kind
+               Case SyntaxKind.LessThanToken,
                     SyntaxKind.LessThanEqualsToken,
                     SyntaxKind.EqualsToken,
                     SyntaxKind.GreaterThanToken,
                     SyntaxKind.GreaterThanEqualsToken,
                     SyntaxKind.LessThanGreaterThanToken
                     Return True
-
-                Case Else
+               Case Else
                     Return False
-            End Select
-        End Function
+        End Select
+      End Function
 
-        Public Shared Function IsOperator(kind As SyntaxKind) As Boolean
-            Select Case (kind)
-
-                Case SyntaxKind.AndKeyword,
+      Public Shared Function IsOperator(kind As SyntaxKind) As Boolean
+        Select Case (kind)
+               Case SyntaxKind.AndKeyword,
                     SyntaxKind.AndAlsoKeyword,
                     SyntaxKind.CBoolKeyword,
                     SyntaxKind.CByteKeyword,
@@ -510,15 +489,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     SyntaxKind.LessThanLessThanEqualsToken,
                     SyntaxKind.GreaterThanGreaterThanEqualsToken
                     Return True
-
-                Case Else
+               Case Else
                     Return False
-            End Select
-        End Function
+        End Select
+      End Function
 
-        Public Shared Function IsPreprocessorDirective(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case SyntaxKind.IfDirectiveTrivia,
+      Public Shared Function IsPreprocessorDirective(kind As SyntaxKind) As Boolean
+        Select Case kind
+               Case SyntaxKind.IfDirectiveTrivia,
                     SyntaxKind.ElseIfDirectiveTrivia,
                     SyntaxKind.ElseDirectiveTrivia,
                     SyntaxKind.EndIfDirectiveTrivia,
@@ -533,83 +511,83 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     SyntaxKind.ReferenceDirectiveTrivia,
                     SyntaxKind.BadDirectiveTrivia
                     Return True
-                Case Else
+               Case Else
                     Return False
-            End Select
-        End Function
+        End Select
+      End Function
 
-        Friend Shared Function SupportsContinueStatement(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case SyntaxKind.WhileBlock,
-                     SyntaxKind.ForBlock,
-                     SyntaxKind.ForEachBlock,
-                     SyntaxKind.SimpleDoLoopBlock,
-                     SyntaxKind.DoWhileLoopBlock,
-                     SyntaxKind.DoUntilLoopBlock
-
+      Friend Shared Function SupportsContinueStatement(kind As SyntaxKind) As Boolean
+        Select Case kind
+               Case SyntaxKind.WhileBlock,
+                    SyntaxKind.ForBlock,
+                    SyntaxKind.ForEachBlock,
+                    SyntaxKind.SimpleDoLoopBlock,
+                    SyntaxKind.DoWhileLoopBlock,
+                    SyntaxKind.DoUntilLoopBlock
                     Return True
-            End Select
-            Return False
-        End Function
+        End Select
+        Return False
+      End Function
 
-        Friend Shared Function SupportsExitStatement(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case SyntaxKind.WhileBlock,
-                     SyntaxKind.ForBlock,
-                     SyntaxKind.ForEachBlock,
-                     SyntaxKind.SimpleDoLoopBlock,
-                     SyntaxKind.DoWhileLoopBlock,
-                     SyntaxKind.DoUntilLoopBlock,
-                     SyntaxKind.SelectBlock,
-                     SyntaxKind.SubBlock,
-                     SyntaxKind.SingleLineSubLambdaExpression,
-                     SyntaxKind.MultiLineSubLambdaExpression,
-                     SyntaxKind.FunctionBlock,
-                     SyntaxKind.MultiLineFunctionLambdaExpression,
-                     SyntaxKind.PropertyBlock,
-                     SyntaxKind.TryBlock
+      Friend Shared Function SupportsExitStatement(kind As SyntaxKind) As Boolean
+        Select Case kind
+               Case SyntaxKind.WhileBlock,
+                    SyntaxKind.ForBlock,
+                    SyntaxKind.ForEachBlock,
+                    SyntaxKind.SimpleDoLoopBlock,
+                    SyntaxKind.DoWhileLoopBlock,
+                    SyntaxKind.DoUntilLoopBlock,
+                    SyntaxKind.SelectBlock,
+                    SyntaxKind.SubBlock,
+                    SyntaxKind.SingleLineSubLambdaExpression,
+                    SyntaxKind.MultiLineSubLambdaExpression,
+                    SyntaxKind.FunctionBlock,
+                    SyntaxKind.MultiLineFunctionLambdaExpression,
+                    SyntaxKind.PropertyBlock,
+                    SyntaxKind.TryBlock
                     Return True
-            End Select
-            Return False
-        End Function
+        End Select
+        Return False
+      End Function
 
-        Friend Shared Function IsEndBlockLoopOrNextStatement(kind As SyntaxKind) As Boolean
-            Select Case (kind)
-                Case SyntaxKind.EndIfStatement,
-                     SyntaxKind.EndWithStatement,
-                     SyntaxKind.EndSelectStatement,
-                     SyntaxKind.EndWhileStatement,
-                     SyntaxKind.SimpleLoopStatement, SyntaxKind.LoopWhileStatement, SyntaxKind.LoopUntilStatement,
-                     SyntaxKind.NextStatement,
-                     SyntaxKind.EndStructureStatement,
-                     SyntaxKind.EndEnumStatement,
-                     SyntaxKind.EndPropertyStatement,
-                     SyntaxKind.EndEventStatement,
-                     SyntaxKind.EndInterfaceStatement,
-                     SyntaxKind.EndTryStatement,
-                     SyntaxKind.EndClassStatement,
-                     SyntaxKind.EndModuleStatement,
-                     SyntaxKind.EndNamespaceStatement,
-                     SyntaxKind.EndUsingStatement,
-                     SyntaxKind.EndSyncLockStatement,
-                     SyntaxKind.EndSubStatement,
-                     SyntaxKind.EndFunctionStatement,
-                     SyntaxKind.EndOperatorStatement,
-                     SyntaxKind.EndGetStatement,
-                     SyntaxKind.EndSetStatement,
-                     SyntaxKind.EndAddHandlerStatement,
-                     SyntaxKind.EndRemoveHandlerStatement,
-                     SyntaxKind.EndRaiseEventStatement
+      Friend Shared Function IsEndBlockLoopOrNextStatement(kind As SyntaxKind) As Boolean
+        Select Case (kind)
+               Case SyntaxKind.EndIfStatement,
+                    SyntaxKind.EndWithStatement,
+                    SyntaxKind.EndSelectStatement,
+                    SyntaxKind.EndWhileStatement,
+                    SyntaxKind.SimpleLoopStatement,
+                    SyntaxKind.LoopWhileStatement,
+                    SyntaxKind.LoopUntilStatement,
+                    SyntaxKind.NextStatement,
+                    SyntaxKind.EndStructureStatement,
+                    SyntaxKind.EndEnumStatement,
+                    SyntaxKind.EndPropertyStatement,
+                    SyntaxKind.EndEventStatement,
+                    SyntaxKind.EndInterfaceStatement,
+                    SyntaxKind.EndTryStatement,
+                    SyntaxKind.EndClassStatement,
+                    SyntaxKind.EndModuleStatement,
+                    SyntaxKind.EndNamespaceStatement,
+                    SyntaxKind.EndUsingStatement,
+                    SyntaxKind.EndSyncLockStatement,
+                    SyntaxKind.EndSubStatement,
+                    SyntaxKind.EndFunctionStatement,
+                    SyntaxKind.EndOperatorStatement,
+                    SyntaxKind.EndGetStatement,
+                    SyntaxKind.EndSetStatement,
+                    SyntaxKind.EndAddHandlerStatement,
+                    SyntaxKind.EndRemoveHandlerStatement,
+                    SyntaxKind.EndRaiseEventStatement
                     Return True
-
-                Case Else
+               Case Else
                     Return False
-            End Select
-        End Function
+        End Select
+      End Function
 
-        Friend Shared Function IsXmlSyntax(kind As SyntaxKind) As Boolean
-            Select Case kind
-                Case SyntaxKind.XmlDocument,
+      Friend Shared Function IsXmlSyntax(kind As SyntaxKind) As Boolean
+        Select Case kind
+               Case SyntaxKind.XmlDocument,
                     SyntaxKind.XmlDeclaration,
                     SyntaxKind.XmlDeclarationOption,
                     SyntaxKind.XmlElement,
@@ -626,253 +604,163 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     SyntaxKind.XmlCDataSection,
                     SyntaxKind.XmlEmbeddedExpression
                     Return True
-            End Select
-            Return False
-        End Function
+        End Select
+        Return False
+      End Function
 
-        Public Shared Function GetKeywordKind(text As String) As SyntaxKind
-            text = MakeHalfWidthIdentifier(text)
-            Dim result As SyntaxKind = KeywordTable.TokenOfString(text)
+      Public Shared Function GetKeywordKind(text As String) As SyntaxKind
+        text = MakeHalfWidthIdentifier(text)
+        Dim result As SyntaxKind = KeywordTable.TokenOfString(text)
+        If result <> SyntaxKind.IdentifierToken AndAlso Not IsContextualKeyword(result) Then Return result
+        Return SyntaxKind.None
+      End Function
 
-            If result <> SyntaxKind.IdentifierToken AndAlso Not IsContextualKeyword(result) Then
-                Return result
-            End If
+      Public Shared Function GetAccessorStatementKind(keyword As SyntaxKind) As SyntaxKind
+        Select Case keyword
+               Case SyntaxKind.GetKeyword           : Return SyntaxKind.GetAccessorStatement
+               Case SyntaxKind.SetKeyword           : Return SyntaxKind.SetAccessorStatement
+               Case SyntaxKind.AddHandlerKeyword    : Return SyntaxKind.AddHandlerStatement
+               Case SyntaxKind.RemoveHandlerKeyword : Return SyntaxKind.RemoveHandlerStatement
+               Case SyntaxKind.RaiseEventKeyword    : Return SyntaxKind.RaiseEventAccessorStatement
+               Case Else                            : Return SyntaxKind.None
+        End Select
+      End Function
 
-            Return SyntaxKind.None
-        End Function
+      Public Shared Function GetBaseTypeStatementKind(keyword As SyntaxKind) As SyntaxKind
+        Return If(keyword = SyntaxKind.EnumKeyword, SyntaxKind.EnumStatement, GetTypeStatementKind(keyword))
+      End Function
 
-        Public Shared Function GetAccessorStatementKind(keyword As SyntaxKind) As SyntaxKind
-            Select Case keyword
+      Public Shared Function GetTypeStatementKind(keyword As SyntaxKind) As SyntaxKind
+        Select Case keyword
+               Case SyntaxKind.ClassKeyword         : Return SyntaxKind.ClassStatement
+               Case SyntaxKind.InterfaceKeyword     : Return SyntaxKind.InterfaceStatement
+               Case SyntaxKind.StructureKeyword     : Return SyntaxKind.StructureStatement
+               Case Else                            : Return SyntaxKind.None
+        End Select
+      End Function
 
-                Case SyntaxKind.GetKeyword
-                    Return SyntaxKind.GetAccessorStatement
+      Public Shared Function GetBinaryExpression(keyword As SyntaxKind) As SyntaxKind
+        Select Case (keyword)
+               Case SyntaxKind.IsKeyword                   : Return SyntaxKind.IsExpression
+               Case SyntaxKind.IsNotKeyword                : Return SyntaxKind.IsNotExpression
+               Case SyntaxKind.LikeKeyword                 : Return SyntaxKind.LikeExpression
+               Case SyntaxKind.AndKeyword                  : Return SyntaxKind.AndExpression
+               Case SyntaxKind.AndAlsoKeyword              : Return SyntaxKind.AndAlsoExpression
+               Case SyntaxKind.OrKeyword                   : Return SyntaxKind.OrExpression
+               Case SyntaxKind.OrElseKeyword               : Return SyntaxKind.OrElseExpression
+               Case SyntaxKind.XorKeyword                  : Return SyntaxKind.ExclusiveOrExpression
+               Case SyntaxKind.AmpersandToken              : Return SyntaxKind.ConcatenateExpression
+               Case SyntaxKind.AsteriskToken               : Return SyntaxKind.MultiplyExpression
+               Case SyntaxKind.PlusToken                   : Return SyntaxKind.AddExpression
+               Case SyntaxKind.MinusToken                  : Return SyntaxKind.SubtractExpression
+               Case SyntaxKind.SlashToken                  : Return SyntaxKind.DivideExpression 
+               Case SyntaxKind.BackslashToken              : Return SyntaxKind.IntegerDivideExpression
+               Case SyntaxKind.ModKeyword                  : Return SyntaxKind.ModuloExpression
+               Case SyntaxKind.CaretToken                  : Return SyntaxKind.ExponentiateExpression
+               Case SyntaxKind.LessThanToken               : Return SyntaxKind.LessThanExpression
+               Case SyntaxKind.LessThanEqualsToken         : Return SyntaxKind.LessThanOrEqualExpression
+               Case SyntaxKind.LessThanGreaterThanToken    : Return SyntaxKind.NotEqualsExpression
+               Case SyntaxKind.EqualsToken                 : Return SyntaxKind.EqualsExpression
+               Case SyntaxKind.GreaterThanToken            : Return SyntaxKind.GreaterThanExpression
+               Case SyntaxKind.GreaterThanEqualsToken      : Return SyntaxKind.GreaterThanOrEqualExpression
+               Case SyntaxKind.LessThanLessThanToken       : Return SyntaxKind.LeftShiftExpression
+               Case SyntaxKind.GreaterThanGreaterThanToken : Return SyntaxKind.RightShiftExpression
+               Case Else                                   : Return SyntaxKind.None
+        End Select
+      End Function
 
-                Case SyntaxKind.SetKeyword
-                    Return SyntaxKind.SetAccessorStatement
+      Private Shared ReadOnly s_contextualKeywordToSyntaxKindMap As New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
+        {
+          {"aggregate", SyntaxKind.AggregateKeyword},
+          {"all", SyntaxKind.AllKeyword},
+          {"ansi", SyntaxKind.AnsiKeyword},
+          {"ascending", SyntaxKind.AscendingKeyword},
+          {"assembly", SyntaxKind.AssemblyKeyword},
+          {"auto", SyntaxKind.AutoKeyword},
+          {"binary", SyntaxKind.BinaryKeyword},
+          {"by", SyntaxKind.ByKeyword},
+          {"compare", SyntaxKind.CompareKeyword},
+          {"custom", SyntaxKind.CustomKeyword},
+          {"descending", SyntaxKind.DescendingKeyword},
+          {"disable", SyntaxKind.DisableKeyword},
+          {"distinct", SyntaxKind.DistinctKeyword},
+          {"enable", SyntaxKind.EnableKeyword},
+          {"equals", SyntaxKind.EqualsKeyword},
+          {"explicit", SyntaxKind.ExplicitKeyword},
+          {"externalsource", SyntaxKind.ExternalSourceKeyword},
+          {"externalchecksum", SyntaxKind.ExternalChecksumKeyword},
+          {"from", SyntaxKind.FromKeyword},
+          {"group", SyntaxKind.GroupKeyword},
+          {"infer", SyntaxKind.InferKeyword},
+          {"into", SyntaxKind.IntoKeyword},
+          {"isfalse", SyntaxKind.IsFalseKeyword},
+          {"istrue", SyntaxKind.IsTrueKeyword},
+          {"join", SyntaxKind.JoinKeyword},
+          {"key", SyntaxKind.KeyKeyword},
+          {"mid", SyntaxKind.MidKeyword},
+          {"off", SyntaxKind.OffKeyword},
+          {"order", SyntaxKind.OrderKeyword},
+          {"out", SyntaxKind.OutKeyword},
+          {"preserve", SyntaxKind.PreserveKeyword},
+          {"region", SyntaxKind.RegionKeyword},
+          {"r", SyntaxKind.ReferenceKeyword},
+          {"skip", SyntaxKind.SkipKeyword},
+          {"strict", SyntaxKind.StrictKeyword},
+          {"take", SyntaxKind.TakeKeyword},
+          {"text", SyntaxKind.TextKeyword},
+          {"unicode", SyntaxKind.UnicodeKeyword},
+          {"until", SyntaxKind.UntilKeyword},
+          {"warning", SyntaxKind.WarningKeyword},
+          {"where", SyntaxKind.WhereKeyword},
+          {"type", SyntaxKind.TypeKeyword},
+          {"xml", SyntaxKind.XmlKeyword},
+          {"async", SyntaxKind.AsyncKeyword},
+          {"await", SyntaxKind.AwaitKeyword},
+          {"iterator", SyntaxKind.IteratorKeyword},
+          {"yield", SyntaxKind.YieldKeyword}
+        }
 
-                Case SyntaxKind.AddHandlerKeyword
-                    Return SyntaxKind.AddHandlerStatement
+      Public Shared Function GetContextualKeywordKind(text As String) As SyntaxKind
+        text = MakeHalfWidthIdentifier(text)
+        Dim kind As SyntaxKind = SyntaxKind.None
+        Return If(s_contextualKeywordToSyntaxKindMap.TryGetValue(text, kind), kind, SyntaxKind.None)
+      End Function
 
-                Case SyntaxKind.RemoveHandlerKeyword
-                    Return SyntaxKind.RemoveHandlerStatement
+      Private Shared ReadOnly s_preprocessorKeywordToSyntaxKindMap As New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
+        {
+          {"if", SyntaxKind.IfKeyword},
+          {"elseif", SyntaxKind.ElseIfKeyword},
+          {"else", SyntaxKind.ElseKeyword},
+          {"endif", SyntaxKind.EndIfKeyword},
+          {"region", SyntaxKind.RegionKeyword},
+          {"end", SyntaxKind.EndKeyword},
+          {"const", SyntaxKind.ConstKeyword},
+          {"externalsource", SyntaxKind.ExternalSourceKeyword},
+          {"externalchecksum", SyntaxKind.ExternalChecksumKeyword},
+          {"r", SyntaxKind.ReferenceKeyword},
+          {"enable", SyntaxKind.EnableKeyword},
+          {"disable", SyntaxKind.DisableKeyword}
+        }
 
-                Case SyntaxKind.RaiseEventKeyword
-                    Return SyntaxKind.RaiseEventAccessorStatement
+      Public Shared Function GetPreprocessorKeywordKind(text As String) As SyntaxKind
+        text = MakeHalfWidthIdentifier(text)
+        Dim kind As SyntaxKind = SyntaxKind.None
+        Return If(s_preprocessorKeywordToSyntaxKindMap.TryGetValue(text, kind), kind, SyntaxKind.None)
+      End Function
 
-                Case Else
-                    Return SyntaxKind.None
-            End Select
-        End Function
-
-        Public Shared Function GetBaseTypeStatementKind(keyword As SyntaxKind) As SyntaxKind
-            Return If(keyword = SyntaxKind.EnumKeyword, SyntaxKind.EnumStatement, GetTypeStatementKind(keyword))
-        End Function
-
-        Public Shared Function GetTypeStatementKind(keyword As SyntaxKind) As SyntaxKind
-            Select Case keyword
-
-                Case SyntaxKind.ClassKeyword
-                    Return SyntaxKind.ClassStatement
-
-                Case SyntaxKind.InterfaceKeyword
-                    Return SyntaxKind.InterfaceStatement
-
-                Case SyntaxKind.StructureKeyword
-                    Return SyntaxKind.StructureStatement
-
-                Case Else
-                    Return SyntaxKind.None
-            End Select
-        End Function
-
-        Public Shared Function GetBinaryExpression(keyword As SyntaxKind) As SyntaxKind
-            Select Case (keyword)
-
-                Case SyntaxKind.IsKeyword
-                    Return SyntaxKind.IsExpression
-
-                Case SyntaxKind.IsNotKeyword
-                    Return SyntaxKind.IsNotExpression
-
-                Case SyntaxKind.LikeKeyword
-                    Return SyntaxKind.LikeExpression
-
-                Case SyntaxKind.AndKeyword
-                    Return SyntaxKind.AndExpression
-
-                Case SyntaxKind.AndAlsoKeyword
-                    Return SyntaxKind.AndAlsoExpression
-                Case SyntaxKind.OrKeyword
-                    Return SyntaxKind.OrExpression
-
-                Case SyntaxKind.OrElseKeyword
-                    Return SyntaxKind.OrElseExpression
-
-                Case SyntaxKind.XorKeyword
-                    Return SyntaxKind.ExclusiveOrExpression
-
-                Case SyntaxKind.AmpersandToken
-                    Return SyntaxKind.ConcatenateExpression
-
-                Case SyntaxKind.AsteriskToken
-                    Return SyntaxKind.MultiplyExpression
-
-                Case SyntaxKind.PlusToken
-                    Return SyntaxKind.AddExpression
-
-                Case SyntaxKind.MinusToken
-                    Return SyntaxKind.SubtractExpression
-
-                Case SyntaxKind.SlashToken
-                    Return SyntaxKind.DivideExpression
-
-                Case SyntaxKind.BackslashToken
-                    Return SyntaxKind.IntegerDivideExpression
-
-                Case SyntaxKind.ModKeyword
-                    Return SyntaxKind.ModuloExpression
-
-                Case SyntaxKind.CaretToken
-                    Return SyntaxKind.ExponentiateExpression
-
-                Case SyntaxKind.LessThanToken
-                    Return SyntaxKind.LessThanExpression
-
-                Case SyntaxKind.LessThanEqualsToken
-                    Return SyntaxKind.LessThanOrEqualExpression
-
-                Case SyntaxKind.LessThanGreaterThanToken
-                    Return SyntaxKind.NotEqualsExpression
-
-                Case SyntaxKind.EqualsToken
-                    Return SyntaxKind.EqualsExpression
-
-                Case SyntaxKind.GreaterThanToken
-                    Return SyntaxKind.GreaterThanExpression
-
-                Case SyntaxKind.GreaterThanEqualsToken
-                    Return SyntaxKind.GreaterThanOrEqualExpression
-
-                Case SyntaxKind.LessThanLessThanToken
-                    Return SyntaxKind.LeftShiftExpression
-
-                Case SyntaxKind.GreaterThanGreaterThanToken
-                    Return SyntaxKind.RightShiftExpression
-
-                Case Else
-                    Return SyntaxKind.None
-            End Select
-        End Function
-
-        Private Shared ReadOnly s_contextualKeywordToSyntaxKindMap As Dictionary(Of String, SyntaxKind) =
-            New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
-            {
-                   {"aggregate", SyntaxKind.AggregateKeyword},
-                   {"all", SyntaxKind.AllKeyword},
-                   {"ansi", SyntaxKind.AnsiKeyword},
-                   {"ascending", SyntaxKind.AscendingKeyword},
-                   {"assembly", SyntaxKind.AssemblyKeyword},
-                   {"auto", SyntaxKind.AutoKeyword},
-                   {"binary", SyntaxKind.BinaryKeyword},
-                   {"by", SyntaxKind.ByKeyword},
-                   {"compare", SyntaxKind.CompareKeyword},
-                   {"custom", SyntaxKind.CustomKeyword},
-                   {"descending", SyntaxKind.DescendingKeyword},
-                   {"disable", SyntaxKind.DisableKeyword},
-                   {"distinct", SyntaxKind.DistinctKeyword},
-                   {"enable", SyntaxKind.EnableKeyword},
-                   {"equals", SyntaxKind.EqualsKeyword},
-                   {"explicit", SyntaxKind.ExplicitKeyword},
-                   {"externalsource", SyntaxKind.ExternalSourceKeyword},
-                   {"externalchecksum", SyntaxKind.ExternalChecksumKeyword},
-                   {"from", SyntaxKind.FromKeyword},
-                   {"group", SyntaxKind.GroupKeyword},
-                   {"infer", SyntaxKind.InferKeyword},
-                   {"into", SyntaxKind.IntoKeyword},
-                   {"isfalse", SyntaxKind.IsFalseKeyword},
-                   {"istrue", SyntaxKind.IsTrueKeyword},
-                   {"join", SyntaxKind.JoinKeyword},
-                   {"key", SyntaxKind.KeyKeyword},
-                   {"mid", SyntaxKind.MidKeyword},
-                   {"off", SyntaxKind.OffKeyword},
-                   {"order", SyntaxKind.OrderKeyword},
-                   {"out", SyntaxKind.OutKeyword},
-                   {"preserve", SyntaxKind.PreserveKeyword},
-                   {"region", SyntaxKind.RegionKeyword},
-                   {"r", SyntaxKind.ReferenceKeyword},
-                   {"skip", SyntaxKind.SkipKeyword},
-                   {"strict", SyntaxKind.StrictKeyword},
-                   {"take", SyntaxKind.TakeKeyword},
-                   {"text", SyntaxKind.TextKeyword},
-                   {"unicode", SyntaxKind.UnicodeKeyword},
-                   {"until", SyntaxKind.UntilKeyword},
-                   {"warning", SyntaxKind.WarningKeyword},
-                   {"where", SyntaxKind.WhereKeyword},
-                   {"type", SyntaxKind.TypeKeyword},
-                   {"xml", SyntaxKind.XmlKeyword},
-                   {"async", SyntaxKind.AsyncKeyword},
-                   {"await", SyntaxKind.AwaitKeyword},
-                   {"iterator", SyntaxKind.IteratorKeyword},
-                   {"yield", SyntaxKind.YieldKeyword}
-            }
-
-        Public Shared Function GetContextualKeywordKind(text As String) As SyntaxKind
-            text = MakeHalfWidthIdentifier(text)
-            Dim kind As SyntaxKind = SyntaxKind.None
-            Return If(s_contextualKeywordToSyntaxKindMap.TryGetValue(text, kind), kind, SyntaxKind.None)
-        End Function
-
-        Private Shared ReadOnly s_preprocessorKeywordToSyntaxKindMap As Dictionary(Of String, SyntaxKind) =
-            New Dictionary(Of String, SyntaxKind)(IdentifierComparison.Comparer) From
-            {
-                   {"if", SyntaxKind.IfKeyword},
-                   {"elseif", SyntaxKind.ElseIfKeyword},
-                   {"else", SyntaxKind.ElseKeyword},
-                   {"endif", SyntaxKind.EndIfKeyword},
-                   {"region", SyntaxKind.RegionKeyword},
-                   {"end", SyntaxKind.EndKeyword},
-                   {"const", SyntaxKind.ConstKeyword},
-                   {"externalsource", SyntaxKind.ExternalSourceKeyword},
-                   {"externalchecksum", SyntaxKind.ExternalChecksumKeyword},
-                   {"r", SyntaxKind.ReferenceKeyword},
-                   {"enable", SyntaxKind.EnableKeyword},
-                   {"disable", SyntaxKind.DisableKeyword}
-            }
-
-        Public Shared Function GetPreprocessorKeywordKind(text As String) As SyntaxKind
-            text = MakeHalfWidthIdentifier(text)
-            Dim kind As SyntaxKind = SyntaxKind.None
-            Return If(s_preprocessorKeywordToSyntaxKindMap.TryGetValue(text, kind), kind, SyntaxKind.None)
-        End Function
-
-        Public Shared Function GetLiteralExpression(token As SyntaxKind) As SyntaxKind
-            Select Case token
-
-                Case SyntaxKind.IntegerLiteralToken, SyntaxKind.DecimalLiteralToken, SyntaxKind.FloatingLiteralToken
-                    Return SyntaxKind.NumericLiteralExpression
-
-                Case SyntaxKind.CharacterLiteralToken
-                    Return SyntaxKind.CharacterLiteralExpression
-
-                Case SyntaxKind.DateLiteralToken
-                    Return SyntaxKind.DateLiteralExpression
-
-                Case SyntaxKind.StringLiteralToken
-                    Return SyntaxKind.StringLiteralExpression
-
-                Case SyntaxKind.TrueKeyword
-                    Return SyntaxKind.TrueLiteralExpression
-
-                Case SyntaxKind.FalseKeyword
-                    Return SyntaxKind.FalseLiteralExpression
-
-                Case SyntaxKind.NothingKeyword
-                    Return SyntaxKind.NothingLiteralExpression
-
-                Case Else
-                    Return SyntaxKind.None
-            End Select
-
+      Public Shared Function GetLiteralExpression(token As SyntaxKind) As SyntaxKind
+        Select Case token
+               Case SyntaxKind.IntegerLiteralToken,
+                    SyntaxKind.DecimalLiteralToken,
+                    SyntaxKind.FloatingLiteralToken  : Return SyntaxKind.NumericLiteralExpression
+               Case SyntaxKind.CharacterLiteralToken : Return SyntaxKind.CharacterLiteralExpression
+               Case SyntaxKind.DateLiteralToken      : Return SyntaxKind.DateLiteralExpression
+               Case SyntaxKind.StringLiteralToken    : Return SyntaxKind.StringLiteralExpression
+               Case SyntaxKind.TrueKeyword           : Return SyntaxKind.TrueLiteralExpression
+               Case SyntaxKind.FalseKeyword          : Return SyntaxKind.FalseLiteralExpression
+               Case SyntaxKind.NothingKeyword        : Return SyntaxKind.NothingLiteralExpression
+          End Select
+          Return SyntaxKind.None
         End Function
 
     End Class
