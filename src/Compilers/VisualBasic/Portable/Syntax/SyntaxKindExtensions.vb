@@ -23,6 +23,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Return False
     End Function
 
+    <Extension> Friend Function IsAny(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind) As Boolean
+      Return (k = k0) OrElse (k0 = k1)
+    End Function
+    <Extension> Friend Function IsAny(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind) As Boolean
+      Return (k = k0) OrElse (k0 = k1) OrElse (k0 = k2)
+    End Function
+    <Extension> Friend Function IsAny(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind) As Boolean
+      Return (k = k0) OrElse (k0 = k1) OrElse (k0 = k2) OrElse (k0 = k3)
+    End Function
+    <Extension> Friend Function IsAny(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind) As Boolean
+      Return (k = k0) OrElse (k0 = k1) OrElse (k0 = k2) OrElse (k0 = k3) OrElse (k0 = k4)
+    End Function
+    <Extension> Friend Function IsAny(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind, k5 As SyntaxKind) As Boolean
+      Return (k = k0) OrElse (k0 = k1) OrElse (k0 = k2) OrElse (k0 = k3) OrElse (k0 = k4) OrElse (k0 = k5)
+    End Function
+    <Extension> Friend Function IsAny(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind, k5 As SyntaxKind, k6 As SyntaxKind) As Boolean
+      Return (k = k0) OrElse (k0 = k1) OrElse (k0 = k2) OrElse (k0 = k3) OrElse (k0 = k4) OrElse (k0 = k5) OrElse (k0 = k6)
+    End Function
+    <Extension> Friend Function IsAny(k As SyntaxKind, k0 As SyntaxKind, k1 As SyntaxKind, k2 As SyntaxKind, k3 As SyntaxKind, k4 As SyntaxKind, k5 As SyntaxKind, k6 As SyntaxKind, k7 As SyntaxKind) As Boolean
+      Return (k = k0) OrElse (k0 = k1) OrElse (k0 = k2) OrElse (k0 = k3) OrElse (k0 = k4) OrElse (k0 = k5) OrElse (k0 = k6) OrElse (k0 = k7)
+    End Function
+    <Extension> Friend Function IsAny(k As SyntaxKind, ParamArray ks As SyntaxKind()) As Boolean
+      Return ks.Contains(k)
+    End Function
   End Module
 
 End Namespace
