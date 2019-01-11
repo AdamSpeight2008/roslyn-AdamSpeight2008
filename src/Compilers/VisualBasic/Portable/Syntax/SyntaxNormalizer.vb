@@ -24,8 +24,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
      Private _afterLineBreak As Boolean
      Private _afterIndentation As Boolean
      
-     Private ReadOnly _lineBreaksAfterToken As Dictionary(Of SyntaxToken, Integer) = New Dictionary(Of SyntaxToken, Integer)()
-     Private ReadOnly _lastStatementsInBlocks As HashSet(Of SyntaxNode) = New HashSet(Of SyntaxNode)()
+     Private ReadOnly _lineBreaksAfterToken   As New Dictionary(Of SyntaxToken, Integer)()
+     Private ReadOnly _lastStatementsInBlocks As New HashSet(Of SyntaxNode)()
      
      Private _indentationDepth As Integer
      
