@@ -6,17 +6,14 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
-    Partial Public Class NameSyntax
+  Partial Public Class NameSyntax
 
-        Public ReadOnly Property Arity As Integer
-            Get
-                If TypeOf Me Is GenericNameSyntax Then
-                    Return DirectCast(Me, GenericNameSyntax).TypeArgumentList.Arguments.Count
-                End If
-
-                Return 0
-            End Get
-        End Property
+    Public ReadOnly Property Arity As Integer
+       Get
+         If TypeOf Me IsNot GenericNameSyntax Then Return 0
+         Return DirectCast(Me, GenericNameSyntax).TypeArgumentList.Arguments.Count
+       End Get
+     End Property
 
     End Class
 

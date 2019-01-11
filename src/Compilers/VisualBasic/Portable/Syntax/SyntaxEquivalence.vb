@@ -6,27 +6,46 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
   Friend Module SyntaxEquivalence
 
-    Friend Function AreEquivalent(before As SyntaxTree, after As SyntaxTree, ignoreChildNode As Func(Of SyntaxKind, Boolean), topLevel As Boolean) As Boolean
+    Friend Function AreEquivalent(
+                                   before          As SyntaxTree,
+                                   after           As SyntaxTree,
+                                   ignoreChildNode As Func(Of SyntaxKind, Boolean),
+                                   topLevel        As Boolean
+                                 ) As Boolean
       If before Is after Then Return True
       If before Is Nothing OrElse after Is Nothing Then Return False
       Return AreEquivalent(before.GetRoot(), after.GetRoot(), ignoreChildNode, topLevel)
     End Function
 
-    Public Function AreEquivalent(before As SyntaxNode, after As SyntaxNode, ignoreChildNode As Func(Of SyntaxKind, Boolean), topLevel As Boolean) As Boolean
+    Public Function AreEquivalent(
+                                   before          As SyntaxNode,
+                                   after           As SyntaxNode,
+                                   ignoreChildNode As Func(Of SyntaxKind, Boolean),
+                                   topLevel        As Boolean
+                                 ) As Boolean
       Debug.Assert(Not topLevel OrElse ignoreChildNode Is Nothing)
       If before Is Nothing OrElse after Is Nothing Then Return before Is after
       Return AreEquivalentRecursive(before.Green, after.Green, parentKind:=Nothing, ignoreChildNode:=ignoreChildNode, topLevel:=topLevel)
     End Function
 
-    Public Function AreEquivalent(before As SyntaxTokenList, after As SyntaxTokenList) As Boolean
+    Public Function AreEquivalent(
+                                   before As SyntaxTokenList,
+                                   after  As SyntaxTokenList
+                                 ) As Boolean
       Return AreEquivalentRecursive(before.Node, after.Node, parentKind:=Nothing, ignoreChildNode:=Nothing, topLevel:=False)
     End Function
 
-    Public Function AreEquivalent(before As SyntaxToken, after As SyntaxToken) As Boolean
+    Public Function AreEquivalent(
+                                   before As SyntaxToken,
+                                   after  As SyntaxToken
+                                 ) As Boolean
       Return before.RawKind = after.RawKind AndAlso (before.Node Is Nothing OrElse AreTokensEquivalent(before.Node, after.Node))
     End Function
 
-    Private Function AreTokensEquivalent(before As GreenNode, after As GreenNode) As Boolean
+    Private Function AreTokensEquivalent(
+                                          before As GreenNode,
+                                          after  As GreenNode
+                                        ) As Boolean
       Debug.Assert(before.RawKind = after.RawKind)
       If before.IsMissing <> after.IsMissing Then Return False
       Select Case CType(before.RawKind, SyntaxKind)
@@ -46,11 +65,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
     End Function
 
     Private Function AreEquivalentRecursive(
-                                             before As GreenNode,
-                                             after As GreenNode,
-                                             parentKind As SyntaxKind,
+                                             before          As GreenNode,
+                                             after           As GreenNode,
+                                             parentKind      As SyntaxKind,
                                              ignoreChildNode As Func(Of SyntaxKind, Boolean),
-                                             topLevel As Boolean
+                                             topLevel        As Boolean
                                            ) As Boolean
       If before Is after Then Return True
       If before Is Nothing OrElse after Is Nothing Then Return False
@@ -145,7 +164,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
       End If
     End Function
 
-    Private Function AreModifiersEquivalent(before As GreenNode, after As GreenNode, kind As SyntaxKind) As Boolean
+    Private Function AreModifiersEquivalent(
+                                             before As GreenNode,
+                                             after  As GreenNode,
+                                             kind   As SyntaxKind
+                                           ) As Boolean
       Select Case kind
         Case SyntaxKind.SubBlock,
              SyntaxKind.FunctionBlock

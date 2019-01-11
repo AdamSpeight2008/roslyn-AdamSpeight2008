@@ -13,7 +13,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' <remarks>PERF: Not using Array.IndexOf here because it results in a call to IndexOf on the default EqualityComparer for SyntaxKind. The default comparer for SyntaxKind is
     ''' the ObjectEqualityComparer which results in boxing allocations.</remarks>
     <Extension>
-    Public Function Contains(kinds As SyntaxKind(), kind As SyntaxKind) As Boolean
+    Public Function Contains(
+                              kinds As SyntaxKind(),
+                              kind As SyntaxKind
+                            ) As Boolean
       For Each k In kinds
         If k = kind Then Return True
       Next

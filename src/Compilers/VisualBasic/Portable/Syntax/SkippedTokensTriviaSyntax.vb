@@ -2,13 +2,13 @@
 
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
-    Partial Public Class SkippedTokensTriviaSyntax
-        Implements ISkippedTokensTriviaSyntax
+  Partial Public Class SkippedTokensTriviaSyntax
+    Implements ISkippedTokensTriviaSyntax
 
-        Private ReadOnly Property ISkippedTokensTriviaSyntax_Tokens As SyntaxTokenList Implements ISkippedTokensTriviaSyntax.Tokens
-            Get
-                Return Me.Tokens
-            End Get
-        End Property
-    End Class
+    Private ReadOnly Property ISkippedTokensTriviaSyntax_Tokens As SyntaxTokenList Implements ISkippedTokensTriviaSyntax.Tokens
+    Get
+      Return Me.Tokens
+    End Get
+    End Property
+  End Class
 End Namespace

@@ -7,11 +7,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Private NotInheritable Class SyntaxKindEqualityComparer
       Implements IEqualityComparer(Of SyntaxKind)
 
-      Public Overloads Function Equals(x As SyntaxKind, y As SyntaxKind) As Boolean Implements IEqualityComparer(Of SyntaxKind).Equals
+      Public Overloads Function Equals(
+                                        x As SyntaxKind,
+                                        y As SyntaxKind
+                                      ) As Boolean Implements IEqualityComparer(Of SyntaxKind).Equals
         Return x = y
       End Function
 
-      Public Overloads Function GetHashCode(obj As SyntaxKind) As Integer Implements IEqualityComparer(Of SyntaxKind).GetHashCode
+      Public Overloads Function GetHashCode(
+                                             obj As SyntaxKind
+                                           ) As Integer Implements IEqualityComparer(Of SyntaxKind).GetHashCode
         Return obj
       End Function
     End Class

@@ -4,18 +4,24 @@ Imports System.Threading
 Imports Microsoft.CodeAnalysis.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
-    ''' <summary>
-    ''' This is a SyntaxReference implementation that lazily finds the beginning of the block (if any) of the original syntax reference
-    ''' </summary>
-    Friend Class BeginOfBlockSyntaxReference
-        Inherits TranslationSyntaxReference
 
-        Public Sub New(reference As SyntaxReference)
-            MyBase.New(reference)
-        End Sub
+  ''' <summary>
+  ''' This is a SyntaxReference implementation that lazily finds the beginning of the block (if any) of the original syntax reference
+  ''' </summary>
+  Friend Class BeginOfBlockSyntaxReference
+    Inherits TranslationSyntaxReference
 
-        Protected Overrides Function Translate(reference As SyntaxReference, cancellationToken As CancellationToken) As SyntaxNode
-            Return SyntaxFacts.BeginOfBlockStatementIfAny(reference.GetSyntax())
-        End Function
-    End Class
+    Public Sub New(reference As SyntaxReference)
+      MyBase.New(reference)
+    End Sub
+
+    Protected Overrides Function Translate(
+                                            reference As SyntaxReference,
+                                            cancellationToken As CancellationToken
+                                          ) As SyntaxNode
+      Return SyntaxFacts.BeginOfBlockStatementIfAny(reference.GetSyntax())
+    End Function
+
+  End Class
+
 End Namespace

@@ -6,16 +6,15 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
 
-    Partial Public Class ArrayRankSpecifierSyntax
+  Partial Public Class ArrayRankSpecifierSyntax
 
-        ''' <summary>
-        ''' Returns the ranks of this array rank specifier.
-        ''' </summary>
-        Public ReadOnly Property Rank() As Integer
-            Get
-                Return Me.CommaTokens.Count + 1
-            End Get
-        End Property
+    ''' <summary> Returns the ranks of this array rank specifier. </summary>
+    Public ReadOnly Property Rank() As Integer
+      Get
+        Return Me.CommaTokens.Count + 1
+      End Get
+    End Property
 
-    End Class
+  End Class
+
 End Namespace
