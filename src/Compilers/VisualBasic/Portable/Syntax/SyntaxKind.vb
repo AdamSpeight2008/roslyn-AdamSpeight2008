@@ -104,119 +104,71 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary> Represents a type parameter on a generic type declaration. </summary>
         TypeParameter                           = 67    ' TypeParameterSyntax
 
-        ''' <summary>
-        ''' One of the type parameter constraints clauses. This represents a constraint
-        ''' clause in the form of "As Constraint".
-        ''' </summary>
+        ''' <summary> One of the type parameter constraints clauses. This represents a constraint clause in the form of "As Constraint". </summary>
         TypeParameterSingleConstraintClause     = 70    ' TypeParameterSingleConstraintClauseSyntax : TypeParameterConstraintClauseSyntax
-        ''' <summary>
-        ''' One of the type parameter constraints clauses. This represents a constraint
-        ''' clause in the form of "As { Constraints }".
-        ''' </summary>
+        ''' <summary> One of the type parameter constraints clauses. This represents a constraint clause in the form of "As { Constraints }". </summary>
         TypeParameterMultipleConstraintClause   = 71    ' TypeParameterMultipleConstraintClauseSyntax : TypeParameterConstraintClauseSyntax
-        ''' <summary>
-        ''' One of the special type parameter constraints: New, Class or Structure. Which
-        ''' kind of special constraint it is can be obtained from the Kind property and is
-        ''' one of: NewConstraint, ReferenceConstraint or ValueConstraint.
+        ''' <summary> One of the special type parameter constraints: New, Class or Structure.
+        ''' Which kind of special constraint it is can be obtained from the Kind property and is one of: NewConstraint, ReferenceConstraint or ValueConstraint.
         ''' </summary>
         NewConstraint                           = 72    ' SpecialConstraintSyntax : ConstraintSyntax
-        ''' <summary>
-        ''' One of the special type parameter constraints: New, Class or Structure. Which
-        ''' kind of special constraint it is can be obtained from the Kind property and is
-        ''' one of: NewConstraint, ReferenceConstraint or ValueConstraint.
+        ''' <summary> One of the special type parameter constraints: New, Class or Structure.
+        ''' Which kind of special constraint it is can be obtained from the Kind property and is one of: NewConstraint, ReferenceConstraint or ValueConstraint.
         ''' </summary>
         ClassConstraint                         = 73    ' SpecialConstraintSyntax : ConstraintSyntax
-        ''' <summary>
-        ''' One of the special type parameter constraints: New, Class or Structure. Which
-        ''' kind of special constraint it is can be obtained from the Kind property and is
-        ''' one of: NewConstraint, ReferenceConstraint or ValueConstraint.
+        ''' <summary> One of the special type parameter constraints: New, Class or Structure.
+        ''' Which kind of special constraint it is can be obtained from the Kind property and is one of: NewConstraint, ReferenceConstraint or ValueConstraint.
         ''' </summary>
         StructureConstraint                     = 74    ' SpecialConstraintSyntax : ConstraintSyntax
         ''' <summary> Represents a type parameter constraint that is a type. </summary>
         TypeConstraint                          = 75    ' TypeConstraintSyntax : ConstraintSyntax
         ''' <summary> Represents a name and value in an EnumDeclarationBlock. </summary>
         EnumMemberDeclaration                   = 78    ' EnumMemberDeclarationSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a Function or Sub block declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
-        ''' </summary>
+        ''' <summary> Represents a Function or Sub block declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary>
         SubBlock                                = 79    ' MethodBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
 
-        ''' <summary>
-        ''' Represents a Function or Sub block declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
-        ''' </summary>
+        ''' <summary> Represents a Function or Sub block declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary>
         FunctionBlock                           = 80    ' MethodBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a constructor block declaration: A declaration that has a beginning
-        ''' declaration, a body of executable statements and an end statement.
-        ''' </summary>
+        ''' <summary> Represents a constructor block declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary>
         ConstructorBlock                        = 81    ' ConstructorBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents an Operator block member declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
-        ''' </summary>
+        ''' <summary> Represents an Operator block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement. </summary>
         OperatorBlock                           = 82    ' OperatorBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents an accessor block member declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' <summary> Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement.
         ''' Examples include property accessors and custom event accessors.
         ''' </summary>
         GetAccessorBlock                        = 83   ' AccessorBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents an accessor block member declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' <summary> Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement.
         ''' Examples include property accessors and custom event accessors.
         ''' </summary>
         SetAccessorBlock                        = 84   ' AccessorBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents an accessor block member declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' <summary> Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement.
         ''' Examples include property accessors and custom event accessors.
         ''' </summary>
         AddHandlerAccessorBlock                 = 85   ' AccessorBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents an accessor block member declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' <summary> Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement.
         ''' Examples include property accessors and custom event accessors.
         ''' </summary>
         RemoveHandlerAccessorBlock              = 86    ' AccessorBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents an accessor block member declaration: A declaration that has a
-        ''' beginning declaration, a body of executable statements and an end statement.
+        ''' <summary> Represents an accessor block member declaration: A declaration that has a beginning declaration, a body of executable statements and an end statement.
         ''' Examples include property accessors and custom event accessors.
         ''' </summary>
         RaiseEventAccessorBlock                 = 87    ' AccessorBlockSyntax : MethodBlockBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a block property declaration: A declaration that has a beginning
-        ''' declaration, some get or set accessor blocks and an end statement.
-        ''' </summary>
+        ''' <summary> Represents a block property declaration: A declaration that has a beginning declaration, some get or set accessor blocks and an end statement. </summary>
         PropertyBlock                           = 88    ' PropertyBlockSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a custom event declaration: A declaration that has a beginning event
-        ''' declaration, some accessor blocks and an end statement.
-        ''' </summary>
+        ''' <summary> Represents a custom event declaration: A declaration that has a beginning event declaration, some accessor blocks and an end statement. </summary>
         EventBlock                              = 89    ' EventBlockSyntax : DeclarationStatementSyntax : StatementSyntax
 
         ''' <summary> Represents the parameter list in a method declaration. </summary>
         ParameterList                           = 92    ' ParameterListSyntax
-        ''' <summary>
-        ''' The statement that declares a Sub or Function. If this method has a body, this
-        ''' statement will be the Begin of a BlockStatement with
-        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of
-        ''' that BlockStatement.
+        ''' <summary> The statement that declares a Sub or Function. If this method has a body, this statement will be the Begin of a BlockStatement with
+        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of that BlockStatement.
         ''' </summary>
         SubStatement                            = 93    ' MethodStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' The statement that declares a Sub or Function. If this method has a body, this
-        ''' statement will be the Begin of a BlockStatement with
-        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of
-        ''' that BlockStatement.
+        ''' <summary> The statement that declares a Sub or Function. If this method has a body, this statement will be the Begin of a BlockStatement with
+        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of that BlockStatement.
         ''' </summary>
         FunctionStatement                       = 94    ' MethodStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' A statement that declares a constructor. This statement will be the Begin of a
-        ''' BlockStatement with Kind=MethodDeclarationBlock, and the body of the method
+        ''' <summary> A statement that declares a constructor. This statement will be the Begin of a BlockStatement with Kind=MethodDeclarationBlock, and the body of the method
         ''' will be the Body of that BlockStatement.
         ''' </summary>
         SubNewStatement                         = 95    ' SubNewStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
@@ -229,60 +181,36 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>' A statement that declares a delegate type. </summary>
         DelegateFunctionStatement               = 99    ' DelegateStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
 
-        ''' <summary>
-        ''' A statement that declares an event. If the event being declared is a custom
-        ''' event, this statement will be the Begin of a PropertyOrEventBlock, and the
-        ''' accessors will be part of the Accessors of that node.
-        ''' </summary>
+        ''' <summary> A statement that declares an event. If the event being declared is a custom event, this statement will be the Begin of a PropertyOrEventBlock, and the
+        ''' accessors will be part of the Accessors of that node. </summary>
         EventStatement                          = 102   ' EventStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' A statement that declares an operator. If this operator has a body, this
-        ''' statement will be the Begin of a BlockStatement with
-        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of
-        ''' that BlockStatement.
+        ''' <summary> A statement that declares an operator. If this operator has a body, this statement will be the Begin of a BlockStatement with
+        ''' Kind=MethodDeclarationBlock, and the body of the method will be the Body of that BlockStatement.
         ''' </summary>
         OperatorStatement                       = 103   ' OperatorStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Statement that declares a property. If this property has accessors declared,
-        ''' this statement will be the Begin of a BlockNode, and the accessors will be the
-        ''' Body of that node. Auto properties are property declarations without a
-        ''' PropertyBlock.
+        ''' <summary> Statement that declares a property. If this property has accessors declared, this statement will be the Begin of a BlockNode,
+        ''' and the accessors will be the Body of that node. Auto properties are property declarations without a PropertyBlock.
         ''' </summary>
         PropertyStatement                       = 104   ' PropertyStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
-        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
-        ''' the node determines what kind of accessor this is. This statement is always the
-        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' <summary> Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration.
+        ''' The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node.
         ''' </summary>
         GetAccessorStatement                    = 105   ' AccessorStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
-        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
-        ''' the node determines what kind of accessor this is. This statement is always the
-        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' <summary> Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration.
+        ''' The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node.
         ''' </summary>
         SetAccessorStatement                    = 106   ' AccessorStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
-        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
-        ''' the node determines what kind of accessor this is. This statement is always the
-        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' <summary> Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration.
+        ''' The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node.
         ''' </summary>
         AddHandlerAccessorStatement             = 107   ' AccessorStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
-        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
-        ''' the node determines what kind of accessor this is. This statement is always the
-        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' <summary> Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration.
+        ''' The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node.
         ''' </summary>
         RemoveHandlerAccessorStatement          = 108   ' AccessorStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
 
-        ''' <summary>
-        ''' Represents a Get or Set accessor on a property declaration or an AddHandler,
-        ''' RemoveHandler or RaiseEvent accessor on a custom event declaration. The Kind of
-        ''' the node determines what kind of accessor this is. This statement is always the
-        ''' Begin of a BlockNode, and the body of the accessor is the Body of that node.
+        ''' <summary> Represents a Get or Set accessor on a property declaration or an AddHandler, RemoveHandler or RaiseEvent accessor on a custom event declaration.
+        ''' The Kind of the node determines what kind of accessor this is. This statement is always the Begin of a BlockNode, and the body of the accessor is the Body of that node.
         ''' </summary>
         RaiseEventAccessorStatement             = 111   ' AccessorStatementSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
         ''' <summary> Represents the "Implements ..." clause on a type member, which describes which interface members this member implements. </summary>
@@ -297,36 +225,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         WithEventsPropertyEventContainer        = 116   ' WithEventsPropertyEventContainerSyntax : EventContainerSyntax : ExpressionSyntax
         ''' <summary> Represents a single handled event in a "Handles ..." clause. </summary>
         HandlesClauseItem                       = 117   ' HandlesClauseItemSyntax
-        ''' <summary>
-        ''' Represents the beginning of a declaration. However, not enough syntax is
-        ''' detected to classify this as a field, method, property or event. This is node
-        ''' always represents a syntax error.
+        ''' <summary> Represents the beginning of a declaration. However, not enough syntax is detected to classify this as a field, method, property or event.
+        ''' This is node always represents a syntax error.
         ''' </summary>
         IncompleteMember                        = 118   ' IncompleteMemberSyntax : DeclarationStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents the declaration of one or more variables or constants, either as
-        ''' local variables or as class/structure members. In the case of a constant, it is
-        ''' represented by having "Const" in the Modifiers (although technically "Const" is
-        ''' not a modifier, it is represented as one in the parse trees.)
+        ''' <summary> Represents the declaration of one or more variables or constants, either as local variables or as class/structure members.
+        ''' In the case of a constant, it is represented by having "Const" in the Modifiers (although technically "Const" is not a modifier, it is represented as one in the parse trees.)
         ''' </summary>
         FieldDeclaration                        = 119   ' FieldDeclarationSyntax : DeclarationStatementSyntax : StatementSyntax
 
-        ''' <summary>
-        ''' Represents the part of a variable or constant declaration statement that
-        ''' associated one or more variable names with a type.
-        ''' </summary>
+        ''' <summary> Represents the part of a variable or constant declaration statement that' associated one or more variable names with a type. </summary>
         VariableDeclarator                      = 122   ' VariableDeclaratorSyntax
-        ''' <summary>
-        ''' Represents an "As {type-name}" clause that does not have an initializer or
-        ''' "New". The type has optional attributes associated with it, although attributes
-        ''' are not permitted in all possible places where this node occurs.
-        ''' </summary>
+        ''' <summary> Represents an "As {type-name}" clause that does not have an initializer or "New". The type has optional attributes associated with it, although attributes
+        ''' are not permitted in all possible places where this node occurs. </summary>
         SimpleAsClause                          = 123   ' SimpleAsClauseSyntax : AsClauseSyntax
-        ''' <summary>
-        ''' Represents an "As New {type-name} [arguments] [initializers]" clause in a
-        ''' declaration. The type has optional attributes associated with it, although
-        ''' attributes are not permitted in many places where this node occurs (they are
-        ''' permitted, for example, on automatically implemented properties.)
+        ''' <summary> Represents an "As New {type-name} [arguments] [initializers]" clause in a declaration.
+        ''' The type has optional attributes associated with it, although attributes are not permitted in many places where this node occurs
+        ''' (they are permitted, for example, on automatically implemented properties.)
         ''' </summary>
         AsNewClause                             = 124   ' AsNewClauseSyntax : AsClauseSyntax
         ''' <summary> Represents a "With {...} clause used to initialize a new object's members. </summary>
@@ -363,15 +278,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         WhileBlock                              = 141   ' WhileBlockSyntax : ExecutableStatementSyntax : StatementSyntax
         ''' <summary> Represents an entire Using...End Using statement, including the Using, body and End Using statements. </summary>
         UsingBlock                              = 144   ' UsingBlockSyntax : ExecutableStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a entire SyncLock...End SyncLock block, including the SyncLock
-        ''' statement, the enclosed statements, and the End SyncLock statement.
-        ''' </summary>
+        ''' <summary> Represents a entire SyncLock...End SyncLock block, including the SyncLock statement, the enclosed statements, and the End SyncLock statement. </summary>
         SyncLockBlock                           = 145   ' SyncLockBlockSyntax : ExecutableStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a With...End With block, include the With statement, the body of the
-        ''' block and the End With statement.
-        ''' </summary>
+        ''' <summary> Represents a With...End With block, include the With statement, the body of the block and the End With statement. </summary>
         WithBlock                               = 146   ' WithBlockSyntax : ExecutableStatementSyntax : StatementSyntax
         ''' <summary> Represents the declaration of one or more local variables or constants. </summary>
         LocalDeclarationStatement               = 147   ' LocalDeclarationStatementSyntax : ExecutableStatementSyntax : StatementSyntax
@@ -420,11 +329,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary> Represents a line If-Then-Else statement. </summary>
         SingleLineIfStatement                   = 170   ' SingleLineIfStatementSyntax : ExecutableStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents part of a single line If statement, consisting of a beginning
-        ''' if-statement, followed by a body of statement controlled by that beginning
-        ''' statement. The Kind property returns if this is an SingleLineIf.
-        ''' </summary>
+        ''' <summary> Represents part of a single line If statement, consisting of a beginning if-statement,
+        ''' followed by a body of statement controlled by that beginning statement. The Kind property returns if this is an SingleLineIf. </summary>
         SingleLineIfPart                        = 171  ' SingleLineIfPartSyntax
         ''' <summary> Represents the Else part of an If statement, consisting of a Else statement, followed by a body of statement controlled by that Else. </summary>
         SingleLineElseClause                    = 172   ' SingleLineElseClauseSyntax
@@ -433,33 +339,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ' IfPart                                = 179   ' This node was removed.
 
-        ''' <summary>
-        ''' Represents part of an If statement, consisting of a beginning statement (If or
-        ''' ElseIf), followed by a body of statement controlled by that beginning
-        ''' statement. The Kind property returns if this is an If or ElseIf.
-        ''' </summary>
+        ''' <summary> Represents part of an If statement, consisting of a beginning statement (If or ElseIf), followed by a body of statement controlled by that beginning
+        ''' statement. The Kind property returns if this is an If or ElseIf. </summary>
         ElseIfBlock                             = 180   ' ElseIfBlockSyntax
-        ''' <summary>
-        ''' Represents the Else part of an If statement, consisting of a Else statement,
-        ''' followed by a body of statement controlled by that Else.
-        ''' </summary>
+        ''' <summary> Represents the Else part of an If statement, consisting of a Else statement followed by a body of statement controlled by that Else.' </summary>
         ElseBlock                               = 181   ' ElseBlockSyntax
-        ''' <summary>
-        ''' Represents the If part or ElseIf part of a If...End If block (or line If). This
-        ''' statement is always the Begin of a IfPart. The Kind can be examined to
-        ''' determine if this is an If or an ElseIf statement.
-        ''' </summary>
+        ''' <summary> Represents the If part or ElseIf part of a If...End If block (or line If). This statement is always the Begin of a IfPart. The Kind can be examined to
+        ''' determine if this is an If or an ElseIf statement. </summary>
         IfStatement                             = 182   ' IfStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents the If part or ElseIf part of a If...End If block (or line If). This
-        ''' statement is always the Begin of a IfPart. The Kind can be examined to
-        ''' determine if this is an If or an ElseIf statement.
-        ''' </summary>
+        ''' <summary> Represents the If part or ElseIf part of a If...End If block (or line If). This statement is always the Begin of a IfPart. The Kind can be examined to
+        ''' determine if this is an If or an ElseIf statement. </summary>
         ElseIfStatement                         = 183   ' IfStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents the Else part of a If...End If block (or line If). This statement is
-        ''' always the Begin of a ElsePart.
-        ''' </summary>
+        ''' <summary> Represents the Else part of a If...End If block (or line If). This statement is always the Begin of a ElsePart. </summary>
         ElseStatement                           = 184   ' ElseStatementSyntax : StatementSyntax
         ''' <summary> Represents an entire Try...Catch...Finally...End Try statement. </summary>
         TryBlock                                = 185   ' TryBlockSyntax : ExecutableStatementSyntax : StatementSyntax
@@ -472,11 +363,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' that Catch statement. The Kind property returns which kind of part this is.
         ''' </summary>
         CatchBlock                              = 187   ' CatchBlockSyntax
-        ''' <summary>
-        ''' Represents the Finally part of an Try...Catch...Finally...End Try statement,
-        ''' consisting of a Finally statement, followed by a body of statements controlled
-        ''' by the Finally.
-        ''' </summary>
+        ''' <summary> Represents the Finally part of an Try...Catch...Finally...End Try statement, consisting of a Finally statement, followed by a body of statements controlled by the Finally. </summary>
         FinallyBlock                            = 188   ' FinallyBlockSyntax
         ''' <summary> Represents the Try part of a Try...Catch...Finally...End Try. This statement is always the Begin of a TryPart. </summary>
         TryStatement                            = 189   ' TryStatementSyntax : StatementSyntax
@@ -498,25 +385,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary> Represents an OnError Resume Next statement. </summary>
         OnErrorResumeNextStatement              = 199   ' OnErrorResumeNextStatementSyntax : ExecutableStatementSyntax : StatementSyntax
 
-        ''' <summary>
-        ''' Represents a "Resume" statement. The Kind property can be used to determine if
-        ''' this is a "Resume", "Resume Next" or "Resume label" statement.
-        ''' </summary>
+        ''' <summary> Represents a "Resume" statement. The Kind property can be used to determine if this is a "Resume", "Resume Next" or "Resume label" statement. </summary>
         ResumeStatement                         = 200   ' ResumeStatementSyntax : ExecutableStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a "Resume" statement. The Kind property can be used to determine if
-        ''' this is a "Resume", "Resume Next" or "Resume label" statement.
-        ''' </summary>
+        ''' <summary> Represents a "Resume" statement. The Kind property can be used to determine if this is a "Resume", "Resume Next" or "Resume label" statement. </summary>
         ResumeLabelStatement                    = 201   ' ResumeStatementSyntax : ExecutableStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a "Resume" statement. The Kind property can be used to determine if
-        ''' this is a "Resume", "Resume Next" or "Resume label" statement.
-        ''' </summary>
+        ''' <summary> Represents a "Resume" statement. The Kind property can be used to determine if this is a "Resume", "Resume Next" or "Resume label" statement. </summary>
         ResumeNextStatement                     = 202   ' ResumeStatementSyntax : ExecutableStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a Select Case block, including the Select Case that begins it, the
-        ''' contains Case blocks and the End Select.
-        ''' </summary>
+        ''' <summary> Represents a Select Case block, including the Select Case that begins it, the contains Case blocks and the End Select. </summary>
         SelectBlock                             = 203   ' SelectBlockSyntax : ExecutableStatementSyntax : StatementSyntax
         ''' <summary> Represents a Select Case statement. This statement always occurs as the Begin of a SelectBlock. </summary>
         SelectStatement                         = 204   ' SelectStatementSyntax : StatementSyntax
@@ -525,17 +400,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary> Represents a case statement and its subsequent block. </summary>
 
         CaseElseBlock                           = 210   ' CaseBlockSyntax
-        ''' <summary>
-        ''' Represents a Case or Case Else statement. This statement is always the Begin of
-        ''' a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the
-        ''' Kind=Case.
-        ''' </summary>
+        ''' <summary> Represents a Case or Case Else statement. This statement is always the Begin of a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the' Kind=Case. </summary>
         CaseStatement                           = 211   ' CaseStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a Case or Case Else statement. This statement is always the Begin of
-        ''' a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the
-        ''' Kind=Case.
-        ''' </summary>
+        ''' <summary>' Represents a Case or Case Else statement. This statement is always the Begin of a CaseBlock. If this is a Case Else statement, the Kind=CaseElse, otherwise the' Kind=Case. </summary>
         CaseElseStatement                       = 212   ' CaseStatementSyntax : StatementSyntax
         ''' <summary> The "Else" part in a Case Else statement. </summary>
         ElseCaseClause                          = 213   ' ElseCaseClauseSyntax : CaseClauseSyntax
@@ -609,11 +476,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' ForBlock has the corresponding For or For Each statement.
         ''' </summary>
         NextStatement                           =   242   ' NextStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' The Using statement that begins a Using block. This statement always occurs as
-        ''' the Begin of a UsingBlock, and the body of the Using is the Body of that
-        ''' UsingBlock.
-        ''' </summary>
+        ''' <summary> The Using statement that begins a Using block. This statement always occurs as the Begin of a UsingBlock, and the body of the Using is the Body of that UsingBlock. </summary>
         UsingStatement                          = 243   ' UsingStatementSyntax : StatementSyntax
         ''' <summary> Represents a Throw statement. </summary>
         ThrowStatement                          = 246   ' ThrowStatementSyntax : ExecutableStatementSyntax : StatementSyntax
@@ -651,11 +514,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         RemoveHandlerStatement                  = 263   ' AddRemoveHandlerStatementSyntax : ExecutableStatementSyntax : StatementSyntax
         ''' <summary> Represent a RaiseEvent statement. </summary>
         RaiseEventStatement                     = 264   ' RaiseEventStatementSyntax : ExecutableStatementSyntax : StatementSyntax
-        ''' <summary>
-        ''' Represents a "With" statement. This statement always occurs as the
-        ''' BeginStatement of a WithBlock, and the body of the With is the Body of that
-        ''' WithBlock.
-        ''' </summary>
+        ''' <summary> Represents a "With" statement. This statement always occurs as the BeginStatement of a WithBlock, and the body of the With is the Body of that WithBlock. </summary>
         WithStatement                           = 265   ' WithStatementSyntax : StatementSyntax
         ''' <summary> Represents a ReDim statement. </summary>
         ReDimStatement                          = 266   ' ReDimStatementSyntax : ExecutableStatementSyntax : StatementSyntax
@@ -740,44 +599,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         
         ''' <summary> Represents a GetXmlNamespace expression. </summary>
         GetXmlNamespaceExpression               = 290   ' GetXmlNamespaceExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents member access (.name) or dictionary access (!name). The Kind
-        ''' property determines which kind of access.
-        ''' </summary>
+        ''' <summary> Represents member access (.name) or dictionary access (!name). The Kind property determines which kind of access. </summary>
         SimpleMemberAccessExpression            = 291   ' MemberAccessExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents member access (.name) or dictionary access (!name). The Kind
-        ''' property determines which kind of access.
-        ''' </summary>
+        ''' <summary> Represents member access (.name) or dictionary access (!name). The Kind property determines which kind of access. </summary>
         DictionaryAccessExpression              = 292   ' MemberAccessExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents an XML member element access (node.&lt;Element&gt;), attribute
-        ''' access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The
-        ''' Kind property determines which kind of access.
-        ''' </summary>
+        ''' <summary> Represents an XML member element access (node.&lt;Element&gt;), attribute access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The Kind property determines which kind of access. </summary>
         XmlElementAccessExpression              = 293   ' XmlMemberAccessExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents an XML member element access (node.&lt;Element&gt;), attribute
-        ''' access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The
-        ''' Kind property determines which kind of access.
-        ''' </summary>
+        ''' <summary> Represents an XML member element access (node.&lt;Element&gt;), attribute access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The Kind property determines which kind of access. </summary>
         XmlDescendantAccessExpression           = 294   ' XmlMemberAccessExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents an XML member element access (node.&lt;Element&gt;), attribute
-        ''' access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The
-        ''' Kind property determines which kind of access.
-        ''' </summary>
+        ''' <summary> Represents an XML member element access (node.&lt;Element&gt;), attribute access (node.@Attribute) or descendants access (node...&lt;Descendant&gt;). The Kind property determines which kind of access. </summary>
         XmlAttributeAccessExpression            = 295   ' XmlMemberAccessExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents an invocation expression consisting of an invocation target and an
-        ''' optional argument list or an array, parameterized property or object default
-        ''' property index.
-        ''' </summary>
+        ''' <summary> Represents an invocation expression consisting of an invocation target and an optional argument list or an array, parameterized property or object default property index. </summary>
         InvocationExpression                    = 296   ' InvocationExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a New expression that creates a new non-array object, possibly with
-        ''' a "With" or "From" clause.
-        ''' </summary>
+        ''' <summary> Represents a New expression that creates a new non-array object, possibly with a "With" or "From" clause. </summary>
         ObjectCreationExpression                = 297   ' ObjectCreationExpressionSyntax : NewExpressionSyntax : ExpressionSyntax
         ''' <summary> Represents a New expression that create an object of anonymous type. </summary>
         AnonymousObjectCreationExpression       = 298   ' AnonymousObjectCreationExpressionSyntax : NewExpressionSyntax : ExpressionSyntax
@@ -789,53 +623,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         CTypeExpression                         = 303   ' CTypeExpressionSyntax : CastExpressionSyntax : ExpressionSyntax
         DirectCastExpression                    = 304   ' DirectCastExpressionSyntax : CastExpressionSyntax : ExpressionSyntax
         TryCastExpression                       = 305   ' TryCastExpressionSyntax : CastExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a cast to a pre-defined type using a pre-defined cast expression,
-        ''' such as CInt or CLng.
-        ''' </summary>
+        ''' <summary> Represents a cast to a pre-defined type using a pre-defined cast expression, such as CInt or CLng. </summary>
         PredefinedCastExpression                = 306   ' PredefinedCastExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a binary operator. The Kind property classifies the operators into
-        ''' similar kind of operators (arithmetic, relational, logical or string); the
-        ''' exact operation being performed is determined by the Operator property.
-        ''' </summary>
+        ''' <summary> Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string);
+        ''' the exact operation being performed is determined by the Operator property. </summary>
         AddExpression                           = 307   ' BinaryExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a binary operator. The Kind property classifies the operators into
-        ''' similar kind of operators (arithmetic, relational, logical or string); the
-        ''' exact operation being performed is determined by the Operator property.
-        ''' </summary>
+        ''' <summary> Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string);
+        '''  the exact operation being performed is determined by the Operator property. </summary>
         SubtractExpression                      = 308   ' BinaryExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a binary operator. The Kind property classifies the operators into
-        ''' similar kind of operators (arithmetic, relational, logical or string); the
-        ''' exact operation being performed is determined by the Operator property.
-        ''' </summary>
+        ''' <summary> Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string);
+        ''' the exact operation being performed is determined by the Operator property. </summary>
         MultiplyExpression                      = 309   ' BinaryExpressionSyntax : ExpressionSyntax
         
-        ''' <summary>
-        ''' Represents a binary operator. The Kind property classifies the operators into
-        ''' similar kind of operators (arithmetic, relational, logical or string); the
-        ''' exact operation being performed is determined by the Operator property.
-        ''' </summary>
+        ''' <summary> Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string);
+        ''' the exact operation being performed is determined by the Operator property. </summary>
         DivideExpression                        = 310   ' BinaryExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a binary operator. The Kind property classifies the operators into
-        ''' similar kind of operators (arithmetic, relational, logical or string); the
-        ''' exact operation being performed is determined by the Operator property.
-        ''' </summary>
+        ''' <summary> Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string);
+        ''' the exact operation being performed is determined by the Operator property. </summary>
         IntegerDivideExpression                 = 311   ' BinaryExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a binary operator. The Kind property classifies the operators into
-        ''' similar kind of operators (arithmetic, relational, logical or string); the
-        ''' exact operation being performed is determined by the Operator property.
-        ''' </summary>
+        ''' <summary> Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string);
+        ''' the exact operation being performed is determined by the Operator property. </summary>
         ExponentiateExpression                  = 314   ' BinaryExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a binary operator. The Kind property classifies the operators into
-        ''' similar kind of operators (arithmetic, relational, logical or string); the
-        ''' exact operation being performed is determined by the Operator property.
-        ''' </summary>
+        ''' <summary> Represents a binary operator. The Kind property classifies the operators into similar kind of operators (arithmetic, relational, logical or string);
+        ''' the exact operation being performed is determined by the Operator property. </summary>
         LeftShiftExpression                     = 315   ' BinaryExpressionSyntax : ExpressionSyntax
         ''' <summary>
         ''' Represents a binary operator. The Kind property classifies the operators into
@@ -941,9 +751,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' exact operation being performed is determined by the Operator property.
         ''' </summary>
         AndAlsoExpression                       = 332   ' BinaryExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Describes a unary operator: Plus, Negate, Not or AddressOf.
-        ''' </summary>
+        ''' <summary> Describes a unary operator: Plus, Negate, Not or AddressOf. </summary>
         UnaryPlusExpression                     = 333   ' UnaryExpressionSyntax : ExpressionSyntax
         ''' <summary> Describes a unary operator: Plus, Negate, Not or AddressOf. </summary>
         UnaryMinusExpression                    = 334   ' UnaryExpressionSyntax : ExpressionSyntax
@@ -970,61 +778,30 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FunctionLambdaHeader                    = 346   ' LambdaHeaderSyntax : MethodBaseSyntax : DeclarationStatementSyntax : StatementSyntax
         ''' <summary> Represents a parenthesized argument list. </summary>
         ArgumentList                            = 347   ' ArgumentListSyntax
-        ''' <summary>
-        ''' Represents an omitted argument in an argument list. An omitted argument is not
-        ''' considered a syntax error but a valid case when no argument is required.
-        ''' </summary>
+        ''' <summary> Represents an omitted argument in an argument list. An omitted argument is not considered a syntax error but a valid case when no argument is required. </summary>
         OmittedArgument                         = 348   ' OmittedArgumentSyntax : ArgumentSyntax
         ''' <summary> Represents an argument that is just an optional argument name and an expression. </summary>
         SimpleArgument                          = 349   ' SimpleArgumentSyntax : ArgumentSyntax
 
         ' NamedArgument                         = 350   ' Removed
 
-        ''' <summary>
-        ''' Represents a range argument, such as "0 to 5", used in array bounds. The
-        ''' "Value" property represents the upper bound of the range.
-        ''' </summary>
+        ''' <summary> Represents a range argument, such as "0 to 5", used in array bounds. The "Value" property represents the upper bound of the range. </summary>
         RangeArgument                           = 351   ' RangeArgumentSyntax : ArgumentSyntax
-        ''' <summary>
-        ''' This class represents a query expression. A query expression is composed of one
-        ''' or more query operators in a row. The first query operator must be a From or
-        ''' Aggregate.
-        ''' </summary>
+        ''' <summary> This class represents a query expression. A query expression is composed of one or more query operators in a row. The first query operator must be a From or Aggregate. </summary>
         QueryExpression                         = 352   ' QueryExpressionSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Describes a single variable of the form "x [As Type] In expression" for use in
-        ''' query expressions.
-        ''' </summary>
+        ''' <summary> Describes a single variable of the form "x [As Type] In expression" for use in query expressions. </summary>
         CollectionRangeVariable                 = 353   ' CollectionRangeVariableSyntax
-        ''' <summary>
-        ''' Describes a single variable of the form "[x [As Type] =] expression" for use in
-        ''' query expressions.
-        ''' </summary>
+        ''' <summary> Describes a single variable of the form "[x [As Type] =] expression" for use in query expressions. </summary>
         ExpressionRangeVariable                 = 354   ' ExpressionRangeVariableSyntax
-        ''' <summary>
-        ''' Describes a single variable of the form "[x [As Type] =] aggregation-function"
-        ''' for use in the Into clause of Aggregate or Group By or Group Join query
-        ''' operators.
-        ''' </summary>
+        ''' <summary> Describes a single variable of the form "[x [As Type] =] aggregation-function" for use in the Into clause of Aggregate or Group By or Group Join query operators. </summary>
         AggregationRangeVariable                = 355   ' AggregationRangeVariableSyntax
         ''' <summary> Represents the name and optional type of an expression range variable. </summary>
         VariableNameEquals                      = 356   ' VariableNameEqualsSyntax
-        ''' <summary>
-        ''' Represents an invocation of an Aggregation function in the aggregation range
-        ''' variable declaration of a Group By, Group Join or Aggregate query operator.
-        ''' </summary>
+        ''' <summary> Represents an invocation of an Aggregation function in the aggregation range variable declaration of a Group By, Group Join or Aggregate query operator. </summary>
         FunctionAggregation                     = 357   ' FunctionAggregationSyntax : AggregationSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents the use of "Group" as the aggregation function in the in the
-        ''' aggregation range variable declaration of a Group By or Group Join query
-        ''' operator.
-        ''' </summary>
+        ''' <summary> Represents the use of "Group" as the aggregation function in the in the aggregation range variable declaration of a Group By or Group Join query operator. </summary>
         GroupAggregation                        = 358   ' GroupAggregationSyntax : AggregationSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents a "From" query operator. If this is the beginning of a query, the
-        ''' Source will be Nothing. Otherwise, the Source will be the part of the query to
-        ''' the left of the From.
-        ''' </summary>
+        ''' <summary> Represents a "From" query operator. If this is the beginning of a query, the Source will be Nothing. Otherwise, the Source will be the part of the query to the left of the From. </summary>
         FromClause                              = 359   ' FromClauseSyntax : QueryClauseSyntax
         
         ''' <summary> Represents a "Let" query operator. </summary>
@@ -1054,15 +831,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         GroupJoinClause                         = 371   ' GroupJoinClauseSyntax : JoinClauseSyntax : QueryClauseSyntax
         ''' <summary> Represents the "Order By" query operator. </summary>
         OrderByClause                           = 372   ' OrderByClauseSyntax : QueryClauseSyntax
-        ''' <summary>
-        ''' An expression to order by, plus an optional ordering. The Kind indicates
-        ''' whether to order in ascending or descending order.
-        ''' </summary>
+        ''' <summary> An expression to order by, plus an optional ordering. The Kind indicates whether to order in ascending or descending order. </summary>
         AscendingOrdering                       = 375   ' OrderingSyntax
-        ''' <summary>
-        ''' An expression to order by, plus an optional ordering. The Kind indicates
-        ''' whether to order in ascending or descending order.
-        ''' </summary>
+        ''' <summary> An expression to order by, plus an optional ordering. The Kind indicates whether to order in ascending or descending order. </summary>
         DescendingOrdering                      = 376   ' OrderingSyntax
         ''' <summary> Represents the "Select" query operator.' </summary>
         SelectClause                            = 377   ' SelectClauseSyntax : QueryClauseSyntax
@@ -1071,10 +842,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary> Represents the XML declaration prologue in an XML literal expression. </summary>
         XmlDeclaration                          = 379   ' XmlDeclarationSyntax
         
-        ''' <summary>
-        ''' Represents an XML document prologue option - version, encoding, standalone or
-        ''' whitespace in an XML literal expression.
-        ''' </summary>
+        ''' <summary> Represents an XML document prologue option - version, encoding, standalone or whitespace in an XML literal expression. </summary>
         XmlDeclarationOption                    = 380   ' XmlDeclarationOptionSyntax
         ''' <summary> Represents an XML element with content in an XML literal expression. </summary>
         XmlElement                              = 381   ' XmlElementSyntax : XmlNodeSyntax : ExpressionSyntax
@@ -1092,18 +860,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         XmlString                               = 387   ' XmlStringSyntax : XmlNodeSyntax : ExpressionSyntax
         ''' <summary>' Represents an XML name of the form 'name' appearing in GetXmlNamespace(). </summary>
         XmlPrefixName                           = 388   ' XmlPrefixNameSyntax : XmlNodeSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' Represents an XML name of the form 'name' or 'namespace:name' appearing in
-        ''' source as part of an XML literal or member access expression or an XML
-        ''' namespace import clause.
-        ''' </summary>
+        ''' <summary> Represents an XML name of the form 'name' or 'namespace:name' appearing in source as part of an XML literal or member access expression or an XML namespace import clause. </summary>
         XmlName                                 = 389   ' XmlNameSyntax : XmlNodeSyntax : ExpressionSyntax
         
-        ''' <summary>
-        ''' Represents an XML name of the form &lt;xml-name&gt; appearing in source as part
-        ''' of an XML literal or member access expression or an XML namespace import
-        ''' clause.
-        ''' </summary>
+        ''' <summary> Represents an XML name of the form &lt;xml-name&gt; appearing in source as part of an XML literal or member access expression or an XML namespace import clause. </summary>
         XmlBracketedName                        = 390   ' XmlBracketedNameSyntax : XmlNodeSyntax : ExpressionSyntax
         ''' <summary> Represents an XML namespace prefix of the form 'prefix:' as in xml:ns="". </summary>
         XmlPrefix                               = 391   ' XmlPrefixSyntax
@@ -1662,27 +1422,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' recovery.
         ''' </summary>
         BadToken                                = 693   ' BadTokenSyntax : PunctuationSyntax : SyntaxToken
-        ''' <summary>
-        ''' Represents an Xml NCName per Namespaces in XML 1.0
-        ''' </summary>
+        ''' <summary> Represents an Xml NCName per Namespaces in XML 1.0 </summary>
         XmlNameToken                            = 694   ' XmlNameTokenSyntax : SyntaxToken
-        ''' <summary>
-        ''' Represents character data in Xml content also known as PCData or in an Xml
-        ''' attribute value. All text is here for now even text that does not need
-        ''' normalization such as comment, pi and cdata text.
-        ''' </summary>
+        ''' <summary> Represents character data in Xml content also known as PCData or in an Xml attribute value. All text is here for now even text that does not need normalization such as comment, pi and cdata text. </summary>
         XmlTextLiteralToken                     = 695   ' XmlTextTokenSyntax : SyntaxToken
-        ''' <summary>
-        ''' Represents character data in Xml content also known as PCData or in an Xml
-        ''' attribute value. All text is here for now even text that does not need
-        ''' normalization such as comment, pi and cdata text.
-        ''' </summary>
+        ''' <summary> Represents character data in Xml content also known as PCData or in an Xml attribute value. All text is here for now even text that does not need normalization such as comment, pi and cdata text. </summary>
         XmlEntityLiteralToken                   = 696   ' XmlTextTokenSyntax : SyntaxToken
-        ''' <summary>
-        ''' Represents character data in Xml content also known as PCData or in an Xml
-        ''' attribute value. All text is here for now even text that does not need
-        ''' normalization such as comment, pi and cdata text.
-        ''' </summary>
+        ''' <summary> Represents character data in Xml content also known as PCData or in an Xml attribute value. All text is here for now even text that does not need normalization such as comment, pi and cdata text. </summary>
         DocumentationCommentLineBreakToken      = 697   ' XmlTextTokenSyntax : SyntaxToken
         
         ''' <summary> Represents an identifier token. This might include brackets around the name and a type character. </summary>
@@ -1699,25 +1445,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         StringLiteralToken                      = 705   ' StringLiteralTokenSyntax : SyntaxToken
         ''' <summary> Represents an string literal token. </summary>
         CharacterLiteralToken                   = 706   ' CharacterLiteralTokenSyntax : SyntaxToken
-        ''' <summary>
-        ''' Represents tokens that were skipped by the parser as part of error recovery,
-        ''' and thus are not part of any syntactic structure.
-        ''' </summary>
+        ''' <summary> Represents tokens that were skipped by the parser as part of error recovery, and thus are not part of any syntactic structure. </summary>
         SkippedTokensTrivia                     = 709   ' SkippedTokensTriviaSyntax : StructuredTriviaSyntax
         
         ''' <summary> Represents a documentation comment e.g. ''' &lt;Summary&gt; appearing in source. </summary>
         DocumentationCommentTrivia              = 710   ' DocumentationCommentTriviaSyntax : StructuredTriviaSyntax
-        ''' <summary>
-        ''' A symbol referenced by a cref attribute (e.g. in a &lt;see&gt; or
-        ''' &lt;seealso&gt; documentation comment tag). For example, the M in &lt;see
-        ''' cref="M" /&gt;.
-        ''' </summary>
+        ''' <summary> A symbol referenced by a cref attribute (e.g. in a &lt;see&gt; or &lt;seealso&gt; documentation comment tag). For example, the M in &lt;see cref="M" /&gt;. </summary>
         XmlCrefAttribute                        = 711   ' XmlCrefAttributeSyntax : BaseXmlAttributeSyntax : XmlNodeSyntax : ExpressionSyntax
-        ''' <summary>
-        ''' A param or type param symbol referenced by a name attribute (e.g. in a
-        ''' &lt;param&gt; or &lt;typeparam&gt; documentation comment tag). For example, the
-        ''' M in &lt;param name="M" /&gt;.
-        ''' </summary>
+        ''' <summary> A param or type param symbol referenced by a name attribute (e.g. in a &lt;param&gt; or &lt;typeparam&gt; documentation comment tag). For example, the M in &lt;param name="M" /&gt;. </summary>
         XmlNameAttribute                        = 712   ' XmlNameAttributeSyntax : BaseXmlAttributeSyntax : XmlNodeSyntax : ExpressionSyntax
 
         ''' <summary> ExpressionSyntax node representing the object conditionally accessed. </summary>
