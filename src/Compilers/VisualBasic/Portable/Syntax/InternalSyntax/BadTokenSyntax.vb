@@ -9,54 +9,68 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
-    Partial Friend NotInheritable Class BadTokenSyntax
-        Inherits PunctuationSyntax
+  Partial Friend NotInheritable Class BadTokenSyntax
+    Inherits PunctuationSyntax
 
-        Private ReadOnly _subKind As SyntaxSubKind
+    Friend Sub New(
+                    kind            As SyntaxKind,
+                    subKind         As SyntaxSubKind,
+                    errors          As DiagnosticInfo(),
+                    annotations     As SyntaxAnnotation(),
+                    text            As String,
+                    leadingTrivia   As GreenNode,
+                    trailingTrivia  As GreenNode
+                  )
+      MyBase.New(kind, errors, annotations, text, leadingTrivia, trailingTrivia)
+      Me.SubKind = subKind
+    End Sub
 
-        Friend Sub New(kind As SyntaxKind, subKind As SyntaxSubKind, errors As DiagnosticInfo(), annotations As SyntaxAnnotation(), text As String, leadingTrivia As GreenNode, trailingTrivia As GreenNode)
-            MyBase.New(kind, errors, annotations, text, leadingTrivia, trailingTrivia)
+    Friend Sub New(
+                    reader As ObjectReader
+                  )
+      MyBase.New(reader)
+      SubKind = CType(reader.ReadUInt16(), SyntaxSubKind)
+    End Sub
 
-            _subKind = subKind
-        End Sub
+    Friend Shared Shadows CreateInstance As Func(Of ObjectReader, Object) = Function(o) New BadTokenSyntax(o)
 
-        Friend Sub New(reader As ObjectReader)
-            MyBase.New(reader)
-            _subKind = CType(reader.ReadUInt16(), SyntaxSubKind)
-        End Sub
+    Friend Overrides Sub WriteTo(
+                                  writer As ObjectWriter
+                                )
+      MyBase.WriteTo(writer)
+      writer.WriteUInt16(CType(SubKind, UShort))
+    End Sub
 
-        Friend Shared Shadows CreateInstance As Func(Of ObjectReader, Object) = Function(o) New BadTokenSyntax(o)
+    Shared Sub New()
+      ObjectBinder.RegisterTypeReader(GetType(BadTokenSyntax), Function(r) New BadTokenSyntax(r))
+    End Sub
 
-        Friend Overrides Sub WriteTo(writer As ObjectWriter)
-            MyBase.WriteTo(writer)
-            writer.WriteUInt16(CType(_subKind, UShort))
-        End Sub
+    Friend ReadOnly Property SubKind As SyntaxSubKind
 
-        Shared Sub New()
-            ObjectBinder.RegisterTypeReader(GetType(BadTokenSyntax), Function(r) New BadTokenSyntax(r))
-        End Sub
+    Public Overrides Function WithLeadingTrivia(
+                                                 trivia As GreenNode
+                                               ) As GreenNode
+      Return New BadTokenSyntax(Kind, SubKind, GetDiagnostics, GetAnnotations, Text, trivia, GetTrailingTrivia)
+    End Function
 
-        Friend ReadOnly Property SubKind As SyntaxSubKind
-            Get
-                Return _subKind
-            End Get
-        End Property
+    Public Overrides Function WithTrailingTrivia(
+                                                  trivia As GreenNode
+                                                ) As GreenNode
+      Return New BadTokenSyntax(Kind, SubKind, GetDiagnostics, GetAnnotations, Text, GetLeadingTrivia, trivia)
+    End Function
 
-        Public Overrides Function WithLeadingTrivia(trivia As GreenNode) As GreenNode
-            Return New BadTokenSyntax(Kind, SubKind, GetDiagnostics, GetAnnotations, Text, trivia, GetTrailingTrivia)
-        End Function
+    Friend Overrides Function SetDiagnostics(
+                                              newErrors As DiagnosticInfo()
+                                            ) As GreenNode
+      Return New BadTokenSyntax(Kind, SubKind, newErrors, GetAnnotations, Text, GetLeadingTrivia, GetTrailingTrivia)
+    End Function
 
-        Public Overrides Function WithTrailingTrivia(trivia As GreenNode) As GreenNode
-            Return New BadTokenSyntax(Kind, SubKind, GetDiagnostics, GetAnnotations, Text, GetLeadingTrivia, trivia)
-        End Function
+    Friend Overrides Function SetAnnotations(
+                                              annotations As SyntaxAnnotation()
+                                            ) As GreenNode
+      Return New BadTokenSyntax(Kind, SubKind, GetDiagnostics, annotations, Text, GetLeadingTrivia, GetTrailingTrivia)
+    End Function
 
-        Friend Overrides Function SetDiagnostics(newErrors As DiagnosticInfo()) As GreenNode
-            Return New BadTokenSyntax(Kind, SubKind, newErrors, GetAnnotations, Text, GetLeadingTrivia, GetTrailingTrivia)
-        End Function
-
-        Friend Overrides Function SetAnnotations(annotations As SyntaxAnnotation()) As GreenNode
-            Return New BadTokenSyntax(Kind, SubKind, GetDiagnostics, annotations, Text, GetLeadingTrivia, GetTrailingTrivia)
-        End Function
-    End Class
+  End Class
 
 End Namespace
