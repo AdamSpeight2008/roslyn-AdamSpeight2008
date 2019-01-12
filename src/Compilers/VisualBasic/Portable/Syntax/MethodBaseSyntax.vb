@@ -128,7 +128,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
       End Get
     End Property
 
-    <EditorBrowsable(EditorBrowsableState.Never), Obolete("This member is obsolete.", True)>
+    <EditorBrowsable(EditorBrowsableState.Never), Obsolete("This member is obsolete.", True)>
     Public Shadows Function WithKeyword(keyword As SyntaxToken) As LambdaHeaderSyntax
       Return WithSubOrFunctionKeyword(keyword)
     End Function
