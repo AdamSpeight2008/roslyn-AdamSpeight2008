@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       If format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeContainingType) Then
          Dim containingType = TryCast(symbol.ContainingSymbol, INamedTypeSymbol)
          If containingType IsNot Nothing Then
-            containingType.Accept(Me.NotFirstVisitor())
+            containingType.Accept(NotFirstVisitor())
             AddOperator(SyntaxKind.DotToken)
             visitedParents = True
          End If
@@ -34,7 +34,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
          AddCustomModifiersIfRequired(symbol.CustomModifiers)
       End If
 
-      If Me.isFirstSymbolVisited AndAlso
+      If isFirstSymbolVisited AndAlso
             format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeConstantValue) AndAlso
             symbol.IsConst AndAlso
            symbol.HasConstantValue Then
@@ -102,9 +102,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Public Overrides Sub VisitEvent(symbol As IEventSymbol)
       AddAccessibilityIfRequired(symbol)
       AddMemberModifiersIfRequired(symbol)
-      If format.KindOptions.IncludesOption(SymbolDisplayKindOptions.IncludeMemberKeyword) Then
-         AddKeyword(SyntaxKind.EventKeyword, False, True)
-      End If
+      If format.KindOptions.IncludesOption(SymbolDisplayKindOptions.IncludeMemberKeyword) Then AddKeyword(SyntaxKind.EventKeyword, False, True)
 
       Dim visitedParents As Boolean = False
       If format.MemberOptions.IncludesOption(SymbolDisplayMemberOptions.IncludeContainingType) AndAlso IncludeNamedType(symbol.ContainingType) Then
