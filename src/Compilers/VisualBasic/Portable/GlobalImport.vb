@@ -8,147 +8,152 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
-  ''' <summary> Represents a Visual Basic global imports. </summary>
-  <DebuggerDisplay("{GetDebuggerDisplay(), nq}")>
-  Partial Public NotInheritable Class GlobalImport
-    Implements IEquatable(Of GlobalImport)
+    ''' <summary> Represents a Visual Basic global imports. </summary>
+    <DebuggerDisplay("{GetDebuggerDisplay(), nq}")>
+    Partial Public NotInheritable Class GlobalImport
+        Implements IEquatable(Of GlobalImport)
 
-    Private ReadOnly _clause As SyntaxReference
+        Private ReadOnly _clause As SyntaxReference
+        Private ReadOnly _Name As String
 
-    Friend Sub New(clause As ImportsClauseSyntax, importedName As String)
-      Debug.Assert(clause IsNot Nothing)
-      Debug.Assert(importedName IsNot Nothing)
-      _clause = clause.SyntaxTree.GetReference(clause)
-      Name = importedName
-    End Sub
+        Friend Sub New(clause As ImportsClauseSyntax, importedName As String)
+            Debug.Assert(clause IsNot Nothing)
+            Debug.Assert(importedName IsNot Nothing)
+            _clause = clause.SyntaxTree.GetReference(clause)
+            _Name = importedName
+        End Sub
 
-    ''' <summary> The import clause (a namespace name, an alias, or an XML namespace alias). </summary>
-    Public ReadOnly Property Clause As ImportsClauseSyntax
-      Get
-        Return CType(_clause.GetSyntax(), ImportsClauseSyntax)
-      End Get
-    End Property
+        ''' <summary> The import clause (a namespace name, an alias, or an XML namespace alias). </summary>
+        Public ReadOnly Property Clause As ImportsClauseSyntax
+            Get
+                Return CType(_clause.GetSyntax(), ImportsClauseSyntax)
+            End Get
+        End Property
 
-    Friend ReadOnly Property IsXmlClause As Boolean
-      Get
-        Return Clause.IsKind(SyntaxKind.XmlNamespaceImportsClause)
-      End Get
-    End Property
+        Friend ReadOnly Property IsXmlClause As Boolean
+            Get
+                Return Clause.IsKind(SyntaxKind.XmlNamespaceImportsClause)
+            End Get
+        End Property
 
-    ''' <summary> The import name. </summary>
-    Public ReadOnly Property Name As String
+        ''' <summary> The import name. </summary>
+        Public ReadOnly Property Name As String
+            Get
+                Return _Name
+            End Get
+        End Property
 
-    ''' <summary>
-    ''' Parses a specified string to create a GlobalImport instance.
-    ''' </summary>
-    ''' <param name="importedNames">The string containing the text to be parsed.</param>
-    ''' <returns>A GlobalImport instance. </returns>
-    Public Shared Function Parse(importedNames As String) As GlobalImport
-      Return Parse({importedNames})(0)
-    End Function
+        ''' <summary>
+        ''' Parses a specified string to create a GlobalImport instance.
+        ''' </summary>
+        ''' <param name="importedNames">The string containing the text to be parsed.</param>
+        ''' <returns>A GlobalImport instance. </returns>
+        Public Shared Function Parse(importedNames As String) As GlobalImport
+            Return Parse({importedNames})(0)
+        End Function
 
-    ''' <summary> Parses a specified string to create a GlobalImport instance with diagnostics info. </summary>
-    ''' <param name="importedNames">The string containing the text to be parsed.</param>
-    ''' <param name="diagnostics">An ImmutableArray of diagnostics created during parse.</param>
-    ''' <returns>A GlobalImport instance.</returns>
-    Public Shared Function Parse(importedNames As String, <Out()> ByRef diagnostics As ImmutableArray(Of Diagnostic)) As GlobalImport
-      Return Parse({importedNames}, diagnostics)(0)
-    End Function
+        ''' <summary> Parses a specified string to create a GlobalImport instance with diagnostics info. </summary>
+        ''' <param name="importedNames">The string containing the text to be parsed.</param>
+        ''' <param name="diagnostics">An ImmutableArray of diagnostics created during parse.</param>
+        ''' <returns>A GlobalImport instance.</returns>
+        Public Shared Function Parse(importedNames As String, <Out()> ByRef diagnostics As ImmutableArray(Of Diagnostic)) As GlobalImport
+            Return Parse({importedNames}, diagnostics)(0)
+        End Function
 
-    ''' <summary> Parses a collection of strings representing imports to create collection of GlobalImports. </summary>
-    ''' <param name="importedNames">The collection of strings to be parsed.</param>
-    ''' <returns>A collection of GlobalImports</returns>
-    Public Shared Function Parse(importedNames As IEnumerable(Of String)) As IEnumerable(Of GlobalImport)
-      Dim errors As DiagnosticBag = DiagnosticBag.GetInstance()
-      Dim parsedImports = OptionsValidator.ParseImports(importedNames, errors)
-      Dim firstError = errors.AsEnumerable().FirstOrDefault(Function(diag) diag.Severity = DiagnosticSeverity.Error)
-      errors.Free()
-      If firstError IsNot Nothing Then Throw New ArgumentException(firstError.GetMessage(CultureInfo.CurrentUICulture))
-      Return parsedImports
-    End Function
+        ''' <summary> Parses a collection of strings representing imports to create collection of GlobalImports. </summary>
+        ''' <param name="importedNames">The collection of strings to be parsed.</param>
+        ''' <returns>A collection of GlobalImports</returns>
+        Public Shared Function Parse(importedNames As IEnumerable(Of String)) As IEnumerable(Of GlobalImport)
+            Dim errors As DiagnosticBag = DiagnosticBag.GetInstance()
+            Dim parsedImports = OptionsValidator.ParseImports(importedNames, errors)
+            Dim firstError = errors.AsEnumerable().FirstOrDefault(Function(diag) diag.Severity = DiagnosticSeverity.Error)
+            errors.Free()
+            If firstError IsNot Nothing Then Throw New ArgumentException(firstError.GetMessage(CultureInfo.CurrentUICulture))
+            Return parsedImports
+        End Function
 
-    ''' <summary>
-    ''' Parses a parameter array of string arrays representing imports to create a collection of GlobalImports.
-    ''' </summary>
-    ''' <param name="importedNames">The string arrays to be parsed.</param>
-    ''' <returns>A collection of GlobalImports.</returns>
-    Public Shared Function Parse(ParamArray importedNames As String()) As IEnumerable(Of GlobalImport)
-      Return Parse(DirectCast(importedNames, IEnumerable(Of String)))
-    End Function
+        ''' <summary>
+        ''' Parses a parameter array of string arrays representing imports to create a collection of GlobalImports.
+        ''' </summary>
+        ''' <param name="importedNames">The string arrays to be parsed.</param>
+        ''' <returns>A collection of GlobalImports.</returns>
+        Public Shared Function Parse(ParamArray importedNames As String()) As IEnumerable(Of GlobalImport)
+            Return Parse(DirectCast(importedNames, IEnumerable(Of String)))
+        End Function
 
-    ''' <summary>
-    ''' Parses a collection of strings representing imports to create a collection of GlobalImport instance and diagnostics
-    ''' </summary>
-    ''' <param name="importedNames">A collection of strings to be parsed.</param>
-    ''' <param name="diagnostics">A ImmutableArray of diagnostics.</param>
-    ''' <returns>A collection of GlobalImports.</returns>
-    Public Shared Function Parse(importedNames As IEnumerable(Of String), <Out()> ByRef diagnostics As ImmutableArray(Of Diagnostic)) As IEnumerable(Of GlobalImport)
-      Dim errors As DiagnosticBag = DiagnosticBag.GetInstance()
-      Dim parsedImports = OptionsValidator.ParseImports(importedNames, errors)
-      diagnostics = errors.ToReadOnlyAndFree(Of Diagnostic)()
-      Return parsedImports
-    End Function
+        ''' <summary>
+        ''' Parses a collection of strings representing imports to create a collection of GlobalImport instance and diagnostics
+        ''' </summary>
+        ''' <param name="importedNames">A collection of strings to be parsed.</param>
+        ''' <param name="diagnostics">A ImmutableArray of diagnostics.</param>
+        ''' <returns>A collection of GlobalImports.</returns>
+        Public Shared Function Parse(importedNames As IEnumerable(Of String), <Out()> ByRef diagnostics As ImmutableArray(Of Diagnostic)) As IEnumerable(Of GlobalImport)
+            Dim errors As DiagnosticBag = DiagnosticBag.GetInstance()
+            Dim parsedImports = OptionsValidator.ParseImports(importedNames, errors)
+            diagnostics = errors.ToReadOnlyAndFree(Of Diagnostic)()
+            Return parsedImports
+        End Function
 
-    ' Map a diagnostic to the diagnostic we want to give.
-    Friend Function MapDiagnostic(unmappedDiag As Diagnostic) As Diagnostic
-      If unmappedDiag.Code = ERRID.WRN_UndefinedOrEmptyNamespaceOrClass1 Then
-        Return New VBDiagnostic(ErrorFactory.ErrorInfo(ERRID.WRN_UndefinedOrEmptyProjectNamespaceOrClass1, Name), NoLocation.Singleton)
-      End if
-      ' Determine the text of the import, plus the startIndex/length within that text
-      ' that the error is.
-      Dim unmappedSpan = unmappedDiag.Location.SourceSpan
-      Dim startindex = unmappedSpan.Start - _clause.Span.Start
-      Dim length = unmappedSpan.Length
-      If (startindex < 0 OrElse length <= 0 OrElse startindex >= Name.Length) Then
-        ' startIndex, length are bad for some reason. Used the whole import text instead.
-        startindex = 0
-        length = Name.Length
-      End If
-      length = Math.Min(Name.Length - startindex, length)
-      
-      ' Create a diagnostic with no location that wrapped the actual parser diagnostic.
-      Return New VBDiagnostic(New ImportDiagnosticInfo(DirectCast(unmappedDiag, DiagnosticWithInfo).Info, Name, startindex, length), NoLocation.Singleton)
-    End Function
+        ' Map a diagnostic to the diagnostic we want to give.
+        Friend Function MapDiagnostic(unmappedDiag As Diagnostic) As Diagnostic
+            If unmappedDiag.Code = ERRID.WRN_UndefinedOrEmptyNamespaceOrClass1 Then
+                Return New VBDiagnostic(ErrorFactory.ErrorInfo(ERRID.WRN_UndefinedOrEmptyProjectNamespaceOrClass1, Name), NoLocation.Singleton)
+            End if
+            ' Determine the text of the import, plus the startIndex/length within that text
+            ' that the error is.
+            Dim unmappedSpan = unmappedDiag.Location.SourceSpan
+            Dim startindex = unmappedSpan.Start - _clause.Span.Start
+            Dim length = unmappedSpan.Length
+            If (startindex < 0 OrElse length <= 0 OrElse startindex >= Name.Length) Then
+                ' startIndex, length are bad for some reason. Used the whole import text instead.
+                startindex = 0
+                length = Name.Length
+            End If
+            length = Math.Min(Name.Length - startindex, length)
 
-    Private Function GetDebuggerDisplay() As String
-      Return Name
-    End Function
+            ' Create a diagnostic with no location that wrapped the actual parser diagnostic.
+            Return New VBDiagnostic(New ImportDiagnosticInfo(DirectCast(unmappedDiag, DiagnosticWithInfo).Info, Name, startindex, length), NoLocation.Singleton)
+        End Function
 
-    ''' <summary> Determines if the current object is equal to another object. </summary>
-    ''' <param name="obj">An object to compare with this object</param>
-    ''' <returns>A boolean value.  True if the current object is equal to the other parameter; otherwise, False.</returns>
-    Public Overrides Function Equals(obj As Object) As Boolean
-      Return Equals(TryCast(obj, GlobalImport))
-    End Function
+        Private Function GetDebuggerDisplay() As String
+            Return Name
+        End Function
 
-    ''' <summary> Determines whether the current object is equal to another object of the same type. </summary>
-    ''' <param name="other">A GlobalImport object to compare with this object</param>
-    ''' <returns>A boolean value.  True if the current object is equal to the other parameter; otherwise, False.</returns>
-    Public Overloads Function Equals(other As GlobalImport) As Boolean Implements IEquatable(Of GlobalImport).Equals
-      If Me Is other Then Return True
-      If other Is Nothing Then Return False
-      Return String.Equals(Name, other.Name, StringComparison.Ordinal) AndAlso
-             String.Equals(Clause.ToFullString(), other.Clause.ToFullString(), StringComparison.Ordinal)
-    End Function
+        ''' <summary> Determines if the current object is equal to another object. </summary>
+        ''' <param name="obj">An object to compare with this object</param>
+        ''' <returns>A boolean value.  True if the current object is equal to the other parameter; otherwise, False.</returns>
+        Public Overrides Function Equals(obj As Object) As Boolean
+            Return Equals(TryCast(obj, GlobalImport))
+        End Function
 
-    ''' <summary> Creates a hashcode for this instance. </summary>
-    ''' <returns>A hashcode representing this instance.</returns>
-    Public Overrides Function GetHashCode() As Integer
-      Return Hash.Combine(Me.Name.GetHashCode(), StringComparer.Ordinal.GetHashCode(Clause.ToFullString()))
-    End Function
+        ''' <summary> Determines whether the current object is equal to another object of the same type. </summary>
+        ''' <param name="other">A GlobalImport object to compare with this object</param>
+        ''' <returns>A boolean value.  True if the current object is equal to the other parameter; otherwise, False.</returns>
+        Public Overloads Function Equals(other As GlobalImport) As Boolean Implements IEquatable(Of GlobalImport).Equals
+            If Me Is other Then Return True
+            If other Is Nothing Then Return False
+            Return String.Equals(Name, other.Name, StringComparison.Ordinal) AndAlso
+                   String.Equals(Clause.ToFullString(), other.Clause.ToFullString(), StringComparison.Ordinal)
+        End Function
 
-    ''' <summary> Operator for Equality with GlobalImport Objects. </summary>
-    ''' <returns>True if the two items are Equal.</returns>
-    Public Shared Operator =(left As GlobalImport, right As GlobalImport) As Boolean
-      Return Object.Equals(left, right)
-    End Operator
+        ''' <summary> Creates a hashcode for this instance. </summary>
+        ''' <returns>A hashcode representing this instance.</returns>
+        Public Overrides Function GetHashCode() As Integer
+            Return Hash.Combine(Me.Name.GetHashCode(), StringComparer.Ordinal.GetHashCode(Clause.ToFullString()))
+        End Function
 
-    ''' <summary> Overloaded Operator for Inequality ith GlobalImport Objects. </summary>
-    ''' <returns>Returns True if the two items are not Equal.</returns>
-    Public Shared Operator <>(left As GlobalImport, right As GlobalImport) As Boolean
-      Return Not Object.Equals(left, right)
-    End Operator
+        ''' <summary> Operator for Equality with GlobalImport Objects. </summary>
+        ''' <returns>True if the two items are Equal.</returns>
+        Public Shared Operator =(left As GlobalImport, right As GlobalImport) As Boolean
+            Return Object.Equals(left, right)
+        End Operator
 
-  End Class
+        ''' <summary> Overloaded Operator for Inequality ith GlobalImport Objects. </summary>
+        ''' <returns>Returns True if the two items are not Equal.</returns>
+        Public Shared Operator <>(left As GlobalImport, right As GlobalImport) As Boolean
+            Return Not Object.Equals(left, right)
+        End Operator
+
+    End Class
 
 End Namespace

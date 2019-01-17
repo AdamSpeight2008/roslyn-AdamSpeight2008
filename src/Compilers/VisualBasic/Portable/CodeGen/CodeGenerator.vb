@@ -10,38 +10,39 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Emit
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
-    Friend NotInheritable Class CodeGenerator
-        Private ReadOnly _method As MethodSymbol
-        Private ReadOnly _block As BoundStatement
-        Private ReadOnly _builder As ILBuilder
-        Private ReadOnly _module As PEModuleBuilder
-        Private ReadOnly _diagnostics As DiagnosticBag
-        Private ReadOnly _ilEmitStyle As ILEmitStyle
-        Private ReadOnly _emitPdbSequencePoints As Boolean
 
-        Private ReadOnly _stackLocals As HashSet(Of LocalSymbol) = Nothing
+  Friend NotInheritable Class CodeGenerator
+    Private ReadOnly _method As MethodSymbol
+    Private ReadOnly _block As BoundStatement
+    Private ReadOnly _builder As ILBuilder
+    Private ReadOnly _module As PEModuleBuilder
+    Private ReadOnly _diagnostics As DiagnosticBag
+    Private ReadOnly _ilEmitStyle As ILEmitStyle
+    Private ReadOnly _emitPdbSequencePoints As Boolean
 
-        ''' <summary> Keeps track on current nesting level of try statements </summary>
-        Private _tryNestingLevel As Integer = 0
+    Private ReadOnly _stackLocals As HashSet(Of LocalSymbol) = Nothing
 
-        ''' <summary> Current enclosing Catch block if there is any. </summary>
-        Private _currentCatchBlock As BoundCatchBlock = Nothing
+    ''' <summary> Keeps track on current nesting level of try statements </summary>
+    Private _tryNestingLevel As Integer = 0
 
-        Private ReadOnly _synthesizedLocalOrdinals As SynthesizedLocalOrdinalsDispenser = New SynthesizedLocalOrdinalsDispenser()
-        Private _uniqueNameId As Integer
+    ''' <summary> Current enclosing Catch block if there is any. </summary>
+    Private _currentCatchBlock As BoundCatchBlock = Nothing
 
-        ' label used when return is emitted in a form of store/goto
-        Private Shared ReadOnly s_returnLabel As New Object
+    Private ReadOnly _synthesizedLocalOrdinals As SynthesizedLocalOrdinalsDispenser = New SynthesizedLocalOrdinalsDispenser()
+    Private _uniqueNameId As Integer
 
-        Private _unhandledReturn As Boolean
+    ' label used when return is emitted in a form of store/goto
+    Private Shared ReadOnly s_returnLabel As New Object
 
-        Private _checkCallsForUnsafeJITOptimization As Boolean
+    Private _unhandledReturn As Boolean
 
-        Private _asyncCatchHandlerOffset As Integer = -1
-        Private _asyncYieldPoints As ArrayBuilder(Of Integer) = Nothing
-        Private _asyncResumePoints As ArrayBuilder(Of Integer) = Nothing
+    Private _checkCallsForUnsafeJITOptimization As Boolean
 
-        Public Sub New(method As MethodSymbol,
+    Private _asyncCatchHandlerOffset As Integer = -1
+    Private _asyncYieldPoints As ArrayBuilder(Of Integer) = Nothing
+    Private _asyncResumePoints As ArrayBuilder(Of Integer) = Nothing
+
+    Public Sub New(method As MethodSymbol,
                        boundBody As BoundStatement,
                        builder As ILBuilder,
                        moduleBuilder As PEModuleBuilder,
@@ -92,23 +93,26 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
 
             _checkCallsForUnsafeJITOptimization = (_method.ImplementationAttributes And MethodSymbol.DisableJITOptimizationFlags) <> MethodSymbol.DisableJITOptimizationFlags
             Debug.Assert(Not _module.JITOptimizationIsDisabled(_method))
-        End Sub
+    End Sub
 
-        Private Function IsDebugPlus() As Boolean
-            Return Me._module.Compilation.Options.DebugPlusMode
-        End Function
+    Private Function IsDebugPlus() As Boolean
+      Return _module.Compilation.Options.DebugPlusMode
+    End Function
 
-        Public Sub Generate()
-            Debug.Assert(_asyncYieldPoints Is Nothing)
-            Debug.Assert(_asyncResumePoints Is Nothing)
-            Debug.Assert(_asyncCatchHandlerOffset < 0)
+    Public Sub Generate()
+      Debug.Assert(_asyncYieldPoints Is Nothing)
+      Debug.Assert(_asyncResumePoints Is Nothing)
+      Debug.Assert(_asyncCatchHandlerOffset < 0)
 
-            GenerateImpl()
-        End Sub
+      GenerateImpl()
+    End Sub
 
-        Public Sub Generate(<Out> ByRef asyncCatchHandlerOffset As Integer,
-                            <Out> ByRef asyncYieldPoints As ImmutableArray(Of Integer),
-                            <Out> ByRef asyncResumePoints As ImmutableArray(Of Integer))
+    Public Sub Generate(
+             <Out> ByRef asyncCatchHandlerOffset As Integer,
+             <Out> ByRef asyncYieldPoints As ImmutableArray(Of Integer),
+             <Out> ByRef asyncResumePoints As ImmutableArray(Of Integer)
+                       )
+
             GenerateImpl()
 
             Debug.Assert(_asyncCatchHandlerOffset >= 0)
@@ -148,176 +152,160 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                 yieldPoints.Free()
                 resumePoints.Free()
             End If
-        End Sub
+    End Sub
 
-        Private Sub GenerateImpl()
-            SetInitialDebugDocument()
+    Private Sub GenerateImpl()
+      SetInitialDebugDocument()
 
-            ' Synthesized methods should have a sequence point
-            ' at offset 0 to ensure correct stepping behavior.
-            If _emitPdbSequencePoints AndAlso _method.IsImplicitlyDeclared Then
-                _builder.DefineInitialHiddenSequencePoint()
-            End If
+      ' Synthesized methods should have a sequence point
+      ' at offset 0 to ensure correct stepping behavior.
+      If _emitPdbSequencePoints AndAlso _method.IsImplicitlyDeclared Then _builder.DefineInitialHiddenSequencePoint()
+      Try
+        EmitStatement(_block)
+        If _unhandledReturn Then HandleReturn()
+        If Not _diagnostics.HasAnyErrors Then _builder.Realize()
 
-            Try
-                EmitStatement(_block)
+      Catch e As EmitCancelledException
+        Debug.Assert(_diagnostics.HasAnyErrors())
+      End Try
 
-                If _unhandledReturn Then
-                    HandleReturn()
-                End If
+      _synthesizedLocalOrdinals.Free()
+    End Sub
 
-                If Not _diagnostics.HasAnyErrors Then
-                    _builder.Realize()
-                End If
+    Private Sub HandleReturn()
+      _builder.MarkLabel(s_returnLabel)
+      _builder.EmitRet(True)
+      _unhandledReturn = False
+    End Sub
 
-            Catch e As EmitCancelledException
-                Debug.Assert(_diagnostics.HasAnyErrors())
-            End Try
+    Private Sub EmitFieldAccess(fieldAccess As BoundFieldAccess)
+      ' TODO: combination load/store for +=; addresses for ref
+      Dim field As FieldSymbol = fieldAccess.FieldSymbol
+      If Not field.IsShared Then EmitExpression(fieldAccess.ReceiverOpt, True)
+      If field.IsShared Then
+         _builder.EmitOpCode(ILOpCode.Ldsfld)
+      Else
+         _builder.EmitOpCode(ILOpCode.Ldfld)
+      End If
+      EmitSymbolToken(field, fieldAccess.Syntax)
+    End Sub
 
-            _synthesizedLocalOrdinals.Free()
-        End Sub
+    Private Function IsStackLocal(local As LocalSymbol) As Boolean
+      Return _stackLocals IsNot Nothing AndAlso _stackLocals.Contains(local)
+    End Function
 
-        Private Sub HandleReturn()
-            _builder.MarkLabel(s_returnLabel)
-            _builder.EmitRet(True)
-            _unhandledReturn = False
-        End Sub
+    Private Sub EmitLocalStore(local As BoundLocal)
+      ' TODO: combination load/store for +=; addresses for ref
+      Dim slot = GetLocal(local)
+      _builder.EmitLocalStore(slot)
+    End Sub
 
-        Private Sub EmitFieldAccess(fieldAccess As BoundFieldAccess)
-            ' TODO: combination load/store for +=; addresses for ref
-            Dim field As FieldSymbol = fieldAccess.FieldSymbol
-            If Not field.IsShared Then
-                EmitExpression(fieldAccess.ReceiverOpt, True)
-            End If
+    Private Sub EmitSymbolToken(symbol As FieldSymbol, syntaxNode As SyntaxNode)
+      _builder.EmitToken(_module.Translate(symbol, syntaxNode, _diagnostics), syntaxNode, _diagnostics)
+    End Sub
 
-            If field.IsShared Then
-                _builder.EmitOpCode(ILOpCode.Ldsfld)
-            Else
-                _builder.EmitOpCode(ILOpCode.Ldfld)
-            End If
-            EmitSymbolToken(field, fieldAccess.Syntax)
-        End Sub
+    Private Sub EmitSymbolToken(symbol As MethodSymbol, syntaxNode As SyntaxNode, Optional encodeAsRawDefinitionToken As Boolean = False)
+      _builder.EmitToken(_module.Translate(symbol, syntaxNode, _diagnostics, needDeclaration:=encodeAsRawDefinitionToken), syntaxNode, _diagnostics, encodeAsRawDefinitionToken)
+    End Sub
 
-        Private Function IsStackLocal(local As LocalSymbol) As Boolean
-            Return _stackLocals IsNot Nothing AndAlso _stackLocals.Contains(local)
-        End Function
+    Private Sub EmitSymbolToken(symbol As TypeSymbol, syntaxNode As SyntaxNode)
+      _builder.EmitToken(_module.Translate(symbol, syntaxNode, _diagnostics), syntaxNode, _diagnostics)
+    End Sub
 
-        Private Sub EmitLocalStore(local As BoundLocal)
-            ' TODO: combination load/store for +=; addresses for ref
-            Dim slot = GetLocal(local)
-            _builder.EmitLocalStore(slot)
-        End Sub
+    Private Sub EmitSequencePointExpression(node As BoundSequencePointExpression, used As Boolean)
+      Dim syntax = node.Syntax
+      If _emitPdbSequencePoints Then
+         If syntax Is Nothing Then
+            EmitHiddenSequencePoint()
+         Else
+            EmitSequencePoint(syntax)
+         End If
+      End If
 
-        Private Sub EmitSymbolToken(symbol As FieldSymbol, syntaxNode As SyntaxNode)
-            _builder.EmitToken(_module.Translate(symbol, syntaxNode, _diagnostics), syntaxNode, _diagnostics)
-        End Sub
+      ' used is true to ensure that something is emitted
+      EmitExpression(node.Expression, used:=True)
+      EmitPopIfUnused(used)
+    End Sub
 
-        Private Sub EmitSymbolToken(symbol As MethodSymbol, syntaxNode As SyntaxNode, Optional encodeAsRawDefinitionToken As Boolean = False)
-            _builder.EmitToken(_module.Translate(symbol, syntaxNode, _diagnostics, needDeclaration:=encodeAsRawDefinitionToken), syntaxNode, _diagnostics, encodeAsRawDefinitionToken)
-        End Sub
+    Private Sub EmitSequencePointExpressionAddress(node As BoundSequencePointExpression, addressKind As AddressKind)
+      Dim syntax = node.Syntax
+      If _emitPdbSequencePoints Then
+         If syntax Is Nothing Then
+            EmitHiddenSequencePoint()
+         Else
+            EmitSequencePoint(syntax)
+         End If
+      End If
 
-        Private Sub EmitSymbolToken(symbol As TypeSymbol, syntaxNode As SyntaxNode)
-            _builder.EmitToken(_module.Translate(symbol, syntaxNode, _diagnostics), syntaxNode, _diagnostics)
-        End Sub
+      Dim temp = EmitAddress(node.Expression, addressKind)
+      Debug.Assert(temp Is Nothing, "we should not be taking ref of a sequence if value needs a temp")
+    End Sub
 
-        Private Sub EmitSequencePointExpression(node As BoundSequencePointExpression, used As Boolean)
-            Dim syntax = node.Syntax
-            If _emitPdbSequencePoints Then
-                If syntax Is Nothing Then
-                    EmitHiddenSequencePoint()
-                Else
-                    EmitSequencePoint(syntax)
-                End If
-            End If
+    Private Sub EmitSequencePointStatement(node As BoundSequencePoint)
+      Dim syntax = node.Syntax
+      If _emitPdbSequencePoints Then
+         If syntax Is Nothing Then
+            EmitHiddenSequencePoint()
+         Else
+            EmitSequencePoint(syntax)
+         End If
+      End If
 
-            ' used is true to ensure that something is emitted
-            EmitExpression(node.Expression, used:=True)
-            EmitPopIfUnused(used)
-        End Sub
+      Dim statement = node.StatementOpt
+      Dim instructionsEmitted As Integer = 0
+      If statement IsNot Nothing Then instructionsEmitted = EmitStatementAndCountInstructions(statement)
+      If instructionsEmitted = 0 AndAlso syntax IsNot Nothing AndAlso _ilEmitStyle = ILEmitStyle.Debug Then
+        ' if there was no code emitted, then emit nop 
+        ' otherwise this point could get associated with some random statement, possibly in a wrong scope
+        _builder.EmitOpCode(ILOpCode.Nop)
+      End If
+    End Sub
 
-        Private Sub EmitSequencePointExpressionAddress(node As BoundSequencePointExpression, addressKind As AddressKind)
-            Dim syntax = node.Syntax
-            If _emitPdbSequencePoints Then
-                If syntax Is Nothing Then
-                    EmitHiddenSequencePoint()
-                Else
-                    EmitSequencePoint(syntax)
-                End If
-            End If
+    Private Sub EmitSequencePointStatement(node As BoundSequencePointWithSpan)
+      Dim span = node.Span
+      If span <> Nothing AndAlso _emitPdbSequencePoints Then EmitSequencePoint(node.SyntaxTree, span)
+      Dim statement = node.StatementOpt
+      Dim instructionsEmitted As Integer = 0
+      If statement IsNot Nothing Then instructionsEmitted = EmitStatementAndCountInstructions(statement)
+      If instructionsEmitted = 0 AndAlso span <> Nothing AndAlso _ilEmitStyle = ILEmitStyle.Debug Then
+         ' if there was no code emitted, then emit nop 
+         ' otherwise this point could get associated with some random statement, possibly in a wrong scope
+         _builder.EmitOpCode(ILOpCode.Nop)
+      End If
+    End Sub
 
-            Dim temp = EmitAddress(node.Expression, addressKind)
-            Debug.Assert(temp Is Nothing, "we should not be taking ref of a sequence if value needs a temp")
-        End Sub
+    Private Sub SetInitialDebugDocument()
+      Dim methodBlockSyntax = Me._method.Syntax
+      If _emitPdbSequencePoints AndAlso methodBlockSyntax IsNot Nothing Then
+        ' If methodBlockSyntax is available (i.e. we're in a SourceMethodSymbol), then
+        ' provide the IL builder with our best guess at the appropriate debug document.
+        ' If we don't and this is hidden sequence point precedes all non-hidden sequence
+        ' points, then the IL Builder will drop the sequence point for lack of a document.
+        ' This negatively impacts the scenario where we insert hidden sequence points at
+        ' the beginnings of methods so that step-into (F11) will handle them correctly.
+        _builder.SetInitialDebugDocument(methodBlockSyntax.SyntaxTree)
+      End If
+    End Sub
 
-        Private Sub EmitSequencePointStatement(node As BoundSequencePoint)
-            Dim syntax = node.Syntax
-            If _emitPdbSequencePoints Then
-                If syntax Is Nothing Then
-                    EmitHiddenSequencePoint()
-                Else
-                    EmitSequencePoint(syntax)
-                End If
-            End If
+    Private Sub EmitHiddenSequencePoint()
+      Debug.Assert(_emitPdbSequencePoints)
+      _builder.DefineHiddenSequencePoint()
+    End Sub
 
-            Dim statement = node.StatementOpt
-            Dim instructionsEmitted As Integer = 0
-            If statement IsNot Nothing Then
-                instructionsEmitted = EmitStatementAndCountInstructions(statement)
-            End If
+    Private Sub EmitSequencePoint(syntax As SyntaxNode)
+      EmitSequencePoint(syntax.SyntaxTree, syntax.Span)
+    End Sub
 
-            If instructionsEmitted = 0 AndAlso syntax IsNot Nothing AndAlso _ilEmitStyle = ILEmitStyle.Debug Then
-                ' if there was no code emitted, then emit nop 
-                ' otherwise this point could get associated with some random statement, possibly in a wrong scope
-                _builder.EmitOpCode(ILOpCode.Nop)
-            End If
-        End Sub
+    Private Function EmitSequencePoint(
+                                        tree As SyntaxTree,
+                                        span As TextSpan
+                                      ) As TextSpan
+      Debug.Assert(tree IsNot Nothing)
+      Debug.Assert(_emitPdbSequencePoints)
+      _builder.DefineSequencePoint(tree, span)
+      Return span
+    End Function
 
-        Private Sub EmitSequencePointStatement(node As BoundSequencePointWithSpan)
-            Dim span = node.Span
-            If span <> Nothing AndAlso _emitPdbSequencePoints Then
-                EmitSequencePoint(node.SyntaxTree, span)
-            End If
+  End Class
 
-            Dim statement = node.StatementOpt
-            Dim instructionsEmitted As Integer = 0
-            If statement IsNot Nothing Then
-                instructionsEmitted = EmitStatementAndCountInstructions(statement)
-            End If
-
-            If instructionsEmitted = 0 AndAlso span <> Nothing AndAlso _ilEmitStyle = ILEmitStyle.Debug Then
-                ' if there was no code emitted, then emit nop 
-                ' otherwise this point could get associated with some random statement, possibly in a wrong scope
-                _builder.EmitOpCode(ILOpCode.Nop)
-            End If
-        End Sub
-
-        Private Sub SetInitialDebugDocument()
-            Dim methodBlockSyntax = Me._method.Syntax
-            If _emitPdbSequencePoints AndAlso methodBlockSyntax IsNot Nothing Then
-                ' If methodBlockSyntax is available (i.e. we're in a SourceMethodSymbol), then
-                ' provide the IL builder with our best guess at the appropriate debug document.
-                ' If we don't and this is hidden sequence point precedes all non-hidden sequence
-                ' points, then the IL Builder will drop the sequence point for lack of a document.
-                ' This negatively impacts the scenario where we insert hidden sequence points at
-                ' the beginnings of methods so that step-into (F11) will handle them correctly.
-                _builder.SetInitialDebugDocument(methodBlockSyntax.SyntaxTree)
-            End If
-        End Sub
-
-        Private Sub EmitHiddenSequencePoint()
-            Debug.Assert(_emitPdbSequencePoints)
-            _builder.DefineHiddenSequencePoint()
-        End Sub
-
-        Private Sub EmitSequencePoint(syntax As SyntaxNode)
-            EmitSequencePoint(syntax.SyntaxTree, syntax.Span)
-        End Sub
-
-        Private Function EmitSequencePoint(tree As SyntaxTree, span As TextSpan) As TextSpan
-            Debug.Assert(tree IsNot Nothing)
-            Debug.Assert(_emitPdbSequencePoints)
-            _builder.DefineSequencePoint(tree, span)
-            Return span
-        End Function
-    End Class
 End Namespace

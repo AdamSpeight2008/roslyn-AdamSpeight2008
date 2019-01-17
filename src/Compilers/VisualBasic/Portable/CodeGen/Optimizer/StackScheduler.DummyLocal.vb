@@ -5,21 +5,23 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
-    Partial Friend Class StackScheduler
 
-        Private Class DummyLocal
-            Inherits SynthesizedLocal
+  Partial Friend Class StackScheduler
 
-            Public Sub New(container As Symbol)
-                MyBase.New(container, Nothing, SynthesizedLocalKind.OptimizerTemp)
-            End Sub
+    Private Class DummyLocal
+      Inherits SynthesizedLocal
 
-            Friend Overrides Function ComputeType(Optional containingBinder As Binder = Nothing) As TypeSymbol
-                Throw ExceptionUtilities.Unreachable
-            End Function
+      Public Sub New(container As Symbol)
+        MyBase.New(container, Nothing, SynthesizedLocalKind.OptimizerTemp)
+      End Sub
 
-        End Class
+      Friend Overrides Function ComputeType(Optional containingBinder As Binder = Nothing) As TypeSymbol
+        Throw ExceptionUtilities.Unreachable
+      End Function
 
     End Class
+
+  End Class
+
 End Namespace
 

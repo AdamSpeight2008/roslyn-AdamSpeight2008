@@ -11,72 +11,39 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
 
-    Friend Partial Class CodeGenerator
-        Private Sub EmitStatement(statement As BoundStatement)
-            Select Case statement.Kind
+  Friend Partial Class CodeGenerator
 
-                Case BoundKind.Block
-                    EmitBlock(DirectCast(statement, BoundBlock))
+    Private Sub EmitStatement(statement As BoundStatement)
+      Select Case statement.Kind
+             Case BoundKind.Block                               : EmitBlock(DirectCast(statement, BoundBlock))
+             Case BoundKind.SequencePoint                       : EmitSequencePointStatement(DirectCast(statement, BoundSequencePoint))
+             Case BoundKind.SequencePointWithSpan               : EmitSequencePointStatement(DirectCast(statement, BoundSequencePointWithSpan))
+             Case BoundKind.ExpressionStatement                 : EmitExpression((DirectCast(statement, BoundExpressionStatement)).Expression, False)
+             Case BoundKind.NoOpStatement                       : EmitNoOpStatement(DirectCast(statement, BoundNoOpStatement))
+             Case BoundKind.StatementList
+                  Dim list = DirectCast(statement, BoundStatementList)
+                  Dim n As Integer = list.Statements.Length
+                  For i = 0 To n - 1
+                    EmitStatement(list.Statements(i))
+                  Next
 
-                Case BoundKind.SequencePoint
-                    EmitSequencePointStatement(DirectCast(statement, BoundSequencePoint))
-
-                Case BoundKind.SequencePointWithSpan
-                    EmitSequencePointStatement(DirectCast(statement, BoundSequencePointWithSpan))
-
-                Case BoundKind.ExpressionStatement
-                    EmitExpression((DirectCast(statement, BoundExpressionStatement)).Expression, False)
-
-                Case BoundKind.NoOpStatement
-                    EmitNoOpStatement(DirectCast(statement, BoundNoOpStatement))
-
-                Case BoundKind.StatementList
-                    Dim list = DirectCast(statement, BoundStatementList)
-                    Dim n As Integer = list.Statements.Length
-                    For i = 0 To n - 1
-                        EmitStatement(list.Statements(i))
-                    Next
-
-                Case BoundKind.ReturnStatement
-                    EmitReturnStatement(DirectCast(statement, BoundReturnStatement))
-
-                Case BoundKind.ThrowStatement
-                    EmitThrowStatement(DirectCast(statement, BoundThrowStatement))
-
-                Case BoundKind.GotoStatement
-                    EmitGotoStatement(DirectCast(statement, BoundGotoStatement))
-
-                Case BoundKind.LabelStatement
-                    EmitLabelStatement(DirectCast(statement, BoundLabelStatement))
-
-                Case BoundKind.ConditionalGoto
-                    EmitConditionalGoto(DirectCast(statement, BoundConditionalGoto))
-
-                Case BoundKind.TryStatement
-                    EmitTryStatement(DirectCast(statement, BoundTryStatement))
-
-                Case BoundKind.SelectStatement
-                    EmitSelectStatement(DirectCast(statement, BoundSelectStatement))
-
-                Case BoundKind.UnstructuredExceptionOnErrorSwitch
-                    EmitUnstructuredExceptionOnErrorSwitch(DirectCast(statement, BoundUnstructuredExceptionOnErrorSwitch))
-
-                Case BoundKind.UnstructuredExceptionResumeSwitch
-                    EmitUnstructuredExceptionResumeSwitch(DirectCast(statement, BoundUnstructuredExceptionResumeSwitch))
-
-                Case BoundKind.StateMachineScope
-                    EmitStateMachineScope(DirectCast(statement, BoundStateMachineScope))
-
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(statement.Kind)
-            End Select
+             Case BoundKind.ReturnStatement                     : EmitReturnStatement(DirectCast(statement, BoundReturnStatement))
+             Case BoundKind.ThrowStatement                      : EmitThrowStatement(DirectCast(statement, BoundThrowStatement))
+             Case BoundKind.GotoStatement                       : EmitGotoStatement(DirectCast(statement, BoundGotoStatement))
+             Case BoundKind.LabelStatement                      : EmitLabelStatement(DirectCast(statement, BoundLabelStatement))
+             Case BoundKind.ConditionalGoto                     : EmitConditionalGoto(DirectCast(statement, BoundConditionalGoto))
+             Case BoundKind.TryStatement                        : EmitTryStatement(DirectCast(statement, BoundTryStatement))
+             Case BoundKind.SelectStatement                     : EmitSelectStatement(DirectCast(statement, BoundSelectStatement))
+             Case BoundKind.UnstructuredExceptionOnErrorSwitch  : EmitUnstructuredExceptionOnErrorSwitch(DirectCast(statement, BoundUnstructuredExceptionOnErrorSwitch))
+             Case BoundKind.UnstructuredExceptionResumeSwitch   : EmitUnstructuredExceptionResumeSwitch(DirectCast(statement, BoundUnstructuredExceptionResumeSwitch))
+             Case BoundKind.StateMachineScope                   : EmitStateMachineScope(DirectCast(statement, BoundStateMachineScope))
+             Case Else                                          : Throw ExceptionUtilities.UnexpectedValue(statement.Kind)
+      End Select
 
 #If DEBUG Then
-            If Me._stackLocals Is Nothing OrElse Not Me._stackLocals.Any Then
-                _builder.AssertStackEmpty()
-            End If
+      If Me._stackLocals Is Nothing OrElse Not Me._stackLocals.Any Then _builder.AssertStackEmpty()
 #End If
-        End Sub
+    End Sub
 
         Private Function EmitStatementAndCountInstructions(statement As BoundStatement) As Integer
             Dim n = _builder.InstructionsEmitted

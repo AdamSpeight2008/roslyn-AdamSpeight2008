@@ -7,31 +7,29 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
 
-    Friend Partial Class CodeGenerator
+  Friend Partial Class CodeGenerator
 
-        Private Enum ArrayInitializerStyle
-            ' Initialize every element
-            Element
+    Private Enum ArrayInitializerStyle
+      ' Initialize every element
+      Element
+      ' Initialize all elements at once from a metadata blob
+      Block
+      ' Mixed case where there are some initializers that are constants and
+      ' there is enough of them so that it makes sense to use block initialization
+      ' followed by individual initialization of non-constant elements
+      Mixed
+    End Enum
 
-            ' Initialize all elements at once from a metadata blob
-            Block
-
-            ' Mixed case where there are some initializers that are constants and
-            ' there is enough of them so that it makes sense to use block initialization
-            ' followed by individual initialization of non-constant elements
-            Mixed
-        End Enum
-
-        ''' <summary>
-        ''' Entry point to the array initialization.
-        ''' Assumes that we have newly created array on the stack.
-        ''' 
-        ''' inits could be an array of values for a single dimensional array
-        ''' or an   array (of array)+  of values for a multidimensional case
-        ''' 
-        ''' in either case it is expected that number of leaf values will match number 
-        ''' of elements in the array and nesting level should match the rank of the array.
-        ''' </summary>
+    ''' <summary>
+    ''' Entry point to the array initialization.
+    ''' Assumes that we have newly created array on the stack.
+    ''' 
+    ''' inits could be an array of values for a single dimensional array
+    ''' or an   array (of array)+  of values for a multidimensional case
+    ''' 
+    ''' in either case it is expected that number of leaf values will match number 
+    ''' of elements in the array and nesting level should match the rank of the array.
+    ''' </summary>
         Private Sub EmitArrayInitializers(arrayType As ArrayTypeSymbol, inits As BoundArrayInitialization)
             Dim initExprs = inits.Initializers
             Dim initializationStyle = ShouldEmitBlockInitializer(arrayType.ElementType, initExprs)
@@ -267,17 +265,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
         End Function
 
         Private Sub SerializeArrayRecursive(bw As BlobBuilder, inits As ImmutableArray(Of BoundExpression))
-            If inits.Length <> 0 Then
-                If inits(0).Kind = BoundKind.ArrayInitialization Then
-                    For Each init In inits
-                        SerializeArrayRecursive(bw, DirectCast(init, BoundArrayInitialization).Initializers)
-                    Next
-                Else
-                    For Each init In inits
-                        Me.AsConstOrDefault(init).Serialize(bw)
-                    Next
-                End If
-            End If
+          If inits.Length = 0 Then Return
+          If inits(0).Kind = BoundKind.ArrayInitialization Then
+             For Each init In inits
+               SerializeArrayRecursive(bw, DirectCast(init, BoundArrayInitialization).Initializers)
+             Next
+          Else
+             For Each init In inits
+               AsConstOrDefault(init).Serialize(bw)
+             Next
+          End If          
         End Sub
 
         ''' <summary>
