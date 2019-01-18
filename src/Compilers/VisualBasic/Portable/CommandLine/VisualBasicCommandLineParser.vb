@@ -11,7 +11,7 @@ Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.SyntaxFacts
-Imports Microsoft.CodeAnalysis.VisualBasic.CommandLineExts
+
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
   ''' <summary> The VisualBasicCommandLineParser class contains members used to perform various Visual Basic command line parsing operations. </summary>
@@ -752,7 +752,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                        Continue For
 
                   Case "quiet+"
-                       SwitchNeedsBoolean(value, diagnostics, outputLevel, outputLevel.Quiet, "quiet+")
+                       SwitchNeedsBoolean(value, diagnostics, outputLevel, outputLevel.Quiet, "quiet")
                        Continue For
 
                   Case "quiet"
@@ -768,10 +768,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                        SwitchNeedsBoolean(value, diagnostics, outputLevel, outputLevel.Verbose, "verbose")
                        Continue For
                   Case "quiet-"
-                       SwitchNeedsBoolean(value, diagnostics, outputLevel, OutputLevel.Normal, "quiet-")
+                       SwitchNeedsBoolean(value, diagnostics, outputLevel, OutputLevel.Normal, "quiet")
                        Continue For
                   Case "verbose-"
-                       SwitchNeedsBoolean(value, diagnostics, outputLevel, OutputLevel.Normal, "verbose-")
+                       SwitchNeedsBoolean(value, diagnostics, outputLevel, OutputLevel.Normal, "verbose")
                        Continue For
                   #End Region
                   #Region "utf8Output"
@@ -1135,15 +1135,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Function
 
     Private Sub SwitchNeedsBoolean(Of T)(
-                                    text        As String,
+                                    value       As String,
                                     diagnostics As List(Of Diagnostic),
-                              byref _option_    As T,
-                                    value       As T,
+                         <Out>byref _option_    As T,
+                                    SetToValue  As T,
                                     name        As string)
-      If text IsNot Nothing Then
-         AddDiagnostic(diagnostics, ERRID.ERR_SwitchNeedsBool, name)
+      If value IsNot Nothing Then
+          AddDiagnostic(diagnostics, ERRID.ERR_SwitchNeedsBool, name)
       Else
-         _option_ = value
+         _option_ = SetToValue
       End if
     End Sub
 

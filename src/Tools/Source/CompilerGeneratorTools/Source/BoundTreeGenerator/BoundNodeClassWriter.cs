@@ -243,11 +243,11 @@ namespace Roslyn.Compilers.Internal.BoundTreeGenerator
                         BraceField(allFields);
                     else
                         $"Array.Empty{Lang.Generics("TreeDumperNode")}()".Output(_o)();
-                })).Code(_o, false);
+                })).Code(_o, true);
 
             void Write_MakeTree() =>
               F($"{Lang.@public()} {Lang.@shared()}", "MakeTree", Parameters(NodeAsBoundNode()), "TreeDumperNode", null,
-              Return($"({Lang.@New()} BoundTreeDumperNodeProducer()).Visit(node, {Lang.@null()})",false));
+              Return($"({Lang.@New()} BoundTreeDumperNodeProducer()).Visit(node, {Lang.@null()})",true));
 
             void BraceField(Field[] allFields)
             {

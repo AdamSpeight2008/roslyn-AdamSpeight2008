@@ -21,7 +21,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     <Extension>
     Friend Function IsValid(value As OptionStrict) As Boolean
-      Return UtilityExts.InRange(Of Byte)(value,OptionStrict.Off, OptionStrict.[On])
+      Return UtilityExts.InRange(value,OptionStrict.Off, OptionStrict.[On])
     End Function
 
   End Module

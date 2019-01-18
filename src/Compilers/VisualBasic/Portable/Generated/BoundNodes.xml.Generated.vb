@@ -8826,49 +8826,58 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     End Sub
     Public Shared Function MakeTree(node As BoundNode) As TreeDumperNode
       Return (New BoundTreeDumperNodeProducer()).Visit(node, Nothing)
+
     End Function
     Public Overrides Function VisitTypeArguments(node As BoundTypeArguments, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeArguments", Nothing, {
           New TreeDumperNode("arguments", node.Arguments, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitOmittedArgument(node As BoundOmittedArgument, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("omittedArgument", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLValueToRValueWrapper(node As BoundLValueToRValueWrapper, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lValueToRValueWrapper", Nothing, {
           New TreeDumperNode("underlyingLValue", Nothing, { Visit(node.UnderlyingLValue, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitWithLValueExpressionPlaceholder(node As BoundWithLValueExpressionPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("withLValueExpressionPlaceholder", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitWithRValueExpressionPlaceholder(node As BoundWithRValueExpressionPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("withRValueExpressionPlaceholder", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitRValuePlaceholder(node As BoundRValuePlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rValuePlaceholder", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLValuePlaceholder(node As BoundLValuePlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lValuePlaceholder", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitDup(node As BoundDup, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("dup", Nothing, {
           New TreeDumperNode("isReference", node.IsReference, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitBadExpression(node As BoundBadExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("badExpression", Nothing, {
@@ -8877,17 +8886,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("childBoundNodes", Nothing, From x In node.ChildBoundNodes Select Visit(x, Nothing)),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitBadStatement(node As BoundBadStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("badStatement", Nothing, {
           New TreeDumperNode("childBoundNodes", Nothing, From x In node.ChildBoundNodes Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitParenthesized(node As BoundParenthesized, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("parenthesized", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitBadVariable(node As BoundBadVariable, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("badVariable", Nothing, {
@@ -8895,6 +8907,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitArrayAccess(node As BoundArrayAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayAccess", Nothing, {
@@ -8903,30 +8916,35 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitArrayLength(node As BoundArrayLength, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayLength", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitGetType(node As BoundGetType, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[getType]", Nothing, {
           New TreeDumperNode("sourceType", Nothing, { Visit(node.SourceType, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitFieldInfo(node As BoundFieldInfo, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("fieldInfo", Nothing, {
           New TreeDumperNode("field", node.Field, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitMethodInfo(node As BoundMethodInfo, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("methodInfo", Nothing, {
           New TreeDumperNode("method", node.Method, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTypeExpression(node As BoundTypeExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeExpression", Nothing, {
@@ -8934,12 +8952,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("aliasOpt", node.AliasOpt, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTypeOrValueExpression(node As BoundTypeOrValueExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeOrValueExpression", Nothing, {
           New TreeDumperNode("data", node.Data, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitNamespaceExpression(node As BoundNamespaceExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("namespaceExpression", Nothing, {
@@ -8948,17 +8968,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("namespaceSymbol", node.NamespaceSymbol, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitMethodDefIndex(node As BoundMethodDefIndex, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("methodDefIndex", Nothing, {
           New TreeDumperNode("method", node.Method, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitMaximumMethodDefIndex(node As BoundMaximumMethodDefIndex, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("maximumMethodDefIndex", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitInstrumentationPayloadRoot(node As BoundInstrumentationPayloadRoot, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("instrumentationPayloadRoot", Nothing, {
@@ -8966,23 +8989,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitModuleVersionId(node As BoundModuleVersionId, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("moduleVersionId", Nothing, {
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitModuleVersionIdString(node As BoundModuleVersionIdString, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("moduleVersionIdString", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitSourceDocumentIndex(node As BoundSourceDocumentIndex, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sourceDocumentIndex", Nothing, {
           New TreeDumperNode("document", node.Document, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitUnaryOperator(node As BoundUnaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unaryOperator", Nothing, {
@@ -8992,6 +9019,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitUserDefinedUnaryOperator(node As BoundUserDefinedUnaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedUnaryOperator", Nothing, {
@@ -8999,12 +9027,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("underlyingExpression", Nothing, { Visit(node.UnderlyingExpression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitNullableIsTrueOperator(node As BoundNullableIsTrueOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("nullableIsTrueOperator", Nothing, {
           New TreeDumperNode("operand", Nothing, { Visit(node.Operand, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitBinaryOperator(node As BoundBinaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("binaryOperator", Nothing, {
@@ -9015,6 +9045,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitUserDefinedBinaryOperator(node As BoundUserDefinedBinaryOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedBinaryOperator", Nothing, {
@@ -9023,6 +9054,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("checked", node.Checked, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitUserDefinedShortCircuitingOperator(node As BoundUserDefinedShortCircuitingOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedShortCircuitingOperator", Nothing, {
@@ -9032,11 +9064,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("bitwiseOperator", Nothing, { Visit(node.BitwiseOperator, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitCompoundAssignmentTargetPlaceholder(node As BoundCompoundAssignmentTargetPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("compoundAssignmentTargetPlaceholder", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAssignmentOperator(node As BoundAssignmentOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("assignmentOperator", Nothing, {
@@ -9046,6 +9080,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("suppressObjectClone", node.SuppressObjectClone, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitReferenceAssignment(node As BoundReferenceAssignment, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("referenceAssignment", Nothing, {
@@ -9054,6 +9089,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAddressOfOperator(node As BoundAddressOfOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("addressOfOperator", Nothing, {
@@ -9061,6 +9097,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("methodGroup", Nothing, { Visit(node.MethodGroup, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTernaryConditionalExpression(node As BoundTernaryConditionalExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("ternaryConditionalExpression", Nothing, {
@@ -9070,6 +9107,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitBinaryConditionalExpression(node As BoundBinaryConditionalExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("binaryConditionalExpression", Nothing, {
@@ -9080,6 +9118,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitConversion(node As BoundConversion, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conversion", Nothing, {
@@ -9091,18 +9130,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("extendedInfoOpt", Nothing, { Visit(node.ExtendedInfoOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitRelaxationLambda(node As BoundRelaxationLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("relaxationLambda", Nothing, {
           New TreeDumperNode("lambda", Nothing, { Visit(node.Lambda, Nothing) }),
           New TreeDumperNode("receiverPlaceholderOpt", Nothing, { Visit(node.ReceiverPlaceholderOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitConvertedTupleElements(node As BoundConvertedTupleElements, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("convertedTupleElements", Nothing, {
           New TreeDumperNode("elementPlaceholders", Nothing, From x In node.ElementPlaceholders Select Visit(x, Nothing)),
           New TreeDumperNode("convertedElements", Nothing, From x In node.ConvertedElements Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitUserDefinedConversion(node As BoundUserDefinedConversion, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("userDefinedConversion", Nothing, {
@@ -9110,6 +9152,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("inOutConversionFlags", node.InOutConversionFlags, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitDirectCast(node As BoundDirectCast, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[directCast]", Nothing, {
@@ -9120,6 +9163,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("relaxationLambdaOpt", Nothing, { Visit(node.RelaxationLambdaOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTryCast(node As BoundTryCast, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[tryCast]", Nothing, {
@@ -9129,6 +9173,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("relaxationLambdaOpt", Nothing, { Visit(node.RelaxationLambdaOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTypeOf(node As BoundTypeOf, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[typeOf]", Nothing, {
@@ -9137,28 +9182,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("targetType", node.TargetType, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitSequencePoint(node As BoundSequencePoint, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequencePoint", Nothing, {
           New TreeDumperNode("statementOpt", Nothing, { Visit(node.StatementOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitSequencePointExpression(node As BoundSequencePointExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequencePointExpression", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitSequencePointWithSpan(node As BoundSequencePointWithSpan, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequencePointWithSpan", Nothing, {
           New TreeDumperNode("statementOpt", Nothing, { Visit(node.StatementOpt, Nothing) }),
           New TreeDumperNode("span", node.Span, Nothing)
       })
+
     End Function
     Public Overrides Function VisitNoOpStatement(node As BoundNoOpStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("noOpStatement", Nothing, {
           New TreeDumperNode("flavor", node.Flavor, Nothing)
       })
+
     End Function
     Public Overrides Function VisitMethodGroup(node As BoundMethodGroup, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("methodGroup", Nothing, {
@@ -9170,6 +9220,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("qualificationKind", node.QualificationKind, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitPropertyGroup(node As BoundPropertyGroup, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("propertyGroup", Nothing, {
@@ -9179,6 +9230,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("qualificationKind", node.QualificationKind, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitReturnStatement(node As BoundReturnStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("returnStatement", Nothing, {
@@ -9186,21 +9238,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("functionLocalOpt", node.FunctionLocalOpt, Nothing),
           New TreeDumperNode("exitLabelOpt", node.ExitLabelOpt, Nothing)
       })
+
     End Function
     Public Overrides Function VisitYieldStatement(node As BoundYieldStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("yieldStatement", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitThrowStatement(node As BoundThrowStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("throwStatement", Nothing, {
           New TreeDumperNode("expressionOpt", Nothing, { Visit(node.ExpressionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitRedimStatement(node As BoundRedimStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("redimStatement", Nothing, {
           New TreeDumperNode("clauses", Nothing, From x In node.Clauses Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitRedimClause(node As BoundRedimClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("redimClause", Nothing, {
@@ -9209,11 +9265,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("arrayTypeOpt", node.ArrayTypeOpt, Nothing),
           New TreeDumperNode("preserve", node.Preserve, Nothing)
       })
+
     End Function
     Public Overrides Function VisitEraseStatement(node As BoundEraseStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("eraseStatement", Nothing, {
           New TreeDumperNode("clauses", Nothing, From x In node.Clauses Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitCall(node As BoundCall, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("[call]", Nothing, {
@@ -9227,6 +9285,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("suppressObjectClone", node.SuppressObjectClone, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAttribute(node As BoundAttribute, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("attribute", Nothing, {
@@ -9236,6 +9295,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("resultKind", node.ResultKind, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLateMemberAccess(node As BoundLateMemberAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateMemberAccess", Nothing, {
@@ -9246,6 +9306,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("accessKind", node.AccessKind, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLateInvocation(node As BoundLateInvocation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateInvocation", Nothing, {
@@ -9256,6 +9317,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("methodOrPropertyGroupOpt", Nothing, { Visit(node.MethodOrPropertyGroupOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLateAddressOfOperator(node As BoundLateAddressOfOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateAddressOfOperator", Nothing, {
@@ -9263,6 +9325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("memberAccess", Nothing, { Visit(node.MemberAccess, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTupleLiteral(node As BoundTupleLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("tupleLiteral", Nothing, {
@@ -9272,6 +9335,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitConvertedTupleLiteral(node As BoundConvertedTupleLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("convertedTupleLiteral", Nothing, {
@@ -9279,6 +9343,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitObjectCreationExpression(node As BoundObjectCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("objectCreationExpression", Nothing, {
@@ -9289,6 +9354,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitNoPiaObjectCreationExpression(node As BoundNoPiaObjectCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("noPiaObjectCreationExpression", Nothing, {
@@ -9296,6 +9362,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAnonymousTypeCreationExpression(node As BoundAnonymousTypeCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("anonymousTypeCreationExpression", Nothing, {
@@ -9304,6 +9371,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("arguments", Nothing, From x In node.Arguments Select Visit(x, Nothing)),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAnonymousTypePropertyAccess(node As BoundAnonymousTypePropertyAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("anonymousTypePropertyAccess", Nothing, {
@@ -9311,6 +9379,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("propertyIndex", node.PropertyIndex, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAnonymousTypeFieldInitializer(node As BoundAnonymousTypeFieldInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("anonymousTypeFieldInitializer", Nothing, {
@@ -9318,6 +9387,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitObjectInitializerExpression(node As BoundObjectInitializerExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("objectInitializerExpression", Nothing, {
@@ -9327,6 +9397,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("initializers", Nothing, From x In node.Initializers Select Visit(x, Nothing)),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitCollectionInitializerExpression(node As BoundCollectionInitializerExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("collectionInitializerExpression", Nothing, {
@@ -9334,12 +9405,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("initializers", Nothing, From x In node.Initializers Select Visit(x, Nothing)),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitNewT(node As BoundNewT, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("newT", Nothing, {
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitDelegateCreationExpression(node As BoundDelegateCreationExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("delegateCreationExpression", Nothing, {
@@ -9350,6 +9423,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("methodGroupOpt", Nothing, { Visit(node.MethodGroupOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitArrayCreation(node As BoundArrayCreation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayCreation", Nothing, {
@@ -9360,6 +9434,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("arrayLiteralConversion", node.ArrayLiteralConversion, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitArrayLiteral(node As BoundArrayLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayLiteral", Nothing, {
@@ -9371,12 +9446,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitArrayInitialization(node As BoundArrayInitialization, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("arrayInitialization", Nothing, {
           New TreeDumperNode("initializers", Nothing, From x In node.Initializers Select Visit(x, Nothing)),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitFieldAccess(node As BoundFieldAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("fieldAccess", Nothing, {
@@ -9387,6 +9464,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constantsInProgressOpt", node.ConstantsInProgressOpt, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitPropertyAccess(node As BoundPropertyAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("propertyAccess", Nothing, {
@@ -9400,6 +9478,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("defaultArguments", node.DefaultArguments, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitEventAccess(node As BoundEventAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("eventAccess", Nothing, {
@@ -9407,6 +9486,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("eventSymbol", node.EventSymbol, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitBlock(node As BoundBlock, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("block", Nothing, {
@@ -9414,12 +9494,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("locals", node.Locals, Nothing),
           New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitStateMachineScope(node As BoundStateMachineScope, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("stateMachineScope", Nothing, {
           New TreeDumperNode("fields", node.Fields, Nothing),
           New TreeDumperNode("statement", Nothing, { Visit(node.Statement, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitLocalDeclaration(node As BoundLocalDeclaration, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("localDeclaration", Nothing, {
@@ -9428,21 +9510,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("identifierInitializerOpt", Nothing, { Visit(node.IdentifierInitializerOpt, Nothing) }),
           New TreeDumperNode("initializedByAsNew", node.InitializedByAsNew, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAsNewLocalDeclarations(node As BoundAsNewLocalDeclarations, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("asNewLocalDeclarations", Nothing, {
           New TreeDumperNode("localDeclarations", Nothing, From x In node.LocalDeclarations Select Visit(x, Nothing)),
           New TreeDumperNode("initializer", Nothing, { Visit(node.Initializer, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitDimStatement(node As BoundDimStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("dimStatement", Nothing, {
           New TreeDumperNode("localDeclarations", Nothing, From x In node.LocalDeclarations Select Visit(x, Nothing)),
           New TreeDumperNode("initializerOpt", Nothing, { Visit(node.InitializerOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitInitializer(node As BoundInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("initializer", Nothing, Array.Empty(Of TreeDumperNode)())
+
     End Function
     Public Overrides Function VisitFieldInitializer(node As BoundFieldInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("fieldInitializer", Nothing, {
@@ -9450,6 +9536,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("memberAccessExpressionOpt", Nothing, { Visit(node.MemberAccessExpressionOpt, Nothing) }),
           New TreeDumperNode("initialValue", Nothing, { Visit(node.InitialValue, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitPropertyInitializer(node As BoundPropertyInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("propertyInitializer", Nothing, {
@@ -9457,17 +9544,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("memberAccessExpressionOpt", Nothing, { Visit(node.MemberAccessExpressionOpt, Nothing) }),
           New TreeDumperNode("initialValue", Nothing, { Visit(node.InitialValue, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitParameterEqualsValue(node As BoundParameterEqualsValue, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("parameterEqualsValue", Nothing, {
           New TreeDumperNode("parameter", node.Parameter, Nothing),
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitGlobalStatementInitializer(node As BoundGlobalStatementInitializer, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("globalStatementInitializer", Nothing, {
           New TreeDumperNode("statement", Nothing, { Visit(node.Statement, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitSequence(node As BoundSequence, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("sequence", Nothing, {
@@ -9476,11 +9566,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitExpressionStatement(node As BoundExpressionStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("expressionStatement", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitIfStatement(node As BoundIfStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("ifStatement", Nothing, {
@@ -9488,6 +9580,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("consequence", Nothing, { Visit(node.Consequence, Nothing) }),
           New TreeDumperNode("alternativeOpt", Nothing, { Visit(node.AlternativeOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitSelectStatement(node As BoundSelectStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("selectStatement", Nothing, {
@@ -9497,24 +9590,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("recommendSwitchTable", node.RecommendSwitchTable, Nothing),
           New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
       })
+
     End Function
     Public Overrides Function VisitCaseBlock(node As BoundCaseBlock, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("caseBlock", Nothing, {
           New TreeDumperNode("caseStatement", Nothing, { Visit(node.CaseStatement, Nothing) }),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitCaseStatement(node As BoundCaseStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("caseStatement", Nothing, {
           New TreeDumperNode("caseClauses", Nothing, From x In node.CaseClauses Select Visit(x, Nothing)),
           New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitSimpleCaseClause(node As BoundSimpleCaseClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("simpleCaseClause", Nothing, {
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
           New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitRangeCaseClause(node As BoundRangeCaseClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rangeCaseClause", Nothing, {
@@ -9523,6 +9620,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("lowerBoundConditionOpt", Nothing, { Visit(node.LowerBoundConditionOpt, Nothing) }),
           New TreeDumperNode("upperBoundConditionOpt", Nothing, { Visit(node.UpperBoundConditionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitRelationalCaseClause(node As BoundRelationalCaseClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("relationalCaseClause", Nothing, {
@@ -9530,6 +9628,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
           New TreeDumperNode("conditionOpt", Nothing, { Visit(node.ConditionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitDoLoopStatement(node As BoundDoLoopStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("doLoopStatement", Nothing, {
@@ -9541,6 +9640,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
           New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
       })
+
     End Function
     Public Overrides Function VisitWhileStatement(node As BoundWhileStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("whileStatement", Nothing, {
@@ -9549,6 +9649,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
           New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
       })
+
     End Function
     Public Overrides Function VisitForToUserDefinedOperators(node As BoundForToUserDefinedOperators, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("forToUserDefinedOperators", Nothing, {
@@ -9559,6 +9660,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("lessThanOrEqual", Nothing, { Visit(node.LessThanOrEqual, Nothing) }),
           New TreeDumperNode("greaterThanOrEqual", Nothing, { Visit(node.GreaterThanOrEqual, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitForToStatement(node As BoundForToStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("forToStatement", Nothing, {
@@ -9574,6 +9676,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
           New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
       })
+
     End Function
     Public Overrides Function VisitForEachStatement(node As BoundForEachStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("forEachStatement", Nothing, {
@@ -9586,16 +9689,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("continueLabel", node.ContinueLabel, Nothing),
           New TreeDumperNode("exitLabel", node.ExitLabel, Nothing)
       })
+
     End Function
     Public Overrides Function VisitExitStatement(node As BoundExitStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("exitStatement", Nothing, {
           New TreeDumperNode("label", node.Label, Nothing)
       })
+
     End Function
     Public Overrides Function VisitContinueStatement(node As BoundContinueStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("continueStatement", Nothing, {
           New TreeDumperNode("label", node.Label, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTryStatement(node As BoundTryStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("tryStatement", Nothing, {
@@ -9604,6 +9710,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("finallyBlockOpt", Nothing, { Visit(node.FinallyBlockOpt, Nothing) }),
           New TreeDumperNode("exitLabelOpt", node.ExitLabelOpt, Nothing)
       })
+
     End Function
     Public Overrides Function VisitCatchBlock(node As BoundCatchBlock, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("catchBlock", Nothing, {
@@ -9614,43 +9721,51 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
           New TreeDumperNode("isSynthesizedAsyncCatchAll", node.IsSynthesizedAsyncCatchAll, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLiteral(node As BoundLiteral, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("literal", Nothing, {
           New TreeDumperNode("value", node.Value, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitMeReference(node As BoundMeReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("meReference", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitValueTypeMeReference(node As BoundValueTypeMeReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("valueTypeMeReference", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitMyBaseReference(node As BoundMyBaseReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("myBaseReference", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitMyClassReference(node As BoundMyClassReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("myClassReference", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitPreviousSubmissionReference(node As BoundPreviousSubmissionReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("previousSubmissionReference", Nothing, {
           New TreeDumperNode("sourceType", node.SourceType, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitHostObjectMemberReference(node As BoundHostObjectMemberReference, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("hostObjectMemberReference", Nothing, {
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLocal(node As BoundLocal, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("local", Nothing, {
@@ -9658,6 +9773,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("isLValue", node.IsLValue, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitPseudoVariable(node As BoundPseudoVariable, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("pseudoVariable", Nothing, {
@@ -9666,6 +9782,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("emitExpressions", node.EmitExpressions, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitParameter(node As BoundParameter, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("parameter", Nothing, {
@@ -9674,12 +9791,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("suppressVirtualCalls", node.SuppressVirtualCalls, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitByRefArgumentPlaceholder(node As BoundByRefArgumentPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("byRefArgumentPlaceholder", Nothing, {
           New TreeDumperNode("isOut", node.IsOut, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitByRefArgumentWithCopyBack(node As BoundByRefArgumentWithCopyBack, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("byRefArgumentWithCopyBack", Nothing, {
@@ -9690,6 +9809,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("outPlaceholder", Nothing, { Visit(node.OutPlaceholder, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLateBoundArgumentSupportingAssignmentWithCapture(node As BoundLateBoundArgumentSupportingAssignmentWithCapture, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lateBoundArgumentSupportingAssignmentWithCapture", Nothing, {
@@ -9697,28 +9817,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("localSymbol", node.LocalSymbol, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLabelStatement(node As BoundLabelStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("labelStatement", Nothing, {
           New TreeDumperNode("label", node.Label, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLabel(node As BoundLabel, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("label", Nothing, {
           New TreeDumperNode("label", node.Label, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitGotoStatement(node As BoundGotoStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("gotoStatement", Nothing, {
           New TreeDumperNode("label", node.Label, Nothing),
           New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitStatementList(node As BoundStatementList, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("statementList", Nothing, {
           New TreeDumperNode("statements", Nothing, From x In node.Statements Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitConditionalGoto(node As BoundConditionalGoto, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conditionalGoto", Nothing, {
@@ -9726,6 +9851,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("jumpIfTrue", node.JumpIfTrue, Nothing),
           New TreeDumperNode("label", node.Label, Nothing)
       })
+
     End Function
     Public Overrides Function VisitWithStatement(node As BoundWithStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("withStatement", Nothing, {
@@ -9733,6 +9859,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) }),
           New TreeDumperNode("binder", node.Binder, Nothing)
       })
+
     End Function
     Public Overrides Function VisitUnboundLambda(node As UnboundLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unboundLambda", Nothing, {
@@ -9743,6 +9870,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("bindingCache", node.BindingCache, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLambda(node As BoundLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("lambda", Nothing, {
@@ -9754,24 +9882,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("methodConversionKind", node.MethodConversionKind, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitQueryExpression(node As BoundQueryExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryExpression", Nothing, {
           New TreeDumperNode("lastOperator", Nothing, { Visit(node.LastOperator, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitQuerySource(node As BoundQuerySource, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("querySource", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitToQueryableCollectionConversion(node As BoundToQueryableCollectionConversion, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("toQueryableCollectionConversion", Nothing, {
           New TreeDumperNode("conversionCall", Nothing, { Visit(node.ConversionCall, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitQueryableSource(node As BoundQueryableSource, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryableSource", Nothing, {
@@ -9782,6 +9914,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("binders", node.Binders, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitQueryClause(node As BoundQueryClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryClause", Nothing, {
@@ -9791,12 +9924,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("binders", node.Binders, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitOrdering(node As BoundOrdering, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("ordering", Nothing, {
           New TreeDumperNode("underlyingExpression", Nothing, { Visit(node.UnderlyingExpression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitQueryLambda(node As BoundQueryLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("queryLambda", Nothing, {
@@ -9806,6 +9941,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("exprIsOperandOfConditionalBranch", node.ExprIsOperandOfConditionalBranch, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitRangeVariableAssignment(node As BoundRangeVariableAssignment, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rangeVariableAssignment", Nothing, {
@@ -9813,6 +9949,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitGroupTypeInferenceLambda(node As GroupTypeInferenceLambda, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("groupTypeInferenceLambda", Nothing, {
@@ -9821,6 +9958,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("compilation", node.Compilation, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAggregateClause(node As BoundAggregateClause, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("aggregateClause", Nothing, {
@@ -9832,36 +9970,42 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("binders", node.Binders, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitGroupAggregation(node As BoundGroupAggregation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("groupAggregation", Nothing, {
           New TreeDumperNode("group", Nothing, { Visit(node.Group, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitRangeVariable(node As BoundRangeVariable, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("rangeVariable", Nothing, {
           New TreeDumperNode("rangeVariable", node.RangeVariable, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitAddHandlerStatement(node As BoundAddHandlerStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("addHandlerStatement", Nothing, {
           New TreeDumperNode("eventAccess", Nothing, { Visit(node.EventAccess, Nothing) }),
           New TreeDumperNode("handler", Nothing, { Visit(node.Handler, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitRemoveHandlerStatement(node As BoundRemoveHandlerStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("removeHandlerStatement", Nothing, {
           New TreeDumperNode("eventAccess", Nothing, { Visit(node.EventAccess, Nothing) }),
           New TreeDumperNode("handler", Nothing, { Visit(node.Handler, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitRaiseEventStatement(node As BoundRaiseEventStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("raiseEventStatement", Nothing, {
           New TreeDumperNode("eventSymbol", node.EventSymbol, Nothing),
           New TreeDumperNode("eventInvocation", Nothing, { Visit(node.EventInvocation, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitUsingStatement(node As BoundUsingStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("usingStatement", Nothing, {
@@ -9871,12 +10015,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("usingInfo", node.UsingInfo, Nothing),
           New TreeDumperNode("locals", node.Locals, Nothing)
       })
+
     End Function
     Public Overrides Function VisitSyncLockStatement(node As BoundSyncLockStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("syncLockStatement", Nothing, {
           New TreeDumperNode("lockExpression", Nothing, { Visit(node.LockExpression, Nothing) }),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitXmlName(node As BoundXmlName, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlName", Nothing, {
@@ -9885,6 +10031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlNamespace(node As BoundXmlNamespace, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlNamespace", Nothing, {
@@ -9892,6 +10039,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlDocument(node As BoundXmlDocument, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlDocument", Nothing, {
@@ -9900,6 +10048,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("rewriterInfo", node.RewriterInfo, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlDeclaration(node As BoundXmlDeclaration, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlDeclaration", Nothing, {
@@ -9909,6 +10058,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlProcessingInstruction(node As BoundXmlProcessingInstruction, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlProcessingInstruction", Nothing, {
@@ -9917,6 +10067,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlComment(node As BoundXmlComment, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlComment", Nothing, {
@@ -9924,6 +10075,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlAttribute(node As BoundXmlAttribute, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlAttribute", Nothing, {
@@ -9933,6 +10085,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlElement(node As BoundXmlElement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlElement", Nothing, {
@@ -9941,18 +10094,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("rewriterInfo", node.RewriterInfo, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlMemberAccess(node As BoundXmlMemberAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlMemberAccess", Nothing, {
           New TreeDumperNode("memberAccess", Nothing, { Visit(node.MemberAccess, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlEmbeddedExpression(node As BoundXmlEmbeddedExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlEmbeddedExpression", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitXmlCData(node As BoundXmlCData, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("xmlCData", Nothing, {
@@ -9960,6 +10116,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("objectCreation", Nothing, { Visit(node.ObjectCreation, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitResumeStatement(node As BoundResumeStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("resumeStatement", Nothing, {
@@ -9967,6 +10124,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("labelOpt", node.LabelOpt, Nothing),
           New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitOnErrorStatement(node As BoundOnErrorStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("onErrorStatement", Nothing, {
@@ -9974,6 +10132,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("labelOpt", node.LabelOpt, Nothing),
           New TreeDumperNode("labelExpressionOpt", Nothing, { Visit(node.LabelExpressionOpt, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitUnstructuredExceptionHandlingStatement(node As BoundUnstructuredExceptionHandlingStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionHandlingStatement", Nothing, {
@@ -9983,6 +10142,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("trackLineNumber", node.TrackLineNumber, Nothing),
           New TreeDumperNode("body", Nothing, { Visit(node.Body, Nothing) })
       })
+
     End Function
     Public Overrides Function VisitUnstructuredExceptionHandlingCatchFilter(node As BoundUnstructuredExceptionHandlingCatchFilter, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionHandlingCatchFilter", Nothing, {
@@ -9990,12 +10150,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("resumeTargetLocal", Nothing, { Visit(node.ResumeTargetLocal, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitUnstructuredExceptionOnErrorSwitch(node As BoundUnstructuredExceptionOnErrorSwitch, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionOnErrorSwitch", Nothing, {
           New TreeDumperNode("value", Nothing, { Visit(node.Value, Nothing) }),
           New TreeDumperNode("jumps", Nothing, From x In node.Jumps Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitUnstructuredExceptionResumeSwitch(node As BoundUnstructuredExceptionResumeSwitch, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("unstructuredExceptionResumeSwitch", Nothing, {
@@ -10004,6 +10166,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("resumeNextLabel", Nothing, { Visit(node.ResumeNextLabel, Nothing) }),
           New TreeDumperNode("jumps", Nothing, From x In node.Jumps Select Visit(x, Nothing))
       })
+
     End Function
     Public Overrides Function VisitAwaitOperator(node As BoundAwaitOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("awaitOperator", Nothing, {
@@ -10015,6 +10178,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("getResult", Nothing, { Visit(node.GetResult, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitSpillSequence(node As BoundSpillSequence, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("spillSequence", Nothing, {
@@ -10024,12 +10188,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("valueOpt", Nothing, { Visit(node.ValueOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitStopStatement(node As BoundStopStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("stopStatement", Nothing, Array.Empty(Of TreeDumperNode)())
+
     End Function
     Public Overrides Function VisitEndStatement(node As BoundEndStatement, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("endStatement", Nothing, Array.Empty(Of TreeDumperNode)())
+
     End Function
     Public Overrides Function VisitMidResult(node As BoundMidResult, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("midResult", Nothing, {
@@ -10039,6 +10206,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("source", Nothing, { Visit(node.Source, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitConditionalAccess(node As BoundConditionalAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conditionalAccess", Nothing, {
@@ -10047,12 +10215,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("accessExpression", Nothing, { Visit(node.AccessExpression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitConditionalAccessReceiverPlaceholder(node As BoundConditionalAccessReceiverPlaceholder, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("conditionalAccessReceiverPlaceholder", Nothing, {
           New TreeDumperNode("placeholderId", node.PlaceholderId, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitLoweredConditionalAccess(node As BoundLoweredConditionalAccess, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("loweredConditionalAccess", Nothing, {
@@ -10063,6 +10233,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("whenNullOpt", Nothing, { Visit(node.WhenNullOpt, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitComplexConditionalAccessReceiver(node As BoundComplexConditionalAccessReceiver, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("complexConditionalAccessReceiver", Nothing, {
@@ -10070,6 +10241,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("referenceTypeReceiver", Nothing, { Visit(node.ReferenceTypeReceiver, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitNameOfOperator(node As BoundNameOfOperator, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("nameOfOperator", Nothing, {
@@ -10077,12 +10249,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("constantValueOpt", node.ConstantValueOpt, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitTypeAsValueExpression(node As BoundTypeAsValueExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("typeAsValueExpression", Nothing, {
           New TreeDumperNode("expression", Nothing, { Visit(node.Expression, Nothing) }),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitInterpolatedStringExpression(node As BoundInterpolatedStringExpression, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("interpolatedStringExpression", Nothing, {
@@ -10090,6 +10264,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("binder", node.Binder, Nothing),
           New TreeDumperNode("type", node.Type, Nothing)
       })
+
     End Function
     Public Overrides Function VisitInterpolation(node As BoundInterpolation, arg As Object) As TreeDumperNode
       Return New TreeDumperNode("interpolation", Nothing, {
@@ -10097,6 +10272,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
           New TreeDumperNode("alignmentOpt", Nothing, { Visit(node.AlignmentOpt, Nothing) }),
           New TreeDumperNode("formatStringOpt", Nothing, { Visit(node.FormatStringOpt, Nothing) })
       })
+
     End Function
   End Class
 End Namespace
