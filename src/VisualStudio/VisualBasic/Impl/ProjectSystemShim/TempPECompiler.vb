@@ -24,11 +24,11 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.ProjectSystemShim
             Contract.ThrowIfFalse(ppErrors = IntPtr.Zero)
 
             Dim metadataService = _workspace.Services.GetService(Of IMetadataService)
-            Dim errors As Integer = 0
+            Dim errors As Integer = _projects.AsParallel.Sum(Function(project) project.CompileAndGetErrorCount(metadataService))
 
-            For Each project In _projects
-                errors += project.CompileAndGetErrorCount(metadataService)
-            Next
+            'For Each project In _projects
+            '    errors += project.CompileAndGetErrorCount(metadataService)
+            'Next
 
             If pcErrors <> IntPtr.Zero Then
                 Marshal.WriteInt32(pcErrors, errors)

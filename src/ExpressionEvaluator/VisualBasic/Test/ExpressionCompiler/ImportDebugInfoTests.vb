@@ -164,8 +164,8 @@ End Namespace
                             Type: type='System.IO.Path'
                         }
                         {
-                            XmlNamespace: alias='' string='http://xml2'
                             XmlNamespace: alias='F' string='http://xml3'
+                            XmlNamespace: alias='' string='http://xml2'
                             Namespace: alias='D' string='System.Threading.Tasks'
                             Type: alias='E' type='System.Threading.Timer'
                             Namespace: string='System.Runtime'
@@ -183,8 +183,8 @@ End Namespace
                             CurrentNamespace: string='root.N'
                         }
                         {
-                            XmlNamespace: alias='' string='http://xml2'
                             XmlNamespace: alias='F' string='http://xml3'
+                            XmlNamespace: alias='' string='http://xml2'
                             NamespaceOrType: alias='D' string='System.Threading.Tasks'
                             NamespaceOrType: alias='E' string='System.Threading.Timer'
                             Namespace: string='System.Runtime'
@@ -409,8 +409,8 @@ End Namespace
                             Type: type='System.IO.Path'
                         }
                         {
-                            XmlNamespace: alias='' string='http://xml2'
                             XmlNamespace: alias='F' string='http://xml3'
+                            XmlNamespace: alias='' string='http://xml2'
                             Namespace: alias='D' string='System.Threading.Tasks'
                             Type: alias='E' type='System.Threading.Timer'
                             Namespace: string='System.Runtime'
@@ -428,8 +428,8 @@ End Namespace
                             CurrentNamespace: string='root.N'
                         }
                         {
-                            XmlNamespace: alias='' string='http://xml2'
                             XmlNamespace: alias='F' string='http://xml3'
+                            XmlNamespace: alias='' string='http://xml2'
                             NamespaceOrType: alias='D' string='System.Threading.Tasks'
                             NamespaceOrType: alias='E' string='System.Threading.Timer'
                             Namespace: string='System.Runtime'

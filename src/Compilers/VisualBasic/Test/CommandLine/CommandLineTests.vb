@@ -475,34 +475,50 @@ a.vb
                 Assert.Equal(expectedImportStrings(i), actualImports(i).Clause.ToString)
             Next
         End Sub
-
+#Region "PaseGlobalImports"
         <Fact>
-        Public Sub ParseGlobalImports()
+        Public Sub ParseGlobalImports_0()
             Dim args = DefaultParse({"/imports: System ,System.Xml ,System.Linq", "a.vb"}, _baseDirectory)
             args.Errors.Verify()
             AssertEx.Equal({"System", "System.Xml", "System.Linq"}, args.CompilationOptions.GlobalImports.Select(Function(import) import.Clause.ToString()))
-
-            args = DefaultParse({"/impORt: System,,,,,", "/IMPORTs:,,,Microsoft.VisualBasic,,System.IO", "a.vb"}, _baseDirectory)
+        End Sub
+        <Fact>
+        Public Sub ParseGlobalImports_1()
+            Dim args = DefaultParse({"/impORt: System,,,,,", "/IMPORTs:,,,Microsoft.VisualBasic,,System.IO", "a.vb"}, _baseDirectory)
             args.Errors.Verify()
             AssertEx.Equal({"System", "Microsoft.VisualBasic", "System.IO"}, args.CompilationOptions.GlobalImports.Select(Function(import) import.Clause.ToString()))
-
-            args = DefaultParse({"/impORt: System, ,, ,,", "a.vb"}, _baseDirectory)
-            args.Errors.Verify(Diagnostic(ERRID.ERR_ExpectedIdentifier),
-                               Diagnostic(ERRID.ERR_ExpectedIdentifier))
-
-            args = DefaultParse({"/impORt:", "a.vb"}, _baseDirectory)
+        End Sub
+        <Fact>
+        Public Sub ParseGlobalImports_2()
+            Dim args = DefaultParse({"/impORt: System, ,, ,,", "a.vb"}, _baseDirectory)
+            args.Errors.Verify(Diagnostic(ERRID.ERR_ExpectedIdentifier), Diagnostic(ERRID.ERR_ExpectedIdentifier))
+        End Sub
+        <Fact>
+        Public Sub ParseGlobalImports_3()
+            Dim args = DefaultParse({"/impORt: System, ,, ,,", "a.vb"}, _baseDirectory)
+            args.Errors.Verify(Diagnostic(ERRID.ERR_ExpectedIdentifier), Diagnostic(ERRID.ERR_ExpectedIdentifier))
+        End Sub
+        <Fact>
+        Public Sub ParseGlobalImports_4()
+            Dim args = DefaultParse({"/impORt:", "a.vb"}, _baseDirectory)
             args.Errors.Verify(Diagnostic(ERRID.ERR_ArgumentRequired).WithArguments("import", ":<str>"))
-
-            args = DefaultParse({"/impORts:", "a.vb"}, _baseDirectory)
+        End Sub
+        <Fact>
+        Public Sub ParseGlobalImports_5()
+            Dim args = DefaultParse({"/impORts:", "a.vb"}, _baseDirectory)
             args.Errors.Verify(Diagnostic(ERRID.ERR_ArgumentRequired).WithArguments("imports", ":<import_list>"))
-
-            args = DefaultParse({"/imports", "a.vb"}, _baseDirectory)
+        End Sub
+        <Fact>
+        Public Sub ParseGlobalImports_6()
+            Dim args = DefaultParse({"/imports", "a.vb"}, _baseDirectory)
             args.Errors.Verify(Diagnostic(ERRID.ERR_ArgumentRequired).WithArguments("imports", ":<import_list>"))
-
-            args = DefaultParse({"/imports+", "a.vb"}, _baseDirectory)
+        End Sub
+        <Fact>
+        Public Sub ParseGlobalImports_7()
+            Dim args = DefaultParse({"/imports+", "a.vb"}, _baseDirectory)
             args.Errors.Verify(Diagnostic(ERRID.WRN_BadSwitch).WithArguments("/imports+")) ' TODO: Dev11 reports ERR_ArgumentRequired
         End Sub
-
+#End Region
         <Fact>
         Public Sub ParseInteractive()
             Dim args As VisualBasicCommandLineArguments

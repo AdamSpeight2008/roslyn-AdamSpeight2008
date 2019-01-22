@@ -1082,7 +1082,7 @@ End Namespace
 </compilation>, options)
 
             Dim expectedErrors = <errors>
-BC30561: 'IComparer' is ambiguous, imported from the namespaces or types 'System.Collections, N, N2'.
+BC30561: 'IComparer' is ambiguous, imported from the namespaces or types 'N, N2, System.Collections'.
     public c as IComparer ' ambiguous
                 ~~~~~~~~~
 BC30561: 'Goo' is ambiguous, imported from the namespaces or types 'N.K, N2.L'.

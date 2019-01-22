@@ -376,7 +376,7 @@ BC2014: the value '<%= rootNs %>' is invalid for option 'RootNamespace'
         <Fact>
         Public Sub TestImports()
             CheckImportsAreGood({})
-            CheckImportsAreGood({"A.B", "G.F(Of G)", "Q", "A = G.X"})
+            CheckImportsAreGood({"A.B", "G.F(Of G)", "Q", "A = G.X"}.OrderBy(Function(x)x).ToArray)
 
             CheckImportsAreBad({"A.B.435",
                                "Global.Goo"},

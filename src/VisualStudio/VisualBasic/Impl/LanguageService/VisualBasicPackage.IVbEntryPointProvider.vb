@@ -19,7 +19,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic
             Dim hierarchy = CType(pHierarchy, IVsHierarchy)
 
             Dim projects = visualStudioWorkspace.CurrentSolution.ProjectIds
-            For Each project In projects
+            For Each project In projects.AsParallel
                 Dim hostProject = visualStudioWorkspace.GetHostProject(project)
                 If hostProject IsNot Nothing AndAlso hostProject.Hierarchy Is hierarchy Then
                     Dim vbProject = TryCast(hostProject, VisualBasicProject)
