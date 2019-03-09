@@ -7,6 +7,11 @@
         <target state="new">Default Optional Parameter</target>
         <note />
       </trans-unit>
+      <trans-unit id="FEATURE_TypeOfMany">
+        <source>TypeOfMany feature</source>
+        <target state="new">TypeOfMany feature</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_CommentsAfterLineContinuationNotAvailable1">
         <source>Please use language version {0} or greater to use comments after line continuation character.</source>
         <target state="new">Please use language version {0} or greater to use comments after line continuation character.</target>

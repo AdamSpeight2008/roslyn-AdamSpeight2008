@@ -2029,5 +2029,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_CommentsAfterLineContinuation
         FEATURE_EnumFlagOperators
         ERR_MissingEnumFlag
+        FEATURE_TypeOfMany
+        ERR_InvalidTypeSyntax
     End Enum
 End Namespace

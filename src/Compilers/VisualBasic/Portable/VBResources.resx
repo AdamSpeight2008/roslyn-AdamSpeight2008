@@ -5561,4 +5561,7 @@
   <data name="ERR_ExpectedParenthesizedExpression" xml:space="preserve">
     <value>Expected Parenthesized Expression.</value>
   </data>
+  <data name="FEATURE_TypeOfMany" xml:space="preserve">
+    <value>TypeOfMany feature</value>
+  </data>
 </root>
