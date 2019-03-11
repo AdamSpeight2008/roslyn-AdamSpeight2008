@@ -94,6 +94,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Feature.EnumFlagOperators
                     Return LanguageVersion.VisualBasic15_5 '(PROTOTYPE)
                         Case Feature.TypeOfMany
+                '(PROTOTYPES)
+                Case Feature.EnumFlagOperators,
+                     Feature.DefaultOptionalParameter,
+                     Feature.TypeOfMany
                     Return LanguageVersion.VisualBasic15_5 ' PROTOTYPE
                 Case Else
                     Throw ExceptionUtilities.UnexpectedValue(feature)
