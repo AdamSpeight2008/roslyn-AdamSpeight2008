@@ -11,44 +11,48 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Formatting
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
-    Partial Friend Class VisualBasicIndentationService
-        Private Class Indenter
-            Inherits AbstractIndenter
 
-            Public Sub New(syntaxFacts As ISyntaxFactsService,
-                           syntaxTree As SyntaxTree,
-                           rules As IEnumerable(Of AbstractFormattingRule),
-                           optionSet As OptionSet,
-                           line As TextLine,
-                           cancellationToken As CancellationToken)
-                MyBase.New(syntaxFacts, syntaxTree, rules, optionSet, line, cancellationToken)
-            End Sub
+  Partial Friend Class VisualBasicIndentationService
 
-            Public Overrides Function ShouldUseFormatterIfAvailable() As Boolean
-                Return ShouldUseSmartTokenFormatterInsteadOfIndenter(
-                    Rules, DirectCast(Root, CompilationUnitSyntax), LineToBeIndented, OptionSet, CancellationToken)
-            End Function
+    Private Class Indenter
+      Inherits AbstractIndenter
 
-            Protected Overrides Function GetDesiredIndentationWorker(
-                    token As SyntaxToken,
-                    previousLine As TextLine,
-                    lastNonWhitespacePosition As Integer) As IndentationResult
+      Public Sub New(syntaxFacts As ISyntaxFactsService,
+                     syntaxTree As SyntaxTree,
+                     rules As IEnumerable(Of AbstractFormattingRule),
+                     optionSet As OptionSet,
+                     line As TextLine,
+                     cancellationToken As CancellationToken)
+          MyBase.New(syntaxFacts, syntaxTree, rules, optionSet, line, cancellationToken)
+      End Sub
 
-                If token.Span.End = lastNonWhitespacePosition + 1 Then
-                    Return GetIndentationBasedOnToken(token)
-                Else
-                    Debug.Assert(token.FullSpan.Contains(lastNonWhitespacePosition))
+      Public Overrides Function ShouldUseFormatterIfAvailable() As Boolean
+        Return ShouldUseSmartTokenFormatterInsteadOfIndenter(Rules, Root, LineToBeIndented, OptionSet, CancellationToken)
+      End Function
 
-                    Dim trivia = Root.FindTrivia(lastNonWhitespacePosition)
+      Protected Overrides Function GetDesiredIndentationWorker _
+                (
+                   token                        As SyntaxToken,
+                   previousLine                 As TextLine,
+                   lastNonWhitespacePosition    As Integer
+                ) As IndentationResult
 
-                    ' preserve the indentation of the comment trivia before a case statement
-                    If trivia.Kind = SyntaxKind.CommentTrivia AndAlso trivia.Token.IsKind(SyntaxKind.CaseKeyword) AndAlso trivia.Token.Parent.IsKind(SyntaxKind.CaseStatement) Then
-                        Return GetIndentationOfLine(previousLine)
-                    End If
+        If token.Span.End = lastNonWhitespacePosition + 1 Then
+           Return GetIndentationBasedOnToken(token)
+        Else
+           Debug.Assert(token.FullSpan.Contains(lastNonWhitespacePosition))
 
-                    If trivia.Kind = SyntaxKind.LineContinuationTrivia Then
-                        Return GetIndentationBasedOnToken(GetTokenOnLeft(trivia), trivia)
-                    End If
+           Dim trivia = Root.FindTrivia(lastNonWhitespacePosition)
+
+
+           ' preserve the indentation of the comment trivia before a case statement
+           If trivia.Kind = SyntaxKind.CommentTrivia AndAlso trivia.Token.IsKind(SyntaxKind.CaseKeyword) AndAlso trivia.Token.Parent.IsKind(SyntaxKind.CaseStatement) Then
+
+              Return GetIndentationOfLine(previousLine)
+           End If
+
+                    If trivia.Kind = SyntaxKind.LineContinuationTrivia Then               Return GetIndentationBasedOnToken(GetTokenOnLeft(trivia), trivia)
+           End If
 
                     ' Line ends in comment
                     If trivia.Kind = SyntaxKind.CommentTrivia Then ' Two cases a line ending comment or _ comment
@@ -62,256 +66,276 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
                         End If
                     End If
 
-                    ' if we are at invalid token (skipped token) at the end of statement, treat it like we are after line continuation
-                    If trivia.Kind = SyntaxKind.SkippedTokensTrivia AndAlso trivia.Token.IsLastTokenOfStatement() Then
-                        Return GetIndentationBasedOnToken(GetTokenOnLeft(trivia), trivia)
-                    End If
+           ' if we are at invalid token (skipped token) at the end of statement, treat it like we are after line continuation
+           If trivia.Kind = SyntaxKind.SkippedTokensTrivia AndAlso trivia.Token.IsLastTokenOfStatement() Then
+              Return GetIndentationBasedOnToken(GetTokenOnLeft(trivia), trivia)
+           End If
 
-                    ' okay, now check whether the trivia is at the beginning of the line
-                    Dim firstNonWhitespacePosition = previousLine.GetFirstNonWhitespacePosition()
-                    If Not firstNonWhitespacePosition.HasValue Then
-                        Return IndentFromStartOfLine(0)
-                    End If
+           ' okay, now check whether the trivia is at the beginning of the line
+           Dim firstNonWhitespacePosition = previousLine.GetFirstNonWhitespacePosition()
+           If Not firstNonWhitespacePosition.HasValue Then
+              Return IndentFromStartOfLine(0)
+           End If
 
-                    Dim firstTokenOnLine = Root.FindToken(firstNonWhitespacePosition.Value, findInsideTrivia:=True)
-                    If firstTokenOnLine.Kind <> SyntaxKind.None AndAlso firstTokenOnLine.Span.Contains(firstNonWhitespacePosition.Value) Then
-                        'okay, beginning of the line is not trivia, use this token as the base token
-                        Return GetIndentationBasedOnToken(firstTokenOnLine)
-                    End If
+           Dim firstTokenOnLine = Root.FindToken(firstNonWhitespacePosition.Value, findInsideTrivia:=True)
+           If firstTokenOnLine.Kind <> SyntaxKind.None AndAlso firstTokenOnLine.Span.Contains(firstNonWhitespacePosition.Value) Then
+              'okay, beginning of the line is not trivia, use this token as the base token
+              Return GetIndentationBasedOnToken(firstTokenOnLine)
+           End If
 
-                    Return GetIndentationOfLine(previousLine)
-                End If
-            End Function
+           Return GetIndentationOfLine(previousLine)
+        End If
+      End Function
 
-            Private Function GetTokenOnLeft(trivia As SyntaxTrivia) As SyntaxToken
-                Dim token = trivia.Token
-                If token.Span.End <= trivia.SpanStart AndAlso Not token.IsMissing Then
-                    Return token
-                End If
+      Private Function GetTokenOnLeft(trivia As SyntaxTrivia) As SyntaxToken
+        Dim token = trivia.Token
+        If token.Span.End <= trivia.SpanStart AndAlso Not token.IsMissing Then
+           Return token
+        End If
 
-                Return token.GetPreviousToken()
-            End Function
+        Return token.GetPreviousToken()
+      End Function
 
-            Private Function GetIndentationBasedOnToken(token As SyntaxToken, Optional trivia As SyntaxTrivia = Nothing) As IndentationResult
-                Dim sourceText = LineToBeIndented.Text
+      Private Function GetIndentationBasedOnToken _
+                (
+                  token As SyntaxToken,
+         Optional trivia As SyntaxTrivia = Nothing
+                ) As IndentationResult
 
-                Dim position = GetCurrentPositionNotBelongToEndOfFileToken(LineToBeIndented.Start)
+        Dim sourceText = LineToBeIndented.Text
+        Dim position   = GetCurrentPositionNotBelongToEndOfFileToken(LineToBeIndented.Start)
 
-                ' lines must be blank since we got the token from the first non blank line above current position
-                If HasLinesBetween(Tree.GetText().Lines.IndexOf(token.Span.End), LineToBeIndented.LineNumber) Then
-                    ' if there are blank lines between, return indentation of the owning statement
-                    Return GetIndentationOfCurrentPosition(token, position)
-                End If
+        ' lines must be blank since we got the token from the first non blank line above current position
+        If HasLinesBetween(Tree.GetText().Lines.IndexOf(token.Span.End), LineToBeIndented.LineNumber) Then
+           ' if there are blank lines between, return indentation of the owning statement
+           Return GetIndentationOfCurrentPosition(token, position)
+        End If
+        If token.IsKind(SyntaxKind.CaseKeyword) AndAlso token.Parent.IsKind(SyntaxKind.CaseBlock) Then
+              dim CaseBlock             = DirectCast( token.Parent, CaseBlockSyntax)
+              Dim SelectBlock           = DirectCast(CaseBlock.Parent, SelectBlockSyntax)
+              dim SelectCaseStatement   = SelectBlock.SelectStatement
+              dim CaseKw                = SelectCaseStatement.CaseKeyword
+              If Not CaseKw.IsMissing Then Return GetIndentationOfToken(casekw)
+              REturn GetIndentationOfToken(SelectCaseStatement.SelectKeyword.GetNextToken)
+        End If
+        Dim indentation = GetIndentationFromOperationService(token, position)
+        If indentation.HasValue Then
+           Return indentation.Value
+        End If
 
-                Dim indentation = GetIndentationFromOperationService(token, position)
-                If indentation.HasValue Then
-                    Return indentation.Value
-                End If
 
-                Dim queryNode = token.GetAncestor(Of QueryClauseSyntax)()
-                If queryNode IsNot Nothing Then
-                    Dim subQuerySpaces = If(token.IsLastTokenOfStatement(), 0, Me.OptionSet.GetOption(FormattingOptions.IndentationSize, token.Language))
-                    Return GetIndentationOfToken(queryNode.GetFirstToken(includeZeroWidth:=True), subQuerySpaces)
-                End If
 
-                ' check one more time for query case
-                If token.Kind = SyntaxKind.IdentifierToken AndAlso token.HasMatchingText(SyntaxKind.FromKeyword) Then
-                    Return GetIndentationOfToken(token)
-                End If
+        Dim queryNode = token.GetAncestor(Of QueryClauseSyntax)()
+        If queryNode IsNot Nothing Then
+           Dim subQuerySpaces = If(token.IsLastTokenOfStatement(), 0, Me.OptionSet.GetOption(FormattingOptions.IndentationSize, token.Language))
+           Return GetIndentationOfToken(queryNode.GetFirstToken(includeZeroWidth:=True), subQuerySpaces)
+        End If
 
-                If FormattingHelpers.IsXmlTokenInXmlDeclaration(token) Then
-                    Dim xmlDocument = token.GetAncestor(Of XmlDocumentSyntax)()
-                    Return GetIndentationOfToken(xmlDocument.GetFirstToken(includeZeroWidth:=True))
-                End If
+        ' check one more time for query case
+        If token.Kind = SyntaxKind.IdentifierToken AndAlso token.HasMatchingText(SyntaxKind.FromKeyword) Then
+           Return GetIndentationOfToken(token)
+        End If
 
-                ' implicit line continuation case
-                If IsLineContinuable(token, trivia, position) Then
-                    Return GetIndentationFromTokenLineAfterLineContinuation(token, trivia)
-                End If
+        If FormattingHelpers.IsXmlTokenInXmlDeclaration(token) Then
+           Dim xmlDocument = token.GetAncestor(Of XmlDocumentSyntax)()
+           Return GetIndentationOfToken(xmlDocument.GetFirstToken(includeZeroWidth:=True))
+        End If
 
-                Return GetIndentationOfCurrentPosition(token, position)
-            End Function
+        ' implicit line continuation case
+        If IsLineContinuable(token, trivia, position) Then
+           Return GetIndentationFromTokenLineAfterLineContinuation(token, trivia)
+        End If
 
-            Private Function GetIndentationOfCurrentPosition(token As SyntaxToken, position As Integer) As IndentationResult
-                Return GetIndentationOfCurrentPosition(token, position, extraSpaces:=0)
-            End Function
+        Return GetIndentationOfCurrentPosition(token, position)
+      End Function
 
-            Private Function GetIndentationOfCurrentPosition(token As SyntaxToken, position As Integer, extraSpaces As Integer) As IndentationResult
-                ' special case for multi-line string
-                Dim containingToken = Tree.FindTokenOnLeftOfPosition(position, CancellationToken)
-                If containingToken.IsKind(SyntaxKind.InterpolatedStringTextToken) OrElse
-                   containingToken.IsKind(SyntaxKind.InterpolatedStringText) OrElse
-                    (containingToken.IsKind(SyntaxKind.CloseBraceToken) AndAlso token.Parent.IsKind(SyntaxKind.Interpolation)) Then
-                    Return IndentFromStartOfLine(0)
-                End If
-                If containingToken.Kind = SyntaxKind.StringLiteralToken AndAlso containingToken.FullSpan.Contains(position) Then
-                    Return IndentFromStartOfLine(0)
-                End If
+      Private Function GetIndentationOfCurrentPosition _
+                (
+                  token     As SyntaxToken,
+                  position  As Integer
+                ) As IndentationResult
+        Return GetIndentationOfCurrentPosition(token, position, extraSpaces:=0)
+      End Function
 
-                Return IndentFromStartOfLine(Finder.GetIndentationOfCurrentPosition(Tree, token, position, extraSpaces, CancellationToken))
-            End Function
+      Private Function GetIndentationOfCurrentPosition _
+                (
+                  token         As SyntaxToken,
+                  position      As Integer,
+                  extraSpaces   As Integer
+                ) As IndentationResult
+        ' special case for multi-line string
+        Dim containingToken = Tree.FindTokenOnLeftOfPosition(position, CancellationToken)
+        If containingToken.IsKind(SyntaxKind.InterpolatedStringTextToken, SyntaxKind.InterpolatedStringText) OrElse
+           (containingToken.IsKind(SyntaxKind.CloseBraceToken) AndAlso token.Parent.IsKind(SyntaxKind.Interpolation)) Then
+           Return IndentFromStartOfLine(0)
+        End If
+        If containingToken.Kind = SyntaxKind.StringLiteralToken AndAlso containingToken.FullSpan.Contains(position) Then
+           Return IndentFromStartOfLine(0)
+        End If
 
-            Private Function IsLineContinuable(lastVisibleTokenOnPreviousLine As SyntaxToken, trivia As SyntaxTrivia, position As Integer) As Boolean
-                If trivia.Kind = SyntaxKind.LineContinuationTrivia OrElse
-                   trivia.Kind = SyntaxKind.SkippedTokensTrivia Then
-                    Return True
-                End If
+        Return IndentFromStartOfLine(Finder.GetIndentationOfCurrentPosition(Tree, token, position, extraSpaces, CancellationToken))
+      End Function
 
-                If lastVisibleTokenOnPreviousLine.IsLastTokenOfStatement() Then
-                    Return False
-                End If
+      Private Function IsLineContinuable _
+                (
+                  lastVisibleTokenOnPreviousLine As SyntaxToken,
+                  trivia As SyntaxTrivia,
+                  position As Integer
+                ) As Boolean
+        If trivia.IsKind(SyntaxKind.LineContinuationTrivia, SyntaxKind.SkippedTokensTrivia) Then
+           Return True
+        End If
 
-                Dim visibleTokenOnCurrentLine As SyntaxToken = lastVisibleTokenOnPreviousLine.GetNextToken()
-                If Not lastVisibleTokenOnPreviousLine.IsKind(SyntaxKind.OpenBraceToken) AndAlso
-                    Not lastVisibleTokenOnPreviousLine.IsKind(SyntaxKind.CommaToken) Then
-                    If IsCloseBraceOfInitializerSyntax(visibleTokenOnCurrentLine) Then
-                        Return False
-                    End If
-                Else
-                    If IsCloseBraceOfInitializerSyntax(visibleTokenOnCurrentLine) Then
-                        Return True
-                    End If
-                End If
+        If lastVisibleTokenOnPreviousLine.IsLastTokenOfStatement() Then
+           Return False
+        End If
 
-                If Not ContainingStatementHasDiagnostic(lastVisibleTokenOnPreviousLine.Parent) Then
-                    Return True
-                End If
+        Dim visibleTokenOnCurrentLine As SyntaxToken = lastVisibleTokenOnPreviousLine.GetNextToken()
+        If Not lastVisibleTokenOnPreviousLine.IsKind(SyntaxKind.OpenBraceToken) AndAlso
+           Not lastVisibleTokenOnPreviousLine.IsKind(SyntaxKind.CommaToken) Then
+           If IsCloseBraceOfInitializerSyntax(visibleTokenOnCurrentLine) Then
+              Return False
+           End If
+        Else
+           If IsCloseBraceOfInitializerSyntax(visibleTokenOnCurrentLine) Then
+              Return True
+           End If
+        End If
 
-                If lastVisibleTokenOnPreviousLine.GetNextToken(includeZeroWidth:=True).IsMissing Then
-                    Return True
-                End If
+        If Not ContainingStatementHasDiagnostic(lastVisibleTokenOnPreviousLine.Parent) Then
+           Return True
+        End If
 
-                Return False
-            End Function
+        If lastVisibleTokenOnPreviousLine.GetNextToken(includeZeroWidth:=True).IsMissing Then
+           Return True
+        End If
 
-            Private Function IsCloseBraceOfInitializerSyntax(visibleTokenOnCurrentLine As SyntaxToken) As Boolean
-                If visibleTokenOnCurrentLine.IsKind(SyntaxKind.CloseBraceToken) Then
-                    Dim visibleTokenOnCurrentLineParent = visibleTokenOnCurrentLine.Parent
-                    If TypeOf visibleTokenOnCurrentLineParent Is ObjectCreationInitializerSyntax OrElse
-                    TypeOf visibleTokenOnCurrentLineParent Is CollectionInitializerSyntax Then
-                        Return True
-                    End If
-                End If
+        Return False
+      End Function
 
-                Return False
-            End Function
+      Private Function IsCloseBraceOfInitializerSyntax(visibleTokenOnCurrentLine As SyntaxToken) As Boolean
+        If Not visibleTokenOnCurrentLine.IsKind(SyntaxKind.CloseBraceToken) Then Return False
+        Dim visibleTokenOnCurrentLineParent = visibleTokenOnCurrentLine.Parent
+        If TypeOf visibleTokenOnCurrentLineParent IsNot ObjectCreationInitializerSyntax AndAlso
+           TypeOf visibleTokenOnCurrentLineParent IsNot CollectionInitializerSyntax Then Return False
+        Return True
+      End Function
 
-            Private Function ContainingStatementHasDiagnostic(node As SyntaxNode) As Boolean
-                If node Is Nothing Then
-                    Return False
-                End If
+      Private Function ContainingStatementHasDiagnostic(node As SyntaxNode) As Boolean
+        If node Is Nothing          Then Return False
+        If node.ContainsDiagnostics Then Return True
+        Dim containingStatement = node.GetAncestorOrThis(Of StatementSyntax)()
+        If containingStatement Is Nothing Then Return False
+        Return containingStatement.ContainsDiagnostics()
+      End Function
 
-                If node.ContainsDiagnostics Then
-                    Return True
-                End If
+      Private Function GetIndentationFromOperationService(token As SyntaxToken, position As Integer) As IndentationResult?
+        ' check operation service to see whether we can determine indentation from it
+        If token.Kind = SyntaxKind.None Then
+           Return Nothing
+        End If
 
-                Dim containingStatement = node.GetAncestorOrThis(Of StatementSyntax)()
-                If containingStatement Is Nothing Then
-                    Return False
-                End If
+        Dim indentation = Finder.FromIndentBlockOperations(Tree, token, position, CancellationToken)
+        If indentation.HasValue Then
+           Return IndentFromStartOfLine(indentation.Value)
+        End If
 
-                Return containingStatement.ContainsDiagnostics()
-            End Function
+        ' special case xml text literal before checking alignment operation
+        ' VB has different behavior around missing alignment token. for query expression, VB prefers putting
+        ' caret aligned with previous query clause, but for xml literals, it prefer them to be ignored and indented
+        ' based on current indentation level.
+        If token.IsKind(SyntaxKind.XmlTextLiteralToken, SyntaxKind.XmlEntityLiteralToken) Then
+           Return GetIndentationOfLine(LineToBeIndented.Text.Lines.GetLineFromPosition(token.SpanStart))
+        End If
 
-            Private Function GetIndentationFromOperationService(token As SyntaxToken, position As Integer) As IndentationResult?
-                ' check operation service to see whether we can determine indentation from it
-                If token.Kind = SyntaxKind.None Then
-                    Return Nothing
-                End If
+        ' check alignment token indentation
+        Dim alignmentTokenIndentation = Finder.FromAlignTokensOperations(Tree, token)
+        If alignmentTokenIndentation.HasValue Then
+           Return IndentFromStartOfLine(alignmentTokenIndentation.Value)
+        End If
 
-                Dim indentation = Finder.FromIndentBlockOperations(Tree, token, position, CancellationToken)
-                If indentation.HasValue Then
-                    Return IndentFromStartOfLine(indentation.Value)
-                End If
+        Return Nothing
+      End Function
 
-                ' special case xml text literal before checking alignment operation
-                ' VB has different behavior around missing alignment token. for query expression, VB prefers putting
-                ' caret aligned with previous query clause, but for xml literals, it prefer them to be ignored and indented
-                ' based on current indentation level.
-                If token.Kind = SyntaxKind.XmlTextLiteralToken OrElse
-                   token.Kind = SyntaxKind.XmlEntityLiteralToken Then
-                    Return GetIndentationOfLine(LineToBeIndented.Text.Lines.GetLineFromPosition(token.SpanStart))
-                End If
+      Private Function GetIndentationFromTokenLineAfterLineContinuation(token As SyntaxToken, trivia As SyntaxTrivia) As IndentationResult
+        Dim sourceText = LineToBeIndented.Text
+        Dim position = LineToBeIndented.Start
 
-                ' check alignment token indentation
-                Dim alignmentTokenIndentation = Finder.FromAlignTokensOperations(Tree, token)
-                If alignmentTokenIndentation.HasValue Then
-                    Return IndentFromStartOfLine(alignmentTokenIndentation.Value)
-                End If
+        position = GetCurrentPositionNotBelongToEndOfFileToken(position)
 
-                Return Nothing
-            End Function
+        Dim currentTokenLine = sourceText.Lines.GetLineFromPosition(token.SpanStart)
 
-            Private Function GetIndentationFromTokenLineAfterLineContinuation(token As SyntaxToken, trivia As SyntaxTrivia) As IndentationResult
-                Dim sourceText = LineToBeIndented.Text
-                Dim position = LineToBeIndented.Start
+        ' error case where the line continuation belongs to a meaningless token such as empty token for skipped text
+        If token.Kind = SyntaxKind.EmptyToken Then
+           Dim baseLine = sourceText.Lines.GetLineFromPosition(trivia.SpanStart)
+           Return GetIndentationOfLine(baseLine)
+        End If
 
-                position = GetCurrentPositionNotBelongToEndOfFileToken(position)
+        Dim xmlEmbeddedExpression = token.GetAncestor(Of XmlEmbeddedExpressionSyntax)()
+        If xmlEmbeddedExpression IsNot Nothing Then
+           Dim firstExpressionLine = sourceText.Lines.GetLineFromPosition(xmlEmbeddedExpression.GetFirstToken(includeZeroWidth:=True).SpanStart)
+           Return GetIndentationFromTwoLines(firstExpressionLine, currentTokenLine, token, position)
+        End If
 
-                Dim currentTokenLine = sourceText.Lines.GetLineFromPosition(token.SpanStart)
+        If FormattingHelpers.IsGreaterThanInAttribute(token) Then
+           Dim attribute = token.GetAncestor(Of AttributeListSyntax)()
+           Dim baseLine = sourceText.Lines.GetLineFromPosition(attribute.GetFirstToken(includeZeroWidth:=True).SpanStart)
+           Return GetIndentationOfLine(baseLine)
+        End If
 
-                ' error case where the line continuation belongs to a meaningless token such as empty token for skipped text
-                If token.Kind = SyntaxKind.EmptyToken Then
-                    Dim baseLine = sourceText.Lines.GetLineFromPosition(trivia.SpanStart)
-                    Return GetIndentationOfLine(baseLine)
-                End If
+        ' if position is between "," and next token, consider the position to be belonged to the list that
+        ' owns the ","
+        If IsCommaInParameters(token) AndAlso (token.Span.End <= position AndAlso position <= token.GetNextToken().SpanStart) Then
+           Return GetIndentationOfCurrentPosition(token, token.SpanStart)
+        End If
 
-                Dim xmlEmbeddedExpression = token.GetAncestor(Of XmlEmbeddedExpressionSyntax)()
-                If xmlEmbeddedExpression IsNot Nothing Then
-                    Dim firstExpressionLine = sourceText.Lines.GetLineFromPosition(xmlEmbeddedExpression.GetFirstToken(includeZeroWidth:=True).SpanStart)
-                    Return GetIndentationFromTwoLines(firstExpressionLine, currentTokenLine, token, position)
-                End If
+        Dim statement = token.GetAncestor(Of StatementSyntax)()
 
-                If FormattingHelpers.IsGreaterThanInAttribute(token) Then
-                    Dim attribute = token.GetAncestor(Of AttributeListSyntax)()
-                    Dim baseLine = sourceText.Lines.GetLineFromPosition(attribute.GetFirstToken(includeZeroWidth:=True).SpanStart)
-                    Return GetIndentationOfLine(baseLine)
-                End If
+        ' this can happen if only token in the file is End Of File Token
+        If statement Is Nothing Then
+           If trivia.Kind <> SyntaxKind.None Then
+              Dim triviaLine = sourceText.Lines.GetLineFromPosition(trivia.SpanStart)
+              Return GetIndentationOfLine(triviaLine, Me.OptionSet.GetOption(FormattingOptions.IndentationSize, token.Language))
+           End If
 
-                ' if position is between "," and next token, consider the position to be belonged to the list that
-                ' owns the ","
-                If IsCommaInParameters(token) AndAlso (token.Span.End <= position AndAlso position <= token.GetNextToken().SpanStart) Then
-                    Return GetIndentationOfCurrentPosition(token, token.SpanStart)
-                End If
+           ' no base line to use to calculate the indentation
+           Return IndentFromStartOfLine(0)
+        End If
 
-                Dim statement = token.GetAncestor(Of StatementSyntax)()
+        ' find line where first token of statement is starting on
+        Dim firstTokenLine = sourceText.Lines.GetLineFromPosition(statement.GetFirstToken(includeZeroWidth:=True).SpanStart)
+        Return GetIndentationFromTwoLines(firstTokenLine, currentTokenLine, token, position)
+      End Function
 
-                ' this can happen if only token in the file is End Of File Token
-                If statement Is Nothing Then
-                    If trivia.Kind <> SyntaxKind.None Then
-                        Dim triviaLine = sourceText.Lines.GetLineFromPosition(trivia.SpanStart)
-                        Return GetIndentationOfLine(triviaLine, Me.OptionSet.GetOption(FormattingOptions.IndentationSize, token.Language))
-                    End If
+      Private Function IsCommaInParameters(token As SyntaxToken) As Boolean
+        Return token.Kind = SyntaxKind.CommaToken AndAlso
+              (TypeOf token.Parent Is ParameterListSyntax OrElse
+               TypeOf token.Parent Is ArgumentListSyntax OrElse
+               TypeOf token.Parent Is TypeParameterListSyntax)
+      End Function
 
-                    ' no base line to use to calculate the indentation
-                    Return IndentFromStartOfLine(0)
-                End If
+      Private Function GetIndentationFromTwoLines _
+                (
+                  firstLine     As TextLine,
+                  secondLine    As TextLine,
+                  token         As SyntaxToken,
+                  position      As Integer
+                ) As IndentationResult
+        If firstLine.LineNumber = secondLine.LineNumber Then
+           ' things are on same line, put the indentation size
+           Return GetIndentationOfCurrentPosition(token, position, Me.OptionSet.GetOption(FormattingOptions.IndentationSize, token.Language))
+        End If
 
-                ' find line where first token of statement is starting on
-                Dim firstTokenLine = sourceText.Lines.GetLineFromPosition(statement.GetFirstToken(includeZeroWidth:=True).SpanStart)
-                Return GetIndentationFromTwoLines(firstTokenLine, currentTokenLine, token, position)
-            End Function
+        ' multiline
+        Return GetIndentationOfLine(secondLine)
+      End Function
 
-            Private Function IsCommaInParameters(token As SyntaxToken) As Boolean
-                Return token.Kind = SyntaxKind.CommaToken AndAlso
-                    (TypeOf token.Parent Is ParameterListSyntax OrElse
-                     TypeOf token.Parent Is ArgumentListSyntax OrElse
-                     TypeOf token.Parent Is TypeParameterListSyntax)
-            End Function
+      Private Function HasLinesBetween(lineNumber1 As Integer, lineNumber2 As Integer) As Boolean
+        Return lineNumber1 + 1 < lineNumber2
+      End Function
 
-            Private Function GetIndentationFromTwoLines(firstLine As TextLine, secondLine As TextLine, token As SyntaxToken, position As Integer) As IndentationResult
-                If firstLine.LineNumber = secondLine.LineNumber Then
-                    ' things are on same line, put the indentation size
-                    Return GetIndentationOfCurrentPosition(token, position, Me.OptionSet.GetOption(FormattingOptions.IndentationSize, token.Language))
-                End If
-
-                ' multiline
-                Return GetIndentationOfLine(secondLine)
-            End Function
-
-            Private Function HasLinesBetween(lineNumber1 As Integer, lineNumber2 As Integer) As Boolean
-                Return lineNumber1 + 1 < lineNumber2
-            End Function
-        End Class
     End Class
+
+  End Class
+
 End Namespace
