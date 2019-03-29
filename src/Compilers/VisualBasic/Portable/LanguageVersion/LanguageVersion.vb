@@ -9,17 +9,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
   ''' Supported Visual Basic language versions.
   ''' </summary>
   Public Enum LanguageVersion
-    [Default] = 0
-    VisualBasic9 = 9
-    VisualBasic10 = 10
-    VisualBasic11 = 11
-    VisualBasic12 = 12
-    VisualBasic14 = 14
-    VisualBasic15 = 15
+    [Default]       = 0
+    VisualBasic9    = 9
+    VisualBasic10   = 10
+    VisualBasic11   = 11
+    VisualBasic12   = 12
+    VisualBasic14   = 14
+    VisualBasic15   = 15
     VisualBasic15_3 = 1503
     VisualBasic15_5 = 1505
-    VisualBasic16 = 1600
-
+    VisualBasic16   = 1600
     Latest = Integer.MaxValue
   End Enum
 
@@ -36,6 +35,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                   LanguageVersion.VisualBasic15,
                   LanguageVersion.VisualBasic15_3,
                   LanguageVersion.VisualBasic15_5,
+                  LanguageVersion.VisualBasic15_7,
                   LanguageVersion.VisualBasic16
                   Return True
       End Select
@@ -53,6 +53,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
            Case LanguageVersion.VisualBasic15   : Return "15.0"
            Case LanguageVersion.VisualBasic15_3 : Return "15.3"
            Case LanguageVersion.VisualBasic15_5 : Return "15.5"
+           Case LanguageVersion.VisualBasic15_7 : Return "15.7"
            Case LanguageVersion.VisualBasic16   : Return "16"
            Case Else
                 Throw ExceptionUtilities.UnexpectedValue(value)
@@ -68,8 +69,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     <Extension>
     Public Function MapSpecifiedToEffectiveVersion(version As LanguageVersion) As LanguageVersion
       Select Case version
-             Case LanguageVersion.Latest    :                  Return LanguageVersion.VisualBasic15_5
-             Case LanguageVersion.Default   :                    Return LanguageVersion.VisualBasic15
+             Case LanguageVersion.Latest    : Return LanguageVersion.VisualBasic15_7 
+             Case LanguageVersion.Default   : Return LanguageVersion.VisualBasic15 
              Case Else
                   Return version
       End Select
@@ -88,17 +89,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     <Extension>
     Public Function ToDisplayString(version As LanguageVersion) As String
       Select Case version
-             Case LanguageVersion.VisualBasic9      :                    Return "9"
-             Case LanguageVersion.VisualBasic10  :                    Return "10"
-             Case LanguageVersion.VisualBasic11  :                    Return "11"
-             Case LanguageVersion.VisualBasic12  :                    Return "12"
-             Case LanguageVersion.VisualBasic14  :                    Return "14"
-             Case LanguageVersion.VisualBasic15  :                    Return "15"
-             Case LanguageVersion.VisualBasic15_3    :                    Return "15.3"
-             Case LanguageVersion.VisualBasic15_5    :                    Return "15.5"
-             Case LanguageVersion.VisualBasic16      :                    Return "16"
-             Case LanguageVersion.Default        :                    Return "default"
-             Case LanguageVersion.Latest :                    Return "latest"
+             Case LanguageVersion.VisualBasic9      : Return "9"
+             Case LanguageVersion.VisualBasic10     : Return "10"
+             Case LanguageVersion.VisualBasic11     : Return "11"
+             Case LanguageVersion.VisualBasic12     : Return "12"
+             Case LanguageVersion.VisualBasic14     : Return "14"
+             Case LanguageVersion.VisualBasic15     : Return "15"
+             Case LanguageVersion.VisualBasic15_3   : Return "15.3"
+             Case LanguageVersion.VisualBasic15_5   : Return "15.5"
+             Case LanguageVersion.VisualBasic15_7   : Return "15.7"
+             Case LanguageVersion.VisualBasic16     : Return "16"
+             Case LanguageVersion.Default           : Return "default"
+             Case LanguageVersion.Latest            : Return "latest"
              Case Else
                  Throw ExceptionUtilities.UnexpectedValue(version)
       End Select
@@ -109,8 +111,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' </summary>
     Public Function TryParse(version As String, ByRef result As LanguageVersion) As Boolean
       If version Is Nothing Then
-                result = LanguageVersion.Default
-                Return False
+         result = LanguageVersion.Default
+         Return False
       End If
 
       Select Case version.ToLowerInvariant()
@@ -122,6 +124,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
              Case "15", "15.0"  : result = LanguageVersion.VisualBasic15
              Case "15.3"        : result = LanguageVersion.VisualBasic15_3
              Case "15.5"        : result = LanguageVersion.VisualBasic15_5
+             Case "15.7"        : result = LanguageVersion.VisualBasic15_7
              Case "16"          : result = LanguageVersion.VisualBasic16
              Case "default"     : result = LanguageVersion.Default
              Case "latest"      : result = LanguageVersion.Latest
