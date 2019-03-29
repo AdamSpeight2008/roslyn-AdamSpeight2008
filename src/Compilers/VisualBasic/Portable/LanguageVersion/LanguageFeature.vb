@@ -4,107 +4,93 @@ Imports System.Runtime.CompilerServices
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
-    Friend Enum Feature
-        AutoProperties
-        LineContinuation
-        StatementLambdas
-        CoContraVariance
-        CollectionInitializers
-        SubLambdas
-        ArrayLiterals
-        AsyncExpressions
-        Iterators
-        GlobalNamespace
-        NullPropagatingOperator
-        NameOfExpressions
-        InterpolatedStrings
-        ReadonlyAutoProperties
-        RegionsEverywhere
-        MultilineStringLiterals
-        CObjInAttributeArguments
-        LineContinuationComments
-        TypeOfIsNot
-        YearFirstDateLiterals
-        WarningDirectives
-        PartialModules
-        PartialInterfaces
-        ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
-        DigitSeparators
-        BinaryLiterals
-        Tuples
-        InferredTupleNames
-        LeadingDigitSeparator
-        NonTrailingNamedArguments
-        PrivateProtected
-        UnconstrainedTypeParameterInConditional
+  Friend Enum Feature
+    AutoProperties
+    LineContinuation
+    StatementLambdas
+    CoContraVariance
+    CollectionInitializers
+    SubLambdas
+    ArrayLiterals
+    AsyncExpressions
+    Iterators
+    GlobalNamespace
+    NullPropagatingOperator
+    NameOfExpressions
+    InterpolatedStrings
+    ReadonlyAutoProperties
+    RegionsEverywhere
+    MultilineStringLiterals
+    CObjInAttributeArguments
+    LineContinuationComments
+    TypeOfIsNot
+    YearFirstDateLiterals
+    WarningDirectives
+    PartialModules
+    PartialInterfaces
+    ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
+    DigitSeparators
+    BinaryLiterals
+    Tuples
+    InferredTupleNames
+    LeadingDigitSeparator
+    NonTrailingNamedArguments
+    PrivateProtected
+    UnconstrainedTypeParameterInConditional
         CommentsAfterLineContinuation
-    End Enum
+  End Enum
 
-    Friend Module FeatureExtensions
+  Friend Module FeatureExtensions
 
-        <Extension>
-        Friend Function GetFeatureFlag(feature As Feature) As String
-            Return Nothing
-        End Function
+    <Extension>
+    Friend Function GetFeatureFlag(feature As Feature) As String
+       Return Nothing
+    End Function
 
-        <Extension>
-        Friend Function GetLanguageVersion(feature As Feature) As LanguageVersion
-
-            Select Case feature
-                Case Feature.AutoProperties,
-                     Feature.LineContinuation,
-                     Feature.StatementLambdas,
-                     Feature.CoContraVariance,
-                     Feature.CollectionInitializers,
-                     Feature.SubLambdas,
-                     Feature.ArrayLiterals
-                    Return LanguageVersion.VisualBasic10
-
-                Case Feature.AsyncExpressions,
-                     Feature.Iterators,
-                     Feature.GlobalNamespace
-                    Return LanguageVersion.VisualBasic11
-
-                Case Feature.NullPropagatingOperator,
-                     Feature.NameOfExpressions,
-                     Feature.InterpolatedStrings,
-                     Feature.ReadonlyAutoProperties,
-                     Feature.RegionsEverywhere,
-                     Feature.MultilineStringLiterals,
-                     Feature.CObjInAttributeArguments,
-                     Feature.LineContinuationComments,
-                     Feature.TypeOfIsNot,
-                     Feature.YearFirstDateLiterals,
-                     Feature.WarningDirectives,
-                     Feature.PartialModules,
-                     Feature.PartialInterfaces,
-                     Feature.ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
-                    Return LanguageVersion.VisualBasic14
-
-                Case Feature.Tuples,
-                    Feature.BinaryLiterals,
-                    Feature.DigitSeparators
-                    Return LanguageVersion.VisualBasic15
-
-                Case Feature.InferredTupleNames
-                    Return LanguageVersion.VisualBasic15_3
-
-                Case Feature.LeadingDigitSeparator,
-                    Feature.NonTrailingNamedArguments,
-                    Feature.PrivateProtected
+    <Extension>
+    Friend Function GetLanguageVersion(feature As Feature) As LanguageVersion
+      Select Case feature
+             Case Feature.AutoProperties,
+                  Feature.LineContinuation,
+                  Feature.StatementLambdas,
+                  Feature.CoContraVariance,
+                  Feature.CollectionInitializers,
+                  Feature.SubLambdas,
+                  Feature.ArrayLiterals                                         : Return LanguageVersion.VisualBasic10
+             Case Feature.AsyncExpressions,
+                  Feature.Iterators,
+                  Feature.GlobalNamespace                                       : Return LanguageVersion.VisualBasic11
+             Case Feature.NullPropagatingOperator,
+                  Feature.NameOfExpressions,
+                  Feature.InterpolatedStrings,
+                  Feature.ReadonlyAutoProperties,
+                  Feature.RegionsEverywhere,
+                  Feature.MultilineStringLiterals,
+                  Feature.CObjInAttributeArguments,
+                  Feature.LineContinuationComments,
+                  Feature.TypeOfIsNot,
+                  Feature.YearFirstDateLiterals,
+                  Feature.WarningDirectives,
+                  Feature.PartialModules,
+                  Feature.PartialInterfaces,
+                  Feature.ImplementingReadonlyOrWriteonlyPropertyWithReadwrite  : Return LanguageVersion.VisualBasic14
+             Case Feature.Tuples,
+                  Feature.BinaryLiterals,
+                  Feature.DigitSeparators                                       : Return LanguageVersion.VisualBasic15
+             Case Feature.InferredTupleNames                                    : Return LanguageVersion.VisualBasic15_3
+             Case Feature.LeadingDigitSeparator,
+                  Feature.NonTrailingNamedArguments,
                     Return LanguageVersion.VisualBasic15_5
-
                 Case Feature.UnconstrainedTypeParameterInConditional,
                     Feature.CommentsAfterLineContinuation
-                    Return LanguageVersion.VisualBasic16                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(feature)
-            End Select
+                    Return LanguageVersion.VisualBasic16
+                Case Else
+      Throw ExceptionUtilities.UnexpectedValue(feature)
+    End Function
 
-        End Function
-
-        <Extension>
-        Friend Function GetResourceId(feature As Feature) As ERRID
-            Select Case feature
+    <Extension>
+    Friend Function GetResourceId(feature As Feature) As ERRID
+      Select Case feature
                 Case Feature.AutoProperties
                     Return ERRID.FEATURE_AutoProperties
                 Case Feature.ReadonlyAutoProperties
@@ -164,8 +150,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case Feature.CommentsAfterLineContinuation
                     Return ERRID.FEATURE_CommentsAfterLineContinuation
                 Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(feature)
-            End Select
-        End Function
-    End Module
+      Throw ExceptionUtilities.UnexpectedValue(feature)
+   End Function
+
+  End Module
+
 End Namespace
