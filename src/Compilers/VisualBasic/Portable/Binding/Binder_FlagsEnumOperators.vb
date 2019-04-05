@@ -3,6 +3,8 @@
 Imports System.Collections.Immutable
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.CheckFeatureAvailability
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Features.LangaugeFeatureService
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
       
@@ -106,11 +108,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                         Select Case type.TypeKind
                             Case TypeKind.Enum
-                                If InternalSyntax.Parser.CheckFeatureAvailability(
-                                    diagnostics,
-                                    node.OperatorToken.GetLocation(), 
-                                    DirectCast(left.Syntax.SyntaxTree.Options,VisualBasicParseOptions).LanguageVersion,
-                                    InternalSyntax.Feature.EnumFlagOperators) Then
+                                If Feature.EnumFlagOperators.CheckFeatureAvailability(
+                                    DirectCast(left.Syntax.SyntaxTree.Options,VisualBasicParseOptions),
+                                    node.OperatorToken.GetLocation(),diagnostics) Then
 
                                     Dim original = type.OriginalDefinition
                                     ' Make sure the enum has the <Flags> attribute.

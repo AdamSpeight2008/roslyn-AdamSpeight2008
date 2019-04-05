@@ -1,53 +1,66 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.CodeAnalysis.VisualBasic.Language.Version.LanguageVersionService
 
-Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
-  Friend Enum Feature
-    AutoProperties
-    LineContinuation
-    StatementLambdas
-    CoContraVariance
-    CollectionInitializers
-    SubLambdas
-    ArrayLiterals
-    AsyncExpressions
-    Iterators
-    GlobalNamespace
-    NullPropagatingOperator
-    NameOfExpressions
-    InterpolatedStrings
-    ReadonlyAutoProperties
-    RegionsEverywhere
-    MultilineStringLiterals
-    CObjInAttributeArguments
-    LineContinuationComments
-    TypeOfIsNot
-    YearFirstDateLiterals
-    WarningDirectives
-    PartialModules
-    PartialInterfaces
-    ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
-    DigitSeparators
-    BinaryLiterals
-    Tuples
-    InferredTupleNames
-    LeadingDigitSeparator
-    NonTrailingNamedArguments
-    PrivateProtected
-    UnconstrainedTypeParameterInConditional
-        CommentsAfterLineContinuation
-  End Enum
+Namespace Microsoft.CodeAnalysis.VisualBasic.Language.Features
 
-  Friend Module FeatureExtensions
+    
+  Public NotInheritable Class LangaugeFeatureService
+    Public Shared ReadOnly Property Instance As New LangaugeFeatureService
 
-    <Extension>
-    Friend Function GetFeatureFlag(feature As Feature) As String
-       Return Nothing
+    Private Sub New()
+
+    End Sub
+
+    Friend Enum Feature
+      AutoProperties
+      LineContinuation
+      StatementLambdas
+      CoContraVariance
+      CollectionInitializers
+      SubLambdas
+      ArrayLiterals
+      AsyncExpressions
+      Iterators
+      GlobalNamespace
+      NullPropagatingOperator
+      NameOfExpressions
+      InterpolatedStrings
+      ReadonlyAutoProperties
+      RegionsEverywhere
+      MultilineStringLiterals
+      CObjInAttributeArguments
+      LineContinuationComments
+      TypeOfIsNot
+      YearFirstDateLiterals
+      WarningDirectives
+      PartialModules
+      PartialInterfaces
+      ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
+      DigitSeparators
+      BinaryLiterals
+      Tuples
+      InferredTupleNames
+      LeadingDigitSeparator
+      NonTrailingNamedArguments
+      PrivateProtected
+      UnconstrainedTypeParameterInConditional
+      CommentsAfterLineContinuation
+      DefaultOptionalParameter
+      TypeOfMany
+      EnumFlagOperators
+    End Enum
+
+    Friend Function EnumerateLanguageFeatures() As IEnumerable(Of Feature)
+      Return [Enum].GetValues(GetType(Feature)).Cast(Of Feature)
     End Function
 
-    <Extension>
+    Friend Function GetFeatureFlag(feature As Feature) As String
+      Return Nothing
+    End Function
+
     Friend Function GetLanguageVersion(feature As Feature) As LanguageVersion
       Select Case feature
              Case Feature.AutoProperties,
@@ -80,79 +93,56 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
              Case Feature.InferredTupleNames                                    : Return LanguageVersion.VisualBasic15_3
              Case Feature.LeadingDigitSeparator,
                   Feature.NonTrailingNamedArguments,
-                    Return LanguageVersion.VisualBasic15_5
-                Case Feature.UnconstrainedTypeParameterInConditional,
-                    Feature.CommentsAfterLineContinuation
-                    Return LanguageVersion.VisualBasic16
-                Case Else
+                  Feature.PrivateProtected                                      : Return LanguageVersion.VisualBasic15_5
+             Case Feature.UnconstrainedTypeParameterInConditional,
+                  Feature.CommentsAfterLineContinuation                         : Return LanguageVersion.VisualBasic16
+             Case Feature.DefaultOptionalParameter,
+                  Feature.EnumFlagOperators,
+                  Feature.TypeOfMany                                            : Return LanguageVersion.VisualBasic16
+      End Select
       Throw ExceptionUtilities.UnexpectedValue(feature)
     End Function
 
-    <Extension>
     Friend Function GetResourceId(feature As Feature) As ERRID
       Select Case feature
-                Case Feature.AutoProperties
-                    Return ERRID.FEATURE_AutoProperties
-                Case Feature.ReadonlyAutoProperties
-                    Return ERRID.FEATURE_ReadonlyAutoProperties
-                Case Feature.LineContinuation
-                    Return ERRID.FEATURE_LineContinuation
-                Case Feature.StatementLambdas
-                    Return ERRID.FEATURE_StatementLambdas
-                Case Feature.CoContraVariance
-                    Return ERRID.FEATURE_CoContraVariance
-                Case Feature.CollectionInitializers
-                    Return ERRID.FEATURE_CollectionInitializers
-                Case Feature.SubLambdas
-                    Return ERRID.FEATURE_SubLambdas
-                Case Feature.ArrayLiterals
-                    Return ERRID.FEATURE_ArrayLiterals
-                Case Feature.AsyncExpressions
-                    Return ERRID.FEATURE_AsyncExpressions
-                Case Feature.Iterators
-                    Return ERRID.FEATURE_Iterators
-                Case Feature.GlobalNamespace
-                    Return ERRID.FEATURE_GlobalNamespace
-                Case Feature.NullPropagatingOperator
-                    Return ERRID.FEATURE_NullPropagatingOperator
-                Case Feature.NameOfExpressions
-                    Return ERRID.FEATURE_NameOfExpressions
-                Case Feature.RegionsEverywhere
-                    Return ERRID.FEATURE_RegionsEverywhere
-                Case Feature.MultilineStringLiterals
-                    Return ERRID.FEATURE_MultilineStringLiterals
-                Case Feature.CObjInAttributeArguments
-                    Return ERRID.FEATURE_CObjInAttributeArguments
-                Case Feature.LineContinuationComments
-                    Return ERRID.FEATURE_LineContinuationComments
-                Case Feature.TypeOfIsNot
-                    Return ERRID.FEATURE_TypeOfIsNot
-                Case Feature.YearFirstDateLiterals
-                    Return ERRID.FEATURE_YearFirstDateLiterals
-                Case Feature.WarningDirectives
-                    Return ERRID.FEATURE_WarningDirectives
-                Case Feature.PartialModules
-                    Return ERRID.FEATURE_PartialModules
-                Case Feature.PartialInterfaces
-                    Return ERRID.FEATURE_PartialInterfaces
-                Case Feature.ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
-                    Return ERRID.FEATURE_ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
-                Case Feature.DigitSeparators
-                    Return ERRID.FEATURE_DigitSeparators
-                Case Feature.BinaryLiterals
-                    Return ERRID.FEATURE_BinaryLiterals
-                Case Feature.Tuples
-                    Return ERRID.FEATURE_Tuples
-                Case Feature.LeadingDigitSeparator
-                    Return ERRID.FEATURE_LeadingDigitSeparator
-                Case Feature.PrivateProtected
-                    Return ERRID.FEATURE_PrivateProtected
-                Case Feature.CommentsAfterLineContinuation
-                    Return ERRID.FEATURE_CommentsAfterLineContinuation
-                Case Else
+             Case Feature.AutoProperties                                            : Return ERRID.FEATURE_AutoProperties
+                Case Feature.ReadonlyAutoProperties                                 : Return ERRID.FEATURE_ReadonlyAutoProperties
+                Case Feature.LineContinuation                                       : Return ERRID.FEATURE_LineContinuation
+                Case Feature.StatementLambdas                                       : Return ERRID.FEATURE_StatementLambdas
+                Case Feature.CoContraVariance                                       : Return ERRID.FEATURE_CoContraVariance
+                Case Feature.CollectionInitializers                                 : Return ERRID.FEATURE_CollectionInitializers
+                Case Feature.SubLambdas                                             : Return ERRID.FEATURE_SubLambdas
+                Case Feature.ArrayLiterals                                          : Return ERRID.FEATURE_ArrayLiterals
+                Case Feature.AsyncExpressions                                       : Return ERRID.FEATURE_AsyncExpressions
+                Case Feature.Iterators                                              : Return ERRID.FEATURE_Iterators
+                Case Feature.GlobalNamespace                                        : Return ERRID.FEATURE_GlobalNamespace
+                Case Feature.NullPropagatingOperator                                : Return ERRID.FEATURE_NullPropagatingOperator
+                Case Feature.NameOfExpressions                                      : Return ERRID.FEATURE_NameOfExpressions
+                Case Feature.RegionsEverywhere                                      : Return ERRID.FEATURE_RegionsEverywhere
+                Case Feature.MultilineStringLiterals                                : Return ERRID.FEATURE_MultilineStringLiterals
+                Case Feature.CObjInAttributeArguments                               : Return ERRID.FEATURE_CObjInAttributeArguments
+                Case Feature.LineContinuationComments                               : Return ERRID.FEATURE_LineContinuationComments
+                Case Feature.TypeOfIsNot                                            : Return ERRID.FEATURE_TypeOfIsNot
+                Case Feature.YearFirstDateLiterals                                  : Return ERRID.FEATURE_YearFirstDateLiterals
+                Case Feature.WarningDirectives                                      : Return ERRID.FEATURE_WarningDirectives
+                Case Feature.PartialModules                                         : Return ERRID.FEATURE_PartialModules
+                Case Feature.PartialInterfaces                                      : Return ERRID.FEATURE_PartialInterfaces
+                Case Feature.ImplementingReadonlyOrWriteonlyPropertyWithReadwrite   : Return ERRID.FEATURE_ImplementingReadonlyOrWriteonlyPropertyWithReadwrite
+                Case Feature.DigitSeparators                                        : Return ERRID.FEATURE_DigitSeparators
+                Case Feature.BinaryLiterals                                         : Return ERRID.FEATURE_BinaryLiterals
+                Case Feature.Tuples                                                 : Return ERRID.FEATURE_Tuples
+                Case Feature.LeadingDigitSeparator                                  : Return ERRID.FEATURE_LeadingDigitSeparator
+                Case Feature.PrivateProtected                                       : Return ERRID.FEATURE_PrivateProtected
+                Case Feature.InterpolatedStrings                                    : Return ERRID.FEATURE_InterpolatedStrings
+                Case Feature.UnconstrainedTypeParameterInConditional                : Return ERRID.FEATURE_UnconstrainedTypeParameterInConditional
+                Case Feature.CommentsAfterLineContinuation                          : Return ERRID.FEATURE_CommentsAfterLineContinuation
+                Case Feature.DefaultOptionalParameter                               : Return ERRID.FEATURE_DefaultOptionalParameter
+                Case Feature.EnumFlagOperators                                      : Return ERRID.FEATURE_EnumFlagOperators
+                Case Feature.TypeOfMany                                             : Return ERRID.FEATURE_TypeOfMany
+            End Select
       Throw ExceptionUtilities.UnexpectedValue(feature)
-   End Function
+    End Function
 
-  End Module
+  End Class
 
 End Namespace

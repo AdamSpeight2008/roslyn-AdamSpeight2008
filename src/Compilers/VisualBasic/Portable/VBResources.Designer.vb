@@ -12099,14 +12099,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to comments after line continuation.
+        '''  Looks up a localized string similar to Default Optional Parameter.
         '''</summary>
         Friend ReadOnly Property FEATURE_CommentsAfterLineContinuation() As String
             Get
                 Return ResourceManager.GetString("FEATURE_CommentsAfterLineContinuation", resourceCulture)
             End Get
         End Property
-        
+
         '''<summary>
         '''  Looks up a localized string similar to digit separators.
         '''</summary>
@@ -12304,7 +12304,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return ResourceManager.GetString("FEATURE_UnconstrainedTypeParameterInConditional", resourceCulture)
             End Get
         End Property
-        
+
         '''  Looks up a localized string similar to TypeOfMany feature.
         '''</summary>
         Friend ReadOnly Property FEATURE_TypeOfMany() As String

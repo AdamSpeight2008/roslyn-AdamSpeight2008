@@ -13,6 +13,7 @@ Imports Roslyn.Test.Utilities
 Imports Xunit
 Imports Microsoft.CodeAnalysis.Collections
 Imports System.Collections.Immutable
+Imports Microsoft.CodeAnalysis.VisualBasic.Language
 
 Friend Module ParserTestUtilities
     Friend ReadOnly Property PooledStringBuilderPool As ObjectPool(Of PooledStringBuilder) = PooledStringBuilder.CreatePool(64)
@@ -65,11 +66,11 @@ Friend Module ParserTestUtilities
         Return ParseAndVerify(source, options, expectedDiagnostics, errorCodesOnly:=False)
     End Function
 
-    Public Function ParseAndVerify(source As String, languageVersion As LanguageVersion, ParamArray expectedDiagnostics() As DiagnosticDescription) As SyntaxTree
+    Public Function ParseAndVerify(source As String, languageVersion As Version.LanguageVersionService.LanguageVersion, ParamArray expectedDiagnostics() As DiagnosticDescription) As SyntaxTree
         Return ParseAndVerify(source, VisualBasicParseOptions.Default.WithLanguageVersion(languageVersion), expectedDiagnostics, errorCodesOnly:=False)
     End Function
 
-    Public Function ParseAndVerify(source As String, languageVersion As LanguageVersion, errorCodesOnly As Boolean, ParamArray expectedDiagnostics() As DiagnosticDescription) As SyntaxTree
+    Public Function ParseAndVerify(source As String, languageVersion As Version.LanguageVersionService.LanguageVersion, errorCodesOnly As Boolean, ParamArray expectedDiagnostics() As DiagnosticDescription) As SyntaxTree
         Return ParseAndVerify(source, VisualBasicParseOptions.Default.WithLanguageVersion(languageVersion), expectedDiagnostics, errorCodesOnly:=errorCodesOnly)
     End Function
 
