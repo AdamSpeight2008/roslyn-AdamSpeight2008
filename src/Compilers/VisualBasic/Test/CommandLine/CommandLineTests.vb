@@ -1408,7 +1408,7 @@ End Module").Path
             parsedArgs = DefaultParse({"/langVERSION:latest", "a.vb"}, _baseDirectory)
             parsedArgs.Errors.Verify()
             Assert.Equal(LanguageVersion.Latest, parsedArgs.ParseOptions.SpecifiedLanguageVersion)
-            Assert.Equal(LanguageVersion.VisualBasic15_7, parsedArgs.ParseOptions.LanguageVersion)
+            Assert.Equal(LanguageVersion.VisualBasic16, parsedArgs.ParseOptions.LanguageVersion)
             Assert.Equal(LanguageVersionService.Latest, parsedArgs.ParseOptions.LanguageVersion)
 
             ' default: "current version"
@@ -1955,6 +1955,18 @@ End Module").Path
 
         <Fact>
         Public Sub LanguageVersion_MapSpecifiedToEffectiveVersion()
+            Assert.Equal(LanguageVersion.VisualBasic9, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic9))
+            Assert.Equal(LanguageVersion.VisualBasic10, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion( LanguageVersion.VisualBasic10))
+            Assert.Equal(LanguageVersion.VisualBasic11, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic11))
+            Assert.Equal(LanguageVersion.VisualBasic12, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic12))
+            Assert.Equal(LanguageVersion.VisualBasic14, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic14))
+            Assert.Equal(LanguageVersion.VisualBasic15, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15))
+            Assert.Equal(LanguageVersion.VisualBasic15_3, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_3))
+            Assert.Equal(LanguageVersion.VisualBasic15_5, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_5))
+            Assert.Equal(LanguageVersion.VisualBasic15_7, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic15_7))
+            Assert.Equal(LanguageVersion.VisualBasic16, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Latest))
+            Assert.Equal(LanguageVersion.VisualBasic16, LanguageVersionService.Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.VisualBasic16))
+            ' https//github.com/dotnet/roslyn/issues/29819 Once we are ready to remove the beta tag from VB 16 we should update Default/Latest accordingly
             Assert.Equal(LanguageVersion.VisualBasic9, LanguageVersion.VisualBasic9.MapSpecifiedToEffectiveVersion())
             Assert.Equal(LanguageVersion.VisualBasic10, LanguageVersion.VisualBasic10.MapSpecifiedToEffectiveVersion())
             Assert.Equal(LanguageVersion.VisualBasic11, LanguageVersion.VisualBasic11.MapSpecifiedToEffectiveVersion())
