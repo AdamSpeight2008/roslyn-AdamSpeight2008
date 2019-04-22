@@ -875,7 +875,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim simpleName = TryCast(memberAccessExpression.Name, SimpleNameSyntax)
                 If simpleName IsNot Nothing Then
                     Dim name = simpleName.Identifier.Value
-
                     If name.Equals(NameOf(Task(Of Integer).ConfigureAwait)) AndAlso
                        memberAccessExpression.IsParentKind(SyntaxKind.InvocationExpression) AndAlso
                        memberAccessExpression.Parent.IsParentKind(SyntaxKind.AwaitExpression) Then

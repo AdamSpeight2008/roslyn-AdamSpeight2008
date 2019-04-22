@@ -10,7 +10,9 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend NotInheritable Class LocalRewriter
+
         Public Overrides Function VisitLabelStatement(node As BoundLabelStatement) As BoundNode
             Dim statement = DirectCast(MyBase.VisitLabelStatement(node), BoundStatement)
 
@@ -46,5 +48,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Return statement
         End Function
+
     End Class
+
 End Namespace

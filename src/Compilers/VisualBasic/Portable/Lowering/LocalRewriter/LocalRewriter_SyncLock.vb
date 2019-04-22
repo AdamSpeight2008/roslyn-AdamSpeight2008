@@ -10,9 +10,13 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend NotInheritable Class LocalRewriter
 
-        Public Overrides Function VisitSyncLockStatement(node As BoundSyncLockStatement) As BoundNode
+        Public Overrides Function VisitSyncLockStatement(
+                         node As BoundSyncLockStatement
+                         ) As BoundNode
+
             Dim statements = ArrayBuilder(Of BoundStatement).GetInstance
             Dim syntaxNode = DirectCast(node.Syntax, SyncLockBlockSyntax)
 
@@ -161,11 +165,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Function GenerateMonitorEnter(
-            syntaxNode As SyntaxNode,
-            boundLockObject As BoundExpression,
-            <Out> ByRef boundLockTakenLocal As BoundLocal,
-            <Out> ByRef boundLockTakenInitialization As BoundStatement
-        ) As BoundStatement
+                syntaxNode As SyntaxNode,
+                boundLockObject As BoundExpression,
+                <Out> ByRef boundLockTakenLocal As BoundLocal,
+                <Out> ByRef boundLockTakenInitialization As BoundStatement
+                ) As BoundStatement
+
             boundLockTakenLocal = Nothing
             boundLockTakenInitialization = Nothing
             Dim parameters As ImmutableArray(Of BoundExpression)
@@ -224,12 +229,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Function GenerateMonitorExit(
-            syntaxNode As SyntaxNode,
-            boundLockObject As BoundExpression,
-            boundLockTakenLocal As BoundLocal
-        ) As BoundStatement
-            Dim statementInFinally As BoundStatement
+                syntaxNode As SyntaxNode,
+                boundLockObject As BoundExpression,
+                boundLockTakenLocal As BoundLocal
+                ) As BoundStatement
 
+            Dim statementInFinally   As BoundStatement
             Dim boundMonitorExitCall As BoundExpression
 
             Dim exitMethod As MethodSymbol = Nothing
@@ -270,4 +275,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
     End Class
+
 End Namespace

@@ -12,57 +12,39 @@ Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Friend Partial Class LocalRewriter
+
         Public Overrides Function VisitNullableIsTrueOperator(node As BoundNullableIsTrueOperator) As BoundNode
+
             Debug.Assert(node.Operand.Type.IsNullableOfBoolean())
 
-            If _inExpressionLambda Then
-                Return node.Update(VisitExpression(node.Operand), node.Type)
-            End If
+            If _inExpressionLambda Then Return node.Update(VisitExpression(node.Operand), node.Type)
 
             Dim operand = VisitExpressionNode(node.Operand)
 
-            If HasNoValue(operand) Then
-                Return New BoundLiteral(node.Syntax, ConstantValue.False, node.Type)
-            End If
+            If HasNoValue(operand) Then Return New BoundLiteral(node.Syntax, ConstantValue.False, node.Type)
 
             Dim whenNotNull As BoundExpression = Nothing
             Dim whenNull As BoundExpression = Nothing
-            If IsConditionalAccess(operand, whenNotNull, whenNull) Then
-                If HasNoValue(whenNull) Then
-                    Debug.Assert(Not HasNoValue(whenNotNull))
-                    Return UpdateConditionalAccess(operand,
-                                              NullableValueOrDefault(whenNotNull),
+            If not IsConditionalAccess(operand, whenNotNull, whenNull) Then Return NullableValueOrDefault(operand)
+            If not HasNoValue(whenNull) Then Return NullableValueOrDefault(operand)
+            Debug.Assert(Not HasNoValue(whenNotNull))
+            Return UpdateConditionalAccess(operand,
+                                           NullableValueOrDefault(whenNotNull),
                                               New BoundLiteral(node.Syntax, ConstantValue.False, node.Type))
-                End If
-            End If
 
-            Return NullableValueOrDefault(operand)
         End Function
 
         Public Overrides Function VisitUserDefinedUnaryOperator(node As BoundUserDefinedUnaryOperator) As BoundNode
-            If _inExpressionLambda Then
-                Return node.Update(node.OperatorKind, VisitExpression(node.UnderlyingExpression), node.Type)
-            End If
-
-            If (node.OperatorKind And UnaryOperatorKind.Lifted) <> 0 Then
-                Return RewriteLiftedUserDefinedUnaryOperator(node)
-            End If
-
+            If _inExpressionLambda Then Return node.Update(node.OperatorKind, VisitExpression(node.UnderlyingExpression), node.Type)
+            If (node.OperatorKind And UnaryOperatorKind.Lifted) <> 0 Then Return RewriteLiftedUserDefinedUnaryOperator(node)
             Return Visit(node.UnderlyingExpression)
         End Function
 
         Public Overrides Function VisitUnaryOperator(node As BoundUnaryOperator) As BoundNode
-            If (node.OperatorKind And UnaryOperatorKind.Lifted) = 0 OrElse _inExpressionLambda Then
-                Dim result As BoundNode = MyBase.VisitUnaryOperator(node)
-                If result.Kind = BoundKind.UnaryOperator Then
-
-                    result = RewriteUnaryOperator(DirectCast(result, BoundUnaryOperator))
-                End If
-                Return result
-
-            Else
-                Return RewriteLiftedUnaryOperator(node)
-            End If
+            If (node.OperatorKind And UnaryOperatorKind.Lifted) <> 0 AndAlso Not _inExpressionLambda Then Return RewriteLiftedUnaryOperator(node)
+            Dim result As BoundNode = MyBase.VisitUnaryOperator(node)
+            If result.Kind = BoundKind.UnaryOperator Then result = RewriteUnaryOperator(DirectCast(result, BoundUnaryOperator))
+            Return result
         End Function
 
         Private Function RewriteUnaryOperator(node As BoundUnaryOperator) As BoundExpression
@@ -297,6 +279,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                originalOperator.Checked,
                                                originalOperator.Type.GetNullableUnderlyingType))
         End Function
+
     End Class
 
 End Namespace

@@ -9,6 +9,7 @@ Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend NotInheritable Class LocalRewriter
+
         Public Overrides Function VisitGotoStatement(node As BoundGotoStatement) As BoundNode
 
             If node.LabelExpressionOpt IsNot Nothing Then
@@ -30,6 +31,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Return rewritten
         End Function
+
     End Class
+
 End Namespace
 

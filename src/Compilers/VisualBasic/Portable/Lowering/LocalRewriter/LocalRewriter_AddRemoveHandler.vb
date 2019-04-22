@@ -8,28 +8,29 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend NotInheritable Class LocalRewriter
-        Public Overrides Function VisitAddHandlerStatement(node As BoundAddHandlerStatement) As BoundNode
+
+        Public Overrides Function VisitAddHandlerStatement(
+                                                            node As BoundAddHandlerStatement
+                                                          ) As BoundNode
             Dim rewritten = RewriteAddRemoveHandler(node)
-
-            If Instrument(node, rewritten) Then
-                rewritten = _instrumenterOpt.InstrumentAddHandlerStatement(node, rewritten)
-            End If
-
+            rewritten = If(Instrument(node, rewritten), _instrumenterOpt.InstrumentAddHandlerStatement(node, rewritten), nothing)
             Return rewritten
         End Function
 
-        Public Overrides Function VisitRemoveHandlerStatement(node As BoundRemoveHandlerStatement) As BoundNode
+        Public Overrides Function VisitRemoveHandlerStatement(
+                                                               node As BoundRemoveHandlerStatement
+                                                             ) As BoundNode
             Dim rewritten = RewriteAddRemoveHandler(node)
-
-            If Instrument(node, rewritten) Then
-                rewritten = _instrumenterOpt.InstrumentRemoveHandlerStatement(node, rewritten)
-            End If
-
+            rewritten = If(Instrument(node, rewritten), _instrumenterOpt.InstrumentRemoveHandlerStatement(node, rewritten), rewritten)
             Return rewritten
         End Function
 
-        Private Function RewriteAddRemoveHandler(node As BoundAddRemoveHandlerStatement) As BoundStatement
+        Private Function RewriteAddRemoveHandler(
+                                                  node As BoundAddRemoveHandlerStatement
+                                                ) As BoundStatement
+
             Dim unwrappedEventAccess As BoundEventAccess = UnwrapEventAccess(node.EventAccess)
             Dim [event] = unwrappedEventAccess.EventSymbol
 
@@ -75,8 +76,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         '''            New Action(Of EventRegistrationToken)([object].remove_T), 
         '''            New TEventHandler(Me.OnSuspending))
         ''' </summary>
-        Private Function RewriteWinRtEvent(node As BoundAddRemoveHandlerStatement, unwrappedEventAccess As BoundEventAccess,
-                                               isAddition As Boolean) As BoundStatement
+        Private Function RewriteWinRtEvent(
+                                            node As BoundAddRemoveHandlerStatement,
+                                            unwrappedEventAccess As BoundEventAccess,
+                                            isAddition As Boolean
+                                          ) As BoundStatement
 
             Dim syntax As SyntaxNode = node.Syntax
             Dim eventSymbol As EventSymbol = unwrappedEventAccess.EventSymbol
@@ -92,10 +96,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 tempAssignment = New BoundAssignmentOperator(syntax, boundTemp, GenerateObjectCloneIfNeeded(unwrappedEventAccess.ReceiverOpt, rewrittenReceiverOpt.MakeRValue), True)
             End If
 
-            Dim tokenType As NamedTypeSymbol = Me.Compilation.GetWellKnownType(WellKnownType.System_Runtime_InteropServices_WindowsRuntime_EventRegistrationToken)
+            Dim tokenType   As NamedTypeSymbol = Me.Compilation.GetWellKnownType(WellKnownType.System_Runtime_InteropServices_WindowsRuntime_EventRegistrationToken)
             Dim marshalType As NamedTypeSymbol = Me.Compilation.GetWellKnownType(WellKnownType.System_Runtime_InteropServices_WindowsRuntime_WindowsRuntimeMarshal)
-
-            Dim actionType As NamedTypeSymbol = Me.Compilation.GetWellKnownType(WellKnownType.System_Action_T)
+            Dim actionType  As NamedTypeSymbol = Me.Compilation.GetWellKnownType(WellKnownType.System_Action_T)
 
             Dim eventType As TypeSymbol = eventSymbol.Type
             actionType = actionType.Construct(tokenType)
@@ -175,7 +178,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ' See LocalRewriter.NeedsTemp in C# if we want to use this more generally.
-        Private Shared Function EventReceiverNeedsTemp(expression As BoundExpression) As Boolean
+        Private Shared Function EventReceiverNeedsTemp(
+                                                        expression As BoundExpression
+                                                      ) As Boolean
             Select Case expression.Kind
                 Case BoundKind.MeReference, BoundKind.MyClassReference, BoundKind.MyBaseReference
                     Return False
@@ -192,14 +197,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Select
         End Function
 
-        Public Overrides Function VisitEventAccess(node As BoundEventAccess) As BoundNode
+        Public Overrides Function VisitEventAccess(
+                                                    node As BoundEventAccess
+                                                  ) As BoundNode
             Debug.Assert(False, "All event accesses should be handled by AddHandler/RemoveHandler/RaiseEvent.")
             Return MyBase.VisitEventAccess(node)
         End Function
 
-        Private Function MakeEventAccessorCall(node As BoundAddRemoveHandlerStatement,
-                                               unwrappedEventAccess As BoundEventAccess,
-                                               accessorSymbol As MethodSymbol) As BoundStatement
+        Private Function MakeEventAccessorCall(
+                                                node As BoundAddRemoveHandlerStatement,
+                                                unwrappedEventAccess As BoundEventAccess,
+                                                accessorSymbol As MethodSymbol
+                                              ) As BoundStatement
 
             Dim receiver As BoundExpression = GetEventAccessReceiver(unwrappedEventAccess)
             Dim handler As BoundExpression = VisitExpressionNode(node.Handler)
@@ -234,31 +243,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return New BoundExpressionStatement(node.Syntax, expr)
         End Function
 
-        Private Function UnwrapEventAccess(node As BoundExpression) As BoundEventAccess
-            If node.Kind = BoundKind.EventAccess Then
-                Return DirectCast(node, BoundEventAccess)
-            End If
+        Private Function UnwrapEventAccess(
+                                            node As BoundExpression
+                                          ) As BoundEventAccess
 
+            If node.Kind = BoundKind.EventAccess Then Return DirectCast(node, BoundEventAccess)
             Debug.Assert(node.Kind = BoundKind.Parenthesized, "node can only be EventAccess or Parenthesized")
             Return UnwrapEventAccess(DirectCast(node, BoundParenthesized).Expression)
         End Function
 
-        Private Function GetEventAccessReceiver(unwrappedEventAccess As BoundEventAccess) As BoundExpression
-            If unwrappedEventAccess.ReceiverOpt Is Nothing Then
-                Return Nothing
-            End If
+        Private Function GetEventAccessReceiver(
+                                                 unwrappedEventAccess As BoundEventAccess
+                                               ) As BoundExpression
 
+            If unwrappedEventAccess.ReceiverOpt Is Nothing Then Return Nothing
             ' Visit (for diagnostics) regardless of whether or not it will be returned.
             Dim rewrittenReceiver As BoundExpression = VisitExpressionNode(unwrappedEventAccess.ReceiverOpt)
             Return If(unwrappedEventAccess.EventSymbol.IsShared, Nothing, rewrittenReceiver)
         End Function
 
         Private Function RewriteNoPiaAddRemoveHandler(
-            node As BoundAddRemoveHandlerStatement,
-            receiver As BoundExpression,
-            [event] As EventSymbol,
-            handler As BoundExpression
-        ) As BoundExpression
+                                                       node As BoundAddRemoveHandlerStatement,
+                                                       receiver As BoundExpression,
+                                                       [event] As EventSymbol,
+                                                       handler As BoundExpression
+                                                     ) As BoundExpression
+
             ' Translate: AddHandler myPIA.Event, Handler
             ' to: New ComAwareEventInfo(GetType(myPIA), "Event").AddEventHandler(myPIA, Handler)
 
@@ -286,9 +296,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 _emitModule.EmbeddedTypesManagerOpt.EmbedEventIfNeedTo([event], node.Syntax, _diagnostics, isUsedForComAwareEventBinding:=True)
             End If
 
-            If result IsNot Nothing Then
-                Return result
-            End If
+            If result IsNot Nothing Then Return result
 
             Return New BoundBadExpression(node.Syntax,
                                           LookupResultKind.NotCreatable,
@@ -298,9 +306,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                           hasErrors:=True)
         End Function
 
-        Private Function Convert(factory As SyntheticBoundNodeFactory, type As TypeSymbol, expr As BoundExpression) As BoundExpression
+        Private Function Convert(
+                                  factory As SyntheticBoundNodeFactory,
+                                  type As TypeSymbol,
+                                  expr As BoundExpression
+                                ) As BoundExpression
             Return TransformRewrittenConversion(factory.Convert(type, expr))
         End Function
 
     End Class
+
 End Namespace

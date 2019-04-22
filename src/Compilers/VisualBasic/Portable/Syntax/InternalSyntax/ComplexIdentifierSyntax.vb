@@ -12,19 +12,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend NotInheritable Class ComplexIdentifierSyntax
         Inherits IdentifierTokenSyntax
 
-        Private ReadOnly _possibleKeywordKind As SyntaxKind
-        Private ReadOnly _isBracketed As Boolean
-        Private ReadOnly _identifierText As String
-        Private ReadOnly _typeCharacter As TypeCharacter
+        Private ReadOnly _possibleKeywordKind   As SyntaxKind
+        Private ReadOnly _isBracketed           As Boolean
+        Private ReadOnly _identifierText        As String
+        Private ReadOnly _typeCharacter         As TypeCharacter
 
-        Friend Sub New(kind As SyntaxKind, errors As DiagnosticInfo(), annotations As SyntaxAnnotation(), text As String, precedingTrivia As GreenNode, followingTrivia As GreenNode, possibleKeywordKind As SyntaxKind, isBracketed As Boolean, identifierText As String, typeCharacter As TypeCharacter)
+        Friend Sub New(
+                        kind                As SyntaxKind,
+                        errors              As DiagnosticInfo(),
+                        annotations         As SyntaxAnnotation(),
+                        text                As String,
+                        precedingTrivia     As GreenNode,
+                        followingTrivia     As GreenNode,
+                        possibleKeywordKind As SyntaxKind,
+                        isBracketed         As Boolean,
+                        identifierText      As String,
+                        typeCharacter       As TypeCharacter
+                      )
             MyBase.New(kind, errors, annotations, text, precedingTrivia, followingTrivia)
-
-            Me._possibleKeywordKind = possibleKeywordKind
-            Me._isBracketed = isBracketed
-            Me._identifierText = identifierText
-            Me._typeCharacter = typeCharacter
-
+            _possibleKeywordKind = possibleKeywordKind
+            _isBracketed         = isBracketed
+            _identifierText      = identifierText
+            _typeCharacter       = typeCharacter
         End Sub
 
         Friend Sub New(reader As ObjectReader)

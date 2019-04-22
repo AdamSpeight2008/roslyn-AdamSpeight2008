@@ -347,7 +347,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             ' compute unique string constants from select clauses.
-            Dim uniqueStringConstants = New HashSet(Of ConstantValue)
+            Dim uniqueStringConstants = PooledHashSet(Of ConstantValue).GetInstance
 
             For Each caseBlock In node.CaseBlocks
                 For Each caseClause In caseBlock.CaseStatement.CaseClauses
@@ -379,7 +379,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Next
             Next
 
-            Return SwitchStringJumpTableEmitter.ShouldGenerateHashTableSwitch([module], uniqueStringConstants.Count)
+            Dim uniqueStringContstantsCount = uniqueStringConstants.Count
+            uniqueStringConstants.Free
+            Return SwitchStringJumpTableEmitter.ShouldGenerateHashTableSwitch([module], uniqueStringContstantsCount)
         End Function
 
         Public Overrides Function VisitCaseBlock(node As BoundCaseBlock) As BoundNode

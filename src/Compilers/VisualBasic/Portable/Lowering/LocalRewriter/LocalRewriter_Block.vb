@@ -33,9 +33,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     builder.AddRange(node.Locals, i)
 
                     For i = i + 1 To node.Locals.Length - 1
-                        If Not node.Locals(i).IsStatic Then
-                            builder.Add(node.Locals(i))
-                        End If
+                        If Not node.Locals(i).IsStatic Then                            builder.Add(node.Locals(i))
                     Next
 
                     Debug.Assert(builder.Count < node.Locals.Length)
@@ -44,26 +42,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             End If
 
-            If Instrument Then
-                Dim builder = ArrayBuilder(Of BoundStatement).GetInstance()
-
-                For Each s In node.Statements
-                    Dim rewrittenStatement = TryCast(Visit(s), BoundStatement)
-                    If rewrittenStatement IsNot Nothing Then
-                        builder.Add(rewrittenStatement)
-                    End If
-                Next
-
-                Dim synthesizedLocal As LocalSymbol = Nothing
-                Dim prologue As BoundStatement = _instrumenterOpt.CreateBlockPrologue(original, node, synthesizedLocal)
-                If prologue IsNot Nothing Then
-                    builder.Insert(0, prologue)
-                End If
-
-                Return New BoundBlock(node.Syntax, node.StatementListSyntax, If(synthesizedLocal Is Nothing, node.Locals, node.Locals.Add(synthesizedLocal)), builder.ToImmutableAndFree())
-            End If
+            If Instrument Then Return Instrument_Block(node, original)
 
             Return MyBase.VisitBlock(node)
+        End Function
+
+        Private Function Instrument_Block(node As BoundBlock, original As BoundBlock) As BoundNode
+            Dim builder = ArrayBuilder(Of BoundStatement).GetInstance()
+
+            For Each s In node.Statements
+                Dim rewrittenStatement = TryCast(Visit(s), BoundStatement)
+                If rewrittenStatement IsNot Nothing Then builder.Add(rewrittenStatement)
+            Next
+
+            Dim synthesizedLocal As LocalSymbol = Nothing
+            Dim prologue As BoundStatement = _instrumenterOpt.CreateBlockPrologue(original, node, synthesizedLocal)
+            If prologue IsNot Nothing Then builder.Insert(0, prologue)
+
+            Return New BoundBlock(node.Syntax, node.StatementListSyntax, If(synthesizedLocal Is Nothing, node.Locals, node.Locals.Add(synthesizedLocal)), builder.ToImmutableAndFree())
         End Function
     End Class
 End Namespace
