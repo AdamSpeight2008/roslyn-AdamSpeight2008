@@ -8,7 +8,9 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend NotInheritable Class LocalRewriter
+
         Public Overrides Function VisitOmittedArgument(node As BoundOmittedArgument) As BoundNode
             Debug.Assert(node.Type.IsObjectType)
 
@@ -27,4 +29,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
     End Class
+
 End Namespace

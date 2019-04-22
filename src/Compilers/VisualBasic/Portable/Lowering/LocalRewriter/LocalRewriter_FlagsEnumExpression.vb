@@ -55,7 +55,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return _AND_
         End Function
 
-
-
     End Class
+
 End Namespace

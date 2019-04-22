@@ -12,11 +12,10 @@ Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 Namespace Microsoft.CodeAnalysis.VisualBasic
     Partial Friend NotInheritable Class LocalRewriter
 
-        Public Overrides Function VisitWithStatement(node As BoundWithStatement) As BoundNode
-            If node.HasErrors Then
-                Return node
-            End If
-
+        Public Overrides Function VisitWithStatement(
+                                                      node As BoundWithStatement
+                                                    ) As BoundNode
+            If node.HasErrors Then Return node
             Dim saveState As UnstructuredExceptionHandlingContext = LeaveUnstructuredExceptionHandlingContext(node)
 
             ' With block attributes
@@ -45,12 +44,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                               result.Expression)
         End Function
 
-        Private Function RewriteWithBlockStatements(node As BoundWithStatement,
-                                                    generateUnstructuredExceptionHandlingResumeCode As Boolean,
-                                                    locals As ImmutableArray(Of LocalSymbol),
-                                                    initializers As ImmutableArray(Of BoundExpression),
-                                                    placeholder As BoundValuePlaceholderBase,
-                                                    replaceWith As BoundExpression) As BoundBlock
+        Private Function RewriteWithBlockStatements(
+                                                     node As BoundWithStatement,
+                                                     generateUnstructuredExceptionHandlingResumeCode As Boolean,
+                                                     locals As ImmutableArray(Of LocalSymbol),
+                                                     initializers As ImmutableArray(Of BoundExpression),
+                                                     placeholder As BoundValuePlaceholderBase,
+                                                     replaceWith As BoundExpression
+                                                   ) As BoundBlock
             Debug.Assert(Not locals.IsDefault)
             Debug.Assert(Not initializers.IsDefault)
             Debug.Assert(placeholder IsNot Nothing)

@@ -9,8 +9,12 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend NotInheritable Class LocalRewriter
-        Public Overrides Function VisitThrowStatement(node As BoundThrowStatement) As BoundNode
+
+        Public Overrides Function VisitThrowStatement(
+                         node As BoundThrowStatement
+                         ) As BoundNode
 
             Dim expressionOpt As BoundExpression = node.ExpressionOpt
 
@@ -43,5 +47,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Return rewritten
         End Function
+
     End Class
+
 End Namespace

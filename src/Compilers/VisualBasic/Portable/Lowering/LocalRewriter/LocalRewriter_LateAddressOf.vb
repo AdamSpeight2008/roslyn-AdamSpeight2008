@@ -9,8 +9,12 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend NotInheritable Class LocalRewriter
-        Public Overrides Function VisitLateAddressOfOperator(node As BoundLateAddressOfOperator) As BoundNode
+
+        Public Overrides Function VisitLateAddressOfOperator(
+                                                              node As BoundLateAddressOfOperator
+                                                            ) As BoundNode
             If _inExpressionLambda Then
                 ' just preserve the node to report an error in ExpressionLambdaRewriter
                 Return MyBase.VisitLateAddressOfOperator(node)
@@ -22,14 +26,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Me.VisitExpressionNode(lambda)
         End Function
 
-
         Private Shared Function BuildDelegateRelaxationLambda(
-                syntaxNode As SyntaxNode,
-                targetType As NamedTypeSymbol,
-                boundMember As BoundLateMemberAccess,
-                binder As Binder,
-                diagnostics As DiagnosticBag
-            ) As BoundExpression
+                                                               syntaxNode As SyntaxNode,
+                                                               targetType As NamedTypeSymbol,
+                                                               boundMember As BoundLateMemberAccess,
+                                                               binder As Binder,
+                                                               diagnostics As DiagnosticBag
+                                                             ) As BoundExpression
 
             Dim delegateInvoke = targetType.DelegateInvokeMethod
             Debug.Assert(delegateInvoke.MethodKind = MethodKind.DelegateInvoke)
@@ -149,7 +152,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Return result
         End Function
-
-
+        
     End Class
+
 End Namespace

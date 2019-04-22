@@ -77,9 +77,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function RightCanChangeLeftLocal(left As BoundExpression, right As BoundExpression) As Boolean
             ' TODO: in most cases right operand does not change value of the left one
             '       we could be smarter than this.
-            Return right.Kind = BoundKind.Local OrElse
-                   right.Kind = BoundKind.Parameter
-
+            Return right.Kind.IsEither(BoundKind.Local, BoundKind.Parameter)
         End Function
 
         ''' <summary>

@@ -14,7 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function VisitXmlDocument(node As BoundXmlDocument) As BoundNode
-            If Me._inExpressionLambda AndAlso Not node.HasErrors Then
+            If _inExpressionLambda AndAlso Not node.HasErrors Then
                 Return VisitXmlContainerInExpressionLambda(node.RewriterInfo)
             Else
                 Return VisitXmlContainer(node.RewriterInfo)
@@ -33,25 +33,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Visit(node.ObjectCreation)
         End Function
 
-        Public Overrides Function VisitXmlElement(node As BoundXmlElement) As BoundNode
+        Public Overrides Function VisitXmlElement(
+                                                   node As BoundXmlElement
+                                                 ) As BoundNode
             Dim rewriterInfo = node.RewriterInfo
-            Dim previousImportedNamespaces = Me._xmlImportedNamespaces
+            Dim previousImportedNamespaces = _xmlImportedNamespaces
 
             If rewriterInfo.IsRoot Then
                 Debug.Assert(Not rewriterInfo.ImportedNamespaces.IsDefault)
-                Me._xmlImportedNamespaces = rewriterInfo.ImportedNamespaces
+                _xmlImportedNamespaces = rewriterInfo.ImportedNamespaces
             End If
 
             Dim result As BoundNode
-            If Me._inExpressionLambda AndAlso Not node.HasErrors Then
+            If _inExpressionLambda AndAlso Not node.HasErrors Then
                 result = VisitXmlContainerInExpressionLambda(rewriterInfo)
             Else
                 result = VisitXmlContainer(rewriterInfo)
             End If
 
-            If rewriterInfo.IsRoot Then
-                Me._xmlImportedNamespaces = previousImportedNamespaces
-            End If
+            If rewriterInfo.IsRoot Then _xmlImportedNamespaces = previousImportedNamespaces
 
             Return result
         End Function
@@ -76,7 +76,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return Visit(node.ObjectCreation)
         End Function
 
-        Private Function VisitXmlContainer(rewriterInfo As BoundXmlContainerRewriterInfo) As BoundExpression
+        Private Function VisitXmlContainer(
+                                            rewriterInfo As BoundXmlContainerRewriterInfo
+                                          ) As BoundExpression
             Debug.Assert(Not Me._inExpressionLambda)
 
             Dim expr = VisitExpressionNode(rewriterInfo.ObjectCreation)
@@ -143,13 +145,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' The resulting local is treated as an rvalue, and the
         ''' initialization assignment is added to 'sideEffects'.
         ''' </summary>
-        Private Function CreateTempLocal(syntax As SyntaxNode, type As TypeSymbol, expr As BoundExpression, sideEffects As ArrayBuilder(Of BoundExpression)) As BoundLocal
+        Private Function CreateTempLocal(
+                                          syntax        As SyntaxNode,
+                                          type          As TypeSymbol,
+                                          expr          As BoundExpression,
+                                          sideEffects   As ArrayBuilder(Of BoundExpression)
+                                        ) As BoundLocal
             Dim local = New BoundLocal(syntax, New SynthesizedLocal(Me._currentMethodOrLambda, type, SynthesizedLocalKind.LoweringTemp), type)
             sideEffects.Add(New BoundAssignmentOperator(syntax, local, expr, suppressObjectClone:=True, type:=type))
             Return local.MakeRValue()
         End Function
 
-        Private Function VisitXmlContainerInExpressionLambda(rewriterInfo As BoundXmlContainerRewriterInfo) As BoundExpression
+        Private Function VisitXmlContainerInExpressionLambda(
+                                                              rewriterInfo As BoundXmlContainerRewriterInfo
+                                                            ) As BoundExpression
             Debug.Assert(Me._inExpressionLambda)
 
             ' NOTE: When we convert Xml container expression in context of expression lambda we rewrite it into 
@@ -275,7 +284,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                       objCreation.Type)
         End Function
 
-        Private Function CreateTempLocalInExpressionLambda(syntax As SyntaxNode, type As TypeSymbol, expr As BoundExpression) As BoundLocal
+        Private Function CreateTempLocalInExpressionLambda(
+                                                            syntax As SyntaxNode,
+                                                            type   As TypeSymbol,
+                                                            expr   As BoundExpression
+                                                          ) As BoundLocal
             Dim local As New SynthesizedLocal(Me._topMethod, type, SynthesizedLocalKind.XmlInExpressionLambda, Me._currentMethodOrLambda.Syntax)
             Dim boundLocal = New BoundLocal(syntax, local, type)
             Me._xmlFixupData.AddLocal(local, New BoundAssignmentOperator(syntax, boundLocal, expr, suppressObjectClone:=True, type:=type))
@@ -283,10 +296,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Sub CreatePrefixesAndNamespacesArrays(
-                                                         rewriterInfo As BoundXmlContainerRewriterInfo,
-                                                         syntax As SyntaxNode,
-                                                         <Out()> ByRef prefixes As BoundExpression,
-                                                         <Out()> ByRef namespaces As BoundExpression)
+                                                       rewriterInfo As BoundXmlContainerRewriterInfo,
+                                                       syntax As SyntaxNode,
+                                           <Out> ByRef prefixes As BoundExpression,
+                                           <Out> ByRef namespaces As BoundExpression
+                                                     )
 
             Dim prefixesBuilder = ArrayBuilder(Of BoundExpression).GetInstance()
             Dim namespacesBuilder = ArrayBuilder(Of BoundExpression).GetInstance()
@@ -337,9 +351,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' If there are zero items, the result is a BoundLiteral Nothing, otherwise, a BoundArrayCreation.
         ''' </summary>
         Private Function CreateCompilerGeneratedArray(
-                                                     syntax As SyntaxNode,
-                                                     arrayType As TypeSymbol,
-                                                     items As ImmutableArray(Of BoundExpression)) As BoundExpression
+                                                       syntax As SyntaxNode,
+                                                       arrayType As TypeSymbol,
+                                                       items As ImmutableArray(Of BoundExpression)
+                                                     ) As BoundExpression
             Dim result As BoundExpression
 
             If items.Length = 0 Then
@@ -355,4 +370,5 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
     End Class
+
 End Namespace

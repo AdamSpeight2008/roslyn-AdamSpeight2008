@@ -9,8 +9,13 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Partial Friend NotInheritable Class LocalRewriter
-        Public Overrides Function VisitTryStatement(node As BoundTryStatement) As BoundNode
+
+        Public Overrides Function VisitTryStatement(
+                         node As BoundTryStatement
+                         ) As BoundNode
+
             Debug.Assert(_unstructuredExceptionHandling.Context Is Nothing)
 
             Dim rewrittenTryBlock = RewriteTryBlock(node)
@@ -35,30 +40,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' such as throwing an exception? This implementation is conservative, in the sense
         ''' that it may return true when the statement actually may have no side effects.
         ''' </summary>
-        Private Shared Function HasSideEffects(statement As BoundStatement) As Boolean
-            If statement Is Nothing Then
-                Return False
-            End If
+        Private Shared Function HasSideEffects(
+                       statement As BoundStatement
+                       ) As Boolean
+
+            If statement Is Nothing Then Return False
 
             Select Case statement.Kind
-                Case BoundKind.NoOpStatement
-                    Return False
-                Case BoundKind.Block
-                    Dim block = DirectCast(statement, BoundBlock)
-                    For Each s In block.Statements
-                        If HasSideEffects(s) Then
-                            Return True
-                        End If
-                    Next
-                    Return False
-                Case BoundKind.SequencePoint
-                    Dim sequence = DirectCast(statement, BoundSequencePoint)
-                    Return HasSideEffects(sequence.StatementOpt)
-                Case BoundKind.SequencePointWithSpan
-                    Dim sequence = DirectCast(statement, BoundSequencePointWithSpan)
-                    Return HasSideEffects(sequence.StatementOpt)
-                Case Else
-                    Return True
+                   Case BoundKind.NoOpStatement
+                        Return False
+                   Case BoundKind.Block
+                        Dim block = DirectCast(statement, BoundBlock)
+                        For Each s In block.Statements
+                            If HasSideEffects(s) Then Return True
+                        Next
+                        Return False
+                   Case BoundKind.SequencePoint
+                        Dim sequence = DirectCast(statement, BoundSequencePoint)
+                        Return HasSideEffects(sequence.StatementOpt)
+                   Case BoundKind.SequencePointWithSpan
+                        Dim sequence = DirectCast(statement, BoundSequencePointWithSpan)
+                        Return HasSideEffects(sequence.StatementOpt)
+                   Case Else
+                        Return True
             End Select
         End Function
 
@@ -68,7 +72,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             catchBlocks As ImmutableArray(Of BoundCatchBlock),
             finallyBlockOpt As BoundBlock,
             exitLabelOpt As LabelSymbol
-        ) As BoundStatement
+            ) As BoundStatement
+
             If Not Me.OptimizationLevelIsDebug Then
                 ' When optimizing and the try block has no side effects, we can discard the catch blocks.
                 If Not HasSideEffects(tryBlock) Then
@@ -101,12 +106,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return newTry
         End Function
 
-        Private Function RewriteFinallyBlock(tryStatement As BoundTryStatement) As BoundBlock
+        Private Function RewriteFinallyBlock(
+                tryStatement As BoundTryStatement
+                ) As BoundBlock
+
             Dim node As BoundBlock = tryStatement.FinallyBlockOpt
 
-            If node Is Nothing Then
-                Return node
-            End If
+            If node Is Nothing Then Return node
 
             Dim newFinally = DirectCast(Visit(node), BoundBlock)
 
@@ -121,7 +127,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return newFinally
         End Function
 
-        Private Function RewriteTryBlock(tryStatement As BoundTryStatement) As BoundBlock
+        Private Function RewriteTryBlock(
+                tryStatement As BoundTryStatement
+                ) As BoundBlock
+
             Dim node As BoundBlock = tryStatement.TryBlock
             Dim newTry = DirectCast(Visit(node), BoundBlock)
 
@@ -136,7 +145,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return newTry
         End Function
 
-        Public Overrides Function VisitCatchBlock(node As BoundCatchBlock) As BoundNode
+        Public Overrides Function VisitCatchBlock(
+                         node As BoundCatchBlock
+                         ) As BoundNode
+
             Dim newExceptionSource = VisitExpressionNode(node.ExceptionSourceOpt)
 
             Dim newFilter = VisitExpressionNode(node.ExceptionFilterOpt)
@@ -202,5 +214,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
         End Sub
+
     End Class
+
 End Namespace

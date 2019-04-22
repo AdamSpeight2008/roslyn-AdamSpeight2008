@@ -92,10 +92,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public NotOverridable Overrides Function VisitType(type As TypeSymbol) As TypeSymbol
-            If type Is Nothing Then
-                Return type
-            End If
-
+            If type Is Nothing Then Return type
             Return type.InternalSubstituteTypeParameters(Me.TypeMap).Type
         End Function
 
@@ -152,8 +149,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function ShouldRewriteMethodSymbol(originalReceiver As BoundExpression, rewrittenReceiverOpt As BoundExpression, newMethod As MethodSymbol) As Boolean
             Return originalReceiver IsNot rewrittenReceiverOpt OrElse
                    Not newMethod.IsDefinition OrElse
-                   (Me.TypeMap IsNot Nothing AndAlso Me.TypeMap.TargetGenericDefinition.Equals(newMethod)) OrElse
-                   (Me.IsInExpressionLambda AndAlso rewrittenReceiverOpt IsNot Nothing AndAlso
+                   (TypeMap IsNot Nothing AndAlso TypeMap.TargetGenericDefinition.Equals(newMethod)) OrElse
+                   (IsInExpressionLambda AndAlso rewrittenReceiverOpt IsNot Nothing AndAlso
                         (rewrittenReceiverOpt.IsMyClassReference OrElse rewrittenReceiverOpt.IsMyBaseReference))
         End Function
 

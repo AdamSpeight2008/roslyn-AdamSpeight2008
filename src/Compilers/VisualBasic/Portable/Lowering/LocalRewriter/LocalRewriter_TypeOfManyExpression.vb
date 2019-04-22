@@ -21,8 +21,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
       Return result
     End Function
 
-
-
   End Class
 
 End Namespace

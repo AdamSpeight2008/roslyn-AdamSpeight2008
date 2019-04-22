@@ -121,14 +121,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Extensions
                 ElseIf TypeOf current Is MemberAccessExpressionSyntax Then
                     Dim simpleName = TryCast(DirectCast(current, MemberAccessExpressionSyntax).Name, SimpleNameSyntax)
                     If simpleName IsNot Nothing Then
-
                         Return simpleName.Identifier.ValueText.ToCamelCase()
                     End If
 
                 ElseIf TypeOf current Is CastExpressionSyntax Then
-                        current = (DirectCast(current, CastExpressionSyntax)).Expression
-                    Else
-                        Exit While
+                    current = DirectCast(current, CastExpressionSyntax).Expression
+                Else
+                   Exit While
                 End If
             End While
 

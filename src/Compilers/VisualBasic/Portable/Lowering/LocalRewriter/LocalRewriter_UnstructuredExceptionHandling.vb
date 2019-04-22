@@ -29,7 +29,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public ResumeLabel As LabelSymbol
         End Structure
 
-        Public Overrides Function VisitUnstructuredExceptionHandlingStatement(node As BoundUnstructuredExceptionHandlingStatement) As BoundNode
+        Public Overrides Function VisitUnstructuredExceptionHandlingStatement(
+                                                                             node As BoundUnstructuredExceptionHandlingStatement) As BoundNode
             Debug.Assert(_currentLineTemporary Is Nothing)
 
             If Not node.TrackLineNumber Then
@@ -61,18 +62,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Function RewriteUnstructuredExceptionHandlingStatementIntoBlock(node As BoundUnstructuredExceptionHandlingStatement) As BoundBlock
             Debug.Assert(node.ContainsOnError OrElse node.ContainsResume)
-
-            Debug.Assert(_unstructuredExceptionHandling.Context Is Nothing)
-            Debug.Assert(_unstructuredExceptionHandling.ExceptionHandlers Is Nothing)
-            Debug.Assert(_unstructuredExceptionHandling.ResumeTargets Is Nothing)
-            Debug.Assert(_unstructuredExceptionHandling.OnErrorResumeNextCount = 0)
-            Debug.Assert(_unstructuredExceptionHandling.ActiveHandlerTemporary Is Nothing)
-            Debug.Assert(_unstructuredExceptionHandling.ResumeTargetTemporary Is Nothing)
-            Debug.Assert(_unstructuredExceptionHandling.CurrentStatementTemporary Is Nothing)
-            Debug.Assert(_unstructuredExceptionHandling.ResumeNextLabel Is Nothing)
-            Debug.Assert(_unstructuredExceptionHandling.ResumeLabel Is Nothing)
-
+            #If DEBUG THEN
+            With _unstructuredExceptionHandling
+            Debug.Assert(.Context Is Nothing)
+            Debug.Assert(.ExceptionHandlers Is Nothing)
+            Debug.Assert(.ResumeTargets Is Nothing)
+            Debug.Assert(.OnErrorResumeNextCount = 0)
+            Debug.Assert(.ActiveHandlerTemporary Is Nothing)
+            Debug.Assert(.ResumeTargetTemporary Is Nothing)
+            Debug.Assert(.CurrentStatementTemporary Is Nothing)
+            Debug.Assert(.ResumeNextLabel Is Nothing)
+            Debug.Assert(.ResumeLabel Is Nothing)
+                End With
+            #End If
             Debug.Assert(_currentMethodOrLambda Is _topMethod)
+
 
             ' We should emit code that is equivalent to the following:
             '-----------------------------------------------------------------------
