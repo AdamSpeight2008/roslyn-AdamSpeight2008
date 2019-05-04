@@ -13,11 +13,11 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.LanguageServices
 
      <ImportingConstructor>
      Public Sub New(contentTypeRegistry As IContentTypeRegistryService)
-       Me._contentTypeRegistry = contentTypeRegistry
+       _contentTypeRegistry = contentTypeRegistry
      End Sub
 
      Public Function GetDefaultContentType() As IContentType Implements IContentTypeLanguageService.GetDefaultContentType
-       Return Me._contentTypeRegistry.GetContentType(ContentTypeNames.VisualBasicContentType)
+       Return _contentTypeRegistry.GetContentType(ContentTypeNames.VisualBasicContentType)
      End Function
 
   End Class
