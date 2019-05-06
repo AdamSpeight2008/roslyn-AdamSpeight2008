@@ -21,19 +21,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Gets the current command line parser.
         ''' </summary>
-        Public Shared ReadOnly Property [Default] As VisualBasicCommandLineParser = New VisualBasicCommandLineParser()
+        Public Shared ReadOnly Property [Default] As New VisualBasicCommandLineParser()
 
         ''' <summary>
         ''' Gets the current interactive command line parser.
         ''' </summary>
-        Friend Shared ReadOnly Property ScriptRunner As VisualBasicCommandLineParser = New VisualBasicCommandLineParser(isScriptRunner:=True)
+        Friend Shared ReadOnly Property Script As New VisualBasicCommandLineParser(isScript:=True)
 
         ''' <summary>
         ''' Creates a new command line parser.
         ''' </summary>
-        ''' <param name="isScriptRunner">An optional parameter indicating whether to create a interactive command line parser.</param>
-        Friend Sub New(Optional isScriptRunner As Boolean = False)
-            MyBase.New(VisualBasic.MessageProvider.Instance, isScriptRunner)
+        ''' <param name="isScript">An optional parameter indicating whether to create a interactive command line parser.</param>
+        Friend Sub New(Optional isScript As Boolean = False)
+            MyBase.New(VisualBasic.MessageProvider.Instance, isScript)
         End Sub
 
         Private Const s_win32Manifest As String = "win32manifest"
@@ -77,7 +77,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                       sdkDirectory As String,
                                       Optional additionalReferenceDirectories As String = Nothing) As VisualBasicCommandLineArguments
             Const GenerateFileNameForDocComment As String = "USE-OUTPUT-NAME"
-            Dim q As New Mutable_VBCommandLineArguments(args, Me, baseDirectory, IsScriptCommandLineParser)
+            Dim q As New VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments(args, Me, baseDirectory, IsScriptCommandLineParser)
             ' Process ruleset files first so that diagnostic severity settings specified on the command line via
             ' /nowarn and /warnaserror can override diagnostic severity settings specified in the ruleset file.
             If Not Me.IsScriptCommandLineParser Then
@@ -104,7 +104,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim name As String = Nothing
                 Dim value As String = Nothing
                 If Not TryParseOption(arg, name, value) Then
-                    q.sourceFiles.AddRange(ParseFileArgument(arg, baseDirectory, q.diagnostics))
+                    For Each path In ParseFileArgument(arg, baseDirectory, q.diagnostics)
+
+                        q.sourceFiles.Add(ToCommandLineSourceFile(path))
+                    Next
                     q.hasSourceFiles = True
                     Continue For
                 End If
@@ -112,6 +115,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Select Case name
                     Case "?", "help"
                         ok = ARG_Help(q, name, value)
+                    Case "version"
+                        ok = ARG_LangVersion(q, name, value)
                     Case "r", "reference"
                         ok = ARG_Reference(q, name, value)
                     Case "a", "analyzer"
@@ -154,6 +159,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 If ok Then Continue For
                 If IsScriptCommandLineParser Then
                     Select Case name
+                        Case "i", "i+", "i-"
+                            ok = ARG_I(q, value, name <> "i-")
                         Case "loadpath", "loadpaths"
                             ok = ARG_LoadPaths(q, name, value)
                     End Select
@@ -162,6 +169,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Select Case name
                         Case "out"
                             ok = ARG_Out(baseDirectory, q, name, value)
+                        Case "refout"
+                            ok = ARG_RefOut(q, name, value)
+                        Case "refonly, refonly+"
+                            ok = Arg_RefOnly(q, name, value)
                         Case "t", "target"
                             ok = ARG_Target(q, name, value)
                         Case "moduleassemblyname"
@@ -182,6 +193,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             ok = True
                         Case "sdkpath"
                             ok = ARG_SDKPath(q, value)
+                        Case "nosdkpath"
+                            ok= ARG_NoSDKPath(q, value)
+                        Case "instrument"
+                            ok = ARG_Instrument(q, name, value)
                         Case "recurse"
                             ok = ARG_Recurse(baseDirectory, q, value)
                         Case "addmodule"
@@ -207,6 +222,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             ok = ARG_Resource(baseDirectory, q, name, value)
                         Case "linkres", "linkresource"
                             ok = ARG_LinkResource(baseDirectory, q, name, value)
+                        Case "sourcelink"
+                            ok = ARG_SourceLink(q, name, value)
                         Case "debug"
                             ok = ARG_Debug(q, value)
                         Case "debug+", "debug-"
@@ -319,6 +336,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             ok = ARG_Features(q, value)
                         Case "additionalfile"
                             ok = ARG_AdditionalFile(baseDirectory, q, name, value)
+                        Case "analyzerconfing"
+                            ok = ARG_AnalyzerConfig(q, name, value)
+                        Case "embed"
+                            ok = Arg_Embed(q, name, value)
+
                     End Select
                     If ok Then Continue For
                 End If
@@ -330,10 +352,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             DisplayHelp(q)
 
-            ' Prepare SDK PATH
-            If sdkDirectory IsNot Nothing AndAlso q.sdkPaths.Count = 0 Then
-                q.sdkPaths.Add(sdkDirectory)
-            End If
+            PrepareSDKpath(q)
 
             ' Locate default 'mscorlib.dll' or 'System.Runtime.dll', if any.
             Dim defaultCoreLibraryReference As CommandLineReference? = LoadCoreLibraryReference(q.sdkPaths, baseDirectory)
@@ -342,18 +361,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Add_ReferenceTo_MS_VisualBasic_DLL(baseDirectory, q)
 
-            ' add additional reference paths if specified
-            If Not String.IsNullOrWhiteSpace(additionalReferenceDirectories) Then
-                q.libPaths.AddRange(ParseSeparatedPaths(additionalReferenceDirectories))
-            End If
+            Add_Additional_Libs(additionalReferenceDirectories, q)
 
-            Dim searchPaths As ImmutableArray(Of String) = BuildAndValidatePaths(baseDirectory, q)
+            ' Build search path
+            Dim searchPaths As ImmutableArray(Of String) = BuildSearchPaths(baseDirectory, q.sdkPaths, q.responsePaths, q.libPaths)
+
+            ' Public sign doesn't use legacy search path settings
+            Validate_PublicSign(baseDirectory, q)
+
+            ValidateWin32Settings(q.noWin32Manifest, q.win32ResourceFile, q.win32IconFile, q.win32ManifestFile, q.outputKind, q.diagnostics)
+
+            ValidateSourceLink(q)
+            AddAndValidateEmbedded(q)
+
+            ValidateRootNamespace(q)
+
+            ValidateBaseAndOutputDirectory(baseDirectory, q)
+
             Dim parsedFeatures = ParseFeatures(q.features)
 
             Dim compilationName As String = Nothing
             GetCompilationAndModuleNames(q.diagnostics, q.outputKind, q.sourceFiles, q.moduleAssemblyName, q.outputFileName, q.moduleName, compilationName)
 
-            If Not IsScriptCommandLineParser AndAlso Not q.hasSourceFiles AndAlso Not q.managedResources.IsEmpty() AndAlso
+            If Not IsScriptCommandLineParser  AndAlso Not q.hasSourceFiles AndAlso Not q.managedResources.IsEmpty() AndAlso
                 q.outputFileName = Nothing AndAlso Not q.flattenedArgs.IsEmpty() Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_NoSourcesOut)
             End If
@@ -364,7 +394,68 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         End Function
 
-        Private Sub DisplayHelp(q As Mutable_VBCommandLineArguments)
+        Private Shared Sub ValidateSourceLink(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
+            If q.sourceLink IsNot Nothing And Not q.emitPdb Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_SourceLinkRequiresPdb)
+            End If
+        End Sub
+
+        Private Shared Sub PrepareSDKpath(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
+            ' Prepare SDK PATH
+            If q.sdkDirectory IsNot Nothing AndAlso q.sdkPaths.Count = 0 Then
+                q.sdkPaths.Add(q.sdkDirectory)
+            End If
+        End Sub
+
+        Private Shared Sub ValidateBaseAndOutputDirectory(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
+            ' Dev10 searches for the keyfile in the current directory and assembly output directory.
+            ' We always look to base directory and then examine the search paths.
+            If Not String.IsNullOrEmpty(baseDirectory) Then
+                q.keyFileSearchPaths.Add(baseDirectory)
+            End If
+
+            If Not String.IsNullOrEmpty(q.outputDirectory) AndAlso baseDirectory <> q.outputDirectory Then
+                q.keyFileSearchPaths.Add(q.outputDirectory)
+            End If
+        End Sub
+
+        Private Shared Sub ValidateRootNamespace(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
+            ' Validate root namespace if specified
+            Debug.Assert(q.rootNamespace IsNot Nothing)
+            ' NOTE: empty namespace is a valid option
+            If Not String.Empty.Equals(q.rootNamespace) Then
+                q.rootNamespace = q.rootNamespace.Unquote()
+                If String.IsNullOrWhiteSpace(q.rootNamespace) OrElse Not OptionsValidator.IsValidNamespaceName(q.rootNamespace) Then
+                    AddDiagnostic(q.diagnostics, ERRID.ERR_BadNamespaceName1, q.rootNamespace)
+                    q.rootNamespace = "" ' To make it pass compilation options' check
+                End If
+            End If
+        End Sub
+
+        Private Shared Sub AddAndValidateEmbedded(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
+            If q.embedAllSourceFiles Then
+                q.embeddedFiles.AddRange(q.sourceFiles)
+            End If
+
+            If q.embeddedFiles.Count > 0 And Not q.emitPdb Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_CannotEmbedWithoutPdb)
+            End If
+        End Sub
+
+        Private Sub Validate_PublicSign(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
+            If q.publicSign AndAlso Not String.IsNullOrEmpty(q.keyFileSetting) Then
+                q.keyFileSetting = ParseGenericPathToFile(q.keyFileSetting, q.diagnostics, baseDirectory)
+            End If
+        End Sub
+
+        Private Shared Sub Add_Additional_Libs(additionalReferenceDirectories As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
+            ' add additional reference paths if specified
+            If Not String.IsNullOrEmpty(additionalReferenceDirectories) Then
+                q.libPaths.AddRange(ParseSeparatedPaths(additionalReferenceDirectories))
+            End If
+        End Sub
+
+        Private Sub DisplayHelp(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
             If Not IsScriptCommandLineParser AndAlso Not q.hasSourceFiles AndAlso q.managedResources.IsEmpty() AndAlso q.outputKind.IsApplication Then
                 ' VB displays help when there is nothing specified on the command line
                 If q.flattenedArgs.Any Then
@@ -375,7 +466,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Sub
 
-        Private Shared Sub Load_System_DLL(baseDirectory As String, q As Mutable_VBCommandLineArguments)
+        Private Shared Sub Load_System_DLL(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
             ' If /nostdlib is not specified, load System.dll
             ' Dev12 does it through combination of CompilerHost::InitStandardLibraryList and CompilerProject::AddStandardLibraries.
             If Not q.noStdLib Then
@@ -392,12 +483,101 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 #Region "Command Line Argument Parsers"
 
-        Private Function ARG_Analyzer(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Function ARG_AnalyzerConfig(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments,name as String, value As String) As Boolean
+            Dim unquoted = RemoveQuotesAndSlashes(value)
+            If String.IsNullOrEmpty(unquoted) Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "sourcelink", ":<file>")
+            Else
+                q.analyzerConfigPaths.AddRange(ParseSeparatedFileArgument(unquoted, q.baseDirectory, q.diagnostics))
+            End if
+            return true
+        End Function
+        Private Shared Function ARG_Instrument(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments,name as String, value As String) As Boolean
+            Dim unquoted = RemoveQuotesAndSlashes(value)
+            If String.IsNullOrEmpty(unquoted) Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "instrument", ":<string>")
+            Else
+                For Each instrumentationKind As InstrumentationKind In ParseInstrumentationKinds(unquoted, q.diagnostics)
+                    If Not q.instrumentationKinds.Contains(instrumentationKind) Then
+                      q.instrumentationKinds.Add(instrumentationKind)
+                    End If
+                Next
+            End if
+            return true
+        End Function
+
+        Private  Function ARG_SourceLink(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments,name as String, value As String) As Boolean
+            Dim unquoted = RemoveQuotesAndSlashes(value)
+            If String.IsNullOrEmpty(unquoted) Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "sourcelink", ":<file>")
+                REturn False
+            Else
+               q.sourceLink = ParseGenericPathToFile(unquoted, q.diagnostics, q.baseDirectory)
+            End if
+            return true
+        End Function
+
+        Private Shared Function ARG_NoSDKPath(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
+            If value IsNot Nothing Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "i")
+            Else
+                q.sdkDirectory = Nothing
+                q.sdkPaths.Clear()
+            End If
+            Return True
+        End Function
+
+
+
+        Private  Function ARG_RefOut(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments,name as String, value As String) As Boolean
+            Dim unquoted = RemoveQuotesAndSlashes(value)
+            If String.IsNullOrEmpty(unquoted) Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<file>")
+            Else
+                q.outputRefFileName = ParseGenericPathToFile(unquoted, q.diagnostics, q.baseDirectory)
+            End If
+            Return True
+        End Function
+
+        Private Shared Function ARG_RefOnly(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments,name as String, value As String) As Boolean
+            If value IsNot Nothing Then AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "refonly")
+            q.refOnly = True
+            Return True
+        End Function
+             Private Shared Function ARG_I(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+            If value IsNot Nothing Then
+                AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "i")
+            Else
+                q.interactiveMode = state
+            End If
+            Return True
+        End Function
+
+        Private Function ARG_LangVersion(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+            If value IsNot Nothing Then
+                Return False
+            Else
+                q.displayVersion = True
+                Return True
+            End If
+        End Function
+        Private Function ARG_Embed(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+            if string.IsNullOrEmpty(value) then
+                q.embedAllSourceFiles = true
+            else
+                For Each path In ParseSeparatedFileArgument(value, q.baseDirectory, q.diagnostics)
+                                q.embeddedFiles.Add(ToCommandLineSourceFile(path))
+                Next
+            ENd if
+            Return True
+        End Function
+
+        Private Function ARG_Analyzer(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             q.analyzers.AddRange(ParseAnalyzers(name, value, q.diagnostics))
             Return True
         End Function
 
-        Private Function ARG_Out(baseDirectory As String, q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Function ARG_Out(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If String.IsNullOrWhiteSpace(value) Then
                 ' When the value has " " (e.g., "/out: ")
                 ' the Roslyn VB compiler reports "BC 2006 : option 'out' requires ':<file>',
@@ -413,7 +593,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Function ARG_ErrorLog(baseDirectory As String, q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Function ARG_ErrorLog(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             Dim unquoted = RemoveQuotesAndSlashes(value)
             If String.IsNullOrEmpty(unquoted) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "errorlog", ":<file>")
@@ -423,7 +603,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Function ARG_Recurse(baseDirectory As String, q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Function ARG_Recurse(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "recurse", ":<wildcard>")
@@ -437,7 +617,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Function ARG_ChecksumAlgorithm(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Function ARG_ChecksumAlgorithm(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "checksumalgorithm", ":<algorithm>")
@@ -452,7 +632,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Function ARG_CodePage(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Function ARG_CodePage(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "codepage", ":<number>")
@@ -467,7 +647,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Function ARG_Doc(baseDirectory As String, GenerateFileNameForDocComment As String, q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Function ARG_Doc(baseDirectory As String, GenerateFileNameForDocComment As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             q.parseDocumentationComments = True
             If value Is Nothing Then
@@ -488,7 +668,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Function ARG_AdditionalFile(baseDirectory As String, q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Function ARG_AdditionalFile(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<file_list>")
@@ -496,14 +676,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
 
-            For Each CmdLineSourceFile In ParseSeparatedFileArgument(value, baseDirectory, q.diagnostics)
-                q.additionalFiles.Add(ToCommandLineSourceFile(CmdLineSourceFile.path))
+            For Each path In ParseSeparatedFileArgument(value, baseDirectory, q.diagnostics)
+                q.additionalFiles.Add(ToCommandLineSourceFile(path))
             Next
 
             Return True
         End Function
 
-        Private Shared Function ARG_PublicSign(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_PublicSign(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "publicsign")
             Else
@@ -512,7 +692,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_OptionCompare(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_OptionCompare(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If value Is Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "optioncompare", ":binary|text")
@@ -526,7 +706,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Doc_(GenerateFileNameForDocComment As String, state As Boolean, q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_Doc_(GenerateFileNameForDocComment As String, state As Boolean, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "doc")
             End If
@@ -537,7 +717,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_UTFOutput(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_UTFOutput(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "utf8output")
             End If
@@ -545,7 +725,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Quiet_(q As Mutable_VBCommandLineArguments, value As String, state As OutputLevel) As Boolean
+        Private Shared Function ARG_Quiet_(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As OutputLevel) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "quiet")
             Else
@@ -554,7 +734,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Quiet(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_Quiet(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value IsNot Nothing Then
                 Return False
             Else
@@ -563,7 +743,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Features(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_Features(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value Is Nothing Then
                 q.features.Clear()
             Else
@@ -572,7 +752,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_NoLogo(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_NoLogo(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value Is Nothing Then
                 q.displayLogo = state
                 Return True
@@ -581,7 +761,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return False
         End Function
 
-        Private Shared Function ARG_highentropyva(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_highentropyva(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value Is Nothing Then
                 q.highEntropyVA = state
                 Return True
@@ -589,7 +769,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return False
         End Function
 
-        Private Shared Function ARG_QuietM_VerboseM(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_QuietM_VerboseM(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, name.Substring(0, name.Length - 1))
             Else
@@ -598,7 +778,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Verbose_PM(q As Mutable_VBCommandLineArguments, value As String, state As OutputLevel) As Boolean
+        Private Shared Function ARG_Verbose_PM(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As OutputLevel) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "verbose")
             Else
@@ -607,7 +787,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_KeyFile(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_KeyFile(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             ' NOTE: despite what MSDN says, Dev11 resets '/keycontainer' in this case:
             '
             ' MSDN: In case both /keyfile and /keycontainer are specified (either by command-line
@@ -628,7 +808,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_KeyContainer(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_KeyContainer(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             ' NOTE: despite what MSDN says, Dev11 resets '/keyfile' in this case:
             '
             ' MSDN: In case both /keyfile and /keycontainer are specified (either by command-line
@@ -649,7 +829,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_RootNamespace(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_RootNamespace(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "rootnamespace", ":<string>")
@@ -659,7 +839,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_ModuleAssemblyName(q As Mutable_VBCommandLineArguments, arg As String, value As String) As Boolean
+        Private Shared Function ARG_ModuleAssemblyName(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, arg As String, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             Dim identity As AssemblyIdentity = Nothing
 
@@ -677,7 +857,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_TouchedFiles(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_TouchedFiles(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             Dim unquoted = RemoveQuotesAndSlashes(value)
             If (String.IsNullOrEmpty(unquoted)) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<touchedfiles>")
@@ -687,7 +867,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Main(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Main(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             ' MSBuild can result in maintypename being passed in quoted when Cyrillic namespace was being used resulting
             ' in ERRID.ERR_StartupCodeNotFound1 diagnostic.   The additional quotes cause problems and quotes are not a
             ' valid character in typename.
@@ -700,7 +880,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_SubsystemVersion(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_SubsystemVersion(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<version>")
@@ -715,7 +895,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Platform(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Platform(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If value IsNot Nothing Then
                 q.platform = ParsePlatform(name, value, q.diagnostics)
@@ -725,7 +905,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_PreferredUILang(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_PreferredUILang(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If (String.IsNullOrEmpty(value)) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<string>")
@@ -745,21 +925,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_SqmSessionGuid(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_SqmSessionGuid(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             ' The use of SQM is deprecated in the compiler but we still support the command line parsing for
             ' back compat reasons.
             value = RemoveQuotesAndSlashes(value)
             If String.IsNullOrWhiteSpace(value) = True Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_MissingGuidForOption, value, name)
             Else
-                If Not Guid.TryParse(value, q.sqmsessionguid) Then
+                 Dim sqmsessionguid As Guid = nothing
+                If Not Guid.TryParse(value, sqmsessionguid) Then
                     AddDiagnostic(q.diagnostics, ERRID.ERR_InvalidFormatForGuidForOption, value, name)
                 End If
             End If
             Return True
         End Function
 
-        Private Shared Function ARG_Help(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Help(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If value IsNot Nothing Then
                 Return False
             Else
@@ -768,7 +949,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Function
 
-        Private Shared Function ARG_SDKPath(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_SDKPath(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "sdkpath", ":<path>")
             Else
@@ -778,7 +959,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_AddModule(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_AddModule(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "addmodule", ":<file_list>")
             Else
@@ -793,7 +974,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_NoWarn(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_NoWarn(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value IsNot Nothing Then
                 AddWarnings(q.specificDiagnosticOptionsFromNoWarnArguments, ReportDiagnostic.Suppress, ParseWarnings(value))
             Else
@@ -809,7 +990,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_WarnAsError_Minus(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_WarnAsError_Minus(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value Is Nothing Then
                 If q.generalDiagnosticOption <> ReportDiagnostic.Suppress Then
                     q.generalDiagnosticOption = ReportDiagnostic.Default
@@ -828,7 +1009,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_WarnAsError(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_WarnAsError(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value IsNot Nothing Then
                 AddWarnings(q.specificDiagnosticOptionsFromSpecificArguments, ReportDiagnostic.Error, ParseWarnings(value))
             Else
@@ -844,7 +1025,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Resource(baseDirectory As String, q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Resource(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             Dim embeddedResource = ParseResourceDescription(name, value, baseDirectory, q.diagnostics, embedded:=True)
             If embeddedResource IsNot Nothing Then
                 q.managedResources.Add(embeddedResource)
@@ -852,7 +1033,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_LinkResource(baseDirectory As String, q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_LinkResource(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             Dim linkedResource = ParseResourceDescription(name, value, baseDirectory, q.diagnostics, embedded:=False)
             If linkedResource IsNot Nothing Then
                 q.managedResources.Add(linkedResource)
@@ -860,7 +1041,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Parallel(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Parallel(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, name)
             Else
@@ -869,7 +1050,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Parallel_(q As Mutable_VBCommandLineArguments, name As String, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_Parallel_(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, name.Substring(0, name.Length - 1))
             Else
@@ -878,7 +1059,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Debug(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_Debug(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             ' parse only for backwards compat
             value = RemoveQuotesAndSlashes(value)
             If value IsNot Nothing Then
@@ -897,7 +1078,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Debug_PM(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_Debug_PM(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "debug")
             End If
@@ -905,7 +1086,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Optimize(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_Optimize(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "optimize")
             Else
@@ -914,7 +1095,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_deterministic(q As Mutable_VBCommandLineArguments, name As String, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_deterministic(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, name)
             Else
@@ -923,7 +1104,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_DelaySign(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_DelaySign(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "delaysign")
             Else
@@ -932,7 +1113,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_LangVersion(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_LangVersion(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If value Is Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, "langversion", ":<number>")
@@ -948,7 +1129,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_VBRuntime(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_VBRuntime(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value Is Nothing Then
                 q.vbRuntimePath = Nothing
             Else
@@ -960,7 +1141,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_VBRuntime_Plus(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_VBRuntime_Plus(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value IsNot Nothing Then
                 Return False
             End If
@@ -970,7 +1151,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_VBRuntime_Minus(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_VBRuntime_Minus(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value IsNot Nothing Then
                 Return False
             End If
@@ -980,7 +1161,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_VBRuntime_Star(q As Mutable_VBCommandLineArguments, value As String) As Boolean
+        Private Shared Function ARG_VBRuntime_Star(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String) As Boolean
             If value IsNot Nothing Then
                 Return False
             End If
@@ -990,13 +1171,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Target(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Target(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             q.outputKind = ParseTarget(name, value, q.diagnostics)
             Return True
         End Function
 
-        Private Shared Function ARG_LoadPaths(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_LoadPaths(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<path_list>")
             Else
@@ -1005,7 +1186,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_RemoveIntChecks(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_RemoveIntChecks(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "removeintchecks")
             Else
@@ -1014,7 +1195,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_LibPath(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_LibPath(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<path_list>")
             Else
@@ -1023,7 +1204,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_OptionInfer(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_OptionInfer(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "optioninfer")
             Else
@@ -1032,7 +1213,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_OptionExplicit_Minus(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_OptionExplicit_Minus(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "optionexplicit")
             Else
@@ -1041,7 +1222,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_OptionExplicit(q As Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
+        Private Shared Function ARG_OptionExplicit(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As Boolean) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "optionexplicit")
             Else
@@ -1050,7 +1231,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_OptionStrict(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_OptionStrict(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             value = RemoveQuotesAndSlashes(value)
             If value Is Nothing Then
                 q.optionStrict = VisualBasic.OptionStrict.On
@@ -1062,7 +1243,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_OptionStrict_(q As Mutable_VBCommandLineArguments, value As String, state As OptionStrict) As Boolean
+        Private Shared Function ARG_OptionStrict_(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, value As String, state As OptionStrict) As Boolean
             If value IsNot Nothing Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_SwitchNeedsBool, "optionstrict")
             Else
@@ -1071,7 +1252,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Imports(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Imports(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, If(name = "import", ":<str>", ":<import_list>"))
             Else
@@ -1080,7 +1261,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Define(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Define(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             If String.IsNullOrEmpty(value) Then
                 AddDiagnostic(q.diagnostics, ERRID.ERR_ArgumentRequired, name, ":<symbol_list>")
             Else
@@ -1091,7 +1272,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return True
         End Function
 
-        Private Shared Function ARG_Reference(q As Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
+        Private Shared Function ARG_Reference(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments, name As String, value As String) As Boolean
             q.metadataReferences.AddRange(ParseAssemblyReferences(name, value, q.diagnostics, embedInteropTypes:=False))
             Return True
         End Function
@@ -1099,7 +1280,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 #End Region
 
 
-        Private Shared Function GetSpecificDiagnosticOptions(q As Mutable_VBCommandLineArguments) As Dictionary(Of String, ReportDiagnostic)
+        Private Shared Function GetSpecificDiagnosticOptions(q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments) As Dictionary(Of String, ReportDiagnostic)
             Dim specificDiagnosticOptions = New Dictionary(Of String, ReportDiagnostic)(q.specificDiagnosticOptionsFromRuleSet, CaseInsensitiveComparison.Comparer)
 
             For Each item In q.specificDiagnosticOptionsFromGeneralArguments
@@ -1117,7 +1298,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return specificDiagnosticOptions
         End Function
 
-        Private Shared Function BuildAndValidatePaths(baseDirectory As String, q As Mutable_VBCommandLineArguments) As ImmutableArray(Of String)
+        Private Shared Function BuildAndValidatePaths(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments) As ImmutableArray(Of String)
             ' Build search path
             Dim searchPaths As ImmutableArray(Of String) = BuildSearchPaths(baseDirectory, q.sdkPaths, q.responsePaths, q.libPaths)
 
@@ -1144,7 +1325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return searchPaths
         End Function
 
-        Private Shared Sub Add_ReferenceTo_MS_VisualBasic_DLL(baseDirectory As String, q As Mutable_VBCommandLineArguments)
+        Private Shared Sub Add_ReferenceTo_MS_VisualBasic_DLL(baseDirectory As String, q As VisualBasicCommandLineArguments.Mutable_VBCommandLineArguments)
             ' Add reference to 'Microsoft.VisualBasic.dll' if needed
             If q.includeVbRuntimeReference Then
                 If q.vbRuntimePath Is Nothing Then
@@ -1742,7 +1923,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Next
         End Function
 
-
         Private Shared Function IsSeparatorOrEndOfFile(token As SyntaxToken) As Boolean
             Return token.Kind = SyntaxKind.EndOfFileToken OrElse token.Kind = SyntaxKind.ColonToken OrElse token.Kind = SyntaxKind.CommaToken
         End Function
@@ -1931,7 +2111,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         '''   dwCharCount = GetFullPathName(pszOut ? pszOut : g_strFirstFile, &wszFileName);
         ''' ]]>
         ''' </remarks>
-         Private Sub GetCompilationAndModuleNames(diagnostics As List(Of Diagnostic),
+        Private Sub GetCompilationAndModuleNames(diagnostics As List(Of Diagnostic),
                                                  kind As OutputKind,
                                                  sourceFiles As List(Of CommandLineSourceFile),
                                                  moduleAssemblyName As String,
