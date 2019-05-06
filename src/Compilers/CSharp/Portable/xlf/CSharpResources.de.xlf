@@ -2689,11 +2689,7 @@
       </trans-unit>
       <trans-unit id="ERR_IllegalStatement">
         <source>Only assignment, call, increment, decrement, await, and new object expressions can be used as a statement</source>
-<<<<<<< .mine
-        <target state="translated">Nur assignment-, call-, increment-, decrement- und new object-Ausdrücke können als Anweisung verwendet werden.</target>        
-=======
         <target state="translated">Nur assignment-, call-, increment-, decrement-, await- und new object-Ausdrücke können als Anweisung verwendet werden.</target>
->>>>>>> .theirs
         <note />
       </trans-unit>
       <trans-unit id="ERR_BadGetEnumerator">
@@ -7139,11 +7135,7 @@ Unterstützen Sie den Compiler bei der Unterscheidung zwischen den Methoden. Daz
       </trans-unit>
       <trans-unit id="ERR_BadAsyncReturn">
         <source>The return type of an async method must be void, Task, Task&lt;T&gt;, a task-like type, IAsyncEnumerable&lt;T&gt;, or IAsyncEnumerator&lt;T&gt;</source>
-<<<<<<< .mine
-        <target state="translated">Der Rückgabetyp einer asynchronen Methode muss "void", "Task", "Task&lt;T&gt;", ein Task-ähnlicher Typ, "IAsyncEnumerable&lt;T&gt;" oder "IAsyncEnumerator&lt;T&gt;" sein.</target>        
-=======
         <target state="translated">Der Rückgabetyp einer asynchronen Methode muss "void", "Task", "Task&lt;T&gt;", ein Task-ähnlicher Typ, "IAsyncEnumerable&lt;T&gt;" oder "IAsyncEnumerator&lt;T&gt;" sein.</target>
->>>>>>> .theirs
         <note />
       </trans-unit>
       <trans-unit id="ERR_CantReturnVoid">
@@ -9073,11 +9065,7 @@ Um die Warnung zu beheben, können Sie stattdessen /reference verwenden (Einbett
       </trans-unit>
       <trans-unit id="ERR_MismatchedRefEscapeInTernary">
         <source>Branches of a ref conditional operator cannot refer to variables with incompatible declaration scopes</source>
-<<<<<<< .mine
-        <target state="translated">Branches eines bedingten ref-Operators können nicht auf Variablen mit inkompatiblen Deklarationsbereichen verweisen.</target>        
-=======
         <target state="translated">Branches eines bedingten ref-Operators können nicht auf Variablen mit inkompatiblen Deklarationsbereichen verweisen.</target>
->>>>>>> .theirs
         <note />
       </trans-unit>
       <trans-unit id="ERR_EscapeStackAlloc">
