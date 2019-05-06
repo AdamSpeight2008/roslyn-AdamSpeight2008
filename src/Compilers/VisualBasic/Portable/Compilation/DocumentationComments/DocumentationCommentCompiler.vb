@@ -98,7 +98,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' Gets the XML that would be written to the documentation comment file for this assembly.
             ''' </summary>
             ''' <param name="symbol">The symbol for which to retrieve documentation comments.</param>
-            ''' <param name="processIncludes">True to treat includes as semantically meaningful 
+            ''' <param name="processIncludes">True to treat includes as semantically meaningful
             ''' (pull in contents from other files and bind crefs, etc).</param>
             ''' <param name="cancellationToken">To stop traversing the symbol table early.</param>
             Friend Shared Function GetDocumentationCommentXml(symbol As Symbol,

@@ -13,21 +13,17 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
 
     Protected Overloads Overrides Iterator Function GetHighlights _
             (
-             node               As SyntaxNode,
-             cancellationToken  As CancellationToken
+              node               As SyntaxNode,
+              cancellationToken  As CancellationToken
             ) As IEnumerable(Of TextSpan)
 
       If cancellationToken.IsCancellationRequested Then Return
-
-
       Dim methodBlock = node.GetAncestor(Of MethodBlockBaseSyntax)()
       If methodBlock Is Nothing OrElse TypeOf methodBlock.BlockStatement IsNot AccessorStatementSyntax Then Return
-
       With methodBlock
         Dim isIterator = False
-
         If TypeOf methodBlock.Parent Is PropertyBlockSyntax Then
-            isIterator = DirectCast(methodBlock.Parent, PropertyBlockSyntax).PropertyStatement.Modifiers.Any(SyntaxKind.IteratorKeyword)
+           isIterator = DirectCast(methodBlock.Parent, PropertyBlockSyntax).PropertyStatement.Modifiers.Any(SyntaxKind.IteratorKeyword)
         End If
 
         With DirectCast(.BlockStatement, AccessorStatementSyntax)

@@ -22,41 +22,39 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public Overrides Sub VisitNamespace(symbol As Symbols.NamespaceSymbol)
                 Me._cancellationToken.ThrowIfCancellationRequested()
 
-                If Not ShouldSkipSymbol(symbol) Then
+                If ShouldSkipSymbol(symbol) Then Exit Sub
 
-                    If symbol.IsGlobalNamespace Then
-                        Debug.Assert(Me._assemblyName IsNot Nothing)
+                If symbol.IsGlobalNamespace Then
+                    Debug.Assert(Me._assemblyName IsNot Nothing)
 
-                        WriteLine("<?xml version=""1.0""?>")
-                        WriteLine("<doc>")
+                    WriteLine("<?xml version=""1.0""?>")
+                    WriteLine("<doc>")
+                    Indent()
+
+                    If Not Me._compilation.Options.OutputKind.IsNetModule() Then
+                        WriteLine("<assembly>")
                         Indent()
-
-                        If Not Me._compilation.Options.OutputKind.IsNetModule() Then
-                            WriteLine("<assembly>")
-                            Indent()
-                            WriteLine("<name>")
-                            WriteLine(Me._assemblyName)
-                            WriteLine("</name>")
-                            Unindent()
-                            WriteLine("</assembly>")
-                        End If
-
-                        WriteLine("<members>")
-                        Indent()
+                        WriteLine("<name>")
+                        WriteLine(Me._assemblyName)
+                        WriteLine("</name>")
+                        Unindent()
+                        WriteLine("</assembly>")
                     End If
 
-                    Debug.Assert(Not Me._isForSingleSymbol, "Do not expect a doc comment query for a single namespace")
-                    For Each member In symbol.GetMembers()
-                        Me.Visit(member)
-                    Next
+                    WriteLine("<members>")
+                    Indent()
+                End If
 
-                    If symbol.IsGlobalNamespace Then
-                        Unindent()
-                        WriteLine("</members>")
-                        Unindent()
-                        WriteLine("</doc>")
-                    End If
+                Debug.Assert(Not Me._isForSingleSymbol, "Do not expect a doc comment query for a single namespace")
+                For Each member In symbol.GetMembers()
+                    Me.Visit(member)
+                Next
 
+                If symbol.IsGlobalNamespace Then
+                    Unindent()
+                    WriteLine("</members>")
+                    Unindent()
+                    WriteLine("</doc>")
                 End If
             End Sub
 

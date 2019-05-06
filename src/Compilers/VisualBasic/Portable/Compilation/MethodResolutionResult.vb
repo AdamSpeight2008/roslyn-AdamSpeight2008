@@ -14,22 +14,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' Indicates whether the compiler accepted or rejected the method during overload resolution.
     ''' </summary>
     Friend Enum MemberResolutionKind
-
-        Applicable = OverloadResolution.CandidateAnalysisResultState.Applicable
-
-        HasUseSiteError = OverloadResolution.CandidateAnalysisResultState.HasUseSiteError
-        Ambiguous = OverloadResolution.CandidateAnalysisResultState.Ambiguous
-        BadGenericArity = OverloadResolution.CandidateAnalysisResultState.BadGenericArity
-        ArgumentCountMismatch = OverloadResolution.CandidateAnalysisResultState.ArgumentCountMismatch
-        TypeInferenceFailed = OverloadResolution.CandidateAnalysisResultState.TypeInferenceFailed
-        ArgumentMismatch = OverloadResolution.CandidateAnalysisResultState.ArgumentMismatch
-        GenericConstraintsViolated = OverloadResolution.CandidateAnalysisResultState.GenericConstraintsViolated
-        RequiresNarrowing = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowing
-        RequiresNarrowingNotFromObject = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowingNotFromObject
+        Applicable                      = OverloadResolution.CandidateAnalysisResultState.Applicable
+        HasUseSiteError                 = OverloadResolution.CandidateAnalysisResultState.HasUseSiteError
+        Ambiguous                       = OverloadResolution.CandidateAnalysisResultState.Ambiguous
+        BadGenericArity                 = OverloadResolution.CandidateAnalysisResultState.BadGenericArity
+        ArgumentCountMismatch           = OverloadResolution.CandidateAnalysisResultState.ArgumentCountMismatch
+        TypeInferenceFailed             = OverloadResolution.CandidateAnalysisResultState.TypeInferenceFailed
+        ArgumentMismatch                = OverloadResolution.CandidateAnalysisResultState.ArgumentMismatch
+        GenericConstraintsViolated      = OverloadResolution.CandidateAnalysisResultState.GenericConstraintsViolated
+        RequiresNarrowing               = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowing
+        RequiresNarrowingNotFromObject  = OverloadResolution.CandidateAnalysisResultState.RequiresNarrowingNotFromObject
         ExtensionMethodVsInstanceMethod = OverloadResolution.CandidateAnalysisResultState.ExtensionMethodVsInstanceMethod
-        Shadowed = OverloadResolution.CandidateAnalysisResultState.Shadowed
-        LessApplicable = OverloadResolution.CandidateAnalysisResultState.LessApplicable
-
+        Shadowed                        = OverloadResolution.CandidateAnalysisResultState.Shadowed
+        LessApplicable                  = OverloadResolution.CandidateAnalysisResultState.LessApplicable
     End Enum
 
     ''' <summary>

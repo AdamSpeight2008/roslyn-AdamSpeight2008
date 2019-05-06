@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.Host.Mef
 Imports Microsoft.CodeAnalysis.VisualBasic.Utilities
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.GoToDefinition
+
     <ExportLanguageService(GetType(IGoToDefinitionService), LanguageNames.VisualBasic), [Shared]>
     Friend Class VisualBasicGoToDefinitionService
         Inherits AbstractGoToDefinitionService
@@ -15,5 +16,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.GoToDefinition
         Public Sub New(<ImportMany> streamingPresenters As IEnumerable(Of Lazy(Of IStreamingFindUsagesPresenter)))
             MyBase.New(streamingPresenters)
         End Sub
+
     End Class
+
 End Namespace

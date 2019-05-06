@@ -11,7 +11,11 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
   Friend Class DoLoopBlockHighlighter
     Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+    Protected Overloads Overrides Iterator Function GetHighlights _
+            (
+              node As SyntaxNode,
+              cancellationToken As CancellationToken
+            ) As IEnumerable(Of TextSpan)
       If cancellationToken.IsCancellationRequested OrElse
          node.IsIncorrectContinueStatement(SyntaxKind.ContinueDoStatement) OrElse
          node.IsIncorrectExitStatement(SyntaxKind.ExitDoStatement) Then

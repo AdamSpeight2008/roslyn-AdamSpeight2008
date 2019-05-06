@@ -11,9 +11,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
   Friend Class ForLoopBlockHighlighter
     Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-      If cancellationToken.IsCancellationRequested Then Return
+    Protected Overloads Overrides Iterator Function GetHighlights _
+            (
+              node As SyntaxNode,
+              cancellationToken As CancellationToken
+            ) As IEnumerable(Of TextSpan)
 
+      If cancellationToken.IsCancellationRequested Then Return
       Dim forBlock = GetForBlockFromNode(node)
       If forBlock Is Nothing Then Return
       If TypeOf forBlock.ForOrForEachStatement Is ForStatementSyntax Then
@@ -37,7 +41,6 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
       Next
 
       Dim nextStatement = GetNextStatementMatchingForBlock(forBlock)
-
       If nextStatement IsNot Nothing Then Yield nextStatement.NextKeyword.Span
     End Function
 

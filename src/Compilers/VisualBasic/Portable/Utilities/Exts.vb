@@ -28,7 +28,7 @@ Namespace Global.Microsoft.CodeAnalysis.VisualBasic
         Return k.IsEither(k0, k1) OrElse k.IsEither(k2,k3) OrElse k.IsEither(k4,k5)
     End Function
     <Extension>
-    Friend Function IsEither(k As SyntaxKind, kinds() As SyntaxKind) As Boolean
+    Friend Function IsEither(k As SyntaxKind, ParamArray  kinds() As SyntaxKind) As Boolean
         Return kinds.Contains(k)
     End Function
     <Extension>

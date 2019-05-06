@@ -7,12 +7,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend Structure VisualBasicTypeInfo
         Implements IEquatable(Of VisualBasicTypeInfo)
 
-        ' should be best guess if there is one, or error type if none.
-        Private ReadOnly _type As TypeSymbol
-        Private ReadOnly _convertedType As TypeSymbol
-
-        Private ReadOnly _implicitConversion As Conversion
-
         Friend Shared None As New VisualBasicTypeInfo(Nothing, Nothing, New Conversion(Conversions.Identity))
 
         ''' <summary>
@@ -21,44 +15,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' an object derived from ErrorTypeSymbol is returned.
         ''' </summary>
         Public ReadOnly Property Type As TypeSymbol
-            Get
-                Return _type
-            End Get
-        End Property
 
         ''' <summary>
         ''' The type of the expression after it has undergone an implicit conversion. If the type
         ''' did not undergo an implicit conversion, returns the same as Type.
         ''' </summary>
         Public ReadOnly Property ConvertedType As TypeSymbol
-            Get
-                Return _convertedType
-            End Get
-        End Property
 
         ''' <summary>
         ''' If the expression underwent an implicit conversion, return information about that
         ''' conversion. Otherwise, returns an identity conversion.
         ''' </summary>
         Public ReadOnly Property ImplicitConversion As Conversion
-            Get
-                Return _implicitConversion
-            End Get
-        End Property
 
         Public Shared Widening Operator CType(info As VisualBasicTypeInfo) As TypeInfo
             Return New TypeInfo(info.Type, info.ConvertedType, nullability:=Nothing, convertedNullability:=Nothing)
         End Operator
 
         Friend Sub New(type As TypeSymbol, convertedType As TypeSymbol, implicitConversion As Conversion)
-            Me._type = GetPossibleGuessForErrorType(type)
-            Me._convertedType = GetPossibleGuessForErrorType(convertedType)
-            Me._implicitConversion = implicitConversion
+            Me.Type = GetPossibleGuessForErrorType(type)
+            Me.ConvertedType = GetPossibleGuessForErrorType(convertedType)
+            Me.ImplicitConversion = implicitConversion
         End Sub
 
         Public Overloads Function Equals(other As VisualBasicTypeInfo) As Boolean Implements IEquatable(Of VisualBasicTypeInfo).Equals
             Return _implicitConversion.Equals(other._implicitConversion) AndAlso
-                TypeSymbol.Equals(_type, other._type, TypeCompareKind.ConsiderEverything) AndAlso
+                TypeSymbol.Equals(Type, other.Type, TypeCompareKind.ConsiderEverything) AndAlso
                 TypeSymbol.Equals(_convertedType, other._convertedType, TypeCompareKind.ConsiderEverything)
         End Function
 
@@ -68,7 +50,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Public Overrides Function GetHashCode() As Integer
-            Return Hash.Combine(_convertedType, Hash.Combine(_type, _implicitConversion.GetHashCode()))
+            Return Hash.Combine(_convertedType, Hash.Combine(Type, _implicitConversion.GetHashCode()))
         End Function
 
         ''' <summary>

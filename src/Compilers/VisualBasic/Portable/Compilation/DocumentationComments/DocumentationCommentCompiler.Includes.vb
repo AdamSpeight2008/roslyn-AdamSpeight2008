@@ -160,7 +160,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ' If there are no include elements, then there's nothing to expand.
                     '
                     ' NOTE: Following C# implementation we avoid parsing/printing of the xml
-                    '       in this case, which might differ in terms of printed whitespaces 
+                    '       in this case, which might differ in terms of printed whitespaces
                     '       if we compare to the result of parse/print scenario
                     If sourceIncludeElementNodes Is Nothing Then
                         Return unprocessed
@@ -390,7 +390,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                 End If
                             Next
 
-                            ' After processing 'special' attributes, we need to either bind 'name' 
+                            ' After processing 'special' attributes, we need to either bind 'name'
                             ' attribute value or, if the element was 'exception', and 'cref' was not found,
                             ' report WRN_XMLDocExceptionTagWithoutCRef
                             If elementIsException Then
@@ -609,7 +609,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     ' note, the parent element name does not matter
                     Dim attr As BaseXmlAttributeSyntax = SyntaxFactory.ParseDocCommentAttributeAsStandAloneEntity(attributeText, parentElementName:="")
 
-                    ' NOTE: we don't expect any *syntax* errors on the parsed xml 
+                    ' NOTE: we don't expect any *syntax* errors on the parsed xml
                     '       attribute, or otherwise why xml parsed didn't throw?
                     Debug.Assert(attr IsNot Nothing)
 
@@ -634,10 +634,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                 attribute.Value = "?:" + attribute.Value
 
                             Else
-                                ' The following mimics handling 'cref' attributes in source documentation 
+                                ' The following mimics handling 'cref' attributes in source documentation
                                 ' comment, see DocumentationCommentWalker for details
 
-                                ' Some symbols found may not support doc-comment-ids, we just filter 
+                                ' Some symbols found may not support doc-comment-ids, we just filter
                                 ' those out, from the rest we take the symbol with 'smallest' location
                                 Dim symbolCommentId As String = Nothing
                                 Dim smallestSymbol As Symbol = Nothing
@@ -652,8 +652,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                     Dim id As String = symbol.OriginalDefinition.GetDocumentationCommentId()
                                     If id IsNot Nothing Then
 
-                                        ' Override only if this is the first id or the new symbol's location wins; 
-                                        ' note that we want to ignore the cases when there are more than one symbol 
+                                        ' Override only if this is the first id or the new symbol's location wins;
+                                        ' note that we want to ignore the cases when there are more than one symbol
                                         ' can be found by the name, just deterministically choose which one to use
                                         If symbolCommentId Is Nothing OrElse
                                                 Me._compilation.CompareSourceLocations(
@@ -672,20 +672,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                     attribute.Value = "?:" + attribute.Value
 
                                 Else
-                                    ' Replace value with id 
+                                    ' Replace value with id
                                     attribute.Value = symbolCommentId
                                 End If
 
                             End If
 
                         Case SyntaxKind.XmlAttribute
-                            ' 'cref=' attribute can land here for two reasons: 
+                            ' 'cref=' attribute can land here for two reasons:
                             '   (a) the value is represented in a form "X:SOME-ID-STRING", or
                             '   (b) the value between '"' is not a valid NameSyntax
                             '
                             ' in both cases we want just to put the result into documentation XML.
                             '
-                            ' In the second case we also generate a diagnostic and add '!:' in from 
+                            ' In the second case we also generate a diagnostic and add '!:' in from
                             ' of the value indicating wrong id, and generate a diagnostic
                             Dim value As String = attribute.Value.Trim()
                             If value.Length < 2 OrElse value(0) = ":"c OrElse value(1) <> ":"c Then
@@ -740,7 +740,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         SyntaxFactory.ParseDocCommentAttributeAsStandAloneEntity(
                             attributeText, elementName) ' note, the element name does not matter
 
-                    ' NOTE: we don't expect any *syntax* errors on the parsed xml 
+                    ' NOTE: we don't expect any *syntax* errors on the parsed xml
                     '       attribute, or otherwise why xml parsed didn't throw?
                     Debug.Assert(attr IsNot Nothing)
                     Debug.Assert(Not attr.ContainsDiagnostics)

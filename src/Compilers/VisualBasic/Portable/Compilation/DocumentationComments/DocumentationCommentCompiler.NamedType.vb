@@ -21,23 +21,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Inherits VisualBasicSymbolVisitor
 
             ''' <summary>
-            ''' Generates the documentation comment for the type, writes it into 
+            ''' Generates the documentation comment for the type, writes it into
             ''' the writer
             ''' </summary>
             Public Overrides Sub VisitNamedType(symbol As NamedTypeSymbol)
                 Me._cancellationToken.ThrowIfCancellationRequested()
 
-                If Not ShouldSkipSymbol(symbol) Then
-                    Dim sourceNamedType = TryCast(symbol, SourceNamedTypeSymbol)
-                    If sourceNamedType IsNot Nothing Then
-                        WriteDocumentationCommentForNamedType(sourceNamedType)
-                    End If
+                If ShouldSkipSymbol(symbol) Then Exit Sub
+                Dim sourceNamedType = TryCast(symbol, SourceNamedTypeSymbol)
+                If sourceNamedType IsNot Nothing Then
+                   WriteDocumentationCommentForNamedType(sourceNamedType)
+                End If
 
-                    If Not Me._isForSingleSymbol Then
-                        For Each member In symbol.GetMembers()
-                            Me.Visit(member)
-                        Next
-                    End If
+                If Not Me._isForSingleSymbol Then
+                   For Each member In symbol.GetMembers()
+                     Me.Visit(member)
+                   Next
                 End If
             End Sub
 
@@ -63,8 +62,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Dim symbolName As String = GetSymbolName(namedType)
 
                 If multipleDocComments.Count > 1 Then
-                    ' In case we have multiple documentation comments we should discard 
-                    ' all of them with (optionally) reporting all diagnostics 
+                    ' In case we have multiple documentation comments we should discard
+                    ' all of them with (optionally) reporting all diagnostics
                     If maxDocumentationMode = DocumentationMode.Diagnose Then
                         For Each trivia In multipleDocComments
                             Me._diagnostics.Add(ERRID.WRN_XMLDocOnAPartialType, trivia.GetLocation(), symbolName)

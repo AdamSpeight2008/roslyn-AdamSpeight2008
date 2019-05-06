@@ -81,8 +81,8 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
         Dim children = node.ChildNodes.Where(Function(child) TypeOf child IsNot LambdaExpressionSyntax)
         nodes.AddRangeAtHead(children)
       End While
-                        nodes.Clear
-            nodes = nothing
+      nodes.Clear
+      nodes = nothing
     End Function
 
     Private Iterator Function HighlightRelatedYieldStatements(Of T)(thisnode As SyntaxNode) As IEnumerable(Of TextSpan)
@@ -99,8 +99,8 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
            nodes.AddRangeAtHead(children)
         End If
       End While
-            nodes.Clear
-            nodes = nothing
+      nodes.Clear
+      nodes = nothing
     End Function
 
     <Extension>

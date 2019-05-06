@@ -23,12 +23,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public Overrides Sub VisitField(symbol As FieldSymbol)
                 Me._cancellationToken.ThrowIfCancellationRequested()
 
-                If Not ShouldSkipSymbol(symbol) Then
-                    Dim sourceField = TryCast(symbol, SourceFieldSymbol)
-                    If sourceField IsNot Nothing Then
-                        WriteDocumentationCommentForField(sourceField)
-                    End If
-                End If
+                If ShouldSkipSymbol(symbol) Then Exit Sub
+                Dim sourceField = TryCast(symbol, SourceFieldSymbol)
+                If sourceField Is Nothing Then Exit Sub
+                WriteDocumentationCommentForField(sourceField)
             End Sub
 
             Private Sub WriteDocumentationCommentForField(field As SourceFieldSymbol)

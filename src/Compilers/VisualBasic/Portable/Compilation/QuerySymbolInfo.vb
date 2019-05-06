@@ -7,7 +7,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     Public Structure CollectionRangeVariableSymbolInfo
         ''' <summary>
-        ''' Optional AsQueryable/AsEnumerable/Cast(Of Object) method used 
+        ''' Optional AsQueryable/AsEnumerable/Cast(Of Object) method used
         ''' to "convert" <see cref="CollectionRangeVariableSyntax.Expression"/> to queryable
         ''' collection.
         ''' </summary>
@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary>
         ''' SelectMany method for <see cref="CollectionRangeVariableSyntax"/>, which is not the first
-        ''' <see cref="CollectionRangeVariableSyntax"/> in a <see cref="QueryExpressionSyntax"/>, and is not the first 
+        ''' <see cref="CollectionRangeVariableSyntax"/> in a <see cref="QueryExpressionSyntax"/>, and is not the first
         ''' <see cref="CollectionRangeVariableSyntax"/> in <see cref="AggregateClauseSyntax"/>.
         ''' </summary>
         Public ReadOnly Property SelectMany As SymbolInfo
@@ -109,29 +109,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary>
         ''' DistinctClauseSyntax -       Returns Distinct method associated with DistinctClauseSyntax.
-        ''' 
+        '''
         ''' WhereClauseSyntax -          Returns Where method associated with WhereClauseSyntax.
-        ''' 
+        '''
         ''' PartitionWhileClauseSyntax - Returns TakeWhile/SkipWhile method associated with PartitionWhileClauseSyntax.
-        ''' 
+        '''
         ''' PartitionClauseSyntax -      Returns Take/Skip method associated with PartitionClauseSyntax.
-        ''' 
+        '''
         ''' GroupByClauseSyntax -        Returns GroupBy method associated with GroupByClauseSyntax.
-        ''' 
+        '''
         ''' JoinClauseSyntax -           Returns Join/GroupJoin method associated with JoinClauseSyntax/GroupJoinClauseSyntax.
-        ''' 
+        '''
         ''' SelectClauseSyntax -         Returns Select method associated with SelectClauseSyntax, if needed.
-        ''' 
-        ''' FromClauseSyntax -           Returns Select method associated with FromClauseSyntax, which has only one 
-        '''                              CollectionRangeVariableSyntax and is the only query clause within 
-        '''                              QueryExpressionSyntax. NotNeeded SymbolInfo otherwise. 
-        '''                              The method call is injected by the compiler to make sure that query is translated to at 
-        '''                              least one method call. 
-        ''' 
+        '''
+        ''' FromClauseSyntax -           Returns Select method associated with FromClauseSyntax, which has only one
+        '''                              CollectionRangeVariableSyntax and is the only query clause within
+        '''                              QueryExpressionSyntax. NotNeeded SymbolInfo otherwise.
+        '''                              The method call is injected by the compiler to make sure that query is translated to at
+        '''                              least one method call.
+        '''
         ''' LetClauseSyntax -            NotNeeded SymbolInfo.
-        ''' 
+        '''
         ''' OrderByClauseSyntax -        NotNeeded SymbolInfo.
-        ''' 
+        '''
         ''' AggregateClauseSyntax -      Empty SymbolInfo. GetAggregateClauseInfo should be used instead.
         ''' </summary>
         Public Shadows Function GetSymbolInfo(

@@ -29,7 +29,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Sub
 
             ''' <summary>
-            ''' Given the full text of a documentation comment, strip off the comment 
+            ''' Given the full text of a documentation comment, strip off the comment
             ''' punctuation (''') and add appropriate indentations.
             ''' </summary>
             Private Function FormatComment(substitutedText As String) As String
@@ -53,13 +53,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' <param name="str">The string to search</param>
             ''' <param name="start">The start index</param>
             ''' <param name="end">The last index (non-inclusive)</param>
-            ''' <returns>The index of the first non-whitespace char after index 
+            ''' <returns>The index of the first non-whitespace char after index
             ''' start in the string up to, but not including the end index</returns>
             Private Shared Function GetIndexOfFirstNonWhitespaceChar(str As String, start As Integer, [end] As Integer) As Integer
-                Debug.Assert(start >= 0)
-                Debug.Assert(start <= str.Length)
-                Debug.Assert([end] >= 0)
-                Debug.Assert([end] <= str.Length)
+                Debug.Assert(start.IsBetween(0,str.Length))
+                Debug.Assert([end].IsBetween(0,str.Length))
                 Debug.Assert([end] >= start)
 
                 While start < [end] And Char.IsWhiteSpace(str(start))
@@ -154,17 +152,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             ''' <remarks>
             ''' WORKAROUND:
             ''' We're taking a dependency on the location and structure of a framework assembly resource.  This is not a robust solution.
-            ''' 
+            '''
             ''' Possible alternatives:
             ''' 1) Polish our XML parser until it matches MSXML.  We don't want to reinvent the wheel.
-            ''' 2) Build a map that lets us go from XML string positions back to source positions.  
+            ''' 2) Build a map that lets us go from XML string positions back to source positions.
             ''' This is what the native compiler did, and it was a lot of work.  We'd also still need to modify the message.
             ''' 3) Do not report a diagnostic.  This is very unhelpful.
             ''' 4) Report a vague diagnostic (i.e. there's a problem somewhere in this doc comment).  This is relatively unhelpful.
             ''' 5) Always report the message in English, so that we can pull it apart without needing to mess with resource files.
             ''' This engenders a lot of ill will.
             ''' 6) Report the exception message without modification and (optionally) include the text with respect to which the
-            ''' position is specified.  This looks amateurish.            
+            ''' position is specified.  This looks amateurish.
             ''' </remarks>
             Private Shared Function GetDescription(e As XmlException) As String
                 Dim message As String = e.Message

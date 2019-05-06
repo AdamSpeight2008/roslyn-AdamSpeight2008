@@ -11,6 +11,7 @@ Imports Microsoft.VisualStudio.Utilities
 Imports VSCommanding = Microsoft.VisualStudio.Commanding
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.ImplementAbstractClass
+
     <Export(GetType(VSCommanding.ICommandHandler))>
     <ContentType(ContentTypeNames.VisualBasicContentType)>
     <Name("ImplementAbstractClassCommandHandler")>
@@ -25,20 +26,17 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.ImplementAbstractClass
             MyBase.New(editorOperationsFactoryService)
         End Sub
 
-        Protected Overrides Function TryGetNewDocument(
-            document As Document,
-            typeSyntax As TypeSyntax,
-            cancellationToken As CancellationToken
-        ) As Document
+        Protected Overrides Function TryGetNewDocument _
+            (
+              document As Document,
+              typeSyntax As TypeSyntax,
+              cancellationToken As CancellationToken
+            ) As Document
 
-            If typeSyntax.Parent.Kind <> SyntaxKind.InheritsStatement Then
-                Return Nothing
-            End If
+            If typeSyntax.Parent.Kind <> SyntaxKind.InheritsStatement Then Return Nothing
 
             Dim classBlock = TryCast(typeSyntax.Parent.Parent, ClassBlockSyntax)
-            If classBlock Is Nothing Then
-                Return Nothing
-            End If
+            If classBlock Is Nothing Then Return Nothing
 
             Dim service = document.GetLanguageService(Of IImplementAbstractClassService)()
             Dim updatedDocument = service.ImplementAbstractClassAsync(document, classBlock, cancellationToken).WaitAndGetResult(cancellationToken)
@@ -49,5 +47,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.ImplementAbstractClass
 
             Return updatedDocument
         End Function
+
     End Class
+
 End Namespace

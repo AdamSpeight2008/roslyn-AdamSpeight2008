@@ -13,7 +13,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     ''' <summary>
     ''' Allows asking semantic questions about a tree of syntax nodes in a Compilation. Typically,
-    ''' an instance is obtained by a call to Compilation.GetBinding. 
+    ''' an instance is obtained by a call to Compilation.GetBinding.
     ''' </summary>
     ''' <remarks>
     ''' <para>An instance of SemanticModel caches local symbols and semantic information. Thus, it
@@ -29,81 +29,81 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' symbol table). Symbols representing entities without names (e.g. array-of-int) may or may
     ''' not exhibit reference equality. However, some named symbols (such as local variables) are
     ''' not reachable from the root. These symbols are visible as answers to semantic questions.
-    ''' When the same SemanticModel object is used, the answers exhibit reference-equality.  
+    ''' When the same SemanticModel object is used, the answers exhibit reference-equality.
     ''' </para>
     ''' </remarks>
     Friend MustInherit Class VBSemanticModel
         Inherits SemanticModel
 
-        ''' <summary> 
+        ''' <summary>
         ''' The compilation associated with this binding.
-        ''' </summary> 
+        ''' </summary>
         Public MustOverride Shadows ReadOnly Property Compilation As VisualBasicCompilation
 
-        ''' <summary> 
+        ''' <summary>
         ''' The root node of the syntax tree that this binding is based on.
-        ''' </summary> 
+        ''' </summary>
         Friend MustOverride Shadows ReadOnly Property Root As SyntaxNode
 
         ''' <summary>
         ''' Gets symbol information about an expression syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called.
         ''' </summary>
         Friend MustOverride Function GetExpressionSymbolInfo(node As ExpressionSyntax, options As SymbolInfoOptions, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
 
         ''' <summary>
         ''' Gets symbol information about the 'Add' method corresponding to an expression syntax <paramref name="node"/> within collection initializer.
-        ''' This is the worker function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' This is the worker function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called and the <paramref name="node"/> is in the right place in the syntax tree.
         ''' </summary>
         Friend MustOverride Function GetCollectionInitializerAddSymbolInfo(collectionInitializer As ObjectCreationExpressionSyntax, node As ExpressionSyntax, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
 
         ''' <summary>
         ''' Gets symbol information about an attribute syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called.
         ''' </summary>
         Friend MustOverride Function GetAttributeSymbolInfo(attribute As AttributeSyntax, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
 
         ''' <summary>
         ''' Gets type information about an expression syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called.
         ''' </summary>
         Friend MustOverride Function GetExpressionTypeInfo(node As ExpressionSyntax, Optional cancellationToken As CancellationToken = Nothing) As VisualBasicTypeInfo
 
         ''' <summary>
         ''' Gets type information about an attribute syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called.
         ''' </summary>
         Friend MustOverride Function GetAttributeTypeInfo(attribute As AttributeSyntax, Optional cancellationToken As CancellationToken = Nothing) As VisualBasicTypeInfo
 
         ''' <summary>
         ''' Gets constant value information about an expression syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called.
         ''' </summary>
         Friend MustOverride Function GetExpressionConstantValue(node As ExpressionSyntax, Optional cancellationToken As CancellationToken = Nothing) As ConstantValue
 
         ''' <summary>
         ''' Gets member group information about an expression syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called.
         ''' </summary>
         Friend MustOverride Function GetExpressionMemberGroup(node As ExpressionSyntax, Optional cancellationToken As CancellationToken = Nothing) As ImmutableArray(Of Symbol)
 
         ''' <summary>
         ''' Gets member group information about an attribute syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that 
+        ''' function that is overridden in various derived kinds of Semantic Models. It can assume that
         ''' CheckSyntaxNode has already been called.
         ''' </summary>
         Friend MustOverride Function GetAttributeMemberGroup(attribute As AttributeSyntax, Optional cancellationToken As CancellationToken = Nothing) As ImmutableArray(Of Symbol)
 
         ''' <summary>
         ''' Gets symbol information about an cref reference syntax node. This is the worker
-        ''' function that is overridden in various derived kinds of Semantic Models. 
+        ''' function that is overridden in various derived kinds of Semantic Models.
         ''' </summary>
         Friend MustOverride Function GetCrefReferenceSymbolInfo(crefReference As CrefReferenceSyntax, options As SymbolInfoOptions, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
 
@@ -118,7 +118,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim trivia As StructuredTriviaSyntax = node.EnclosingStructuredTrivia
             If trivia IsNot Nothing Then
-                ' Allow getting semantic info on names from Cref and Name attributes 
+                ' Allow getting semantic info on names from Cref and Name attributes
                 ' inside documentation trivia
 
                 Return IsInCrefOrNameAttributeInterior(node)
@@ -170,7 +170,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' Returns what 'Add' method symbol(s), if any, corresponds to the given expression syntax 
+        ''' Returns what 'Add' method symbol(s), if any, corresponds to the given expression syntax
         ''' within <see cref="ObjectCollectionInitializerSyntax.Initializer"/>.
         ''' </summary>
         Public Shadows Function GetCollectionInitializerSymbolInfo(expression As ExpressionSyntax, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
@@ -193,7 +193,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary>
         ''' Returns what symbol(s), if any, the given cref reference syntax bound to in the documentation comment.
-        ''' 
+        '''
         ''' An AliasSymbol will never be returned by this method. What the alias refers to will be
         ''' returned instead.
         ''' </summary>
@@ -394,7 +394,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' Binds the expression in the context of the specified location and gets constant value information. 
+        ''' Binds the expression in the context of the specified location and gets constant value information.
         ''' This method is used to get information about an expression that did not actually appear in the source code.
         ''' </summary>
         ''' <param name="position">A character position used to identify a declaration scope and
@@ -556,7 +556,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return False
         End Function
 
-        ' Checks that a position is within the span of the root of this binding. 
+        ' Checks that a position is within the span of the root of this binding.
         Protected Sub CheckPosition(position As Integer)
             Dim fullStart As Integer = Root.Position
             Dim fullEnd As Integer = Root.EndPosition
@@ -597,7 +597,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
         End Sub
 
-        ' Find the initial syntax node to start traversing up the syntax when getting binders from 
+        ' Find the initial syntax node to start traversing up the syntax when getting binders from
         ' a position. Just using FindToken doesn't give quite the right results, especially in situations where
         ' end constructs haven't been typed yet. If we are in the trivia between two tokens, we move backward to the previous
         ' token. There are also some special cases around beginning and end of the whole tree.
@@ -785,8 +785,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' for semantic information.
         ''' </summary>
         Private Function MakeValueIfPossible(binder As Binder, node As BoundNode) As BoundNode
-            ' Convert a stand-alone speculatively bound expression to an rvalue. 
-            ' This will get the value of properties, convert lambdas to anonymous 
+            ' Convert a stand-alone speculatively bound expression to an rvalue.
+            ' This will get the value of properties, convert lambdas to anonymous
             ' delegate type, etc.
             Dim boundExpression = TryCast(node, BoundExpression)
             If boundExpression IsNot Nothing Then
@@ -972,7 +972,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     convertedType = highestExpr.Type
                     If (type Is Nothing OrElse Not type.IsSameTypeIgnoringAll(convertedType)) Then
                         ' If the upper expression is of a different type, we want to return
-                        ' a conversion. Hopefully we have a conversion node. 
+                        ' a conversion. Hopefully we have a conversion node.
                         ' TODO: Understand cases where we don't have a conversion node better.
                         If highestExpr.Kind = BoundKind.Conversion Then
                             Dim conversionNode = DirectCast(highestExpr, BoundConversion)
@@ -989,7 +989,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             If type Is Nothing AndAlso TypeOf boundNodes.LowestBoundNodeOfSyntacticParent Is BoundBadExpression Then
-                ' Special case: overload failure on X in New X(...), where overload resolution failed. 
+                ' Special case: overload failure on X in New X(...), where overload resolution failed.
                 ' Binds to method group which can't have a type.
 
                 Dim parentSyntax As SyntaxNode = boundNodes.LowestBoundNodeOfSyntacticParent.Syntax
@@ -1074,8 +1074,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             Dim errorType = DirectCast(namedType, ErrorTypeSymbol)
                             Dim candidateSymbols = errorType.CandidateSymbols
 
-                            ' If error type has a single named type candidate symbol, we want to 
-                            ' use that type for symbol info. 
+                            ' If error type has a single named type candidate symbol, we want to
+                            ' use that type for symbol info.
                             If candidateSymbols.Length = 1 AndAlso candidateSymbols(0).Kind = SymbolKind.NamedType Then
                                 namedType = DirectCast(errorType.CandidateSymbols(0), NamedTypeSymbol)
                             Else
@@ -1175,9 +1175,9 @@ _Default:
 
             memberGroup = memberGroupBuilder.ToImmutableAndFree()
 
-            ' We have a different highest bound node than lowest bound node. If it has a result kind less good than the 
+            ' We have a different highest bound node than lowest bound node. If it has a result kind less good than the
             ' one we already determined, use that. This is typically the case where a BoundBadExpression or BoundBadValue
-            ' is created around another expression. 
+            ' is created around another expression.
             ' CONSIDER: Can it arise that the highest node has associated symbols but the lowest node doesn't? In that case,
             ' we may wish to use the symbols from the highest.
             Dim highestBoundNodeExpr = TryCast(boundNodes.HighestBoundNode, BoundExpression)
@@ -1380,7 +1380,7 @@ _Default:
             End If
 
             If Not foundResolution Then
-                ' If we didn't find a resolution, then use what we had as the member group. 
+                ' If we didn't find a resolution, then use what we had as the member group.
                 symbolsBuilder.AddRange(memberGroupBuilder)
                 resultKind = LookupResultKind.OverloadResolutionFailure
             End If
@@ -1396,6 +1396,7 @@ _Default:
             For Each sym In symbols
                 If sym.Kind = SymbolKind.Alias Then
                     anyAliases = True
+                    Exit For
                 End If
             Next
 
@@ -1413,7 +1414,7 @@ _Default:
 
         ''' <summary>
         ''' In cases where we are binding C in "[C(...)]", the bound nodes return the symbol for the type. However, we've
-        ''' decided that we want this case to return the constructor of the type instead (based on the SemanticInfoOptions. This 
+        ''' decided that we want this case to return the constructor of the type instead (based on the SemanticInfoOptions. This
         ''' affects only attributes. This method checks for this situation and adjusts the syntax and method group.
         ''' </summary>
         Private Sub AdjustSymbolsForObjectCreation(boundNodes As BoundNodeSummary,
@@ -1437,7 +1438,7 @@ _Default:
 
                 Dim unwrappedSymbols = UnwrapAliases(bindingSymbols)
 
-                ' We must have bound to a single named type 
+                ' We must have bound to a single named type
                 If unwrappedSymbols.Length = 1 AndAlso TypeOf unwrappedSymbols(0) Is TypeSymbol Then
                     Dim typeSymbol As TypeSymbol = DirectCast(unwrappedSymbols(0), TypeSymbol)
                     Dim namedTypeSymbol As NamedTypeSymbol = TryCast(typeSymbol, NamedTypeSymbol)
@@ -1526,7 +1527,7 @@ _Default:
             ' We never return error symbols in the SemanticInfo.
             ' Error types carry along other symbols and result kinds in error cases.
 
-            ' Getting the set of symbols is a bit involved. We use the union of the symbol with 
+            ' Getting the set of symbols is a bit involved. We use the union of the symbol with
             ' any symbols from the diagnostics, but error symbols are not included.\
             Dim resultKind As LookupResultKind
             Dim symbolsBuilder = ArrayBuilder(Of Symbol).GetInstance()
@@ -1592,20 +1593,21 @@ _Default:
         ''' <remarks>
         ''' The "position" Is used to determine what variables are visible And accessible. Even if "container" Is
         ''' specified, the "position" location Is significant for determining which members of "containing" are
-        ''' accessible. 
-        ''' 
+        ''' accessible.
+        '''
         ''' Labels are Not considered (see <see cref="LookupLabels"/>).
-        ''' 
+        '''
         ''' Non-reduced extension methods are considered regardless of the value of <paramref name="includeReducedExtensionMethods"/>.
         ''' </remarks>
-        Public Shadows Function LookupSymbols(
-            position As Integer,
-            Optional container As INamespaceOrTypeSymbol = Nothing,
-            Optional name As String = Nothing,
-            Optional includeReducedExtensionMethods As Boolean = False
-        ) As ImmutableArray(Of ISymbol)
-            Dim options = If(includeReducedExtensionMethods, LookupOptions.Default, LookupOptions.IgnoreExtensionMethods)
+        Public Shadows Function LookupSymbols _
+            (
+              position  As Integer,
+     Optional container As INamespaceOrTypeSymbol = Nothing,
+     Optional name      As String = Nothing,
+     Optional includeReducedExtensionMethods As Boolean = False
+            ) As ImmutableArray(Of ISymbol)
 
+            Dim options = If(includeReducedExtensionMethods, LookupOptions.Default, LookupOptions.IgnoreExtensionMethods)
             Dim result = LookupSymbolsInternal(position, ToLanguageSpecific(container), name, options, useBaseReferenceAccessibility:=False)
 
 #If DEBUG Then
@@ -1622,21 +1624,21 @@ _Default:
         ''' calling <see cref="LookupSymbols"/> with the container set to the immediate base type of
         ''' the type in which <paramref name="position"/> occurs.  However, the accessibility rules
         ''' are different: protected members of the base type will be visible.
-        ''' 
+        '''
         ''' Consider the following example:
-        ''' 
+        '''
         '''   Public Class Base
         '''       Protected Sub M()
         '''       End Sub
         '''   End Class
-        '''   
+        '''
         '''   Public Class Derived : Inherits Base
         '''       Sub Test(b as Base)
         '''           b.M() ' Error - cannot access protected member.
         '''           MyBase.M()
         '''       End Sub
         '''   End Class
-        ''' 
+        '''
         ''' Protected members of an instance of another type are only accessible if the instance is known
         ''' to be "this" instance (as indicated by the "MyBase" keyword).
         ''' </summary>
@@ -1647,13 +1649,15 @@ _Default:
         ''' <returns>A list of symbols that were found. If no symbols were found, an empty list is returned.</returns>
         ''' <remarks>
         ''' The "position" is used to determine what variables are visible and accessible.
-        ''' 
+        '''
         ''' Non-reduced extension methods are considered, but reduced extension methods are not.
         ''' </remarks>
-        Public Shadows Function LookupBaseMembers(
-            position As Integer,
-            Optional name As String = Nothing
-        ) As ImmutableArray(Of ISymbol)
+        Public Shadows Function LookupBaseMembers _
+            (
+              position  As Integer,
+     Optional name      As String = Nothing
+            ) As ImmutableArray(Of ISymbol)
+
             Dim result = LookupSymbolsInternal(position, Nothing, name, LookupOptions.Default, useBaseReferenceAccessibility:=True)
 #If DEBUG Then
             For Each item In result
@@ -1667,7 +1671,7 @@ _Default:
         ''' <summary>
         ''' Gets the available named static member symbols in the context of the specified location And optional container.
         ''' Only members that are accessible And visible from the given location are returned.
-        ''' 
+        '''
         ''' Non-reduced extension methods are considered, since they are static methods.
         ''' </summary>
         ''' <param name="position">The character position for determining the enclosing declaration scope And
@@ -1680,13 +1684,15 @@ _Default:
         ''' <remarks>
         ''' The "position" Is used to determine what variables are visible And accessible. Even if "container" Is
         ''' specified, the "position" location Is significant for determining which members of "containing" are
-        ''' accessible. 
+        ''' accessible.
         ''' </remarks>
-        Public Shadows Function LookupStaticMembers(
-            position As Integer,
-            Optional container As INamespaceOrTypeSymbol = Nothing,
-            Optional name As String = Nothing
-        ) As ImmutableArray(Of ISymbol)
+        Public Shadows Function LookupStaticMembers _
+            (
+              position As Integer,
+     Optional container As INamespaceOrTypeSymbol = Nothing,
+     Optional name As String = Nothing
+            ) As ImmutableArray(Of ISymbol)
+
             Dim result = LookupSymbolsInternal(position, ToLanguageSpecific(container), name, LookupOptions.MustNotBeInstance Or LookupOptions.IgnoreExtensionMethods, useBaseReferenceAccessibility:=False)
 #If DEBUG Then
             For Each item In result
@@ -1710,15 +1716,16 @@ _Default:
         ''' <remarks>
         ''' The "position" Is used to determine what variables are visible And accessible. Even if "container" Is
         ''' specified, the "position" location Is significant for determining which members of "containing" are
-        ''' accessible. 
-        ''' 
+        ''' accessible.
+        '''
         ''' Does Not return INamespaceOrTypeSymbol, because there could be aliases.
         ''' </remarks>
-        Public Shadows Function LookupNamespacesAndTypes(
-            position As Integer,
-            Optional container As INamespaceOrTypeSymbol = Nothing,
-            Optional name As String = Nothing
-        ) As ImmutableArray(Of ISymbol)
+        Public Shadows Function LookupNamespacesAndTypes _
+            (
+              position As Integer,
+     Optional container As INamespaceOrTypeSymbol = Nothing,
+     Optional name As String = Nothing
+            ) As ImmutableArray(Of ISymbol)
             Dim result = LookupSymbolsInternal(position, ToLanguageSpecific(container), name, LookupOptions.NamespacesOrTypesOnly, useBaseReferenceAccessibility:=False)
 
 #If DEBUG Then
@@ -1741,7 +1748,7 @@ _Default:
         ''' <remarks>
         ''' The "position" Is used to determine what variables are visible And accessible. Even if "container" Is
         ''' specified, the "position" location Is significant for determining which members of "containing" are
-        ''' accessible. 
+        ''' accessible.
         ''' </remarks>
         Public Shadows Function LookupLabels(
             position As Integer,
@@ -1768,54 +1775,54 @@ _Default:
         ''' <param name="name">The name of the symbol to find. If null is specified then symbols
         ''' with any names are returned.</param>
         ''' <param name="options">Additional options that affect the lookup process.</param>
-        ''' <param name="useBaseReferenceAccessibility">Ignore 'throughType' in accessibility checking. 
+        ''' <param name="useBaseReferenceAccessibility">Ignore 'throughType' in accessibility checking.
         ''' Used in checking accessibility of symbols accessed via 'MyBase' or 'base'.</param>
         ''' <returns>A list of symbols that were found. If no symbols were found, an empty list is
         ''' returned.</returns>
         ''' <remarks>
         ''' The "position" is used to determine what variables are visible and accessible. Even if
         ''' "container" is specified, the "position" location is significant for determining which
-        ''' members of "containing" are accessible. 
-        ''' 
-        ''' Locations are character locations, just as used as the Syntax APIs such as FindToken, or 
+        ''' members of "containing" are accessible.
+        '''
+        ''' Locations are character locations, just as used as the Syntax APIs such as FindToken, or
         ''' returned from the Span property on tokens and syntax node.
-        ''' 
+        '''
         ''' The text of the program is divided into scopes, which nest but don't otherwise
         ''' intersect. When doing an operation such as LookupSymbols, the code first determines the
-        ''' smallest scope containing the position, and from there all containing scopes. 
-        ''' 
-        ''' Scopes that span an entire block statement start at the beginning of the first token of 
+        ''' smallest scope containing the position, and from there all containing scopes.
+        '''
+        ''' Scopes that span an entire block statement start at the beginning of the first token of
         ''' the block header, and end immediately before the statement terminator token following
         ''' the end statement of the block. If the end statement of the block is missing, it ends
         ''' immediately before the next token. Examples of these include members and type parameters
         ''' of a type, type parameters of a method, and variables declared in a For statement.
-        ''' 
-        ''' Scopes that span the interior of a block statement start at the statement terminator of 
+        '''
+        ''' Scopes that span the interior of a block statement start at the statement terminator of
         ''' the block header statement, and end immediately before the first token of the end
         ''' statement of the block. If the end statement of the block is missing, it ends
         ''' immediately before the next statement. Examples of these include local variables, method
         ''' parameters, and members of a namespace.
-        ''' 
+        '''
         ''' Scopes of variables declared in a single-line If statement start at the beginning of the
-        ''' "Then" token, and end immediately before the Else token or statement terminator. 
-        ''' 
+        ''' "Then" token, and end immediately before the Else token or statement terminator.
+        '''
         ''' Scopes of variables declared in the Else part of a single-line If start at the beginning
         ''' of the "Else" token, and end immediately before the statement terminator.
-        ''' 
+        '''
         ''' Some specialized binding rules are in place for a single statement, like Imports or
         ''' Inherits. These specialized binding rules begin at the start of the first token of the
         ''' statement, and end immediately before the statement terminator of that statement.
-        ''' 
+        '''
         ''' In all of the above, the "start" means the start of a token without considering leading
         ''' trivia. In other words, Span.Start, not FullSpan.Start. With the exception of
         ''' documentation comments, all scopes begin at the start of a token, and end immediately
         ''' before the start of a token.
-        ''' 
+        '''
         ''' The scope of the default namespace, and all symbols introduced via Imports statements,
         ''' is the entire file.
-        ''' 
+        '''
         ''' Positions within a documentation comment that is correctly attached to a symbol take on
-        ''' the binding scope of that symbol. 
+        ''' the binding scope of that symbol.
         ''' </remarks>
         ''' <exception cref="ArgumentException">Throws an argument exception if the passed lookup options are invalid.</exception>
         Private Function LookupSymbolsInternal(position As Integer,
@@ -1849,7 +1856,7 @@ _Default:
             End If
 
             If name Is Nothing Then
-                ' If they didn't provide a name, then look up all names and associated arities 
+                ' If they didn't provide a name, then look up all names and associated arities
                 ' and find all the corresponding symbols.
                 Dim info = LookupSymbolsInfo.GetInstance()
                 Me.AddLookupSymbolsInfo(position, info, container, options)
@@ -1910,7 +1917,7 @@ _Default:
                     ' with a costly lookup.  Just add it straight to the results.
                     results.Add(uniqueSymbol)
                 Else
-                    ' The name maps to multiple symbols. Actually do a real lookup so 
+                    ' The name maps to multiple symbols. Actually do a real lookup so
                     ' that we will properly figure out hiding and whatnot.
                     If arities IsNot Nothing Then
                         Me.LookupSymbols(binder, container, name, arities, options, results)
@@ -2109,7 +2116,7 @@ _Default:
         End Function
 
         ''' <summary>
-        ''' Analyze data-flow within an expression. 
+        ''' Analyze data-flow within an expression.
         ''' </summary>
         ''' <param name="expression">The expression within the associated SyntaxTree to analyze.</param>
         ''' <returns>An object that can be used to obtain the result of the data flow analysis.</returns>
@@ -2166,7 +2173,7 @@ _Default:
         ''' <summary>
         ''' Get a SemanticModel object that is associated with a range argument syntax that did not appear in
         ''' this source code. This can be used to get detailed semantic information about sub-parts
-        ''' of this node that did not appear in source code. 
+        ''' of this node that did not appear in source code.
         ''' </summary>
         ''' <param name="position">A character position used to identify a declaration scope and accessibility. This
         ''' character position must be within the FullSpan of the Root syntax node in this SemanticModel.
@@ -2191,7 +2198,7 @@ _Default:
         ''' <summary>
         ''' Get a SemanticModel object that is associated with an executable statement that did not appear in
         ''' this source code. This can be used to get detailed semantic information about sub-parts
-        ''' of a statement that did not appear in source code. 
+        ''' of a statement that did not appear in source code.
         ''' </summary>
         ''' <param name="position">A character position used to identify a declaration scope and accessibility. This
         ''' character position must be within the FullSpan of the Root syntax node in this SemanticModel.</param>
@@ -2240,7 +2247,7 @@ _Default:
         ''' <summary>
         ''' Get a SemanticModel object that is associated with an attribute that did not appear in
         ''' this source code. This can be used to get detailed semantic information about sub-parts
-        ''' of an attribute that did not appear in source code. 
+        ''' of an attribute that did not appear in source code.
         ''' </summary>
         ''' <param name="position">A character position used to identify a declaration scope and accessibility. This
         ''' character position must be within the FullSpan of the Root syntax node in this SemanticModel.</param>
@@ -2270,7 +2277,7 @@ _Default:
         ''' <summary>
         ''' Get a SemanticModel object that is associated with a type syntax that did not appear in
         ''' this source code. This can be used to get detailed semantic information about sub-parts
-        ''' of a type syntax that did not appear in source code. 
+        ''' of a type syntax that did not appear in source code.
         ''' </summary>
         ''' <param name="position">A character position used to identify a declaration scope and accessibility. This
         ''' character position must be within the FullSpan of the Root syntax node in this SemanticModel.
@@ -2418,7 +2425,7 @@ _Default:
         ''' Given an FieldInitializerSyntax, get the corresponding symbol of anonymous type property.
         ''' </summary>
         ''' <param name="fieldInitializerSyntax">The anonymous object creation field initializer syntax.</param>
-        ''' <returns>The symbol that was declared, or Nothing if no such symbol exists or 
+        ''' <returns>The symbol that was declared, or Nothing if no such symbol exists or
         ''' if the field initializer was not part of an anonymous type creation.</returns>
         Public Overridable Overloads Function GetDeclaredSymbol(fieldInitializerSyntax As FieldInitializerSyntax, Optional cancellationToken As CancellationToken = Nothing) As IPropertySymbol
             If fieldInitializerSyntax Is Nothing Then
@@ -2767,18 +2774,18 @@ _Default:
         End Function
 
         ''' <summary>
-        ''' RaiseEvent situation is very special: 
-        ''' 1) Unlike other syntaxes that take named arguments, RaiseEvent is a statement. 
+        ''' RaiseEvent situation is very special:
+        ''' 1) Unlike other syntaxes that take named arguments, RaiseEvent is a statement.
         ''' 2) RaiseEvent is essentially a wrapper around underlying call to the event rising method.
         '''    Note that while event itself may have named parameters in its syntax, their names could be irrelevant
         '''    For the purpose of fetching named parameters, it is the target of the call that we are interested in.
-        '''    
+        '''
         '''    === Example:
-        ''' 
+        '''
         ''' Interface I1
-        '''    Event E(qwer As Integer)  
+        '''    Event E(qwer As Integer)
         ''' End Interface
-        ''' 
+        '''
         ''' Class cls1 : Implements I1
         '''    Event E3(bar As Integer) Implements I1.E   '  "bar" means nothing here. Only type matters.
         '''
@@ -2786,8 +2793,8 @@ _Default:
         '''        RaiseEvent E3(qwer:=123)  ' qwer binds to parameter on I1.EEventhandler.invoke(goo)
         '''    End Sub
         '''End Class
-        ''' 
-        ''' 
+        '''
+        '''
         ''' </summary>
         Private Function GetNamedArgumentSymbolInfoInRaiseEvent(argumentName As String,
                                                                 containingRaiseEvent As RaiseEventStatementSyntax) As SymbolInfo
@@ -2850,9 +2857,9 @@ _Default:
             Return Nothing
         End Function
 
-        ''' <summary> 
+        ''' <summary>
         ''' The SyntaxTree that is bound
-        ''' </summary> 
+        ''' </summary>
         Public MustOverride Shadows ReadOnly Property SyntaxTree As SyntaxTree
 
         ''' <summary>
@@ -2936,13 +2943,13 @@ _Default:
 
             ''' <summary>
             ''' When binding "C" new C(...), return the constructor of C that was bound to, if C unambiguously
-            ''' binds to a single type with at least one constructor. 
+            ''' binds to a single type with at least one constructor.
             ''' </summary>
             PreferConstructorsToType = &H2
 
             ''' <summary>
             ''' When binding a name X that was declared with a "using X=OtherTypeOrNamespace", return OtherTypeOrNamespace.
-            ''' </summary>            
+            ''' </summary>
             ResolveAliases = &H4
 
             ''' <summary>
@@ -2961,7 +2968,7 @@ _Default:
 
         ''' <summary>
         ''' Given a position in the SyntaxTree for this SemanticModel returns the innermost Symbol
-        ''' that the position is considered inside of. 
+        ''' that the position is considered inside of.
         ''' </summary>
         Public Shadows Function GetEnclosingSymbol(position As Integer, Optional cancellationToken As CancellationToken = Nothing) As ISymbol
             CheckPosition(position)

@@ -235,7 +235,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides Sub PrintLangVersions(consoleOutput As TextWriter)
             consoleOutput.WriteLine(ErrorFactory.IdToString(ERRID.IDS_LangVersions, Culture))
             Dim defaultVersion = Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Default)
-            Dim latestVersion =  Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Latest)
+            Dim latestVersion  = Instance.MapSpecifiedToEffectiveVersion(LanguageVersion.Latest)
             For Each v As LanguageVersion In Instance.EnumerateLanguageVersions
                 Dim displayName = Instance.ToDisplayString(v)
                 If v = defaultVersion Then

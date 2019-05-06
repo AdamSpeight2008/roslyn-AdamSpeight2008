@@ -11,28 +11,31 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
   Friend Class ConditionalPreprocessorHighlighter
     Inherits AbstractKeywordHighlighter(Of DirectiveTriviaSyntax)
 
-    Protected Overloads Overrides Iterator Function GetHighlights(directive As DirectiveTriviaSyntax, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-      If cancellationToken.IsCancellationRequested Then Return
+    Protected Overloads Overrides Iterator Function GetHighlights _
+            (
+              directive As DirectiveTriviaSyntax,
+              cancellationToken As CancellationToken
+            ) As IEnumerable(Of TextSpan)
 
+      If cancellationToken.IsCancellationRequested Then Return
       Dim conditionals = directive.GetMatchingConditionalDirectives(cancellationToken)
       If conditionals Is Nothing Then Return
-
       For Each conditional In conditionals
         If cancellationToken.IsCancellationRequested Then Return
-           If TypeOf conditional Is IfDirectiveTriviaSyntax Then
-              With DirectCast(conditional, IfDirectiveTriviaSyntax)
-                Yield TextSpan.FromBounds(.HashToken.SpanStart, .IfOrElseIfKeyword.Span.End)
-                If .ThenKeyword.Kind <> SyntaxKind.None Then Yield .ThenKeyword.Span
-              End With
-           ElseIf TypeOf conditional Is ElseDirectiveTriviaSyntax Then
-              With DirectCast(conditional, ElseDirectiveTriviaSyntax)
-                Yield TextSpan.FromBounds(.HashToken.SpanStart, .ElseKeyword.Span.End)
-              End With
-           ElseIf TypeOf conditional Is EndIfDirectiveTriviaSyntax Then
-              With DirectCast(conditional, EndIfDirectiveTriviaSyntax)
-                Yield TextSpan.FromBounds(.HashToken.SpanStart, .IfKeyword.Span.End)
-              End With
-           End If
+        If TypeOf conditional Is IfDirectiveTriviaSyntax Then
+           With DirectCast(conditional, IfDirectiveTriviaSyntax)
+             Yield TextSpan.FromBounds(.HashToken.SpanStart, .IfOrElseIfKeyword.Span.End)
+             If .ThenKeyword.Kind <> SyntaxKind.None Then Yield .ThenKeyword.Span
+           End With
+        ElseIf TypeOf conditional Is ElseDirectiveTriviaSyntax Then
+           With DirectCast(conditional, ElseDirectiveTriviaSyntax)
+             Yield TextSpan.FromBounds(.HashToken.SpanStart, .ElseKeyword.Span.End)
+           End With
+        ElseIf TypeOf conditional Is EndIfDirectiveTriviaSyntax Then
+           With DirectCast(conditional, EndIfDirectiveTriviaSyntax)
+             Yield TextSpan.FromBounds(.HashToken.SpanStart, .IfKeyword.Span.End)
+           End With
+        End If
       Next
     End Function
 

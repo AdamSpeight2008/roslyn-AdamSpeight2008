@@ -58,15 +58,10 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
 
       ' find first text on line
       Dim firstNonWhitespacePosition = line.GetFirstNonWhitespacePosition()
-      If Not firstNonWhitespacePosition.HasValue Then
-         Return False
-      End If
-
+      If Not firstNonWhitespacePosition.HasValue Then Return False
       ' enter on token only works when first token on line is first text on line
       Dim token = root.FindToken(firstNonWhitespacePosition.Value)
-      If token.Kind = SyntaxKind.None OrElse token.SpanStart <> firstNonWhitespacePosition Then
-         Return False
-      End If
+      If token.Kind = SyntaxKind.None OrElse token.SpanStart <> firstNonWhitespacePosition Then         Return False
 
       ' now try to gather various token information to see whether we are at an applicable position.
       ' all these are heuristic based
@@ -75,9 +70,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
       Dim previousToken = token.GetPreviousToken(includeZeroWidth:=True)
 
       ' only use smart token formatter when we have at least two visible tokens.
-      If previousToken.Kind = SyntaxKind.None Then
-          Return False
-      End If
+      If previousToken.Kind = SyntaxKind.None Then          Return False
 
       ' check special case 
       ' if previous token (or one before previous token if the previous token is statement terminator token) is missing, make sure
@@ -86,10 +79,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
           Return False
       ElseIf previousToken.IsMissing Then
           Dim statement = token.GetAncestor(Of StatementSyntax)()
-          If statement Is Nothing Then
-              Return False
-          End If
-
+          If statement Is Nothing Then              Return False
           ' check whether current token is first token of a statement
           Return statement.GetFirstToken() = token
       End If
@@ -114,10 +104,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
 
         ' make sure we have the given token as one of tokens to be aligned to the base token
         Dim match = operations.FirstOrDefault(Function(o) o.Tokens.Contains(token))
-        If match IsNot Nothing Then
-           Return True
-        End If
-
+        If match IsNot Nothing Then           Return True
         currentNode = currentNode.Parent
       Loop
 

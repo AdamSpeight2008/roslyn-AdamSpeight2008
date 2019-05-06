@@ -43,16 +43,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     diagnostic = diagnostic.WithLocation(Location.None)
                 End If
 
-                ' Add "vbc : " command line prefix to the start of the command line diagnostics which do not have a location to match the 
-                ' behavior of native compiler.    This allows MSBuild output to be consistent whether Roslyn is installed or not.      
+                ' Add "vbc : " command line prefix to the start of the command line diagnostics which do not have a location to match the
+                ' behavior of native compiler.    This allows MSBuild output to be consistent whether Roslyn is installed or not.
                 Return VisualBasicCompiler.VbcCommandLinePrefix &
                     MyBase.Format(diagnostic, formatter)
             End If
 
             Dim baseMessage = MyBase.Format(diagnostic, formatter)
 
-            Dim sb As New StringBuilder()
-            sb.AppendLine(baseMessage)
+            Dim sb  = PooledObjects.PooledStringBuilder.GetInstance' New StringBuilder()
+            With sb.Builder
+            .AppendLine(baseMessage)
 
             ' the squiggles are displayed for the original (unmapped) location
             Dim sourceSpan = diagnosticSpanOpt.Value
@@ -71,29 +72,29 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             While (line.Start < sourceSpanEnd)
                 ' Builds the original text line
-                sb.AppendLine()
-                sb.AppendLine(line.ToString().Replace(vbTab, "    ")) ' normalize tabs with 4 spaces
+                .AppendLine()
+                .AppendLine(line.ToString().Replace(vbTab, "    ")) ' normalize tabs with 4 spaces
 
                 ' Builds leading spaces up to the error span
                 For position = Math.Min(sourceSpanStart, line.Start) To Math.Min(line.End, sourceSpanStart) - 1
                     If (text(position) = vbTab) Then
                         ' normalize tabs with 4 spaces
-                        sb.Append(" "c, 4)
+                        .Append(" "c, 4)
                     Else
-                        sb.Append(" ")
+                        .Append(" ")
                     End If
                 Next
 
                 ' Builds squiggles
                 If sourceSpan.IsEmpty Then
-                    sb.Append("~")
+                    .Append("~")
                 Else
                     For position = Math.Max(sourceSpanStart, line.Start) To Math.Min(If(sourceSpanEnd = sourceSpanStart, sourceSpanEnd, sourceSpanEnd - 1), line.End - 1)
                         If (text(position) = vbTab) Then
                             ' normalize tabs with 4 spaces
-                            sb.Append("~"c, 4)
+                            .Append("~"c, 4)
                         Else
-                            sb.Append("~")
+                            .Append("~")
                         End If
                     Next
                 End If
@@ -102,9 +103,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 For position = Math.Min(sourceSpanEnd, line.End) To line.End - 1
                     If (text(position) = vbTab) Then
                         ' normalize tabs with 4 spaces
-                        sb.Append(" "c, 4)
+                        .Append(" "c, 4)
                     Else
-                        sb.Append(" ")
+                        .Append(" ")
                     End If
                 Next
 
@@ -117,8 +118,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                 line = text.Lines(linenumber)
             End While
-
-            Return sb.ToString()
+            End With
+            Return sb.ToStringAndFree()
         End Function
 
         Friend Overrides Function FormatSourcePath(path As String, basePath As String, formatter As IFormatProvider) As String

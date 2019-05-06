@@ -15,11 +15,23 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.Formatting.Indentation
     Public Sub New()
     End Sub
 
-    Public Overrides Sub AddSuppressOperationsSlow(list As List(Of SuppressOperation), node As SyntaxNode, optionSet As OptionSet, ByRef nextOperation As NextSuppressOperationAction)
+    Public Overrides Sub AddSuppressOperationsSlow _
+            (
+              list          As List(Of SuppressOperation),
+              node          As SyntaxNode,
+              optionSet     As OptionSet,
+        ByRef nextOperation As NextSuppressOperationAction
+            )
       ' don't suppress anything
     End Sub
 
-    Public Overrides Function GetAdjustNewLinesOperationSlow(previousToken As SyntaxToken, currentToken As SyntaxToken, optionSet As OptionSet, ByRef nextOperation As NextGetAdjustNewLinesOperation) As AdjustNewLinesOperation
+    Public Overrides Function GetAdjustNewLinesOperationSlow _
+            (
+              previousToken As SyntaxToken,
+              currentToken  As SyntaxToken,
+              optionSet     As OptionSet,
+        ByRef nextOperation As NextGetAdjustNewLinesOperation
+            ) As AdjustNewLinesOperation
       ' unlike regular one. force position of attribute
       Dim attributeNode = TryCast(previousToken.Parent, AttributeListSyntax)
       If attributeNode IsNot Nothing AndAlso attributeNode.GreaterThanToken = previousToken Then

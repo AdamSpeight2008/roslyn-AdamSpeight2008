@@ -23,11 +23,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public Overrides Sub VisitProperty(symbol As PropertySymbol)
                 Me._cancellationToken.ThrowIfCancellationRequested()
 
-                If Not ShouldSkipSymbol(symbol) Then
-                    Dim sourceProperty = TryCast(symbol, SourcePropertySymbol)
-                    If sourceProperty IsNot Nothing Then
-                        WriteDocumentationCommentForProperty(sourceProperty)
-                    End If
+                If ShouldSkipSymbol(symbol) Then Exit Sub
+                Dim sourceProperty = TryCast(symbol, SourcePropertySymbol)
+                If sourceProperty IsNot Nothing Then
+                   WriteDocumentationCommentForProperty(sourceProperty)
                 End If
             End Sub
 

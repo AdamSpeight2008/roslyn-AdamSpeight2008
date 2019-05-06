@@ -23,33 +23,31 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public Overrides Sub VisitMethod(symbol As MethodSymbol)
                 Me._cancellationToken.ThrowIfCancellationRequested()
 
-                If Not ShouldSkipSymbol(symbol) Then
-                    Dim sourceMethod As SourceMethodSymbol =
-                        If(TryCast(symbol, SourceMemberMethodSymbol),
-                           DirectCast(TryCast(symbol, SourceDeclareMethodSymbol), SourceMethodSymbol))
-
-                    If sourceMethod IsNot Nothing Then
-                        WriteDocumentationCommentForMethod(sourceMethod)
-                    End If
+                If ShouldSkipSymbol(symbol) Then Exit Sub
+                Dim sourceMethod As SourceMethodSymbol =
+                    If(TryCast(symbol, SourceMemberMethodSymbol),
+                       DirectCast(TryCast(symbol, SourceDeclareMethodSymbol), SourceMethodSymbol))
+                If sourceMethod IsNot Nothing Then
+                   WriteDocumentationCommentForMethod(sourceMethod)
                 End If
             End Sub
 
             ''' <returns> True, if the comment was written </returns>
             Private Function WriteDocumentationCommentForMethod(method As SourceMethodSymbol) As Boolean
 
-                ' NOTE: In UI scenarios, for partial methods Dev11 always uses implementation part's 
-                ' NOTE: comment if it exists ignoring errors, if any. 
-                ' NOTE: 
+                ' NOTE: In UI scenarios, for partial methods Dev11 always uses implementation part's
+                ' NOTE: comment if it exists ignoring errors, if any.
+                ' NOTE:
                 ' NOTE: In compilation scenarios Dev11 writes into resulting file *both* documentation
-                ' NOTE: comments from declaration and implementation parts into separate <member></member> sections, 
+                ' NOTE: comments from declaration and implementation parts into separate <member></member> sections,
                 ' NOTE: which seems to be wrong. If any part has error, it does not get into the final XML, thus
-                ' NOTE: in case implementation part has errors and declaration part does not, the latest will 
-                ' NOTE: finally land in the resulting documentation, meaning that the user sees implementation 
+                ' NOTE: in case implementation part has errors and declaration part does not, the latest will
+                ' NOTE: finally land in the resulting documentation, meaning that the user sees implementation
                 ' NOTE: part's comment in UI and finds declaration part in the resulting XML.
-                ' NOTE: 
-                ' NOTE: Roslyn for UI scenarios always (even in presence of errors) returns implementation part's 
-                ' NOTE: doc comment to be consistent with Dev11 and in compilation scenario writes implementation 
-                ' NOTE: part's comment if it exists and does not have errors, otherwise uses doc comment from 
+                ' NOTE:
+                ' NOTE: Roslyn for UI scenarios always (even in presence of errors) returns implementation part's
+                ' NOTE: doc comment to be consistent with Dev11 and in compilation scenario writes implementation
+                ' NOTE: part's comment if it exists and does not have errors, otherwise uses doc comment from
                 ' NOTE: declaration part.
 
                 Dim implementationPart = TryCast(method.PartialImplementationPart, SourceMethodSymbol)

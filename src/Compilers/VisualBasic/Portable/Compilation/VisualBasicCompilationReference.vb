@@ -9,26 +9,21 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
     ''' <summary>
-    ''' Represents a reference to another Visual Basic compilation. 
+    ''' Represents a reference to another Visual Basic compilation.
     ''' </summary>
     <DebuggerDisplay("{GetDebuggerDisplay(), nq}")>
     Friend NotInheritable Class VisualBasicCompilationReference
         Inherits CompilationReference
 
-        Private ReadOnly _compilation As VisualBasicCompilation
-
         ''' <summary>
         ''' Returns the referenced <see cref="Compilation"/>.
         ''' </summary>
         Public Shadows ReadOnly Property Compilation As VisualBasicCompilation
-            Get
-                Return _compilation
-            End Get
-        End Property
+
 
         Friend Overrides ReadOnly Property CompilationCore As Compilation
             Get
-                Return _compilation
+                Return Me.Compilation
             End Get
         End Property
 
@@ -48,7 +43,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim newCompilation As VisualBasicCompilation = Nothing
             'This retargeting code should only be enabled to verify all compilation references used in unit tests continue to work correctly
             ' when the mscorlib of the referenced assembly is changed to an earlier mscorlib causing retargeting to occur.
-            ' Only enable this code if this retargeting functionality is required to be tested.    
+            ' Only enable this code if this retargeting functionality is required to be tested.
 #If Retargeting Then
             retargetingreferenceCount += 1
             Console.WriteLine("Created Compilation Reference :" & retargetingreferenceCount .ToString)
@@ -68,7 +63,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             Next
 
-            'Verify is mscorlib/Microsoft.VisualBasic and System references are present that are v4       
+            'Verify is mscorlib/Microsoft.VisualBasic and System references are present that are v4
             If bAbleToRetargetToV2 Then
                 Dim AssembliesToRetarget As Integer = 0
                 For Each r In compilation.References
@@ -92,7 +87,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Dim x = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory()
                     Dim Parts() = x.Split(System.IO.Path.DirectorySeparatorChar)
                     Dim version = ""
-                    If Parts.Count > 2 Then version = Parts(Parts.Count - 2)                
+                    If Parts.Count > 2 Then version = Parts(Parts.Count - 2)
                     Dim Netfx2Path = x.Replace(version, "V2.0.50727")
 
                     If AssembliesToRetarget = 1 Then
@@ -116,7 +111,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Private Sub New(compilation As VisualBasicCompilation, properties As MetadataReferenceProperties)
             MyBase.New(properties)
-            _compilation = compilation
+            Me.Compilation = compilation
         End Sub
 
         Friend Overrides Function WithPropertiesImpl(properties As MetadataReferenceProperties) As CompilationReference

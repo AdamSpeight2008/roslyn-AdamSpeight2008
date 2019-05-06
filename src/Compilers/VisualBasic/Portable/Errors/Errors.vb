@@ -31,6 +31,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Void = InternalErrorCode.Void
         Unknown = InternalErrorCode.Unknown
         ERR_None = 0
+#Region "ERRORS"
+        #Region "2000 - 2999"
         ' ERR_InitError = 2000 unused in Roslyn
         ERR_FileNotFound = 2001
         ' WRN_FileAlreadyIncluded = 2002  'unused in Roslyn.
@@ -49,7 +51,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_LibNotFound = 2017
         'ERR_MaximumErrors = 2020       unused in Roslyn.
         ERR_IconFileAndWin32ResFile = 2023
-        'WRN_ReservedReference = 2024       ' unused by native compiler due to bug. 
+        'WRN_ReservedReference = 2024       ' unused by native compiler due to bug.
         WRN_NoConfigInResponseFile = 2025
         ' WRN_InvalidWarningId = 2026       ' unused in Roslyn.
         'ERR_WatsonSendNotOptedIn = 2027
@@ -68,7 +70,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_MissingGuidForOption = 2044
         ERR_BadChecksumAlgorithm = 2045
         ERR_MutuallyExclusiveOptions = 2046
-
+        #End Region
+        #Region "30000 - 30999"
         '// The naming convention is that if your error requires arguments, to append
         '// the number of args taken, e.g. AmbiguousName2
         '//
@@ -597,7 +600,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_BadAttributeNonPublicConstructor = 30758
         'ERR_ArrayElementIsNothing1 = 30759
         'ERR_ObjectReferenceIsNothing = 30760
-        ' ERR_StarliteDisallowsLateBinding = 30762   
+        ' ERR_StarliteDisallowsLateBinding = 30762
         ' ERR_StarliteBadDeclareFlags = 30763
         ' ERR_NoStarliteOverloadResolution = 30764
         'ERR_NoSupportFileIOKeywords1 = 30766
@@ -735,6 +738,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         'ERR_BadWithRefInConstExpr = 30995
         ERR_InitializerExpected = 30996
         ERR_LineContWithCommentOrNoPrecSpace = 30999
+        #End Region
+        #Region "31000 - 31999"
         ' ERR_MemberNotFoundForNoPia = 31000    not used in Roslyn. This looks to be a VB EE message
         ERR_InvInsideEnum = 31001
         ERR_InvInsideBlock = 31002
@@ -938,7 +943,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_DuplicateLocalStatic1 = 31401
         ERR_ImportAliasConflictsWithType2 = 31403
         ERR_CantShadowAMustOverride1 = 31404
-        'ERR_OptionalsCantBeStructs = 31405 
+        'ERR_OptionalsCantBeStructs = 31405
         ERR_MultipleEventImplMismatch3 = 31407
         ERR_BadSpecifierCombo2 = 31408
         ERR_MustBeOverloads2 = 31409
@@ -1069,7 +1074,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_IsNestedIn2 = 31559
         ERR_LocalTypeNameClash2 = 31560
         ERR_InteropMethodWithBody1 = 31561
-
+        #End Region
+        #Region "32000 - 32999"
         ERR_UseOfLocalBeforeDeclaration1 = 32000
         ERR_UseOfKeywordFromModule1 = 32001
         'ERR_UseOfKeywordOutsideClass1 = 32002
@@ -1220,7 +1226,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_ComClassCantBeAbstract0 = 32508
         ERR_ComClassRequiresPublicClass1 = 32509
         'ERR_DefaultCharSetAttributeNotSupported = 32510
-
+        #End Region
+        #Region "33000 - 33999"
         ERR_UnknownOperator = 33000
         ERR_DuplicateConversionCategoryUsed = 33001
         ERR_OperatorNotOverloadable = 33002
@@ -1281,12 +1288,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         '//       particularly if it applies to method symbols, please appropriately modify Bindable::ResolveOverloadingShouldSkipBadMember.
         '//       Failure to do so may break customer code.
         '// AVAILABLE                             33113 - 34999
-
+        #End Region
+        #Region "35000 - 35999"
         ERR_MissingRuntimeHelper = 35000
         'ERR_NoStdModuleAttribute = 35001 ' Note: we're now reporting a use site error in this case.
         'ERR_NoOptionTextAttribute = 35002
         ERR_DuplicateResourceFileName1 = 35003
-
+#End Region
+        #Region "36000 - 36999"
         ERR_ExpectedDotAfterGlobalNameSpace = 36000
         ERR_NoGlobalExpectedIdentifier = 36001
         ERR_NoGlobalInHandles = 36002
@@ -1509,7 +1518,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_VarianceOutByRefDisallowed1 = 36749
         ERR_VarianceInByRefDisallowed1 = 36750
         ERR_LambdaNoType = 36751
-        ' //ERR_NoReturnStatementsForMultilineLambda  = 36752 
+        ' //ERR_NoReturnStatementsForMultilineLambda  = 36752
         ' // replaced by LambdaNoType and LambdaNoTypeObjectDisallowed
         'ERR_CollectionInitializerArity2 = 36753
         ERR_VarianceConversionFailedOut6 = 36754
@@ -1608,7 +1617,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ERR_InvalidAssemblyCulture = 36982
         ERR_EncUpdateFailedMissingAttribute = 36983
-
+        #End Region
+        #Region "37000 - 37999"
         ERR_CantAwaitAsyncSub1 = 37001
         ERR_ResumableLambdaInExpressionTree = 37050
         ERR_DllImportOnResumableMethod = 37051
@@ -1745,8 +1755,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ERR_MissingFlagsAttributeOnEnum = 37307
         ERR_ExpectedParenthesizedExpression = 373308
         ERR_InvalidTypeSyntax = 373309
-
+        #End Region
+        #Region "38000 - 38999"
+        #End Region
+        #Region "39000 - 39999"
         ERR_EndOfErrors = 39999
+        #End Region
+#End Region
+#Region "WARNINGS"
         '// WARNINGS BEGIN HERE
         WRN_UseOfObsoleteSymbol2 = 40000
         WRN_InvalidOverrideDueToTupleNames2 = 40001
@@ -1968,9 +1984,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         WRN_AttributeIgnoredWhenPublicSigning = 42379
         WRN_Experimental = 42380
+#End Region
 
         ERR_MultipleAnalyzerConfigsInSameDir = 42500
-
+#Region "HIDDENs AND INFOS"
         ' // AVAILABLE                             42600 - 49998
         ERRWRN_NextAvailable = 42600
 
@@ -1979,7 +1996,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         HDN_UnusedImportStatement = 50001
         INF_UnableToLoadSomeTypesInAnalyzer = 50002
 
-        ' // AVAILABLE                             50003 - 54999   
+        ' // AVAILABLE                             50003 - 54999
+        #End Region
 
         ' Adding diagnostic arguments from resx file
         IDS_ProjectSettingsLocationName = 56000
@@ -1995,6 +2013,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         IDS_LangVersions = 56010
         IDS_ToolName = 56011
 
+#Region "Feature Codes"
         ' Feature codes
         FEATURE_AutoProperties
         FEATURE_LineContinuation
@@ -2031,6 +2050,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         FEATURE_EnumFlagOperators
         ERR_MissingEnumFlag
         FEATURE_TypeOfMany
-        ERR_InvalidTypeSyntax
+#End Region
     End Enum
+
 End Namespace

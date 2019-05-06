@@ -11,13 +11,16 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
   Friend Class ConstructorDeclarationHighlighter
     Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-    Protected Overloads Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+    Protected Overloads Overrides Iterator Function GetHighlights _
+            (
+              node As SyntaxNode,
+              cancellationToken As CancellationToken
+            ) As IEnumerable(Of TextSpan)
       If cancellationToken.IsCancellationRequested Then Return
-        Dim methodBlock = node.GetAncestor(Of MethodBlockBaseSyntax)()
-        If methodBlock Is Nothing OrElse Not TypeOf methodBlock.BlockStatement Is SubNewStatementSyntax Then Return
-
-        With methodBlock
-          With DirectCast(.BlockStatement, SubNewStatementSyntax)
+      Dim methodBlock = node.GetAncestor(Of MethodBlockBaseSyntax)()
+      If methodBlock Is Nothing OrElse Not TypeOf methodBlock.BlockStatement Is SubNewStatementSyntax Then Return
+      With methodBlock
+        With DirectCast(.BlockStatement, SubNewStatementSyntax)
           Dim firstKeyword = If(.Modifiers.Count > 0, .Modifiers.First(), .DeclarationKeyword)
           Yield TextSpan.FromBounds(firstKeyword.SpanStart, .NewKeyword.Span.End)
         End With

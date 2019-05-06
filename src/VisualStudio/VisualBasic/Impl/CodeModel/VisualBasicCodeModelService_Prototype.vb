@@ -66,13 +66,13 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
                 Return symbol.GetDocumentationCommentId()
             End If
 
-            Dim builder = New StringBuilder()
+            Dim builder = PooledObjects.PooledStringBuilder.GetInstance()
 
             AppendName(builder, symbol, flags)
             AppendParameters(builder, parameters, flags)
             AppendType(builder, symbol.Type, flags)
 
-            Return builder.ToString()
+            Return builder.ToStringAndFree()
         End Function
 
         Private Function GetFunctionPrototype(symbol As ISymbol, parameters As ImmutableArray(Of IParameterSymbol), flags As PrototypeFlags) As String
@@ -84,8 +84,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
                 Return symbol.GetDocumentationCommentId()
             End If
 
-            Dim builder = New StringBuilder()
-
+            Dim builder = PooledObjects.PooledStringBuilder.GetInstance
             AppendName(builder, symbol, flags)
             AppendParameters(builder, parameters, flags)
 
@@ -99,7 +98,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
                 End If
             End If
 
-            Return builder.ToString()
+            Return builder.ToStringAndFree()
         End Function
 
         Private Function GetVariablePrototype(symbol As IFieldSymbol, flags As PrototypeFlags) As String
@@ -111,13 +110,14 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
                 Return symbol.GetDocumentationCommentId()
             End If
 
-            Dim builder = New StringBuilder()
+            Dim builder = PooledObjects.PooledStringBuilder.GetInstance()
+            With builder
 
             AppendAccessibility(builder, symbol.DeclaredAccessibility)
-            builder.Append(" "c)
+            .builder.Append(" "c)
 
-            AppendName(builder, symbol, flags)
-            AppendType(builder, symbol.Type, flags)
+            AppendName(.builder, symbol, flags)
+            AppendType(.builder, symbol.Type, flags)
 
             If (flags And PrototypeFlags.Initializer) <> 0 Then
                 Dim modifiedIdentifier = TryCast(symbol.DeclaringSyntaxReferences.FirstOrDefault().GetSyntax(), ModifiedIdentifierSyntax)
@@ -128,13 +128,14 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
                        variableDeclarator.Initializer.Value IsNot Nothing AndAlso
                        Not variableDeclarator.Initializer.Value.IsMissing Then
 
-                        builder.Append(" = ")
-                        builder.Append(variableDeclarator.Initializer.Value.ToString())
+                        .builder.Append(" = ")
+                        .builder.Append(variableDeclarator.Initializer.Value.ToString())
                     End If
                 End If
             End If
+            End With
 
-            Return builder.ToString()
+            Return builder.ToStringAndFree()
         End Function
 
         Private Shared Sub AppendAccessibility(builder As StringBuilder, accessibility As Accessibility)

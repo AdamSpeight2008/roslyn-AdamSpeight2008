@@ -39,27 +39,27 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             _binderFactory = New BinderFactory(sourceModule, syntaxTree)
         End Sub
 
-        ''' <summary> 
+        ''' <summary>
         ''' The compilation associated with this binding.
-        ''' </summary> 
+        ''' </summary>
         Public Overrides ReadOnly Property Compilation As VisualBasicCompilation
             Get
                 Return _compilation
             End Get
         End Property
 
-        ''' <summary> 
+        ''' <summary>
         ''' The root node of the syntax tree that this binding is based on.
-        ''' </summary> 
+        ''' </summary>
         Friend Overrides ReadOnly Property Root As SyntaxNode
             Get
                 Return DirectCast(_syntaxTree.GetRoot(), VisualBasicSyntaxNode)
             End Get
         End Property
 
-        ''' <summary> 
+        ''' <summary>
         ''' The SyntaxTree that is bound
-        ''' </summary> 
+        ''' </summary>
         Public Overrides ReadOnly Property SyntaxTree As SyntaxTree
             Get
                 Return Me._syntaxTree
@@ -222,7 +222,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' We don't have a bound tree to examine outside of a member semantic model. Instead, we just
                 ' rebind the appropriate syntax as if we were binding it as part of symbol creation.
                 '
-                ' if expression is not part of a member semantic model then 
+                ' if expression is not part of a member semantic model then
                 '   a) it may be a reference to a type or namespace name
                 '   b) it may be a reference to a interface member in an Implements clause
                 '   c) it may be a reference to a field in an Handles clause
@@ -294,7 +294,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 ' We don't have a bound tree to examine outside of a member semantic model. Instead, we just
                 ' rebind the appropriate syntax as if we were binding it as part of symbol creation.
                 '
-                ' if expression is not part of a member semantic model then 
+                ' if expression is not part of a member semantic model then
                 '   a) it may be a reference to a type or namespace name
                 '   b) it may be a reference to a interface member in an Implements clause
                 '   c) it may be a reference to a field in an Handles clause
@@ -553,14 +553,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             If node.Kind = SyntaxKind.XmlString Then
                 Return Nothing
             End If
-            Debug.Assert(node.Kind = SyntaxKind.IdentifierName OrElse
-                         node.Kind = SyntaxKind.GenericName OrElse
-                         node.Kind = SyntaxKind.PredefinedType OrElse
-                         node.Kind = SyntaxKind.QualifiedName OrElse
-                         node.Kind = SyntaxKind.GlobalName OrElse
-                         node.Kind = SyntaxKind.QualifiedCrefOperatorReference OrElse
-                         node.Kind = SyntaxKind.CrefOperatorReference OrElse
-                         node.Kind = SyntaxKind.CrefReference)
+            Debug.Assert(node.Kind.IsEither(SyntaxKind.IdentifierName, SyntaxKind.GenericName,
+                                            SyntaxKind.PredefinedType, SyntaxKind.QualifiedName,
+                                            SyntaxKind.GlobalName,     SyntaxKind.QualifiedCrefOperatorReference,
+                                            SyntaxKind.CrefOperatorReference, SyntaxKind.CrefReference))
 
             ' We need to find trivia's enclosing binder first
             Dim parent As VisualBasicSyntaxNode = node.Parent
@@ -872,7 +868,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' Checks all symbol locations against the syntax provided and return symbol if any of the locations is 
+        ''' Checks all symbol locations against the syntax provided and return symbol if any of the locations is
         ''' inside the syntax span. Returns Nothing otherwise.
         ''' </summary>
         Private Function CheckSymbolLocationsAgainstSyntax(symbol As NamedTypeSymbol, nodeToCheck As VisualBasicSyntaxNode) As NamedTypeSymbol
@@ -1027,7 +1023,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     Case Else
                         ' broken code scenarios end up here
 
-                        ' to end up here, a methodbasesyntax's parent must be a statement and not be one of the above. 
+                        ' to end up here, a methodbasesyntax's parent must be a statement and not be one of the above.
                         ' The parser does e.g. not generate an enclosing block for accessors statements,
                         ' but for Operators, conversions and constructors.
 
@@ -1035,7 +1031,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
                         ' TODO: consider always creating a (missing) block around the statements in the parser
 
-                        ' We are asserting what we know so far. If this assert fails, this is not a bug, we either need to remove this assert or relax the assert. 
+                        ' We are asserting what we know so far. If this assert fails, this is not a bug, we either need to remove this assert or relax the assert.
                         Debug.Assert(statementSyntax.Kind = SyntaxKind.NamespaceBlock AndAlso
                                      (TypeOf (declarationSyntax) Is AccessorStatementSyntax OrElse
                                       TypeOf (declarationSyntax) Is EventStatementSyntax OrElse
@@ -1088,7 +1084,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                             Case SymbolKind.Property
                                 Return GetParameterSymbol(DirectCast(symbol, PropertySymbol).Parameters, parameter)
                             Case SymbolKind.NamedType
-                                '  check for being delegate 
+                                '  check for being delegate
                                 Dim typeSymbol = DirectCast(symbol, NamedTypeSymbol)
                                 Debug.Assert(typeSymbol.TypeKind = TYPEKIND.Delegate)
                                 If typeSymbol.DelegateInvokeMethod IsNot Nothing Then
@@ -1374,7 +1370,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Throw New ArgumentException(VBResources.DeclarationSyntaxNotWithinTree)
             End If
 
-            Dim builder = New ArrayBuilder(Of ISymbol)
+            Dim builder = ArrayBuilder(Of ISymbol).GetInstance
 
             For Each declarator In declarationSyntax.Declarators
                 For Each identifier In declarator.Names
@@ -1540,7 +1536,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' Analyze data-flow within an expression. 
+        ''' Analyze data-flow within an expression.
         ''' </summary>
         ''' <param name="expression">The expression within the associated SyntaxTree to analyze.</param>
         ''' <returns>An object that can be used to obtain the result of the data flow analysis.</returns>
@@ -1551,7 +1547,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim result = New VisualBasicDataFlowAnalysis(context)
 
-            ' Assert that we either correctly precalculated succeeded 
+            ' Assert that we either correctly precalculated succeeded
             ' flag or we know for sure why we failed to precalculate it
             CheckSucceededFlagInAnalyzeDataFlow(expression, result, context)
 
@@ -1566,13 +1562,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             ' Some cases of unsucceeded result that cannot be precalculated properly are handled below
 
-            ' CASE 1: If the region flow analysis is performed on the left part of member access like 
+            ' CASE 1: If the region flow analysis is performed on the left part of member access like
             '         on 'a' part of 'a.b.c()' expression AND 'a.b' is a type, we don't create a bound node
-            '         to be linked with syntax node 'a'. In this case FirstInRegion/LastInRegion nodes are 
+            '         to be linked with syntax node 'a'. In this case FirstInRegion/LastInRegion nodes are
             '         calculated by trying to bind 'a' itself, and in most cases it binds into Namespace
             '         or Type expression. This case is handles in RegionAnalysisContext..ctor.
             '
-            '         But in Color/Color case it binds into other symbol kinds and we suppress 
+            '         But in Color/Color case it binds into other symbol kinds and we suppress
             '         assertion for this case here
             Dim expressionParent As VisualBasicSyntaxNode = expression.Parent
             If expression.Kind = SyntaxKind.IdentifierName AndAlso
@@ -1580,18 +1576,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     DirectCast(expressionParent, MemberAccessExpressionSyntax).Expression Is expression Then
 
                 ' Color/Color confusion may only be possible if expression is an IdentifierName
-                ' and is nested in member access. This is too wide definition, but it's 
+                ' and is nested in member access. This is too wide definition, but it's
                 ' difficult to improve this without doing semantic analysis
                 Return
-                
+
             End If
             If expressionParent.Kind = SyntaxKind.FlagsEnumOperationExpression Then
                 Dim feoe = DirectCast(expressionParent, FlagsEnumOperationExpressionSyntax)
-                
-                Return 
+
+                Return
             End If
             ' CASE 2: If the region flow analysis is performed on the arguments of field declaration of array
-            '         data type having explicit initializer, like 'Public AnArray(2) = {0, 1}'; 
+            '         data type having explicit initializer, like 'Public AnArray(2) = {0, 1}';
             '         VB semantics generates an error about specifying both bounds and initializer and ignores them
             If expression.Kind = SyntaxKind.NumericLiteralExpression AndAlso
                     expressionParent IsNot Nothing AndAlso (expressionParent.Kind = SyntaxKind.SimpleArgument AndAlso Not DirectCast(expressionParent, SimpleArgumentSyntax).IsNamed) Then
@@ -1623,21 +1619,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         ''' <summary>
-        ''' Checks if the node is inside the attribute arguments 
+        ''' Checks if the node is inside the attribute arguments
         ''' </summary>
         Private Shared Function IsNodeInsideAttributeArguments(node As VisualBasicSyntaxNode) As Boolean
             While node IsNot Nothing
-                If node.Kind = SyntaxKind.Attribute Then
-                    Return True
-                End If
-
+                If node.Kind = SyntaxKind.Attribute Then Return True
                 node = node.Parent
             End While
             Return False
         End Function
 
         ''' <summary>
-        ''' Check Expression for being in right context, for example 'For ... Next [x]' 
+        ''' Check Expression for being in right context, for example 'For ... Next [x]'
         ''' is not correct context
         ''' </summary>
         Private Shared Function IsExpressionInValidContext(expression As ExpressionSyntax) As Boolean
@@ -1730,13 +1723,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         Private Sub AssertNodeInTree(node As VisualBasicSyntaxNode, argName As String)
-            If node Is Nothing Then
-                Throw New ArgumentNullException(argName)
-            End If
-
-            If Not IsInTree(node) Then
-                Throw New ArgumentException(argName & VBResources.NotWithinTree)
-            End If
+            If node Is Nothing    Then Throw New ArgumentNullException(argName)
+            If Not IsInTree(node) Then Throw New ArgumentException(argName & VBResources.NotWithinTree)
         End Sub
 
         Private Function ValidateRegionDefiningExpression(expression As ExpressionSyntax) As Boolean
@@ -1834,9 +1822,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         ''' <summary>
-        ''' Check ForBlockSyntax for being the uppermost For block. By uppermost 
+        ''' Check ForBlockSyntax for being the uppermost For block. By uppermost
         ''' For block we mean that if Next clause contains several control variables,
-        ''' the uppermost block is the one which includes all the For blocks ending with 
+        ''' the uppermost block is the one which includes all the For blocks ending with
         ''' the same Next clause
         ''' </summary>
         Private Function IsNotUppermostForBlock(forBlockOrStatement As VisualBasicSyntaxNode) As Boolean
@@ -1851,12 +1839,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Dim endNode As NextStatementSyntax = forBlock.NextStatement
 
             If endNode IsNot Nothing Then
-                ' The only case where the statement is valid is this case is 
+                ' The only case where the statement is valid is this case is
                 ' that the Next clause contains one single control variable (or none)
                 Return endNode.ControlVariables.Count > 1
             End If
 
-            ' go down the For statements chain until the last and ensure it has as many 
+            ' go down the For statements chain until the last and ensure it has as many
             ' variables as there were nested For statements
             Dim nesting As Integer = 1
             Do
@@ -1888,26 +1876,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend Overrides Function GetForEachStatementInfoWorker(node As ForEachBlockSyntax) As ForEachStatementInfo
             Dim model As MemberSemanticModel = Me.GetMemberSemanticModel(node)
 
-            If model IsNot Nothing Then
-                Return model.GetForEachStatementInfoWorker(node)
-            Else
-                Return Nothing
-            End If
+            If model Is Nothing Then Return Nothing
+            Return model.GetForEachStatementInfoWorker(node)
         End Function
 
-        Friend Overrides Function GetAwaitExpressionInfoWorker(awaitExpression As AwaitExpressionSyntax, Optional cancellationToken As CancellationToken = Nothing) As AwaitExpressionInfo
-            Dim model As MemberSemanticModel = Me.GetMemberSemanticModel(awaitExpression)
+        Friend Overrides Function GetAwaitExpressionInfoWorker _
+               (
+                 awaitExpression As AwaitExpressionSyntax,
+       Optional cancellationToken As CancellationToken = Nothing
+               ) As AwaitExpressionInfo
 
-            If model IsNot Nothing Then
-                Return model.GetAwaitExpressionInfoWorker(awaitExpression, cancellationToken)
-            Else
-                Return Nothing
-            End If
+            Dim model As MemberSemanticModel = Me.GetMemberSemanticModel(awaitExpression)
+            If model Is Nothing Then Return Nothing
+            Return model.GetAwaitExpressionInfoWorker(awaitExpression, cancellationToken)
         End Function
 
 #Region "Region Analysis Context Creation"
 
-        ''' <summary> Used to create a region analysis context 
+        ''' <summary> Used to create a region analysis context
         ''' with failed flag set to be used in 'failed' scenarios </summary>
         Private Function CreateFailedRegionAnalysisContext() As RegionAnalysisContext
             Return New RegionAnalysisContext(Me.Compilation)

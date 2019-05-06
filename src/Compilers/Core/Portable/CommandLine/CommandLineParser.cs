@@ -136,7 +136,7 @@ namespace Microsoft.CodeAnalysis
                 try
                 {
                     // Check some ancient reserved device names, such as COM1,..9, LPT1..9, PRN, CON, or AUX etc., and bail out earlier
-                    // Win32 API - GetFullFileName - will resolve them, say 'COM1', as "\\.\COM1" 
+                    // Win32 API - GetFullFileName - will resolve them, say 'COM1', as "\\.\COM1"
                     resolvedPath = Path.GetFullPath(resolvedPath);
                     // preserve possible invalid path info for diagnostic purpose
                     invalidPath = resolvedPath;
@@ -547,7 +547,7 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
-        /// Take a string of lines from a response file, remove comments, 
+        /// Take a string of lines from a response file, remove comments,
         /// and split into a set of command line arguments.
         /// </summary>
         internal static IEnumerable<string> ParseResponseLines(IEnumerable<string> lines)
@@ -629,7 +629,7 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
-        /// See <see cref="CommandLineUtilities.SplitCommandLineIntoArguments(string, bool)"/> 
+        /// See <see cref="CommandLineUtilities.SplitCommandLineIntoArguments(string, bool)"/>
         /// </summary>
         public static IEnumerable<string> SplitCommandLineIntoArguments(string commandLine, bool removeHashComments)
         {
@@ -641,9 +641,9 @@ namespace Microsoft.CodeAnalysis
         /// compat behavior with the native compiler.
         /// </summary>
         /// <remarks>
-        /// Mimics the function RemoveQuotes from the native C# compiler.  The native VB equivalent of this 
-        /// function is called RemoveQuotesAndSlashes.  It has virtually the same behavior except for a few 
-        /// quirks in error cases.  
+        /// Mimics the function RemoveQuotes from the native C# compiler.  The native VB equivalent of this
+        /// function is called RemoveQuotesAndSlashes.  It has virtually the same behavior except for a few
+        /// quirks in error cases.
         /// </remarks>
         internal static string RemoveQuotesAndSlashes(string arg)
         {
@@ -705,7 +705,7 @@ namespace Microsoft.CodeAnalysis
                 Debug.Assert(slashCount >= 0);
 
                 // If there is an odd number of slashes then the quote is escaped and hence a part
-                // of the output.  Otherwise it is a normal quote and can be ignored. 
+                // of the output.  Otherwise it is a normal quote and can be ignored.
                 if (slashCount == 1)
                 {
                     // The quote is escaped so eat it.
@@ -918,8 +918,8 @@ namespace Microsoft.CodeAnalysis
             {
                 bool yielded = false;
 
-                // NOTE: Directory.EnumerateFiles(...) surprisingly treats pattern "." the 
-                //       same way as "*"; as we don't expect anything to be found by this 
+                // NOTE: Directory.EnumerateFiles(...) surprisingly treats pattern "." the
+                //       same way as "*"; as we don't expect anything to be found by this
                 //       pattern, let's just not search in this case
                 pattern = pattern.Trim(s_searchPatternTrimChars);
                 bool singleDotPattern = string.Equals(pattern, ".", StringComparison.Ordinal);

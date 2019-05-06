@@ -11,6 +11,7 @@ Imports Microsoft.VisualStudio.Utilities
 Imports VSCommanding = Microsoft.VisualStudio.Commanding
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.ImplementInterface
+
     <Export(GetType(VSCommanding.ICommandHandler))>
     <ContentType(ContentTypeNames.VisualBasicContentType)>
     <Name("ImplementInterfaceCommandHandler")>
@@ -25,15 +26,14 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.ImplementInterface
             MyBase.New(editorOperationsFactoryService)
         End Sub
 
-        Protected Overrides Function TryGetNewDocument(
-            document As Document,
-            typeSyntax As TypeSyntax,
-            cancellationToken As CancellationToken
-        ) As Document
+        Protected Overrides Function TryGetNewDocument _
+            (
+              document As Document,
+              typeSyntax As TypeSyntax,
+              cancellationToken As CancellationToken
+            ) As Document
 
-            If typeSyntax.Parent.Kind <> SyntaxKind.ImplementsStatement Then
-                Return Nothing
-            End If
+            If typeSyntax.Parent.Kind <> SyntaxKind.ImplementsStatement Then Return Nothing
 
             Dim service = document.GetLanguageService(Of IImplementInterfaceService)()
             Dim updatedDocument = service.ImplementInterfaceAsync(
@@ -46,5 +46,7 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.ImplementInterface
 
             Return updatedDocument
         End Function
+
     End Class
+
 End Namespace

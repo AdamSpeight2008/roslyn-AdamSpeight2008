@@ -11,9 +11,13 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
   Friend Class EventDeclarationHighlighter
       Inherits AbstractKeywordHighlighter(Of EventStatementSyntax)
 
-    Protected Overrides Iterator Function GetHighlights(eventDeclaration As EventStatementSyntax, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
-      If cancellationToken.IsCancellationRequested Then Return
+    Protected Overrides Iterator Function GetHighlights _
+            (
+              eventDeclaration As EventStatementSyntax,
+              cancellationToken As CancellationToken
+            ) As IEnumerable(Of TextSpan)
 
+      If cancellationToken.IsCancellationRequested Then Return
       ' If the ancestor is not a event block, treat this as a single line event.
       ' Otherwise, let the EventBlockHighlighter take over.
       Dim eventBlock = eventDeclaration.GetAncestor(Of EventBlockSyntax)()

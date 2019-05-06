@@ -331,30 +331,31 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
             Return SpecializedCollections.EmptyEnumerable(Of SyntaxNode)()
         End Function
 
-        Private Overloads Shared Function GetAttributeNodes(attributesBlockList As SyntaxList(Of AttributeListSyntax)) As IEnumerable(Of SyntaxNode)
-            Dim result = New List(Of SyntaxNode)
+        Private Overloads Shared iterator Function GetAttributeNodes(attributesBlockList As SyntaxList(Of AttributeListSyntax)) As IEnumerable(Of SyntaxNode)
+           ' Dim result = New List(Of SyntaxNode)
 
             For Each attributeBlock In attributesBlockList
                 For Each attribute In attributeBlock.Attributes
-                    result.Add(attribute)
+                    Yield attribute
+                  '  result.Add(attribute)
                 Next
             Next
-
-            Return result
+'            Return result
         End Function
 
-        Private Overloads Shared Function GetAttributeNodes(attributesStatementList As SyntaxList(Of AttributesStatementSyntax)) As IEnumerable(Of SyntaxNode)
-            Dim result = New List(Of SyntaxNode)
+        Private Overloads Shared Iterator Function GetAttributeNodes(attributesStatementList As SyntaxList(Of AttributesStatementSyntax)) As IEnumerable(Of SyntaxNode)
+           ' Dim result = New List(Of SyntaxNode)
 
             For Each attributesStatement In attributesStatementList
                 For Each attributeBlock In attributesStatement.AttributeLists
                     For Each attribute In attributeBlock.Attributes
-                        result.Add(attribute)
+                        yield attribute
+                      '  result.Add(attribute)
                     Next
                 Next
             Next
 
-            Return result
+          '  Return result
         End Function
 
         Public Overrides Function GetAttributeNodes(node As SyntaxNode) As IEnumerable(Of SyntaxNode)
@@ -840,11 +841,11 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
         End Function
 
         Private Function GetNormalizedName(node As SyntaxNode) As String
-            Dim nameBuilder = New StringBuilder()
+            Dim nameBuilder = PooledObjects.PooledStringBuilder.GetInstance()
 
             Dim token = node.GetFirstToken(includeSkipped:=True)
             While True
-                nameBuilder.Append(token.ToString())
+                nameBuilder.Builder.Append(token.ToString())
 
                 Dim nextToken = token.GetNextToken(includeSkipped:=True)
                 If Not nextToken.IsDescendantOf(node) Then
@@ -854,13 +855,13 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
                 If (token.IsKeyword() OrElse token.Kind = SyntaxKind.IdentifierToken) AndAlso
                    (nextToken.IsKeyword() OrElse nextToken.Kind = SyntaxKind.IdentifierToken) Then
 
-                    nameBuilder.Append(" "c)
+                    nameBuilder.Builder.Append(" "c)
                 End If
 
                 token = nextToken
             End While
 
-            Return nameBuilder.ToString().Trim()
+            Return nameBuilder.ToStringAndFree().Trim()
         End Function
 
         Public Overrides Function GetName(node As SyntaxNode) As String
@@ -2230,15 +2231,15 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
                 Return String.Empty
             End If
 
-            Dim textBuilder = New StringBuilder()
-            For Each trivia In commentList
+            Dim textBuilder = PooledObjects.PooledStringBuilder.GetInstance()
+            With textBuilder
+              For Each trivia In commentList
                 Debug.Assert(trivia.ToString().StartsWith("'", StringComparison.Ordinal))
                 Dim commentText = trivia.ToString().Substring(1)
-
-                textBuilder.AppendLine(commentText)
-            Next
-
-            Return textBuilder.ToString().TrimEnd()
+                .Builder.AppendLine(commentText)
+              Next
+             End With
+             Return textBuilder.ToStringAndFree().TrimEnd()
         End Function
 
         Public Overrides Function SetComment(node As SyntaxNode, value As String) As SyntaxNode
@@ -2251,15 +2252,15 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
             Dim commentText = String.Empty
 
             If value IsNot Nothing Then
-                Dim builder = New StringBuilder()
-
-                For Each line In value.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
-                    builder.Append("' ")
-                    builder.Append(line)
-                    builder.Append(newLine)
-                Next
-
-                commentText = builder.ToString()
+                Dim builder = PooledObjects.PooledStringBuilder.GetInstance()
+                With builder
+                  For Each line In value.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+                    .builder.Append("' ")
+                    .builder.Append(line)
+                    .builder.Append(newLine)
+                  Next
+                End With
+               commentText = builder.ToStringAndFree()
             End If
 
             Dim newTriviaList = SyntaxFactory.ParseLeadingTrivia(commentText)
@@ -2502,15 +2503,16 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.CodeModel
             If value IsNot Nothing Then
                 Dim text = member.SyntaxTree.GetText(CancellationToken.None)
                 Dim newLine = GetNewLineCharacter(text)
-                Dim builder = New StringBuilder()
-
-                For Each line In value.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
-                    builder.Append("''' ")
-                    builder.Append(line)
-                    builder.Append(newLine)
-                Next
-
-                triviaList = SyntaxFactory.ParseLeadingTrivia(builder.ToString())
+                Dim builder = PooledObjects.PooledStringBuilder.GetInstance()
+                With builder
+                  For Each line In value.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+                    .builder.Append("''' ")
+                    .builder.Append(line)
+                    .builder.Append(newLine)
+                  Next
+                End With
+                triviaList = SyntaxFactory.ParseLeadingTrivia(builder.ToStringAndFree())
+                
             End If
 
             Dim leadingTriviaList = member.GetLeadingTrivia().ToList()

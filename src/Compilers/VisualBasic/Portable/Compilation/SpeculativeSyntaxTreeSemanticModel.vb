@@ -10,7 +10,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
     ''' <summary>
     ''' Allows asking semantic questions about a tree of syntax nodes that did not appear in the original source code.
-    ''' Typically, an instance is obtained by a call to SemanticModel.TryGetSpeculativeSemanticModel. 
+    ''' Typically, an instance is obtained by a call to SemanticModel.TryGetSpeculativeSemanticModel.
     ''' </summary>
     Friend NotInheritable Class SpeculativeSyntaxTreeSemanticModel
         Inherits SyntaxTreeSemanticModel
@@ -21,7 +21,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private ReadOnly _position As Integer
         Private ReadOnly _bindingOption As SpeculativeBindingOption
 
-        Public Shared Function Create(parentSemanticModel As SyntaxTreeSemanticModel, root As ExpressionSyntax, binder As Binder, position As Integer, bindingOption As SpeculativeBindingOption) As SpeculativeSyntaxTreeSemanticModel
+        Public Shared Function Create _
+            (
+              parentSemanticModel   As SyntaxTreeSemanticModel,
+              root                  As ExpressionSyntax,
+              binder                As Binder,
+              position              As Integer,
+              bindingOption         As SpeculativeBindingOption
+            ) As SpeculativeSyntaxTreeSemanticModel
             Debug.Assert(parentSemanticModel IsNot Nothing)
             Debug.Assert(root IsNot Nothing)
             Debug.Assert(binder IsNot Nothing)
@@ -30,7 +37,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return New SpeculativeSyntaxTreeSemanticModel(parentSemanticModel, root, binder, position, bindingOption)
         End Function
 
-        Private Sub New(parentSemanticModel As SyntaxTreeSemanticModel, root As ExpressionSyntax, binder As Binder, position As Integer, bindingOption As SpeculativeBindingOption)
+        Private Sub New _
+            (
+              parentSemanticModel   As SyntaxTreeSemanticModel,
+              root                  As ExpressionSyntax,
+              binder                As Binder,
+              position              As Integer,
+              bindingOption         As SpeculativeBindingOption
+            )
             MyBase.New(parentSemanticModel.Compilation, DirectCast(parentSemanticModel.Compilation.SourceModule, SourceModuleSymbol), root.SyntaxTree)
 
             _parentSemanticModel = parentSemanticModel
@@ -48,13 +62,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides ReadOnly Property OriginalPositionForSpeculation As Integer
             Get
-                Return Me._position
+                Return _position
             End Get
         End Property
 
         Public Overrides ReadOnly Property ParentModel As SemanticModel
             Get
-                Return Me._parentSemanticModel
+                Return _parentSemanticModel
             End Get
         End Property
 
@@ -86,7 +100,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return _bindingOption
         End Function
 
-        Friend Overrides Function GetExpressionSymbolInfo(node As ExpressionSyntax, options As VBSemanticModel.SymbolInfoOptions, Optional cancellationToken As CancellationToken = Nothing) As SymbolInfo
+        Friend Overrides Function GetExpressionSymbolInfo _
+            (
+              node              As ExpressionSyntax,
+              options           As VBSemanticModel.SymbolInfoOptions,
+     Optional cancellationToken As CancellationToken = Nothing
+            ) As SymbolInfo
             If (options And VBSemanticModel.SymbolInfoOptions.PreserveAliases) <> 0 Then
                 Debug.Assert(TypeOf node Is IdentifierNameSyntax)
                 Dim aliasSymbol = _parentSemanticModel.GetSpeculativeAliasInfo(_position, DirectCast(node, IdentifierNameSyntax), Me.GetSpeculativeBindingOption(node))

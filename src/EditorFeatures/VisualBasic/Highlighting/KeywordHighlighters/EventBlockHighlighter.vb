@@ -11,12 +11,14 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.KeywordHighlighting
   Friend Class EventBlockHighlighter
       Inherits AbstractKeywordHighlighter(Of SyntaxNode)
 
-    Protected Overrides Iterator Function GetHighlights(node As SyntaxNode, cancellationToken As CancellationToken) As IEnumerable(Of TextSpan)
+    Protected Overrides Iterator Function GetHighlights _
+            (
+              node As SyntaxNode,
+              cancellationToken As CancellationToken
+            ) As IEnumerable(Of TextSpan)
       If cancellationToken.IsCancellationRequested Then Return
-
       Dim eventBlock = node.GetAncestor(Of EventBlockSyntax)()
       If eventBlock Is Nothing Then Return
-
       With eventBlock
         With .EventStatement
           ' This span calculation should also capture the Custom keyword

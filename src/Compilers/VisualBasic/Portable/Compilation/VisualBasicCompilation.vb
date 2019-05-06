@@ -63,9 +63,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary>
         ''' Holds onto data related to reference binding.
         ''' The manager is shared among multiple compilations that we expect to have the same result of reference binding.
-        ''' In most cases this can be determined without performing the binding. If the compilation however contains a circular 
+        ''' In most cases this can be determined without performing the binding. If the compilation however contains a circular
         ''' metadata reference (a metadata reference that refers back to the compilation) we need to avoid sharing of the binding results.
-        ''' We do so by creating a new reference manager for such compilation. 
+        ''' We do so by creating a new reference manager for such compilation.
         ''' </summary>
         Private _referenceManager As ReferenceManager
 
@@ -87,7 +87,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private ReadOnly _syntaxTreeOrdinalMap As ImmutableDictionary(Of SyntaxTree, Integer)
 
         ''' <summary>
-        ''' The syntax trees of this compilation plus all 'hidden' trees 
+        ''' The syntax trees of this compilation plus all 'hidden' trees
         ''' added to the compilation by compiler, e.g. Vb Core Runtime.
         ''' </summary>
         Private _lazyAllSyntaxTrees As ImmutableArray(Of SyntaxTree)

@@ -24,12 +24,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Public Overrides Sub VisitEvent(symbol As EventSymbol)
                 Me._cancellationToken.ThrowIfCancellationRequested()
 
-                If Not ShouldSkipSymbol(symbol) Then
-                    Dim sourceEvent = TryCast(symbol, SourceEventSymbol)
-                    If sourceEvent IsNot Nothing Then
-                        WriteDocumentationCommentForEvent(sourceEvent)
-                    End If
-                End If
+                If ShouldSkipSymbol(symbol) Then Exit Sub
+                Dim sourceEvent = TryCast(symbol, SourceEventSymbol)
+                If sourceEvent Is Nothing Then Exit Sub
+                WriteDocumentationCommentForEvent(sourceEvent)
             End Sub
 
             Private Sub WriteDocumentationCommentForEvent([event] As SourceEventSymbol)
@@ -38,12 +36,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                     TryGetDocCommentTriviaAndGenerateDiagnostics(
                         [event].SyntaxReference.GetVisualBasicSyntax(Me._cancellationToken))
 
-                If docCommentTrivia Is Nothing Then
-                    Return
-                End If
+                If docCommentTrivia Is Nothing Then Return
 
                 Dim wellKnownElementNodes As New Dictionary(Of WellKnownTag, ArrayBuilder(Of XmlNodeSyntax))
-
                 Dim docCommentXml As String =
                     GetDocumentationCommentForSymbol([event], docCommentTrivia, wellKnownElementNodes)
 
