@@ -1291,8 +1291,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 argumentBuilder.Add(SyntaxFactory.SimpleArgument(nameColonEquals:=Nothing, expression:=missing))
             End If
 
-            Dim arguments = argumentBuilder.ToList
-            _pool.Free(argumentBuilder)
+            Dim arguments = argumentBuilder.ToListAndFree(_pool)
 
             Dim tupleExpression = SyntaxFactory.TupleExpression(openParen, arguments, closeParen)
 
@@ -1463,8 +1462,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Loop
 
-            Dim result = arguments.ToList
-            _pool.Free(arguments)
+            Dim result = arguments.ToListAndFree(_pool)
             Return result
 
         End Function
@@ -1877,9 +1875,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 variables.AddSeparator(comma)
             Loop
 
-            Dim result = variables.ToList
-            Me._pool.Free(variables)
-
+            Dim result = variables.ToListAndFree(_pool)
             Return result
         End Function
 

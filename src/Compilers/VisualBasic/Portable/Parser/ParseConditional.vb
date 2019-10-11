@@ -427,19 +427,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim statement As DirectiveTriviaSyntax = Nothing
+            Dim errorCodesList = errorCodes.ToListAndFree(_pool)
             If enableOrDisableKeyword.Kind = SyntaxKind.EnableKeyword Then
                 statement = SyntaxFactory.EnableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodesList)
             ElseIf enableOrDisableKeyword.Kind = SyntaxKind.DisableKeyword Then
                 statement = SyntaxFactory.DisableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodesList)
             End If
 
             If statement IsNot Nothing Then
                 statement = CheckFeatureAvailability(Feature.WarningDirectives, statement)
             End If
 
-            Me._pool.Free(errorCodes)
             Return statement
         End Function
 

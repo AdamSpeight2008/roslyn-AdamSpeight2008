@@ -271,8 +271,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             ResyncAt(skippedTokens, state, resyncTokens)
 
-            Dim result = skippedTokens.ToList()
-            Me._pool.Free(skippedTokens)
+            Dim result = skippedTokens.ToListAndFree(_pool)
 
             Return result
         End Function
@@ -298,9 +297,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 GetNextToken(ScannerState.VB)
             End If
 
-            Dim result = skippedTokens.ToList()
-            Me._pool.Free(skippedTokens)
-
+            Dim result = skippedTokens.ToListAndFree(_pool)
             Return result
         End Function
 
