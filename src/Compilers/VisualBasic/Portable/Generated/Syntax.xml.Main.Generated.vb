@@ -13351,19 +13351,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.DoKeyword:
-                Case SyntaxKind.ForKeyword:
-                Case SyntaxKind.SubKeyword:
-                Case SyntaxKind.FunctionKeyword:
-                Case SyntaxKind.OperatorKeyword:
-                Case SyntaxKind.PropertyKeyword:
-                Case SyntaxKind.TryKeyword:
-                Case SyntaxKind.SelectKeyword:
-                Case SyntaxKind.WhileKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitDoStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13373,7 +13360,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitDoStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitDoStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.DoKeyword))
+            Return SyntaxFactory.ExitDoStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13393,11 +13380,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.ForKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitForStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13407,7 +13389,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitForStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitForStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.ForKeyword))
+            Return SyntaxFactory.ExitForStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13427,11 +13409,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.SubKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitSubStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13441,7 +13418,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitSubStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitSubStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.SubKeyword))
+            Return SyntaxFactory.ExitSubStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13461,11 +13438,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.FunctionKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitFunctionStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13475,7 +13447,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitFunctionStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitFunctionStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.FunctionKeyword))
+            Return SyntaxFactory.ExitFunctionStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13495,11 +13467,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.OperatorKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitOperatorStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13509,7 +13476,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitOperatorStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitOperatorStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.OperatorKeyword))
+            Return SyntaxFactory.ExitOperatorStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13529,11 +13496,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.PropertyKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitPropertyStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13543,7 +13505,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitPropertyStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitPropertyStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.PropertyKeyword))
+            Return SyntaxFactory.ExitPropertyStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13563,11 +13525,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.TryKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitTryStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13577,7 +13534,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitTryStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitTryStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.TryKeyword))
+            Return SyntaxFactory.ExitTryStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13597,11 +13554,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.SelectKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitSelectStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13611,7 +13563,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitSelectStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitSelectStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.SelectKeyword))
+            Return SyntaxFactory.ExitSelectStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13631,11 +13583,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.WhileKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ExitStatementSyntax(SyntaxKind.ExitWhileStatement, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13645,7 +13592,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' Kind.
         ''' </summary>
         Public Shared Function ExitWhileStatement() As ExitStatementSyntax
-            Return SyntaxFactory.ExitWhileStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), SyntaxFactory.Token(SyntaxKind.WhileKeyword))
+            Return SyntaxFactory.ExitWhileStatement(SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
         End Function
 
 
@@ -13674,9 +13621,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("exitKeyword")
              End Select
-            If (Not blockKeyword.IsKind(GetExitStatementBlockKeywordKind(kind))) Then
-                Throw new ArgumentException("blockKeyword")
-            End If
             Return New ExitStatementSyntax(kind, Nothing, Nothing, DirectCast(exitKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13724,6 +13668,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
 
         ''' <summary>
+        ''' An exit statement. The kind of block being exited can be found by examining the
+        ''' Kind.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of ExitStatementSyntax.
+        ''' One of ExitDoStatement, ExitForStatement, ExitSubStatement,
+        ''' ExitFunctionStatement, ExitOperatorStatement, ExitPropertyStatement,
+        ''' ExitTryStatement, ExitSelectStatement, ExitWhileStatement.
+        ''' </param>
+        Public Shared Function ExitStatement(ByVal kind As SyntaxKind) As ExitStatementSyntax
+            Return SyntaxFactory.ExitStatement(kind, SyntaxFactory.Token(SyntaxKind.ExitKeyword), Nothing)
+        End Function
+
+
+        ''' <summary>
         ''' Represents a "Continue (block)" statement. THe kind of block referenced can be
         ''' determined by examining the Kind.
         ''' </summary>
@@ -13740,13 +13699,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("continueKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.DoKeyword:
-                Case SyntaxKind.ForKeyword:
-                Case SyntaxKind.WhileKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ContinueStatementSyntax(SyntaxKind.ContinueWhileStatement, Nothing, Nothing, DirectCast(continueKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13756,7 +13708,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' determined by examining the Kind.
         ''' </summary>
         Public Shared Function ContinueWhileStatement() As ContinueStatementSyntax
-            Return SyntaxFactory.ContinueWhileStatement(SyntaxFactory.Token(SyntaxKind.ContinueKeyword), SyntaxFactory.Token(SyntaxKind.WhileKeyword))
+            Return SyntaxFactory.ContinueWhileStatement(SyntaxFactory.Token(SyntaxKind.ContinueKeyword), Nothing)
         End Function
 
 
@@ -13777,11 +13729,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("continueKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.DoKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ContinueStatementSyntax(SyntaxKind.ContinueDoStatement, Nothing, Nothing, DirectCast(continueKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13791,7 +13738,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' determined by examining the Kind.
         ''' </summary>
         Public Shared Function ContinueDoStatement() As ContinueStatementSyntax
-            Return SyntaxFactory.ContinueDoStatement(SyntaxFactory.Token(SyntaxKind.ContinueKeyword), SyntaxFactory.Token(SyntaxKind.DoKeyword))
+            Return SyntaxFactory.ContinueDoStatement(SyntaxFactory.Token(SyntaxKind.ContinueKeyword), Nothing)
         End Function
 
 
@@ -13812,11 +13759,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("continueKeyword")
              End Select
-            Select Case blockKeyword.Kind()
-                Case SyntaxKind.ForKeyword
-                Case Else
-                    Throw new ArgumentException("blockKeyword")
-             End Select
             Return New ContinueStatementSyntax(SyntaxKind.ContinueForStatement, Nothing, Nothing, DirectCast(continueKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13826,7 +13768,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' determined by examining the Kind.
         ''' </summary>
         Public Shared Function ContinueForStatement() As ContinueStatementSyntax
-            Return SyntaxFactory.ContinueForStatement(SyntaxFactory.Token(SyntaxKind.ContinueKeyword), SyntaxFactory.Token(SyntaxKind.ForKeyword))
+            Return SyntaxFactory.ContinueForStatement(SyntaxFactory.Token(SyntaxKind.ContinueKeyword), Nothing)
         End Function
 
 
@@ -13855,9 +13797,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Case Else
                     Throw new ArgumentException("continueKeyword")
              End Select
-            If (Not blockKeyword.IsKind(GetContinueStatementBlockKeywordKind(kind))) Then
-                Throw new ArgumentException("blockKeyword")
-            End If
             Return New ContinueStatementSyntax(kind, Nothing, Nothing, DirectCast(continueKeyword.Node, InternalSyntax.KeywordSyntax), DirectCast(blockKeyword.Node, InternalSyntax.KeywordSyntax))
         End Function
 
@@ -13889,6 +13828,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' </param>
         Public Shared Function ContinueStatement(ByVal kind As SyntaxKind, blockKeyword As SyntaxToken) As ContinueStatementSyntax
             Return SyntaxFactory.ContinueStatement(kind, SyntaxFactory.Token(SyntaxKind.ContinueKeyword), blockKeyword)
+        End Function
+
+
+        ''' <summary>
+        ''' Represents a "Continue (block)" statement. THe kind of block referenced can be
+        ''' determined by examining the Kind.
+        ''' </summary>
+        ''' <param name="kind">
+        ''' A <cref c="SyntaxKind"/> representing the specific kind of
+        ''' ContinueStatementSyntax. One of ContinueWhileStatement, ContinueDoStatement,
+        ''' ContinueForStatement.
+        ''' </param>
+        Public Shared Function ContinueStatement(ByVal kind As SyntaxKind) As ContinueStatementSyntax
+            Return SyntaxFactory.ContinueStatement(kind, SyntaxFactory.Token(SyntaxKind.ContinueKeyword), Nothing)
         End Function
 
 

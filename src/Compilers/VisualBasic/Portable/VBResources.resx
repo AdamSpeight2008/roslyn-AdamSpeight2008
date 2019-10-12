@@ -5564,4 +5564,10 @@
   <data name="ERR_RuntimeDoesNotSupportProtectedAccessForInterfaceMember" xml:space="preserve">
     <value>Target runtime doesn't support 'Protected', 'Protected Friend', or 'Private Protected' accessibility for a member of an interface.</value>
   </data>
+  <data name="ERR_InvalidContinueStatement" xml:space="preserve">
+    <value>Continue Statement is not in valid continuable block.</value>
+  </data>
+  <data name="ERR_InvalidExitStatement" xml:space="preserve">
+    <value>Exit Statment is not in a valid exittable block.</value>
+  </data>
 </root>

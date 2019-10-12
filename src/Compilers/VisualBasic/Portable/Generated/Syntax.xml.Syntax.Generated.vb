@@ -13360,9 +13360,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' <summary>
         ''' The keyword describing the block to exit.
         ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
         Public  ReadOnly Property BlockKeyword As SyntaxToken
             Get
-                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExitStatementSyntax)._blockKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
+                Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ExitStatementSyntax)._blockKeyword
+                If slot IsNot Nothing
+                    return new SyntaxToken(Me, slot, Me.GetChildPosition(1), Me.GetChildIndex(1))
+                End If
+                Return Nothing
             End Get
         End Property
 
@@ -13465,9 +13472,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
         Public  ReadOnly Property BlockKeyword As SyntaxToken
             Get
-                return new SyntaxToken(Me, DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ContinueStatementSyntax)._blockKeyword, Me.GetChildPosition(1), Me.GetChildIndex(1))
+                Dim slot = DirectCast(Me.Green, Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.ContinueStatementSyntax)._blockKeyword
+                If slot IsNot Nothing
+                    return new SyntaxToken(Me, slot, Me.GetChildPosition(1), Me.GetChildIndex(1))
+                End If
+                Return Nothing
             End Get
         End Property
 

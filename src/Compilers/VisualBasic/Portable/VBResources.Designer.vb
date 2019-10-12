@@ -5954,6 +5954,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Continue Statement is not in valid continuable block..
+        '''</summary>
+        Friend ReadOnly Property ERR_InvalidContinueStatement() As String
+            Get
+                Return ResourceManager.GetString("ERR_InvalidContinueStatement", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Date constant is not valid..
         '''</summary>
         Friend ReadOnly Property ERR_InvalidDate() As String
@@ -6094,6 +6103,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Friend ReadOnly Property ERR_InvalidEnumBase() As String
             Get
                 Return ResourceManager.GetString("ERR_InvalidEnumBase", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Exit Statment is not in a valid exittable block..
+        '''</summary>
+        Friend ReadOnly Property ERR_InvalidExitStatement() As String
+            Get
+                Return ResourceManager.GetString("ERR_InvalidExitStatement", resourceCulture)
             End Get
         End Property
         

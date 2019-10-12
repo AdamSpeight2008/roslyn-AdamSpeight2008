@@ -1,1 +1,2 @@
-
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ContinueStatement(kind As Microsoft.CodeAnalysis.VisualBasic.SyntaxKind) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ContinueStatementSyntax
+Shared Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.ExitStatement(kind As Microsoft.CodeAnalysis.VisualBasic.SyntaxKind) -> Microsoft.CodeAnalysis.VisualBasic.Syntax.ExitStatementSyntax

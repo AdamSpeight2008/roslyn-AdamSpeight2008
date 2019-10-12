@@ -378,21 +378,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' grab the part that doesn't contain the preceding and trailing trivia.
 
             Dim builder = PooledStringBuilder.GetInstance()
-            Dim writer As New IO.StringWriter(builder)
+            Using writer As New IO.StringWriter(builder)
 
-            firstToken.WriteTo(writer)
-            secondToken.WriteTo(writer)
-            thirdToken.WriteTo(writer)
+                firstToken.WriteTo(writer)
+                secondToken.WriteTo(writer)
+                thirdToken.WriteTo(writer)
 
-            Dim leadingWidth = firstToken.GetLeadingTriviaWidth()
-            Dim trailingWidth = thirdToken.GetTrailingTriviaWidth()
-            Dim fullWidth = firstToken.FullWidth + secondToken.FullWidth + thirdToken.FullWidth
+                Dim leadingWidth = firstToken.GetLeadingTriviaWidth()
+                Dim trailingWidth = thirdToken.GetTrailingTriviaWidth()
+                Dim fullWidth = firstToken.FullWidth + secondToken.FullWidth + thirdToken.FullWidth
 
-            Debug.Assert(builder.Length = fullWidth)
-            Debug.Assert(builder.Length >= leadingWidth + trailingWidth)
+                Debug.Assert(builder.Length = fullWidth)
+                Debug.Assert(builder.Length >= leadingWidth + trailingWidth)
 
-            Return builder.ToStringAndFree(leadingWidth, fullWidth - leadingWidth - trailingWidth)
-
+                Return builder.ToStringAndFree(leadingWidth, fullWidth - leadingWidth - trailingWidth)
+            End Using
         End Function
 
         Private Function GetCurrentSyntaxNodeIfApplicable(<Out()> ByRef curSyntaxNode As VisualBasicSyntaxNode) As BlockContext
@@ -1456,8 +1456,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ) As EnumStatementSyntax
             Debug.Assert(CurrentToken.Kind = SyntaxKind.EnumKeyword, "ParseEnumStatement called on the wrong token.")
 
-            Dim enumKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            Dim optionalUnderlyingType As AsClauseSyntax = Nothing
+            Dim enumKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.EnumKeyword, enumKeyword, reportMissing:=True)
+
+            Dim optionalUnderlyingType As SimpleAsClauseSyntax = Nothing
 
             GetNextToken() ' Get Off ENUM
 
@@ -1473,18 +1475,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 identifier = identifier.AddTrailingSyntax(ResyncAt({SyntaxKind.AsKeyword}))
             End If
 
-            If CurrentToken.Kind = SyntaxKind.AsKeyword Then
-                Dim asKeyword = DirectCast(CurrentToken, KeywordSyntax)
+            If TryParseAsType(optionalUnderlyingType) Then
 
-                GetNextToken() ' get off AS
-
-                Dim typeName = ParseTypeName()
-
-                If typeName.ContainsDiagnostics Then
-                    typeName = typeName.AddTrailingSyntax(ResyncAt())
-                End If
-
-                optionalUnderlyingType = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
             End If
 
             Dim statement As EnumStatementSyntax = SyntaxFactory.EnumStatement(attributes, modifiers, enumKeyword, identifier, optionalUnderlyingType)
@@ -4675,12 +4667,8 @@ checkNullable:
             End If
 
             Dim optionalAsClause As SimpleAsClauseSyntax = Nothing
-            Dim asKeyword As KeywordSyntax = Nothing
 
-            If TryGetToken(SyntaxKind.AsKeyword, asKeyword) Then
-                Dim typeName = ParseGeneralType()
-
-                optionalAsClause = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
+            If TryParseAsType(optionalAsClause) Then
 
                 If optionalAsClause.ContainsDiagnostics Then
                     optionalAsClause = ResyncAt(optionalAsClause, SyntaxKind.EqualsToken, SyntaxKind.CommaToken, SyntaxKind.CloseParenToken)
@@ -4741,7 +4729,7 @@ checkNullable:
                 importsClauses.Add(ImportsClause)
 
                 Dim comma As PunctuationSyntax = Nothing
-                If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
+                If Not TryParseComma(comma) Then ' TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
                     Exit Do
                 End If
 

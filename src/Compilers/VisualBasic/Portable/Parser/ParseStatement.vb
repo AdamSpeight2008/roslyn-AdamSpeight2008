@@ -20,70 +20,58 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Statement* .Parser::ParseContinueStatement( [ _In_ Token* StmtStart ] [ _Inout_ bool& ErrorInConstruct ] )
 
         Private Function ParseContinueStatement() As ContinueStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ContinueKeyword, "ParseContinueStatement called on wrong token")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ContinueKeyword)
 
-            Dim continueKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            Dim continueKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.ContinueKeyword, continueKeyword)
 
             Dim kind As SyntaxKind
             Dim blockKeyword As KeywordSyntax = Nothing
 
-            Select Case (CurrentToken.Kind)
+            If TryParseKeyword(SyntaxKind.DoKeyword, blockKeyword) Then
+                kind = SyntaxKind.ContinueDoStatement
+            ElseIf TryParseKeyword(SyntaxKind.ForKeyword, blockKeyword) Then
+                kind = SyntaxKind.ContinueForStatement
+            ElseIf TryParseKeyword(SyntaxKind.WhileKeyword, blockKeyword) Then
+                kind = SyntaxKind.ContinueWhileStatement
+            Else
 
-                Case SyntaxKind.DoKeyword
-                    kind = SyntaxKind.ContinueDoStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                ' The pretty lister is expected to turn Continue statements
+                ' that don't specify a Do, While or For to have the correct
+                ' form. That requires identifying this condition during
+                ' parsing and correcting the parse trees.
 
-                Case SyntaxKind.ForKeyword
-                    kind = SyntaxKind.ContinueForStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                Dim loopContext = Context.FindNearest(AddressOf SyntaxFacts.SupportsContinueStatement)
 
-                Case SyntaxKind.WhileKeyword
-                    kind = SyntaxKind.ContinueWhileStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                If loopContext IsNot Nothing Then
 
-                Case Else
+                    Select Case loopContext.BlockKind
+                        Case SyntaxKind.SimpleDoLoopBlock,
+                             SyntaxKind.DoWhileLoopBlock
 
-                    ' The pretty lister is expected to turn Continue statements
-                    ' that don't specify a Do, While or For to have the correct
-                    ' form. That requires identifying this condition during
-                    ' parsing and correcting the parse trees.
+                            kind = SyntaxKind.ContinueDoStatement
+                            blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.DoKeyword)
 
-                    Dim loopContext = Context.FindNearest(AddressOf SyntaxFacts.SupportsContinueStatement)
+                        Case SyntaxKind.ForBlock, SyntaxKind.ForEachBlock
+                            kind = SyntaxKind.ContinueForStatement
+                            blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.ForKeyword)
 
-                    If loopContext IsNot Nothing Then
+                        Case SyntaxKind.WhileBlock
+                            kind = SyntaxKind.ContinueWhileStatement
+                            blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.WhileKeyword)
 
-                        Select Case loopContext.BlockKind
-                            Case SyntaxKind.SimpleDoLoopBlock,
-                                 SyntaxKind.DoWhileLoopBlock
+                    End Select
 
-                                kind = SyntaxKind.ContinueDoStatement
-                                blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.DoKeyword)
+                End If
 
-                            Case SyntaxKind.ForBlock, SyntaxKind.ForEachBlock
-                                kind = SyntaxKind.ContinueForStatement
-                                blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.ForKeyword)
-
-                            Case SyntaxKind.WhileBlock
-                                kind = SyntaxKind.ContinueWhileStatement
-                                blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.WhileKeyword)
-
-                        End Select
-
-                    End If
-
-                    If blockKeyword Is Nothing Then
-                        ' No context found which can have a continue statement was found
-                        ' TODO - Which keyword in this case?
-                        kind = SyntaxKind.ContinueDoStatement
-                        blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.DoKeyword)
-                    End If
-
+                If blockKeyword Is Nothing Then
+                    ' No context found which can have a continue statement was found
+                    ' TODO - Which keyword in this case?
+                    continueKeyword = ReportSyntaxError(continueKeyword, ERRID.ERR_InvalidContinueStatement)
+                Else
                     blockKeyword = ReportSyntaxError(blockKeyword, ERRID.ERR_ExpectedContinueKind)
-            End Select
+                End If
+            End If
 
             Dim statement = SyntaxFactory.ContinueStatement(kind, continueKeyword, blockKeyword)
 
@@ -91,10 +79,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseExitStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ExitKeyword, "ParseExitStatement called on wrong token")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ExitKeyword)
 
-            Dim exitKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            Dim exitKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.ExitKeyword, exitKeyword)
 
             Dim statement As StatementSyntax = Nothing
             Dim kind As SyntaxKind
@@ -104,23 +92,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Case SyntaxKind.DoKeyword
                     kind = SyntaxKind.ExitDoStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.DoKeyword, blockKeyword)
 
                 Case SyntaxKind.ForKeyword
                     kind = SyntaxKind.ExitForStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.ForKeyword, blockKeyword)
 
                 Case SyntaxKind.WhileKeyword
                     kind = SyntaxKind.ExitWhileStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.WhileKeyword, blockKeyword)
 
                 Case SyntaxKind.SelectKeyword
                     kind = SyntaxKind.ExitSelectStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.SelectKeyword, blockKeyword)
+
 
                 ' The pretty lister is expected to turn Exit statements
                 ' that don
@@ -130,25 +115,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Case SyntaxKind.SubKeyword
                     ' Error message moved to context
                     kind = SyntaxKind.ExitSubStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.SubKeyword, blockKeyword)
 
                 Case SyntaxKind.FunctionKeyword
                     ' Error message moved to context
                     kind = SyntaxKind.ExitFunctionStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.FunctionKeyword, blockKeyword)
 
                 Case SyntaxKind.PropertyKeyword
                     ' Error message moved to context
                     kind = SyntaxKind.ExitPropertyStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.PropertyKeyword, blockKeyword)
 
                 Case SyntaxKind.TryKeyword
                     kind = SyntaxKind.ExitTryStatement
-                    blockKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                    GetNextToken()
+                    TryParseKeyword(SyntaxKind.TryKeyword, blockKeyword)
 
                 Case Else
                     'The block keyword is missing.  Look at the contexts to determine what should be here
@@ -224,11 +205,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         ' No context found which can have an exit statement was found
                         'TODO - What kind of statement should be generated?  Bad Exit would make most sense.
                         ' For now generate an Exit Sub but this leads to spurious errors.
-                        kind = SyntaxKind.ExitSubStatement
-                        blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.SubKeyword)
+                        'kind = SyntaxKind.ExitSubStatement
+                        'blockKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.SubKeyword)
+                        exitKeyword = ReportSyntaxError(exitKeyword, ERRID.ERR_InvalidExitStatement)
+                    Else
+                        blockKeyword = ReportSyntaxError(blockKeyword, ERRID.ERR_ExpectedExitKind)
+
                     End If
 
-                    blockKeyword = ReportSyntaxError(blockKeyword, ERRID.ERR_ExpectedExitKind)
             End Select
 
             statement = SyntaxFactory.ExitStatement(kind, exitKeyword, blockKeyword)
@@ -238,18 +222,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseCaseStatement() As CaseStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CaseKeyword, "ParseCaseStatement called on wrong token.")
-
-            Dim caseKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.CaseKeyword)
+            Dim caseKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.CaseKeyword, caseKeyword)
 
             Dim caseClauses = _pool.AllocateSeparated(Of CaseClauseSyntax)()
             Dim elseKeyword As KeywordSyntax = Nothing
 
-            If CurrentToken.Kind = SyntaxKind.ElseKeyword Then
-                elseKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                GetNextToken() '// get off ELSE
-
+            If TryParseKeyword(SyntaxKind.ElseKeyword, elseKeyword) Then
                 Dim caseClause = SyntaxFactory.ElseCaseClause(elseKeyword)
                 caseClauses.Add(caseClause)
 
@@ -297,7 +277,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         End If
 
                         Dim toKeyword As KeywordSyntax = Nothing
-                        If TryGetToken(SyntaxKind.ToKeyword, toKeyword) Then
+                        If TryParseKeyword(SyntaxKind.ToKeyword, toKeyword) Then
 
                             Dim upperBound As ExpressionSyntax = ParseExpressionCore()
 
@@ -315,7 +295,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     caseClauses.Add(caseClause)
 
                     Dim comma As PunctuationSyntax = Nothing
-                    If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
+                    If Not TryParseComma(comma) Then
                         Exit Do
                     End If
 
@@ -366,16 +346,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseSelectStatement() As SelectStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.SelectKeyword, "ParseSelectStatement called on wrong token.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.SelectKeyword)
 
-            Dim selectKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            GetNextToken() ' get off SELECT
+            Dim selectKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.SelectKeyword, selectKeyword)
 
             ' Allow the expected CASE token to be present or not.
 
             Dim optionalCaseKeyword As KeywordSyntax = Nothing
-            TryGetToken(SyntaxKind.CaseKeyword, optionalCaseKeyword)
+            TryParseKeyword(SyntaxKind.CaseKeyword, optionalCaseKeyword)
 
             Dim value As ExpressionSyntax = ParseExpressionCore()
 
@@ -401,11 +380,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         'davidsch - Renamed ParseIfStatement from ParseIfConstruct
         Private Function ParseIfStatement() As IfStatementSyntax
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.IfKeyword)
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IfKeyword, "ParseIfConstruct called on wrong token.")
-
-            Dim ifKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            Dim ifKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.IfKeyword, ifKeyword)
 
             Dim condition = ParseExpressionCore(OperatorPrecedence.PrecedenceNone)
 
@@ -414,7 +392,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim thenKeyword As KeywordSyntax = Nothing
-            TryGetToken(SyntaxKind.ThenKeyword, thenKeyword)
+            TryParseKeyword(SyntaxKind.ThenKeyword, thenKeyword)
 
             Dim statement = SyntaxFactory.IfStatement(ifKeyword, condition, thenKeyword)
 
@@ -423,12 +401,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseElseStatement() As ElseStatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ElseKeyword, "ParseIfConstruct called on wrong token.")
-
-            Dim elseKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ElseKeyword)
+            Dim elseKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.ElseKeyword, elseKeyword)
             Dim statement = SyntaxFactory.ElseStatement(elseKeyword)
 
             Return statement
@@ -441,28 +416,24 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim elseIfKeyword As KeywordSyntax = Nothing
 
-            If CurrentToken.Kind = SyntaxKind.ElseIfKeyword Then
-                elseIfKeyword = DirectCast(CurrentToken, KeywordSyntax)
+            If Not TryParseKeyword(SyntaxKind.ElseIfKeyword, elseIfKeyword) Then
 
-                GetNextToken()
+                Dim elsekeyword As KeywordSyntax = Nothing
+                If TryParseKeyword(SyntaxKind.ElseKeyword, elsekeyword) Then
+                    ' When written as 'Else If' we need to merged the two keywords together.
 
-            ElseIf CurrentToken.Kind = SyntaxKind.ElseKeyword Then
-                ' When written as 'Else If' we need to merged the two keywords together.
+                    If Context.IsSingleLine Then
+                        ' But inside of a single-line If this isn't allowed. We parse as an Else statement
+                        ' so that the SingleLineIfBlockContext can parse the rest as a separate If statement.
 
-                Dim elseKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                GetNextToken()
+                        Return SyntaxFactory.ElseStatement(elsekeyword)
+                    End If
 
-                If Context.IsSingleLine Then
-                    ' But inside of a single-line If this isn't allowed. We parse as an Else statement
-                    ' so that the SingleLineIfBlockContext can parse the rest as a separate If statement.
+                    Dim ifKeyword As KeywordSyntax = Nothing
+                    TryParseKeyword(SyntaxKind.IfKeyword, ifKeyword)
 
-                    Return SyntaxFactory.ElseStatement(elseKeyword)
+                    elseIfKeyword = New KeywordSyntax(SyntaxKind.ElseIfKeyword, MergeTokenText(elsekeyword, ifKeyword), elsekeyword.GetLeadingTrivia(), ifKeyword.GetTrailingTrivia())
                 End If
-
-                Dim ifKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                GetNextToken()
-
-                elseIfKeyword = New KeywordSyntax(SyntaxKind.ElseIfKeyword, MergeTokenText(elseKeyword, ifKeyword), elseKeyword.GetLeadingTrivia(), ifKeyword.GetTrailingTrivia())
             End If
 
             Dim condition = ParseExpressionCore(OperatorPrecedence.PrecedenceNone)
@@ -472,7 +443,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim thenKeyword As KeywordSyntax = Nothing
-            TryGetToken(SyntaxKind.ThenKeyword, thenKeyword)
+            TryParseKeyword(SyntaxKind.ThenKeyword, thenKeyword)
 
             Dim statement = SyntaxFactory.ElseIfStatement(elseIfKeyword, condition, thenKeyword)
 
@@ -480,10 +451,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseAnachronisticStatement() As StatementSyntax
-            ' Assume CurrentToken is on ENDIF, WEND
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EndIfKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.GosubKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.WendKeyword, "ParseAnachronisticEndIfStatement called on wrong token")
+            ' Assume CurrentToken is on ENDIF, WEND, Gosub
+            DebugAssert_CalledOnCorrectToken({SyntaxKind.EndIfKeyword, SyntaxKind.GosubKeyword, SyntaxKind.WendKeyword})
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -546,11 +515,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseLoopStatement() As LoopStatementSyntax
-            ' Assume CurrentToken is on Loop
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.LoopKeyword, "ParseDoStatement called on wrong token")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.LoopKeyword)
 
-            Dim loopKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            Dim loopKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.LoopKeyword, loopKeyword)
 
             ' Moved ERRID.ERR_LoopDoubleCondition to TryParseOptionalWhileOrUntilClause
             Dim optionalWhileOrUntilClause As WhileOrUntilClauseSyntax = Nothing
@@ -572,16 +540,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseForStatement() As StatementSyntax
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ForKeyword)
             ' Assume CurrentToken is on For
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ForKeyword, "ParseForStatement called on wrong token")
-
-            Dim forKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            ' Consume the FOR.
-            GetNextToken()
+            Dim forKeyword As KeywordSyntax = Nothing
+            TryParseKeyword(SyntaxKind.ForKeyword, forKeyword)
 
             Dim eachKeyword As KeywordSyntax = Nothing
-            If TryGetToken(SyntaxKind.EachKeyword, eachKeyword) Then
+            If TryParseKeyword(SyntaxKind.EachKeyword, eachKeyword) Then
 
                 Return ParseForEachStatement(forKeyword, eachKeyword)
 
@@ -662,7 +627,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim toKeyword As KeywordSyntax = Nothing
-            If TryGetToken(SyntaxKind.ToKeyword, toKeyword) Then
+            If TryParseKeyword(SyntaxKind.ToKeyword, toKeyword) Then
 
                 'TODO - davidsch - Why is newline allowed after '=' but not after 'to'?
                 toValue = ParseExpressionCore()
@@ -681,11 +646,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             Dim optionalStepClause As ForStepClauseSyntax = Nothing
             Dim stepKeyword As KeywordSyntax = Nothing
-            Dim stepValue As ExpressionSyntax = Nothing
 
-            If TryGetToken(SyntaxKind.StepKeyword, stepKeyword) Then
-
-                stepValue = ParseExpressionCore()
+            If TryParseKeyword(SyntaxKind.StepKeyword, stepKeyword) Then
+                Dim stepValue As ExpressionSyntax = ParseExpressionCore()
 
                 If stepValue.ContainsDiagnostics Then
                     stepValue = ResyncAt(stepValue)

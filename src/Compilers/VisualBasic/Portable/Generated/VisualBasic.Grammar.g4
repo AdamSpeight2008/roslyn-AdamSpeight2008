@@ -851,15 +851,15 @@ continue_statement
   ;
 
 continue_do_statement
-  : 'Continue' 'For'
+  : 'Continue' 'For'?
   ;
 
 continue_for_statement
-  : 'Continue' 'While'
+  : 'Continue' 'While'?
   ;
 
 continue_while_statement
-  : 'Continue' 'Do'
+  : 'Continue' 'Do'?
   ;
 
 do_loop_block
@@ -891,39 +891,39 @@ exit_statement
   ;
 
 exit_do_statement
-  : 'Exit' 'Do'
+  : 'Exit' 'Do'?
   ;
 
 exit_for_statement
-  : 'Exit' 'For'
+  : 'Exit' 'For'?
   ;
 
 exit_function_statement
-  : 'Exit' 'Function'
+  : 'Exit' 'Function'?
   ;
 
 exit_operator_statement
-  : 'Exit' 'Operator'
+  : 'Exit' 'Operator'?
   ;
 
 exit_property_statement
-  : 'Exit' 'Property'
+  : 'Exit' 'Property'?
   ;
 
 exit_select_statement
-  : 'Exit' 'Select'
+  : 'Exit' 'Select'?
   ;
 
 exit_sub_statement
-  : 'Exit' 'Sub'
+  : 'Exit' 'Sub'?
   ;
 
 exit_try_statement
-  : 'Exit' 'Try'
+  : 'Exit' 'Try'?
   ;
 
 exit_while_statement
-  : 'Exit' 'While'
+  : 'Exit' 'While'?
   ;
 
 expression_statement

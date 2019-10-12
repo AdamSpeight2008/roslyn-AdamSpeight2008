@@ -17,6 +17,16 @@
         <target state="new">Type '{0}' cannot be embedded because it has a non-abstract member. Consider setting the 'Embed Interop Types' property to false.</target>
         <note />
       </trans-unit>
+      <trans-unit id="ERR_InvalidContinueStatement">
+        <source>Continue Statement is not in valid continuable block.</source>
+        <target state="new">Continue Statement is not in valid continuable block.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ERR_InvalidExitStatement">
+        <source>Exit Statment is not in a valid exittable block.</source>
+        <target state="new">Exit Statment is not in a valid exittable block.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="ERR_MultipleAnalyzerConfigsInSameDir">
         <source>Multiple analyzer config files cannot be in the same directory ('{0}').</source>
         <target state="translated">Plusieurs fichiers config d'analyseur ne peuvent pas figurer dans le même répertoire ('{0}').</target>

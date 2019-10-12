@@ -12104,8 +12104,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AdjustFlagsAndWidth(exitKeyword)
             Me._exitKeyword = exitKeyword
-            AdjustFlagsAndWidth(blockKeyword)
-            Me._blockKeyword = blockKeyword
+            If blockKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(blockKeyword)
+                Me._blockKeyword = blockKeyword
+            End If
 
         End Sub
 
@@ -12116,8 +12118,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AdjustFlagsAndWidth(exitKeyword)
             Me._exitKeyword = exitKeyword
-            AdjustFlagsAndWidth(blockKeyword)
-            Me._blockKeyword = blockKeyword
+            If blockKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(blockKeyword)
+                Me._blockKeyword = blockKeyword
+            End If
 
         End Sub
 
@@ -12127,8 +12131,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AdjustFlagsAndWidth(exitKeyword)
             Me._exitKeyword = exitKeyword
-            AdjustFlagsAndWidth(blockKeyword)
-            Me._blockKeyword = blockKeyword
+            If blockKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(blockKeyword)
+                Me._blockKeyword = blockKeyword
+            End If
 
         End Sub
 
@@ -12175,6 +12181,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <summary>
         ''' The keyword describing the block to exit.
         ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
         Friend  ReadOnly Property BlockKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._blockKeyword
@@ -12224,8 +12233,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AdjustFlagsAndWidth(continueKeyword)
             Me._continueKeyword = continueKeyword
-            AdjustFlagsAndWidth(blockKeyword)
-            Me._blockKeyword = blockKeyword
+            If blockKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(blockKeyword)
+                Me._blockKeyword = blockKeyword
+            End If
 
         End Sub
 
@@ -12236,8 +12247,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AdjustFlagsAndWidth(continueKeyword)
             Me._continueKeyword = continueKeyword
-            AdjustFlagsAndWidth(blockKeyword)
-            Me._blockKeyword = blockKeyword
+            If blockKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(blockKeyword)
+                Me._blockKeyword = blockKeyword
+            End If
 
         End Sub
 
@@ -12247,8 +12260,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             AdjustFlagsAndWidth(continueKeyword)
             Me._continueKeyword = continueKeyword
-            AdjustFlagsAndWidth(blockKeyword)
-            Me._blockKeyword = blockKeyword
+            If blockKeyword IsNot Nothing Then
+                AdjustFlagsAndWidth(blockKeyword)
+                Me._blockKeyword = blockKeyword
+            End If
 
         End Sub
 
@@ -12296,6 +12311,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' The "Do", "For" or "While" keyword that identifies the kind of loop being
         ''' continued.
         ''' </summary>
+        ''' <remarks>
+        ''' This child is optional. If it is not present, then Nothing is returned.
+        ''' </remarks>
         Friend  ReadOnly Property BlockKeyword As InternalSyntax.KeywordSyntax
             Get
                 Return Me._blockKeyword
@@ -46285,7 +46303,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitDoStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, hash)
@@ -46314,7 +46331,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitForStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, hash)
@@ -46343,7 +46359,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitSubStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SubKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, hash)
@@ -46372,7 +46387,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitFunctionStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.FunctionKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, hash)
@@ -46401,7 +46415,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitOperatorStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.OperatorKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, hash)
@@ -46430,7 +46443,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitPropertyStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.PropertyKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, hash)
@@ -46459,7 +46471,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitTryStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.TryKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, hash)
@@ -46488,7 +46499,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitSelectStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SelectKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, hash)
@@ -46517,7 +46527,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ExitWhileStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, hash)
@@ -46553,7 +46562,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Shared Function ExitStatement(kind As SyntaxKind, exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(SyntaxFacts.IsExitStatement(kind))
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsExitStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(kind, exitKeyword, blockKeyword, hash)
@@ -46583,7 +46591,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ContinueWhileStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, hash)
@@ -46613,7 +46620,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ContinueDoStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, hash)
@@ -46643,7 +46649,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Shared Function ContinueForStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, hash)
@@ -46679,7 +46684,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Shared Function ContinueStatement(kind As SyntaxKind, continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(SyntaxFacts.IsContinueStatement(kind))
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsContinueStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
             Dim cached = SyntaxNodeCache.TryGetNode(kind, continueKeyword, blockKeyword, hash)
@@ -58361,7 +58365,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitDoStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitDoStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58390,7 +58393,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitForStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitForStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58419,7 +58421,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitSubStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SubKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitSubStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58448,7 +58449,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitFunctionStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.FunctionKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitFunctionStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58477,7 +58477,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitOperatorStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.OperatorKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitOperatorStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58506,7 +58505,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitPropertyStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.PropertyKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitPropertyStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58535,7 +58533,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitTryStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.TryKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitTryStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58564,7 +58561,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitSelectStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.SelectKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitSelectStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58593,7 +58589,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ExitWhileStatement(exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ExitWhileStatement, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58629,7 +58624,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Function ExitStatement(kind As SyntaxKind, exitKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ExitStatementSyntax
             Debug.Assert(SyntaxFacts.IsExitStatement(kind))
             Debug.Assert(exitKeyword IsNot Nothing AndAlso exitKeyword.Kind = SyntaxKind.ExitKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsExitStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(kind, exitKeyword, blockKeyword, _factoryContext, hash)
@@ -58659,7 +58653,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ContinueWhileStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.WhileKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueWhileStatement, continueKeyword, blockKeyword, _factoryContext, hash)
@@ -58689,7 +58682,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ContinueDoStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.DoKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueDoStatement, continueKeyword, blockKeyword, _factoryContext, hash)
@@ -58719,7 +58711,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' </param>
         Friend Function ContinueForStatement(continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso blockKeyword.Kind = SyntaxKind.ForKeyword)
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(SyntaxKind.ContinueForStatement, continueKeyword, blockKeyword, _factoryContext, hash)
@@ -58755,7 +58746,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Friend Function ContinueStatement(kind As SyntaxKind, continueKeyword As KeywordSyntax, blockKeyword As KeywordSyntax) As ContinueStatementSyntax
             Debug.Assert(SyntaxFacts.IsContinueStatement(kind))
             Debug.Assert(continueKeyword IsNot Nothing AndAlso continueKeyword.Kind = SyntaxKind.ContinueKeyword)
-            Debug.Assert(blockKeyword IsNot Nothing AndAlso SyntaxFacts.IsContinueStatementBlockKeyword(blockKeyword.Kind))
 
             Dim hash As Integer
             Dim cached = VisualBasicSyntaxNodeCache.TryGetNode(kind, continueKeyword, blockKeyword, _factoryContext, hash)

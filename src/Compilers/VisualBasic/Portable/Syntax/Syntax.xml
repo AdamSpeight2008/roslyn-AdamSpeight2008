@@ -3035,7 +3035,7 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name=""></native-equiv>
       </child>
 
-      <child name="BlockKeyword" >
+      <child name="BlockKeyword" optional="true">
         <description>The keyword describing the block to exit.</description>
         <lm-equiv name="Block"></lm-equiv>
         <native-equiv name=""></native-equiv>
@@ -3081,7 +3081,7 @@ Unify Enum declarations with other block type declarations.
         <native-equiv name=""></native-equiv>
       </child>
 
-      <child name="BlockKeyword">
+      <child name="BlockKeyword" optional="true">
         <description>The "Do", "For" or "While" keyword that identifies the kind of loop being continued.</description>
         <lm-equiv name="Block"></lm-equiv>
         <native-equiv name=""></native-equiv>
