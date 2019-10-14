@@ -1005,6 +1005,7 @@ End Namespace
     Public Sub AllowsLeadingOrTrailingImplicitLineContinuation()
 
         Dim cu = SyntaxFactory.ParseCompilationUnit(My.Resources.Resource.VBAllInOne)
+        Dim issues = cu.GetDiagnostics.ToArray()
 
         Assert.False(cu.ContainsDiagnostics, "Baseline has diagnostics.")
 
@@ -1104,6 +1105,7 @@ End Namespace
     Public Sub AllowsLeadingOrTrailingImplicitLineContinuationNegativeTests()
 
         Dim cu = SyntaxFactory.ParseCompilationUnit(My.Resources.Resource.VBAllInOne)
+        Dim issues = cu.GetDiagnostics.ToArray()
 
         Assert.False(cu.ContainsDiagnostics, "Baseline has diagnostics.")
 

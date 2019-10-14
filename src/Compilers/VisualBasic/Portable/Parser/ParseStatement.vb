@@ -13,17 +13,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         '
         '============ Methods for parsing specific executable statements
         '
-
         ' [in] Token starting the statement
         ' File: Parser.cpp
         ' Lines: 5870 - 5870
         ' Statement* .Parser::ParseContinueStatement( [ _In_ Token* StmtStart ] [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseContinueStatement() As ContinueStatementSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.ContinueKeyword)
 
-            Dim continueKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.ContinueKeyword, continueKeyword)
+            Dim continueKeyword = ParseKeyword(SyntaxKind.ContinueKeyword)
 
             Dim kind As SyntaxKind
             Dim blockKeyword As KeywordSyntax = Nothing
@@ -81,8 +78,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function ParseExitStatement() As StatementSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.ExitKeyword)
 
-            Dim exitKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.ExitKeyword, exitKeyword)
+            Dim exitKeyword = ParseKeyword(SyntaxKind.ExitKeyword)
 
             Dim statement As StatementSyntax = Nothing
             Dim kind As SyntaxKind
@@ -223,8 +219,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseCaseStatement() As CaseStatementSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.CaseKeyword)
-            Dim caseKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.CaseKeyword, caseKeyword)
+            Dim caseKeyword = ParseKeyword(SyntaxKind.CaseKeyword)
 
             Dim caseClauses = _pool.AllocateSeparated(Of CaseClauseSyntax)()
             Dim elseKeyword As KeywordSyntax = Nothing
@@ -277,17 +272,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         End If
 
                         Dim toKeyword As KeywordSyntax = Nothing
-                        If TryParseKeyword(SyntaxKind.ToKeyword, toKeyword) Then
-
-                            Dim upperBound As ExpressionSyntax = ParseExpressionCore()
-
-                            If upperBound.ContainsDiagnostics Then
-                                upperBound = ResyncAt(upperBound)
-                            End If
-
+                        Dim upperBound As ExpressionSyntax = Nothing
+                        If TryParseTokenAndExpression(SyntaxKind.ToKeyword, toKeyword, upperBound) Then
                             caseClause = SyntaxFactory.RangeCaseClause(value, toKeyword, upperBound)
                         Else
-
                             caseClause = SyntaxFactory.SimpleCaseClause(value)
                         End If
                     End If
@@ -318,49 +306,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Shared Function RelationalOperatorKindToCaseKind(kind As SyntaxKind) As SyntaxKind
-
             Select Case kind
-                Case SyntaxKind.LessThanToken
-                    Return SyntaxKind.CaseLessThanClause
-
-                Case SyntaxKind.LessThanEqualsToken
-                    Return SyntaxKind.CaseLessThanOrEqualClause
-
-                Case SyntaxKind.EqualsToken
-                    Return SyntaxKind.CaseEqualsClause
-
-                Case SyntaxKind.LessThanGreaterThanToken
-                    Return SyntaxKind.CaseNotEqualsClause
-
-                Case SyntaxKind.GreaterThanToken
-                    Return SyntaxKind.CaseGreaterThanClause
-
-                Case SyntaxKind.GreaterThanEqualsToken
-                    Return SyntaxKind.CaseGreaterThanOrEqualClause
-
-                Case Else
-                    Debug.Assert(False, "Wrong relational operator kind")
-                    Return Nothing
+                   Case SyntaxKind.LessThanToken            : Return SyntaxKind.CaseLessThanClause
+                   Case SyntaxKind.LessThanEqualsToken      : Return SyntaxKind.CaseLessThanOrEqualClause
+                   Case SyntaxKind.EqualsToken              : Return SyntaxKind.CaseEqualsClause
+                   Case SyntaxKind.LessThanGreaterThanToken : Return SyntaxKind.CaseNotEqualsClause
+                   Case SyntaxKind.GreaterThanToken         : Return SyntaxKind.CaseGreaterThanClause
+                   Case SyntaxKind.GreaterThanEqualsToken   : Return SyntaxKind.CaseGreaterThanOrEqualClause
             End Select
-
+            Debug.Assert(False, "Wrong relational operator kind")
+            Return Nothing
         End Function
 
         Private Function ParseSelectStatement() As SelectStatementSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.SelectKeyword)
 
-            Dim selectKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.SelectKeyword, selectKeyword)
+            Dim selectKeyword = ParseKeyword(SyntaxKind.SelectKeyword)
 
             ' Allow the expected CASE token to be present or not.
 
             Dim optionalCaseKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.CaseKeyword, optionalCaseKeyword)
-
-            Dim value As ExpressionSyntax = ParseExpressionCore()
-
-            If value.ContainsDiagnostics Then
-                value = ResyncAt(value)
-            End If
+            Dim value As ExpressionSyntax = Nothing
+            TryParseKeywordAndExpression(SyntaxKind.CaseKeyword, optionalCaseKeyword, value, isOptionalKeyword:= true)
 
             Dim statement = SyntaxFactory.SelectStatement(selectKeyword, optionalCaseKeyword, value)
 
@@ -383,30 +350,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.IfKeyword)
 
             Dim ifKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.IfKeyword, ifKeyword)
-
-            Dim condition = ParseExpressionCore(OperatorPrecedence.PrecedenceNone)
-
-            If condition.ContainsDiagnostics Then
-                condition = ResyncAt(condition, SyntaxKind.ThenKeyword)
-            End If
+            Dim condition As ExpressionSyntax = Nothing
+            TryParseKeywordAndExpression(SyntaxKind.IfKeyword, ifKeyword, condition, resyncTokens:= {SyntaxKind.ThenKeyword})
 
             Dim thenKeyword As KeywordSyntax = Nothing
             TryParseKeyword(SyntaxKind.ThenKeyword, thenKeyword)
 
-            Dim statement = SyntaxFactory.IfStatement(ifKeyword, condition, thenKeyword)
-
-            Return statement
+            Return SyntaxFactory.IfStatement(ifKeyword, condition, thenKeyword)
 
         End Function
 
         Private Function ParseElseStatement() As ElseStatementSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.ElseKeyword)
-            Dim elseKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.ElseKeyword, elseKeyword)
-            Dim statement = SyntaxFactory.ElseStatement(elseKeyword)
-
-            Return statement
+            Dim elseKeyword = ParseKeyword(SyntaxKind.ElseKeyword)
+            Return SyntaxFactory.ElseStatement(elseKeyword)
         End Function
 
         Private Function ParseElseIfStatement() As StatementSyntax
@@ -452,7 +409,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseAnachronisticStatement() As StatementSyntax
             ' Assume CurrentToken is on ENDIF, WEND, Gosub
-            DebugAssert_CalledOnCorrectToken({SyntaxKind.EndIfKeyword, SyntaxKind.GosubKeyword, SyntaxKind.WendKeyword})
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.EndIfKeyword, SyntaxKind.GosubKeyword, SyntaxKind.WendKeyword)
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -487,14 +444,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseDoStatement() As DoStatementSyntax
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.DoKeyword)
 
-            ' Assume CurrentToken is on Do
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.DoKeyword, "ParseDoStatement called on wrong token")
-
-            Dim doKeyword = DirectCast(CurrentToken, KeywordSyntax)
-
-            ' Consume the Do.
-            GetNextToken()
+            Dim doKeyword = ParseKeyword(SyntaxKind.DoKeyword)
 
             Dim optionalWhileOrUntilClause As WhileOrUntilClauseSyntax = Nothing
 
@@ -517,8 +469,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function ParseLoopStatement() As LoopStatementSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.LoopKeyword)
 
-            Dim loopKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.LoopKeyword, loopKeyword)
+            Dim loopKeyword = ParseKeyword(SyntaxKind.LoopKeyword)
 
             ' Moved ERRID.ERR_LoopDoubleCondition to TryParseOptionalWhileOrUntilClause
             Dim optionalWhileOrUntilClause As WhileOrUntilClauseSyntax = Nothing
@@ -542,17 +493,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function ParseForStatement() As StatementSyntax
             DebugAssert_CalledOnCorrectToken(SyntaxKind.ForKeyword)
             ' Assume CurrentToken is on For
-            Dim forKeyword As KeywordSyntax = Nothing
-            TryParseKeyword(SyntaxKind.ForKeyword, forKeyword)
-
+            Dim forKeyword = ParseKeyword(SyntaxKind.ForKeyword)
             Dim eachKeyword As KeywordSyntax = Nothing
             If TryParseKeyword(SyntaxKind.EachKeyword, eachKeyword) Then
-
                 Return ParseForEachStatement(forKeyword, eachKeyword)
-
             Else
                 Return ParseForStatement(forKeyword)
-
             End If
         End Function
 
@@ -569,14 +515,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             TryEatNewLineIfFollowedBy(SyntaxKind.InKeyword)
 
             Dim inKeyword As KeywordSyntax = Nothing
-            If TryGetTokenAndEatNewLine(SyntaxKind.InKeyword, inKeyword) Then
-
-                expression = ParseExpressionCore()
-
-                If expression.ContainsDiagnostics Then
-                    expression = ResyncAt(expression)
-                End If
-            Else
+            If not TryParseTokenAndExpression(SyntaxKind.InKeyword, inKeyword, expression) Then
                 'TODO - In Dev 10 only syntax error was reported.  Now
                 ' expected 'In" is reported.  Should only 1 message be reported?
                 ' Also see parsing For with expected =.
@@ -584,18 +523,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 expression = InternalSyntaxFactory.MissingExpression.AddTrailingSyntax(ResyncAt({SyntaxKind.ToKeyword}), ERRID.ERR_Syntax)
             End If
 
-            Dim statement = SyntaxFactory.ForEachStatement(forKeyword, eachKeyword, controlVariable, inKeyword, expression)
-
-            Return statement
+            Return SyntaxFactory.ForEachStatement(forKeyword, eachKeyword, controlVariable, inKeyword, expression)
         End Function
 
         Private Function ParseForStatement(forKeyword As KeywordSyntax) As ForStatementSyntax
 
             Dim controlVariable = ParseForLoopControlVariable()
-
-            Dim fromValue As ExpressionSyntax = Nothing
-            Dim toValue As ExpressionSyntax = Nothing
-
             If controlVariable.ContainsDiagnostics Then
                 controlVariable = ResyncAt(controlVariable, SyntaxKind.EqualsToken, SyntaxKind.ToKeyword)
             End If
@@ -606,18 +539,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' See bug 8590.
 
             Dim equalsToken As PunctuationSyntax = Nothing
+            Dim fromValue As ExpressionSyntax = Nothing
+            Dim uptoValue As ExpressionSyntax = Nothing
 
-            If TryGetTokenAndEatNewLine(SyntaxKind.EqualsToken, equalsToken) Then
-
-                ' Dev10_545918 - Allow implicit line continuation after '=' 
-
-                fromValue = ParseExpressionCore()
-
-                If fromValue.ContainsDiagnostics Then
-                    fromValue = ResyncAt(fromValue, SyntaxKind.ToKeyword)
-                End If
-
-            Else
+            If Not TryParseTokenAndExpression(SyntaxKind.EqualsToken, equalsToken, fromValue, resyncTokens:= {SyntaxKind.ToKeyword}) Then
                 'Dev 10 only reported syntax error.  Code now reports expected '=' and syntax error.
                 ' TODO - consider removing redundant syntax error message.
                 equalsToken = DirectCast(HandleUnexpectedToken(SyntaxKind.EqualsToken), PunctuationSyntax)
@@ -627,49 +552,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim toKeyword As KeywordSyntax = Nothing
-            If TryParseKeyword(SyntaxKind.ToKeyword, toKeyword) Then
+            If Not TryParseKeywordAndExpression(SyntaxKind.ToKeyword, toKeyword, uptoValue,resyncTokens:= {SyntaxKind.StepKeyword}) Then
 
-                'TODO - davidsch - Why is newline allowed after '=' but not after 'to'?
-                toValue = ParseExpressionCore()
-
-                If toValue.ContainsDiagnostics Then
-                    toValue = ResyncAt(toValue, SyntaxKind.StepKeyword)
-                End If
-
-            Else
                 'No error for expected 'To' keyword.  HandleUnexpectedToken returns ERRID_Syntax
                 toKeyword = DirectCast(HandleUnexpectedToken(SyntaxKind.ToKeyword), KeywordSyntax)
                 'TODO - ERRID_ExpectedExpression here?
-                toValue = InternalSyntaxFactory.MissingExpression.AddTrailingSyntax(ResyncAt({SyntaxKind.ToKeyword}))
+                uptoValue = InternalSyntaxFactory.MissingExpression.AddTrailingSyntax(ResyncAt({SyntaxKind.ToKeyword}))
 
             End If
 
             Dim optionalStepClause As ForStepClauseSyntax = Nothing
+            TryParseOptionalStepClause(optionalStepClause)
+
+            Return SyntaxFactory.ForStatement(forKeyword, controlVariable, equalsToken, fromValue, toKeyword, uptoValue, optionalStepClause)
+        End Function
+
+        Private Function TryParseOptionalStepClause(ByRef optionalStepClause As ForStepClauseSyntax) As Boolean
             Dim stepKeyword As KeywordSyntax = Nothing
-
-            If TryParseKeyword(SyntaxKind.StepKeyword, stepKeyword) Then
-                Dim stepValue As ExpressionSyntax = ParseExpressionCore()
-
-                If stepValue.ContainsDiagnostics Then
-                    stepValue = ResyncAt(stepValue)
-                End If
-
-                optionalStepClause = SyntaxFactory.ForStepClause(stepKeyword, stepValue)
-
-            End If
-
-            Dim statement = SyntaxFactory.ForStatement(forKeyword, controlVariable, equalsToken, fromValue, toKeyword, toValue, optionalStepClause)
-
-            Return statement
+            Dim stepValue As ExpressionSyntax = Nothing
+            Dim ok = TryParseKeywordAndExpression(SyntaxKind.StepKeyword, stepKeyword, stepValue, isOptionalKeyword:= false)
+            If ok Then optionalStepClause = SyntaxFactory.ForStepClause(stepKeyword, stepValue)
+            Return ok
         End Function
 
         Private Function ParseNextStatement() As NextStatementSyntax
-            ' Assume CurrentToken is on Next
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.NextKeyword, "ParseNextStatement called on wrong token")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.NextKeyword)
 
-            Dim nextKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            GetNextToken()
+            Dim nextKeyword = ParseKeyword(SyntaxKind.NextKeyword)
 
             If CanFollowStatement(CurrentToken) Then
 
@@ -701,9 +610,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     variables.Add(variable)
 
                     Dim comma As PunctuationSyntax = Nothing
-                    If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
-                        Exit Do
-                    End If
+                    If Not TryParseComma(comma) Then  Exit Do
 
                     variables.AddSeparator(comma)
 
@@ -713,9 +620,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     End If
                 Loop
 
-                Dim statement = SyntaxFactory.NextStatement(nextKeyword, variables.ToListAndFree(_pool))
-
-                Return statement
+                Return SyntaxFactory.NextStatement(nextKeyword, variables.ToListAndFree(_pool))
             End If
         End Function
 
@@ -728,7 +633,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' *     Parses: <Expression> | <ident>[ArrayList] As <type>
         ' *
         ' **********************************************************************/
-
+        '
         ' File: Parser.cpp
         ' Lines: 5717 - 5717
         ' Expression* .Parser::ParseForLoopControlVariable( [ ParseTree::BlockStatement* ForBlock ] [ _In_ Token* ForStart ] [ _Out_ ParseTree::VariableDeclarationStatement** Decl ] [ _Inout_ bool& ErrorInConstruct ] )
@@ -777,7 +682,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 5761 - 5761
         ' Expression* .Parser::ParseForLoopVariableDeclaration( [ ParseTree::BlockStatement* ForBlock ] [ _In_ Token* ForStart ] [ _Out_ ParseTree::VariableDeclarationStatement** Decl ] [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseForLoopVariableDeclaration() As VariableDeclaratorSyntax
 
             ' Parse the control variable declaration
@@ -794,33 +698,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
             End If
 
-            Dim [As] As KeywordSyntax = Nothing
-            Dim Type As TypeSyntax = Nothing
-            Dim optionalAsClause As AsClauseSyntax = Nothing
+            Dim optionalAsClause As SimpleAsClauseSyntax = Nothing
 
-            If CurrentToken.Kind = SyntaxKind.AsKeyword Then
-                [As] = DirectCast(CurrentToken, KeywordSyntax)
-
-                ' Parse the type
-                GetNextToken()
-                Type = ParseGeneralType()
-                optionalAsClause = SyntaxFactory.SimpleAsClause([As], Nothing, Type)
-            End If ' Else if "As" is not present, the error falls out as a "Syntax error" IN the caller
+            TryParseAsType(optionalAsClause) ' Else if "As" is not present, the error falls out as a "Syntax error" IN the caller
 
             Dim names = _pool.AllocateSeparated(Of ModifiedIdentifierSyntax)()
             names.Add(Declarator)
 
-            Dim result = SyntaxFactory.VariableDeclarator(names.ToListAndFree(_pool), optionalAsClause, Nothing)
-
-            Return result
+            Return SyntaxFactory.VariableDeclarator(names.ToListAndFree(_pool), optionalAsClause, Nothing)
         End Function
 
         ' Parse a reference to a label, which can be an identifier or a line number.
-
+        '
         ' File: Parser.cpp
         ' Lines: 11363 - 11363
         ' .Parser::ParseLabelReference( [ _Out_ ParseTree::LabelReferenceStatement* LabelReference ] [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseLabelReference() As SyntaxToken
 
             Dim label As SyntaxToken = CurrentToken
@@ -847,7 +739,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         If TypeOf intLiteral Is IntegerLiteralTokenSyntax(Of Integer) Then
                             intLiteralValue = CUInt(intLiteralValue)
                         End If
-                        intLiteral = New IntegerLiteralTokenSyntax(Of ULong)(SyntaxKind.IntegerLiteralToken, intLiteral.ToString, intLiteral.GetLeadingTrivia, intLiteral.GetTrailingTrivia, intLiteral.Base, TypeCharacter.None, intLiteralValue)
+                        intLiteral = New IntegerLiteralTokenSyntax(Of ULong)(SyntaxKind.IntegerLiteralToken,
+                                                                             intLiteral.ToString,
+                                                                             intLiteral.GetLeadingTrivia,
+                                                                             intLiteral.GetTrailingTrivia,
+                                                                             intLiteral.Base,
+                                                                             TypeCharacter.None,
+                                                                             intLiteralValue)
                     Else
                         intLiteral = ReportSyntaxError(intLiteral, ERRID.ERR_Syntax)
                     End If
@@ -868,15 +766,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 11410 - 11410
         ' .Parser::ParseGotoStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseGotoStatement() As StatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.GoToKeyword, "Alleged GOTO isn't.")
-
-            Dim gotoKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            GetNextToken()
-
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.GoToKeyword)
+            Dim gotoKeyword = ParseKeyword(SyntaxKind.GoToKeyword)
             Dim labelName = ParseLabelReference()
 
             'TODO - Not calling ResyncAt may cause different errors from Dev10.
@@ -897,14 +789,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 11440 - 11440
         ' .Parser::ParseOnErrorStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseOnErrorStatement() As StatementSyntax
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.OnKeyword)
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.OnKeyword, "ON statement must start with ON.")
-
-            Dim onKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            GetNextToken()
+            Dim onKeyword = ParseKeyword(SyntaxKind.OnKeyword)
             Dim errorKeyword As KeywordSyntax
 
             If CurrentToken.Kind = SyntaxKind.ErrorKeyword Then
@@ -944,8 +832,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseOnErrorResumeNext(onKeyword As KeywordSyntax, errorKeyword As KeywordSyntax) As OnErrorResumeNextStatementSyntax
-
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ResumeKeyword, "ParseOnErrorResumeNext called on wrong token.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ResumeKeyword)
 
             Dim resumeKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim nextKeyword As KeywordSyntax = Nothing
@@ -960,7 +847,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseOnErrorGoto(onKeyword As KeywordSyntax, errorKeyword As KeywordSyntax) As OnErrorGoToStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.GoToKeyword, "ParseOnErrorGoto called on wrong token.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.GoToKeyword)
 
             Dim gotoKeyword = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -1005,15 +892,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 11551 - 11551
         ' .Parser::ParseResumeStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseResumeStatement() As ResumeStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ResumeKeyword, "ParseResumeStatement called on wrong token.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ResumeKeyword)
 
-            Dim resumeKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
+            Dim resumeKeyword = ParseKeyword(SyntaxKind.ResumeKeyword)
             Dim optionalLabel As SyntaxToken = Nothing
             Dim statement As ResumeStatementSyntax
-
-            GetNextToken()
 
             If Not IsValidStatementTerminator(CurrentToken) Then
 
@@ -1111,55 +995,33 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Return target
         End Function
 
-        Private Function MakeAssignmentStatement(left As ExpressionSyntax, operatorToken As PunctuationSyntax, right As ExpressionSyntax) As AssignmentStatementSyntax
+        Private Function MakeAssignmentStatement(
+                                                  left As ExpressionSyntax,
+                                                  operatorToken As PunctuationSyntax,
+                                                  right As ExpressionSyntax
+                                                ) As AssignmentStatementSyntax
             Select Case operatorToken.Kind
-
-                Case SyntaxKind.EqualsToken
-                    Return SyntaxFactory.SimpleAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.PlusEqualsToken
-                    Return SyntaxFactory.AddAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.MinusEqualsToken
-                    Return SyntaxFactory.SubtractAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.AsteriskEqualsToken
-                    Return SyntaxFactory.MultiplyAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.SlashEqualsToken
-                    Return SyntaxFactory.DivideAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.BackslashEqualsToken
-                    Return SyntaxFactory.IntegerDivideAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.CaretEqualsToken
-                    Return SyntaxFactory.ExponentiateAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.LessThanLessThanEqualsToken
-                    Return SyntaxFactory.LeftShiftAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.GreaterThanGreaterThanEqualsToken
-                    Return SyntaxFactory.RightShiftAssignmentStatement(left, operatorToken, right)
-
-                Case SyntaxKind.AmpersandEqualsToken
-                    Return SyntaxFactory.ConcatenateAssignmentStatement(left, operatorToken, right)
-
-                Case Else
-                    Throw ExceptionUtilities.UnexpectedValue(operatorToken.Kind)
-
+                   Case SyntaxKind.EqualsToken                          : Return SyntaxFactory.SimpleAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.PlusEqualsToken                      : Return SyntaxFactory.AddAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.MinusEqualsToken                     : Return SyntaxFactory.SubtractAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.AsteriskEqualsToken                  : Return SyntaxFactory.MultiplyAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.SlashEqualsToken                     : Return SyntaxFactory.DivideAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.BackslashEqualsToken                 : Return SyntaxFactory.IntegerDivideAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.CaretEqualsToken                     : Return SyntaxFactory.ExponentiateAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.LessThanLessThanEqualsToken          : Return SyntaxFactory.LeftShiftAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.GreaterThanGreaterThanEqualsToken    : Return SyntaxFactory.RightShiftAssignmentStatement(left, operatorToken, right)
+                   Case SyntaxKind.AmpersandEqualsToken                 : Return SyntaxFactory.ConcatenateAssignmentStatement(left, operatorToken, right)
             End Select
+            Throw ExceptionUtilities.UnexpectedValue(operatorToken.Kind)
         End Function
 
         ' File: Parser.cpp
         ' Lines: 11600 - 11600
         ' .Parser::ParseCallStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseCallStatement() As CallStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CallKeyword, "ParseCallStatement called on wrong token.")
+           DebugAssert_CalledOnCorrectToken(SyntaxKind.CallKeyword)
 
-            Dim callKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
+            Dim callKeyword = ParseKeyword(SyntaxKind.CallKeyword)
             Dim invocation As ExpressionSyntax = MakeCallStatementExpression(ParseVariable())
 
             If invocation.ContainsDiagnostics Then
@@ -1192,13 +1054,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 11656 - 11656
         ' .Parser::ParseRaiseEventStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseRaiseEventStatement() As RaiseEventStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.RaiseEventKeyword, "RaiseEvent statement must start with RaiseEvent.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.RaiseEventKeyword)
 
-            Dim raiseEventKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            GetNextToken()
+            Dim raiseEventKeyword = ParseKeyword(SyntaxKind.RaiseEventKeyword)
 
             Dim ident = ParseIdentifierNameAllowingKeyword()
 
@@ -1219,12 +1078,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 11690 - 11690
         ' .Parser::ParseRedimStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseRedimStatement() As StatementSyntax '[ReDim]
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ReDimKeyword)
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ReDimKeyword, "ParseRedimStatement must start with Redim.")
-            Dim reDimKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            Dim reDimKeyword = ParseKeyword(SyntaxKind.ReDimKeyword)
 
             Dim possibleKeyword As KeywordSyntax = Nothing
             Dim optionalPreserveKeyword As KeywordSyntax = Nothing
@@ -1290,10 +1147,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 11755 - 11755
         ' .Parser::ParseHandlerStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseHandlerStatement() As AddRemoveHandlerStatementSyntax
 
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.AddHandlerKeyword OrElse CurrentToken.Kind = SyntaxKind.RemoveHandlerKeyword, "Handler statement parsing confused.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.AddHandlerKeyword, SyntaxKind.RemoveHandlerKeyword)
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
             Dim kind = If(keyword.Kind = SyntaxKind.AddHandlerKeyword, SyntaxKind.AddHandlerStatement, SyntaxKind.RemoveHandlerStatement)
@@ -1314,26 +1170,22 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 DelegateExpression = ResyncAt(DelegateExpression)
             End If
 
-            Dim statement = SyntaxFactory.AddRemoveHandlerStatement(kind, keyword, eventExpression, commaToken, DelegateExpression)
-
-            Return statement
+            Return SyntaxFactory.AddRemoveHandlerStatement(kind, keyword, eventExpression, commaToken, DelegateExpression)
         End Function
 
         ' File: Parser.cpp
         ' Lines: 11830 - 11830
         ' .Parser::ParseExpressionBlockStatement( [ ParseTree::Statement::Opcodes Opcode ] [ _Inout_ bool& ErrorInConstruct ] )
-
+        '
         ' davidsch
         ' used by While/With/Synclock
         ' The return type can't be more specific because these statements don't share a more
         ' specific class.
-
+        '
         'TODO - Rename ParseKeywordExpression and share with other statements that follow this pattern
         ' i.e. Throw, others?
         Private Function ParseExpressionBlockStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.WhileKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.WithKeyword OrElse
-                             CurrentToken.Kind = SyntaxKind.SyncLockKeyword, "ParseExpressionBlockStatement called on wrong token.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.WhileKeyword, SyntaxKind.WithKeyword, SyntaxKind.SyncLockKeyword)
 
             Dim keyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
 
@@ -1362,10 +1214,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' File: Parser.cpp
         ' Lines: 11854 - 11854
         ' .Parser::ParseAssignmentStatement( [ _Inout_ bool& ErrorInConstruct ] )
-
+        '
         'TODO - rename ParseObsoleteAssignment
         Private Function ParseAssignmentStatement() As StatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.LetKeyword OrElse CurrentToken.Kind = SyntaxKind.SetKeyword, "Assignment statement parsing is lost.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.LetKeyword,SyntaxKind.SetKeyword)
             ' Let and set are now illegal
 
             If CurrentToken.Kind = SyntaxKind.SetKeyword AndAlso
@@ -1389,27 +1241,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' Lines: 11909 - 11909
         ' .Parser::ParseTry( )
         Private Function ParseTry() As TryStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.TryKeyword, "ParseTry called on wrong token")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.TryKeyword)
 
-            Dim tryKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
-            Dim statement = SyntaxFactory.TryStatement(tryKeyword)
-
-            Return statement
+            Dim tryKeyword = ParseKeyword(SyntaxKind.TryKeyword)
+            Return SyntaxFactory.TryStatement(tryKeyword)
         End Function
 
         ' File: Parser.cpp
         ' Lines: 11933 - 11933
         ' .Parser::ParseCatch( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseCatch() As CatchStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.CatchKeyword, "ParseCatch called on wrong token.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.CatchKeyword)
 
-            Dim catchKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            GetNextToken()
-
+            Dim catchKeyword = ParseKeyword(SyntaxKind.CatchKeyword)
             Dim optionalName As IdentifierNameSyntax = Nothing
             Dim optionalAsClause As SimpleAsClauseSyntax = Nothing
 
@@ -1419,104 +1263,61 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                     optionalName = SyntaxFactory.IdentifierName(id)
                 End If
 
-                Dim asKeyword As KeywordSyntax = Nothing
-                Dim typeName As TypeSyntax = Nothing
-
-                If TryGetToken(SyntaxKind.AsKeyword, asKeyword) Then
-
-                    typeName = ParseTypeName()
-
-                    If typeName.ContainsDiagnostics Then
-                        typeName = ResyncAt(typeName, SyntaxKind.WhenKeyword)
-                    End If
-
-                    optionalAsClause = SyntaxFactory.SimpleAsClause(asKeyword, Nothing, typeName)
-                End If
+                TryParseAsType(optionalAsClause, false, true, {SyntaxKind.WhenKeyword})
             End If
 
             Dim optionalWhenClause As CatchFilterClauseSyntax = Nothing
+            TryParseOptionalWhenClause(optionalWhenClause)
+
+            Return SyntaxFactory.CatchStatement(catchKeyword, optionalName, optionalAsClause, optionalWhenClause)
+        End Function
+
+        Private Function TryParseOptionalWhenClause(ByRef optionalWhenClause As CatchFilterClauseSyntax) As Boolean
             Dim whenKeyword As KeywordSyntax = Nothing
-            Dim filter As ExpressionSyntax = Nothing
-            If TryGetToken(SyntaxKind.WhenKeyword, whenKeyword) Then
-                filter = ParseExpressionCore()
-
-                optionalWhenClause = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
-            End If
-
-            Dim statement = SyntaxFactory.CatchStatement(catchKeyword, optionalName, optionalAsClause, optionalWhenClause)
-
-            Return statement
+            Dim filter As ExpressionSyntax = nothing
+            Dim ok = TryParseKeywordAndExpression(SyntaxKind.WhenKeyword, whenKeyword, filter, isOptionalKeyword:= false)
+            If ok Then optionalWhenClause = SyntaxFactory.CatchFilterClause(whenKeyword, filter)
+            Return ok
         End Function
 
         ' File: Parser.cpp
         ' Lines: 12022 - 12022
         ' .Parser::ParseFinally( [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function ParseFinally() As FinallyStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.FinallyKeyword, "ParseFinally called on wrong token.")
-
-            Dim finallyKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.FinallyKeyword)
+            Dim finallyKeyword = ParseKeyword(SyntaxKind.FinallyKeyword)
             Dim statement = SyntaxFactory.FinallyStatement(finallyKeyword)
-
             Return statement
         End Function
 
         Private Function ParseThrowStatement() As ThrowStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ThrowKeyword, "ParseThrowStatement called on wrong token.")
-
-            Dim throwKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
-            Dim value = ParseExpressionCore(bailIfFirstTokenRejected:=True)
-            If value IsNot Nothing Then
-                If value.ContainsDiagnostics Then
-                    value = ResyncAt(value)
-                End If
-            End If
-
-            Dim statement = SyntaxFactory.ThrowStatement(throwKeyword, value)
-
-            Return statement
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ThrowKeyword)
+            Dim throwKeyword As KeywordSyntax = Nothing
+            Dim value As ExpressionSyntax = Nothing
+            TryParseKeywordAndExpression(SyntaxKind.ThrowKeyword, throwKeyword, value, bailIfFirstTokenRejected:=True)
+            Return SyntaxFactory.ThrowStatement(throwKeyword, value)
         End Function
 
         Private Function ParseError() As ErrorStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ErrorKeyword)
-
-            Dim errorKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
-            Dim value = ParseExpressionCore()
-
-            If value.ContainsDiagnostics Then
-                value = ResyncAt(value)
-            End If
-
-            Dim statement = SyntaxFactory.ErrorStatement(errorKeyword, value)
-
-            Return statement
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ErrorKeyword)
+            Dim errorKeyword As KeywordSyntax = Nothing
+            Dim value As ExpressionSyntax = Nothing
+            TryParseTokenAndExpression(SyntaxKind.ErrorKeyword, errorKeyword, value)
+            Return SyntaxFactory.ErrorStatement(errorKeyword, value)
         End Function
 
         ' Parse an Erase statement.
-
+        '
         ' File: Parser.cpp
         ' Lines: 12077 - 12077
         ' .Parser::ParseErase( [ _Inout_ bool& ErrorInConstruct ] )
-
+        '
         Private Function ParseErase() As EraseStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EraseKeyword, "Erase statement parsing lost.")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.EraseKeyword)
 
-            Dim eraseKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-
-            GetNextToken()
-
-            Dim variables = ParseVariableList()
-
-            Dim statement = SyntaxFactory.EraseStatement(eraseKeyword, variables)
-
-            Return statement
-
+            Dim eraseKeyword = ParseKeyword(SyntaxKind.EraseKeyword)
+            Dim variables    = ParseVariableList()
+            Return SyntaxFactory.EraseStatement(eraseKeyword, variables)
         End Function
 
         Private Function ShouldParseAsLabel() As Boolean
@@ -1524,7 +1325,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseLabel() As LabelStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken OrElse CurrentToken.Kind = SyntaxKind.IntegerLiteralToken)
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.IdentifierToken,SyntaxKind.IntegerLiteralToken)
 
             Dim labelName = ParseLabelReference()
 
@@ -1548,9 +1349,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim colonTrivia = DirectCast(trivia(index), SyntaxTrivia)
             trivia = trivia.GetEndOfTrivia(index + 1)
             Dim colonToken = New PunctuationSyntax(SyntaxKind.ColonToken, colonTrivia.Text, Nothing, trivia.Node)
-            Dim statement = SyntaxFactory.LabelStatement(labelName, colonToken)
-            Return statement
-
+            Return SyntaxFactory.LabelStatement(labelName, colonToken)
         End Function
 
         ' Parse a Mid statement.
@@ -1570,16 +1369,17 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             GetNextToken()
 
             Debug.Assert(CurrentToken.Kind = SyntaxKind.OpenParenToken)
-            Dim openParen As PunctuationSyntax = Nothing
-            TryGetTokenAndEatNewLine(SyntaxKind.OpenParenToken, openParen)
 
-            Dim argumentsBuilder As SeparatedSyntaxListBuilder(Of ArgumentSyntax) = _pool.AllocateSeparated(Of ArgumentSyntax)()
+            Dim openParen As PunctuationSyntax = Nothing
+            TryParseOpenParen(openParen)
+
+            Dim argumentsBuilder = _pool.AllocateSeparated(Of ArgumentSyntax)()
             Dim comma As PunctuationSyntax = Nothing
 
             ' Parse the first required argument followed by a comma
             argumentsBuilder.Add(ParseArgument(RedimOrNewParent:=False))
 
-            If Not TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
+            If Not TryParseComma(comma) Then
                 VerifyExpectedToken(SyntaxKind.CommaToken, comma)
             End If
 
@@ -1588,7 +1388,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             ' Parse the second required argument
             argumentsBuilder.Add(ParseArgument(RedimOrNewParent:=False))
 
-            If TryGetTokenAndEatNewLine(SyntaxKind.CommaToken, comma) Then
+            If TryParseComma(comma) Then
                 argumentsBuilder.AddSeparator(comma)
 
                 ' Parse the third argument
@@ -1598,7 +1398,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             Dim arguments As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of ArgumentSyntax) = argumentsBuilder.ToListAndFree(_pool)
 
             Dim closeParen As PunctuationSyntax = Nothing
-            TryEatNewLineAndGetToken(SyntaxKind.CloseParenToken, closeParen, createIfMissing:=True)
+            TryParseCloseParen(closeParen)
 
             Dim equals As PunctuationSyntax = Nothing
             VerifyExpectedToken(SyntaxKind.EqualsToken, equals)
@@ -1609,17 +1409,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 source = ResyncAt(source)
             End If
 
-            Dim statement = SyntaxFactory.MidAssignmentStatement(SyntaxFactory.MidExpression(mid, SyntaxFactory.ArgumentList(openParen, arguments, closeParen)),
-                                                                 equals, source)
-
-            Return statement
+            Return SyntaxFactory.MidAssignmentStatement(
+                        SyntaxFactory.MidExpression(mid, SyntaxFactory.ArgumentList(openParen, arguments, closeParen)), equals, source)
         End Function
 
         ' Out
         ' File: Parser.cpp
         ' Lines: 16887 - 16887
         ' Expression* .Parser::ParseOptionalWhileOrUntilClause( [ _Out_ bool* IsWhile ] [ _Inout_ bool& ErrorInConstruct ] )
-
         Private Function TryParseOptionalWhileOrUntilClause(precedingKeyword As KeywordSyntax, ByRef optionalWhileOrUntilClause As WhileOrUntilClauseSyntax) As Boolean
             If Not CanFollowStatement(CurrentToken) Then
 
@@ -1641,12 +1438,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                         condition = ResyncAt(condition)
                     End If
 
-                    Dim kind As SyntaxKind
-                    If keyword.Kind = SyntaxKind.WhileKeyword Then
-                        kind = SyntaxKind.WhileClause
-                    Else
-                        kind = SyntaxKind.UntilClause
-                    End If
+                    Dim kind = If(keyword.Kind = SyntaxKind.WhileKeyword, SyntaxKind.WhileClause, SyntaxKind.UntilClause)
 
                     optionalWhileOrUntilClause = SyntaxFactory.WhileOrUntilClause(kind, keyword, condition)
                     Return True
@@ -1674,11 +1466,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseReturnStatement() As ReturnStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ReturnKeyword, "ParseReturnStatement called on wrong token.")
-
-            Dim returnKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.ReturnKeyword)
+            Dim returnKeyword = ParseKeyword(SyntaxKind.ReturnKeyword)
             Dim startToken = CurrentToken
 
             ' Dev10#694102 - Consider "Dim f = Sub() Return + 5". Which of the following should it mean?
@@ -1714,10 +1503,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 operand = ResyncAt(operand)
             End If
 
-            Dim statement = SyntaxFactory.ReturnStatement(returnKeyword, operand)
-
-            Return statement
-
+            Return SyntaxFactory.ReturnStatement(returnKeyword, operand)
         End Function
 
         'TODO - See if all of the simple statements that take only one keyword can be merged into one parsing function
@@ -1725,24 +1511,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ' TryStatement
         ' FinallyStatement
         Private Function ParseStopOrEndStatement() As StopOrEndStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.StopKeyword OrElse CurrentToken.Kind = SyntaxKind.EndKeyword, "ParseStopOrEndStatement called on wrong token.")
-
-            Dim stopOrEndKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
-            Dim stmtKind As SyntaxKind = If(stopOrEndKeyword.Kind = SyntaxKind.StopKeyword, SyntaxKind.StopStatement, SyntaxKind.EndStatement)
-
-            Dim statement = SyntaxFactory.StopOrEndStatement(stmtKind, stopOrEndKeyword)
-
-            Return statement
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.StopKeyword, SyntaxKind.EndKeyword)
+             Dim stopOrEndKeyword As KeywordSyntax = Nothing
+            If TryParseKeyword(SyntaxKind.StopKeyword, stopOrEndKeyword) Then
+               Return SyntaxFactory.StopOrEndStatement(SyntaxKind.StopStatement, stopOrEndKeyword)
+            ElseIf TryParseKeyword(SyntaxKind.EndKeyword, stopOrEndKeyword) Then
+                Return SyntaxFactory.StopOrEndStatement(SyntaxKind.EndStatement, stopOrEndKeyword)
+            Else
+                Throw ExceptionUtilities.Unreachable()
+            End If
         End Function
 
         Private Function ParseUsingStatement() As UsingStatementSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.UsingKeyword, "ParseUsingStatement called on wrong token")
+            DebugAssert_CalledOnCorrectToken(SyntaxKind.UsingKeyword)
 
-            Dim usingKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
+            Dim usingKeyword = ParseKeyword(SyntaxKind.UsingKeyword)
             Dim optionalExpression As ExpressionSyntax = Nothing
             Dim variables As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of VariableDeclaratorSyntax) = Nothing
 
@@ -1763,11 +1546,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
             'No need to resync on error.  This will be handled by GetStatementTerminator
 
-            Dim statement = SyntaxFactory.UsingStatement(usingKeyword, optionalExpression, variables)
-
-            Return statement
+           Return SyntaxFactory.UsingStatement(usingKeyword, optionalExpression, variables)
         End Function
-
 
         Private Function ParseAwaitStatement() As ExpressionStatementSyntax
 
@@ -1783,10 +1563,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 expression = ResyncAt(expression)
             End If
 
-            Dim statement = SyntaxFactory.ExpressionStatement(expression)
-
-            Return statement
-
+            Return SyntaxFactory.ExpressionStatement(expression)
         End Function
 
         Private Function ParseYieldStatement() As YieldStatementSyntax
@@ -1802,17 +1579,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             GetNextToken()
 
             Dim expression As ExpressionSyntax = ParseExpressionCore()
-            Dim result = SyntaxFactory.YieldStatement(yieldKeyword, expression)
-
-            Return result
-
+            Return SyntaxFactory.YieldStatement(yieldKeyword, expression)
         End Function
 
         Private Function ParsePrintStatement() As PrintStatementSyntax
-            Dim questionToken = DirectCast(CurrentToken, PunctuationSyntax)
-            GetNextToken()
-
-            Dim expression As ExpressionSyntax = ParseExpressionCore()
+            Dim questionToken As PunctuationSyntax = Nothing
+            Dim expression As ExpressionSyntax = Nothing
+            TryParseTokenAndExpression(SyntaxKind.QuestionToken, questionToken, expression)
             Dim result = SyntaxFactory.PrintStatement(questionToken, expression)
 
             ' skip possible statement terminator

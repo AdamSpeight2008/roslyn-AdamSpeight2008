@@ -12,6 +12,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend Module SyntaxListExtensions
 
         <Extension>
+        Friend Function ToListAndFree(builder As SyntaxListBuilder, pool As SyntaxListPool) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(of GreenNode)
+            Dim results = builder.ToList()
+            pool.Free(builder)
+            Return results
+        End Function
+
+
+        <Extension>
         Friend Function ToListAndFree(Of T As VisualBasicSyntaxNode)(builder As SyntaxListBuilder(Of T), pool As SyntaxListPool) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of T)
             Dim results = builder.ToList()
             pool.Free(builder)

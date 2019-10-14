@@ -60,15 +60,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
 
                 RangeVariables.Add(rangeVar)
-
-                If CurrentToken.Kind = SyntaxKind.CommaToken Then
-                    Dim comma = DirectCast(CurrentToken, PunctuationSyntax)
-                    GetNextToken()
-                    TryEatNewLine()
-                    RangeVariables.AddSeparator(comma)
-                Else
-                    Exit Do
-                End If
+                Dim comma As PunctuationSyntax = Nothing
+                If Not TryParseComma(comma) Then Exit Do
+                RangeVariables.AddSeparator(comma)
             Loop
 
             Dim result = RangeVariables.ToListAndFree(_pool)
@@ -256,15 +250,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 End If
 
                 RangeVariables.Add(rangeVar)
-
-                If CurrentToken.Kind = SyntaxKind.CommaToken Then
-                    Dim comma = DirectCast(CurrentToken, PunctuationSyntax)
-                    GetNextToken()
-                    TryEatNewLine()
-                    RangeVariables.AddSeparator(comma)
-                Else
-                    Exit Do
-                End If
+                Dim comma As PunctuationSyntax = Nothing
+                If Not TryParseComma(comma) Then Exit Do
+                RangeVariables.AddSeparator(comma)
             Loop
 
             Dim result = RangeVariables.ToListAndFree(_pool)

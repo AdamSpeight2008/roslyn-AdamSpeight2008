@@ -7598,14 +7598,14 @@ End Class
 
     <WorkItem(648998, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/648998")>
     <Fact()>
-    Public Sub Bug648998()
+    Public Sub Bug648998_a()
         Dim tree = Parse(<![CDATA[
 Module M
     Dim x = F(a:=False,
     Dim y, z = Nothing
 End Module
 ]]>, options:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.VisualBasic15_3))
-        tree.AssertTheseDiagnostics(<errors><![CDATA[
+         tree.AssertTheseDiagnostics(<errors><![CDATA[
 BC30201: Expression expected.
     Dim y, z = Nothing
 ~
@@ -7617,10 +7617,13 @@ BC30241: Named argument expected. Please use language version 15.5 or greater to
            ~~~~~~~~~~~
 BC30198: ')' expected.
     Dim y, z = Nothing
-                      ~
-                                    ]]></errors>)
+                      ~ ]]></errors>)
+   End Sub
 
-        tree = Parse(<![CDATA[
+    <WorkItem(648998, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/648998")>
+    <Fact()>
+    Public Sub Bug648998_b()
+        Dim tree = Parse(<![CDATA[
 Module M
     Dim x = F(a:=False,
     Dim y()
@@ -7634,8 +7637,12 @@ BC30241: Named argument expected. Please use language version 15.5 or greater to
     Dim y()
 ~
                                     ]]></errors>)
+    End Sub
 
-        tree = Parse(<![CDATA[
+    <WorkItem(648998, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/648998")>
+    <Fact()>
+    Public Sub Bug648998_c()
+        Dim tree = Parse(<![CDATA[
 Module M
     Dim x = F(a:=False,
     Dim y
@@ -7652,8 +7659,12 @@ BC30198: ')' expected.
     Dim y
     ~
                                     ]]></errors>)
+        End sub
 
-        tree = Parse(<![CDATA[
+    <WorkItem(648998, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/648998")>
+    <Fact()>
+    Public Sub Bug648998_d()
+        Dim tree = Parse(<![CDATA[
 Module M
     Dim x = F(a:=False,
         b True,
@@ -7680,7 +7691,6 @@ BC30188: Declaration expected.
         c:=Nothing)
         ~
                                     ]]></errors>)
-
     End Sub
 
     <WorkItem(649162, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/649162")>

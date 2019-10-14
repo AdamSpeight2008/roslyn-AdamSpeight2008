@@ -156,10 +156,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         ''' <remarks>Since nodes are immutable, the only way to create nodes with errors attached is to create a node without an error,
         ''' then add an error with this method to create another node.</remarks>
         Private Function VerifyExpectedToken(Of T As SyntaxToken)(
-                kind As SyntaxKind,
-                ByRef token As T,
-                Optional state As ScannerState = ScannerState.VB
-            ) As Boolean
+                                                                   kind As SyntaxKind,
+                                                             ByRef token As T,
+                                                          Optional state As ScannerState = ScannerState.VB
+                                                                 ) As Boolean
 
             Dim current As SyntaxToken = CurrentToken
 
