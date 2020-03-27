@@ -131,8 +131,6 @@ End Namespace
             Assert.False(root.IsGlobalNamespace)
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/16885")>
-        <WorkItem(16885, "https://github.com/dotnet/roslyn/issues/16885")>
         Public Sub RootNamespace_NoTrees_SuppressEmbeddedDeclarations()
 
             Dim c1 = VisualBasicCompilation.Create("Test", {}, options:=TestOptions.ReleaseDll.WithRootNamespace("A.B.C").WithSuppressEmbeddedDeclarations(True))

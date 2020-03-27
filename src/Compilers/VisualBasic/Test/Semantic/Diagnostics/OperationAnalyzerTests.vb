@@ -1407,8 +1407,6 @@ End Class
                                                  End Function").WithLocation(10, 50))
         End Sub
 
-        <WorkItem(8385, "https://github.com/dotnet/roslyn/issues/8385")>
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/18839")>
         Public Sub StaticMemberReferenceVisualBasic()
             Dim source = <compilation>
                              <file name="c.vb">

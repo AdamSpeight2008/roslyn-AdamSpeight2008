@@ -2398,8 +2398,6 @@ End Module
             verifier.VerifyDiagnostics()
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/24275")>
-        <WorkItem(24275, "https://github.com/dotnet/roslyn/issues/24275")>
         Public Sub SpillingByRefCall_Spilling()
             Dim comp1 = CreateCSharpCompilation(
 "

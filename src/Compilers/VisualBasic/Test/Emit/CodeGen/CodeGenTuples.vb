@@ -4854,7 +4854,6 @@ End Class
 
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/13298")>
         Public Sub TupleLambdaCapture03()
 
             ' This test crashes in TypeSubstitution
@@ -4897,7 +4896,7 @@ End Namespace
 ]]>)
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/pull/13209")>
+        '<Fact(Skip:="https://github.com/dotnet/roslyn/pull/13209")>
         Public Sub TupleLambdaCapture04()
 
             ' this test crashes in TypeSubstitution
@@ -4941,7 +4940,7 @@ End Namespace
 
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/pull/13209")>
+        '<Fact(Skip:="https://github.com/dotnet/roslyn/pull/13209")>
         Public Sub TupleLambdaCapture05()
 
             ' this test crashes in TypeSubstitution
@@ -5227,7 +5226,7 @@ End Class
 
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/pull/13209")>
+        '<Fact(Skip:="https://github.com/dotnet/roslyn/pull/13209")>
         Public Sub TupleAsyncCapture03()
 
             ' this test crashes in TypeSubstitution
@@ -8828,7 +8827,7 @@ first]]>)
 
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/12961")>
+        '<Fact(Skip:="https://github.com/dotnet/roslyn/issues/12961")>
         Public Sub TargetTypingNullable02()
 
             Dim verifier = CompileAndVerify(
@@ -8856,7 +8855,7 @@ End Class
 
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/12961")>
+        '    <Fact(Skip:="https://github.com/dotnet/roslyn/issues/12961")>
         Public Sub TargetTypingNullable02Long()
 
             Dim verifier = CompileAndVerify(
@@ -8885,7 +8884,7 @@ End Class
 
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/12961")>
+        '<Fact(Skip:="https://github.com/dotnet/roslyn/issues/12961")>
         Public Sub TargetTypingNullableOverload()
 
             Dim verifier = CompileAndVerify(
@@ -9009,8 +9008,8 @@ End Module
         End Sub
 
 
-        <Fact(Skip:="See bug 16697")>
-        <WorkItem(16697, "https://github.com/dotnet/roslyn/issues/16697")>
+        '<Fact(Skip:="See bug 16697")>
+        '<WorkItem(16697, "https://github.com/dotnet/roslyn/issues/16697")>
         Public Sub GetSymbolInfo_01()
             Dim source = "
  Class C

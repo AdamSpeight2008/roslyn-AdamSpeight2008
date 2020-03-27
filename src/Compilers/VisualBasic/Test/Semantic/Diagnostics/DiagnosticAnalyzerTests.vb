@@ -1049,7 +1049,6 @@ End Class
                                                     Diagnostic("Parameter_ID", "Value").WithLocation(6, 19))
         End Sub
 
-        <Fact(Skip:="https://github.com/dotnet/roslyn/issues/14062"), WorkItem(8753, "https://github.com/dotnet/roslyn/issues/8753")>
         Public Sub TestParametersAnalyzer_InDelegateTypes()
             Dim source = <compilation>
                              <file name="c.vb">
