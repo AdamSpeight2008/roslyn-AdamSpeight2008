@@ -2,12 +2,31 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using Microsoft.CodeAnalysis.Operations;
 
 namespace Microsoft.CodeAnalysis
 {
+#nullable enable
+    public class IOperationArgumentException : ArgumentException
+    {
+        public IOperationArgumentException() : base() { }
+        public IOperationArgumentException(string? message) : base(message) { }
+        public IOperationArgumentException(string? message, Exception? innerException) : base(message, innerException) { }
+        public IOperationArgumentException(string? message, string? paramName) : base(message, paramName) { }
+        public IOperationArgumentException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        public IOperationArgumentException(string? message, string? paramName, Exception innerException) : base(message, paramName, innerException) { }
+
+        public IOperationArgumentException(string messageFormat, string? IOperationName, string? argumentName, string? argumentValue) :
+            base(string.Format(messageFormat ?? "{0} {1}", IOperationName, argumentValue), argumentName)
+        { }
+
+    }
+#nullable disable
+
     /// <summary>
     /// Root type for representing the abstract semantics of C# and VB statements and expressions.
     /// </summary>

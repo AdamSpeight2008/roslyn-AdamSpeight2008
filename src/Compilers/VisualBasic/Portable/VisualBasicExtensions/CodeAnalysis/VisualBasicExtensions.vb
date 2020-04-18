@@ -60,7 +60,7 @@ Namespace Microsoft.CodeAnalysis
         ''' <returns>Returns non-negative index if the list contains a node which matches <paramref name="kind"/>, -1 otherwise.</returns>
         <Extension>
         Public Function IndexOf(Of TNode As SyntaxNode)(list As SyntaxList(Of TNode), kind As SyntaxKind) As Integer
-            Return list.IndexOf(CType(kind, Integer))
+            Return list.IndexOf(kind)
         End Function
 
         ''' <summary> Tests whether a list contains node of a particular kind. </summary>
@@ -77,7 +77,7 @@ Namespace Microsoft.CodeAnalysis
         ''' <returns>Returns non-negative index if the list contains a node which matches <paramref name="kind"/>, -1 otherwise.</returns>
         <Extension>
         Public Function IndexOf(Of TNode As SyntaxNode)(list As SeparatedSyntaxList(Of TNode), kind As SyntaxKind) As Integer
-            Return list.IndexOf(CType(kind, Integer))
+            Return list.IndexOf(kind)
         End Function
 
         ''' <summary> Tests whether a list contains node of a particular kind. </summary>
@@ -94,7 +94,7 @@ Namespace Microsoft.CodeAnalysis
         ''' <returns>Returns non-negative index if the list contains a trivia which matches <paramref name="kind"/>, -1 otherwise.</returns>
         <Extension>
         Public Function IndexOf(list As SyntaxTriviaList, kind As SyntaxKind) As Integer
-            Return list.IndexOf(CType(kind, Integer))
+            Return list.IndexOf(kind)
         End Function
 
         ''' <summary> Tests whether a list contains trivia of a particular kind. </summary>
@@ -111,7 +111,7 @@ Namespace Microsoft.CodeAnalysis
         ''' <returns>Returns non-negative index if the list contains a token which matches <paramref name="kind"/>, -1 otherwise.</returns>
         <Extension>
         Public Function IndexOf(list As SyntaxTokenList, kind As SyntaxKind) As Integer
-            Return list.IndexOf(CType(kind, Integer))
+            Return list.IndexOf(kind)
         End Function
 
         ''' <summary> Tests whether a list contains token of a particular kind. </summary>
@@ -131,9 +131,7 @@ Namespace Microsoft.CodeAnalysis
         <Extension>
         Friend Function First(list As SyntaxTokenList, kind As SyntaxKind) As SyntaxToken
             Dim index = list.IndexOf(kind)
-            If index < 0 Then
-                Throw New InvalidOperationException()
-            End If
+            If index < 0 Then Throw New InvalidOperationException()
             Return list(index)
         End Function
 

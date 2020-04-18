@@ -2,12 +2,9 @@
 ' The .NET Foundation licenses this file to you under the MIT license.
 ' See the LICENSE file in the project root for more information.
 
-Imports System.Collections.Immutable
 Imports System.Collections.ObjectModel
 Imports System.Runtime.CompilerServices
-Imports System.Runtime.InteropServices
 Imports System.Threading
-Imports Microsoft.CodeAnalysis.Operations
 Imports Microsoft.CodeAnalysis.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
@@ -80,23 +77,32 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Function
 
         <Extension>
-        Friend Function IsAnyPreprocessorSymbolDefined(syntaxTree As SyntaxTree, conditionalSymbolNames As IEnumerable(Of String), atNode As SyntaxNodeOrToken) As Boolean
+        Friend Function IsAnyPreprocessorSymbolDefined(syntaxTree             As SyntaxTree,
+                                                       conditionalSymbolNames As IEnumerable(Of String),
+                                                       atNode                 As SyntaxNodeOrToken
+                                                      ) As Boolean
             Dim vbTree = TryCast(syntaxTree, VisualBasicSyntaxTree)
             Return vbTree IsNot Nothing AndAlso vbTree.IsAnyPreprocessorSymbolDefined(conditionalSymbolNames, atNode)
         End Function
 
         <Extension>
-        Friend Function GetVisualBasicSyntax(syntaxReference As SyntaxReference, Optional cancellationToken As CancellationToken = Nothing) As VisualBasicSyntaxNode
+        Friend Function GetVisualBasicSyntax( syntaxReference As SyntaxReference,
+                                     Optional cancellationToken As CancellationToken = Nothing
+                                            ) As VisualBasicSyntaxNode
             Return DirectCast(syntaxReference.GetSyntax(cancellationToken), VisualBasicSyntaxNode)
         End Function
 
         <Extension>
-        Friend Function GetVisualBasicRoot(syntaxTree As SyntaxTree, Optional cancellationToken As CancellationToken = Nothing) As VisualBasicSyntaxNode
+        Friend Function GetVisualBasicRoot( syntaxTree As SyntaxTree,
+                                   Optional cancellationToken As CancellationToken = Nothing
+                                          ) As VisualBasicSyntaxNode
             Return DirectCast(syntaxTree.GetRoot(cancellationToken), VisualBasicSyntaxNode)
         End Function
 
         <Extension>
-        Friend Function GetPreprocessingSymbolInfo(syntaxTree As SyntaxTree, identifierNode As IdentifierNameSyntax) As VisualBasicPreprocessingSymbolInfo
+        Friend Function GetPreprocessingSymbolInfo(syntaxTree     As SyntaxTree,
+                                                   identifierNode As IdentifierNameSyntax
+                                                  ) As VisualBasicPreprocessingSymbolInfo
             Dim vbTree = DirectCast(syntaxTree, VisualBasicSyntaxTree)
             Return vbTree.GetPreprocessingSymbolInfo(identifierNode)
         End Function
@@ -159,8 +165,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         <Extension>
         Public Function GetBase(token As SyntaxToken) As LiteralBase?
             If Not token.IsKind(SyntaxKind.IntegerLiteralToken) Then Return Nothing
-            Dim tk = DirectCast(token.Node, InternalSyntax.IntegerLiteralTokenSyntax)
-            Return tk.Base
+            Return DirectCast(token.Node, InternalSyntax.IntegerLiteralTokenSyntax).Base
         End Function
 
         ''' <summary> Determines if the token represents a reserved or contextual keyword </summary>
@@ -212,7 +217,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary> Insert one or more tokens in the list at the specified index. </summary>
         ''' <returns>A new list with the tokens inserted.</returns>
         <Extension>
-        Public Function Insert(list As SyntaxTokenList, index As Integer, ParamArray items As SyntaxToken()) As SyntaxTokenList
+        Public Function Insert(
+                                list  As SyntaxTokenList,
+                                index As Integer,
+                     ParamArray items As SyntaxToken()
+                              ) As SyntaxTokenList
             If Not index.IsBetween(0, list.Count) Then Throw New ArgumentOutOfRangeException(NameOf(index))
  
             If items Is Nothing Then Throw New ArgumentNullException(NameOf(items))
@@ -231,7 +240,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <summary> Add one or more tokens to the end of the list. </summary>
         ''' <returns>A new list with the tokens added.</returns>
         <Extension>
-        Public Function Add(list As SyntaxTokenList, ParamArray items As SyntaxToken()) As SyntaxTokenList
+        Public Function Add( list  As SyntaxTokenList,
+                  ParamArray items As SyntaxToken()
+                           ) As SyntaxTokenList
             Return Insert(list, list.Count, items)
         End Function
 
@@ -241,13 +252,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="newTrivia">The updated Trivia.</param>
         ''' <returns>The updated SyntaxToken with replaced trivia.</returns>
         <Extension>
-        Public Function ReplaceTrivia(token As SyntaxToken, oldTrivia As SyntaxTrivia, newTrivia As SyntaxTrivia) As SyntaxToken
+        Public Function ReplaceTrivia( token     As SyntaxToken,
+                                       oldTrivia As SyntaxTrivia,
+                                       newTrivia As SyntaxTrivia
+                                     ) As SyntaxToken
             Return SyntaxReplacer.Replace(token, trivia:={oldTrivia}, computeReplacementTrivia:=Function(o, r) newTrivia)
         End Function
 
         ''' <summary> Replaces trivia on a specified SyntaxToken. </summary>
         <Extension>
-        Public Function ReplaceTrivia(token As SyntaxToken, trivia As IEnumerable(Of SyntaxTrivia), computeReplacementTrivia As Func(Of SyntaxTrivia, SyntaxTrivia, SyntaxTrivia)) As SyntaxToken
+        Public Function ReplaceTrivia( token  As SyntaxToken,
+                                       trivia As IEnumerable(Of SyntaxTrivia),
+                                       computeReplacementTrivia As Func(Of SyntaxTrivia, SyntaxTrivia, SyntaxTrivia)
+                                     ) As SyntaxToken
             Return SyntaxReplacer.Replace(token, trivia:=trivia, computeReplacementTrivia:=computeReplacementTrivia)
         End Function
 
@@ -257,7 +274,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             For Each i In list
                 Dim node = i.AsNode
                 If node IsNot Nothing Then
-                    builder.Add(DirectCast(DirectCast(node, SyntaxNode), TOther))
+                    builder.Add(DirectCast(node, TOther))
                 Else
                     builder.AddSeparator(i.AsToken)
                 End If
@@ -270,7 +287,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="filter">The optional DirectiveTrivia Syntax filter predicate.</param>
         ''' <returns>A list of DirectiveTriviaSyntax items</returns>
         <Extension>
-        Public Function GetDirectives(node As SyntaxNode, Optional filter As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing) As IList(Of DirectiveTriviaSyntax)
+        Public Function GetDirectives( node As SyntaxNode,
+                              Optional filter As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing
+                                     ) As IList(Of DirectiveTriviaSyntax)
             Return DirectCast(node, VisualBasicSyntaxNode).GetDirectives(filter)
         End Function
 
@@ -279,7 +298,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="node">The source SyntaxNode.</param>
         ''' <param name="predicate">The optional DirectiveTriviaSyntax filter predicate.</param>
         ''' <returns>The first DirectiveSyntaxTrivia item.</returns>
-        <Extension> Public Function GetFirstDirective(node As SyntaxNode, Optional predicate As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing) As DirectiveTriviaSyntax
+        <Extension> Public Function GetFirstDirective( node As SyntaxNode,
+                                              Optional predicate As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing
+                                                     ) As DirectiveTriviaSyntax
             Return DirectCast(node, VisualBasicSyntaxNode).GetFirstDirective(predicate)
         End Function
 
@@ -288,7 +309,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <param name="predicate">The optional DirectiveTriviaSyntax filter predicate.</param>
         ''' <returns>The last DirectiveSyntaxTrivia item.</returns>
         <Extension>
-        Public Function GetLastDirective(node As SyntaxNode, Optional predicate As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing) As DirectiveTriviaSyntax
+        Public Function GetLastDirective( node As SyntaxNode,
+                                 Optional predicate As Func(Of DirectiveTriviaSyntax, Boolean) = Nothing
+                                        ) As DirectiveTriviaSyntax
             Return DirectCast(node, VisualBasicSyntaxNode).GetLastDirective(predicate)
         End Function
 
@@ -302,7 +325,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         ''' <summary> Gets the reporting state for a warning at a given source location based on warning directives. </summary>
         <Extension>
-        Friend Function GetWarningState(tree As SyntaxTree, id As String, position As Integer) As ReportDiagnostic
+        Friend Function GetWarningState( tree     As SyntaxTree,
+                                         id       As String,
+                                         position As Integer
+                                       ) As ReportDiagnostic
             Return DirectCast(tree, VisualBasicSyntaxTree).GetWarningState(id, position)
         End Function
 
