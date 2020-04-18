@@ -8,7 +8,9 @@ Imports System.Threading
 Imports Microsoft.CodeAnalysis.Emit
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
+
     Friend Module VisualBasicFileSystemExtensions
+
         ''' <summary>
         ''' Emit the IL for the compilation into the specified stream.
         ''' </summary>
@@ -27,15 +29,18 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         ''' <exception cref="ArgumentException">Path is empty or invalid.</exception>
         ''' <exception cref="IOException">An error occurred while reading or writing a file.</exception>
         <Extension>
-        Public Function Emit(compilation As VisualBasicCompilation,
-                      outputPath As String,
-                      Optional pdbPath As String = Nothing,
-                      Optional xmlDocPath As String = Nothing,
-                      Optional win32ResourcesPath As String = Nothing,
-                      Optional manifestResources As IEnumerable(Of ResourceDescription) = Nothing,
-                      Optional cancellationToken As CancellationToken = Nothing) As EmitResult
-
+        Public Function Emit(
+                              compilation        As VisualBasicCompilation,
+                              outputPath         As String,
+                     Optional pdbPath            As String = Nothing,
+                     Optional xmlDocPath         As String = Nothing,
+                     Optional win32ResourcesPath As String = Nothing,
+                     Optional manifestResources  As IEnumerable(Of ResourceDescription) = Nothing,
+                     Optional cancellationToken  As CancellationToken = Nothing
+                            ) As EmitResult
             Return FileSystemExtensions.Emit(compilation, outputPath, pdbPath, xmlDocPath, win32ResourcesPath, manifestResources, cancellationToken)
         End Function
+
     End Module
+
 End Namespace
