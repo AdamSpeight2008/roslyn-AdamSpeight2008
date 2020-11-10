@@ -6129,6 +6129,56 @@ checkNullable:
             End If
         End Function
 
+        Private Shared Function IsToken(token As SyntaxToken,
+                                        kind0 As SyntaxKind, kind1 As SyntaxKind) As Boolean
+            Return (token.Kind = kind0) Or (token.Kind = kind1)
+        End Function
+
+        Private Shared Function IsToken(token As SyntaxToken,
+                                        kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                        kind2 As SyntaxKind) As Boolean
+            Return (token.Kind = kind0) Or (token.Kind = kind1) Or (token.Kind = kind2)
+        End Function
+
+        Private Shared Function IsToken(token As SyntaxToken,
+                                        kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                        kind2 As SyntaxKind, kind3 As SyntaxKind) As Boolean
+            Return (token.Kind = kind0) Or (token.Kind = kind1) Or (token.Kind = kind2) Or (token.Kind = kind3)
+        End Function
+ 
+        Private Shared Function IsToken(token As SyntaxToken,
+                                        kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                        kind2 As SyntaxKind, kind3 As SyntaxKind,
+                                        kind4 As SyntaxKind) As Boolean
+            Return (token.Kind = kind0) Or (token.Kind = kind1) Or (token.Kind = kind2) Or (token.Kind = kind3) Or (token.Kind = kind4) 
+        End Function
+
+        Private Shared Function IsToken(token As SyntaxToken,
+                                        kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                        kind2 As SyntaxKind, kind3 As SyntaxKind,
+                                        kind4 As SyntaxKind, kind5 As SyntaxKind) As Boolean
+            Return (token.Kind = kind0) Or (token.Kind = kind1) Or (token.Kind = kind2) Or (token.Kind = kind3) Or
+                   (token.Kind = kind4) Or (token.Kind = kind5) 
+        End Function
+
+        Private Shared Function IsToken(token As SyntaxToken,
+                                        kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                        kind2 As SyntaxKind, kind3 As SyntaxKind,
+                                        kind4 As SyntaxKind, kind5 As SyntaxKind,
+                                        kind6 As SyntaxKind) As Boolean
+            Return (token.Kind = kind0) Or (token.Kind = kind1) Or (token.Kind = kind2) Or (token.Kind = kind3) Or
+                   (token.Kind = kind4) Or (token.Kind = kind5) Or (token.Kind = kind6)
+        End Function
+
+        Private Shared Function IsToken(token As SyntaxToken,
+                                        kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                        kind2 As SyntaxKind, kind3 As SyntaxKind,
+                                        kind4 As SyntaxKind, kind5 As SyntaxKind,
+                                        kind6 As SyntaxKind, kind7 As SyntaxKind) As Boolean
+            Return (token.Kind = kind0) Or (token.Kind = kind1) Or (token.Kind = kind2) Or (token.Kind = kind3) Or
+                   (token.Kind = kind4) Or (token.Kind = kind5) Or (token.Kind = kind6) Or (token.Kind = kind7)
+        End Function
+
         Private Shared Function IsToken(token As SyntaxToken, ParamArray kinds As SyntaxKind()) As Boolean
             Return kinds.Contains(token.Kind)
         End Function

@@ -51,9 +51,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                     Case SyntaxKind.CloseBraceToken
 
-                        If skipped.IsNull Then
-                            skipped = _pool.Allocate(Of SyntaxToken)
-                        End If
+                        If skipped.IsNull Then skipped = _pool.Allocate(Of SyntaxToken)
 
                         skipped.Add(CurrentToken)
                         GetNextToken(ScannerState.InterpolatedStringContent)
@@ -136,8 +134,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
                 Dim signTokenOpt As PunctuationSyntax
 
-                If CurrentToken.Kind = SyntaxKind.MinusToken OrElse
-                   CurrentToken.Kind = SyntaxKind.PlusToken Then
+                If CurrentToken.Kind.IsIn(SyntaxKind.MinusToken, SyntaxKind.PlusToken) Then
 
                     signTokenOpt = DirectCast(CurrentToken, PunctuationSyntax)
                     GetNextToken(ScannerState.VB)

@@ -891,7 +891,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 End If
             Else
                 ' 2 or more symbols. Use a hash set to remove duplicates.
-                Dim symbolSet As New HashSet(Of Symbol)
+                Dim symbolSet = PooledHashSet(Of Symbol).GetInstance()
                 For Each s In symbolsBuilder
                     If (options And SymbolInfoOptions.ResolveAliases) <> 0 Then
                         s = UnwrapAlias(s)
@@ -908,8 +908,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         symbolSet.Add(s)
                     End If
                 Next
-
-                Return ImmutableArray.CreateRange(symbolSet)
+                Dim tmp = ImmutableArray.CreateRange(symbolSet)
+                symbolSet.Free()
+                Return tmp
             End If
         End Function
 
@@ -1393,14 +1394,7 @@ _Default:
         End Sub
 
         Private Shared Function UnwrapAliases(symbols As ImmutableArray(Of Symbol)) As ImmutableArray(Of Symbol)
-            Dim anyAliases As Boolean = False
-
-            For Each sym In symbols
-                If sym.Kind = SymbolKind.Alias Then
-                    anyAliases = True
-                    Exit For
-                End If
-            Next
+            Dim anyAliases As Boolean = symbols.Any(Function(sym) sym.Kind = SymbolKind.Alias)
 
             If Not anyAliases Then
                 Return symbols
@@ -1935,7 +1929,7 @@ _Default:
                                   results As ArrayBuilder(Of Symbol))
             Debug.Assert(results IsNot Nothing)
 
-            Dim uniqueSymbols = PooledHashSet(Of Symbol).GetInstance' New HashSet(Of Symbol)()
+            Dim uniqueSymbols = PooledHashSet(Of Symbol).GetInstance()
             Dim tempResults = ArrayBuilder(Of Symbol).GetInstance(arities.Count)
 
             For Each knownArity In arities
@@ -1983,7 +1977,7 @@ _Default:
                 If result.HasDiagnostic Then
                     ' In the ambiguous symbol case, we have a good symbol with a diagnostics that
                     ' mentions the other symbols. Union everything together with a set to prevent dups.
-                    Dim symbolSet = PooledHashSet(Of Symbol).GetInstance' As New HashSet(Of Symbol)
+                    Dim symbolSet = PooledHashSet(Of Symbol).GetInstance()
                     Dim symBuilder = ArrayBuilder(Of Symbol).GetInstance()
                     AddSymbolsFromDiagnosticInfo(symBuilder, result.Diagnostic)
                     symbolSet.UnionWith(symBuilder)

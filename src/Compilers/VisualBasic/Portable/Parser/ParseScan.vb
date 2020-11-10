@@ -269,24 +269,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Sub
 
         Private Function ResyncAt(state As ScannerState, resyncTokens As SyntaxKind()) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
-            Dim skippedTokens = Me._pool.Allocate(Of SyntaxToken)()
+            Dim skippedTokens = _pool.Allocate(Of SyntaxToken)()
 
             ResyncAt(skippedTokens, state, resyncTokens)
 
-            Dim result = skippedTokens.ToList()
-            Me._pool.Free(skippedTokens)
-
-            Return result
+            Return skippedTokens.ToListAndFree(_pool)
         End Function
 
         ''' <summary>
         ''' Resyncs to next statement terminator. Used in Preprocessor
         ''' </summary>
         Private Function ResyncAndConsumeStatementTerminator() As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
-            Dim skippedTokens = Me._pool.Allocate(Of SyntaxToken)()
+            Dim skippedTokens = _pool.Allocate(Of SyntaxToken)()
 
             While CurrentToken.Kind <> SyntaxKind.EndOfFileToken AndAlso
-                    CurrentToken.Kind <> SyntaxKind.StatementTerminatorToken
+                  CurrentToken.Kind <> SyntaxKind.StatementTerminatorToken
 
                 skippedTokens.Add(CurrentToken)
                 GetNextToken(ScannerState.VB)
@@ -300,10 +297,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 GetNextToken(ScannerState.VB)
             End If
 
-            Dim result = skippedTokens.ToList()
-            Me._pool.Free(skippedTokens)
-
-            Return result
+            Return skippedTokens.ToListAndFree(_pool)
         End Function
 
         Friend Function ResyncAt() As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)
@@ -372,11 +366,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function TryEatNewLineIfFollowedBy(kind As SyntaxKind) As Boolean
             Debug.Assert(CanUseInTryGetToken(kind))
 
-            If NextLineStartsWith(kind) Then
-                'Add trivia to the token that has been peeked on next line
-                Return TryEatNewLine()
-            End If
-            Return False
+            If Not NextLineStartsWith(kind) Then Return False
+
+            'Add trivia to the token that has been peeked on next line
+            Return TryEatNewLine()
         End Function
 
         ' /*****************************************************************************************
@@ -391,10 +384,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         Private Function TryEatNewLineIfNotFollowedBy(kind As SyntaxKind) As Boolean
             Debug.Assert(CanUseInTryGetToken(kind))
 
-            If Not NextLineStartsWith(kind) Then
-                Return TryEatNewLine()
-            End If
-            Return False
+            If NextLineStartsWith(kind) Then Return False
+            Return TryEatNewLine()
         End Function
 
         ' /*****************************************************************************************

@@ -19,6 +19,16 @@ Namespace Microsoft.CodeAnalysis
     ''' </summary>
     Public Module VisualBasicExtensions
 
+        <Extension>
+        Friend Function ToListAndFree(Of T As Microsoft.CodeAnalysis.GreenNode)(
+                                                                               builder As Syntax.InternalSyntax.SeparatedSyntaxListBuilder(Of T),
+                                                                               thisPool As Syntax.InternalSyntax.SyntaxListPool) As Syntax.InternalSyntax.SeparatedSyntaxList(Of T)
+            dim list= builder.ToList()
+            thisPool.Free(builder)
+            Return list
+        End Function
+
+
         ''' <summary>
         ''' Determines if <see cref="SyntaxTrivia"/> is of a specified kind.
         ''' </summary>
