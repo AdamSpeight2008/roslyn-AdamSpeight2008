@@ -201,9 +201,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseFltLiteral() As LiteralExpressionSyntax
 
-            Debug.Assert(
-            CurrentToken.Kind = SyntaxKind.FloatingLiteralToken,
-            "must be at a float literal.")
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.FloatingLiteralToken, "must be at a float literal.")
 
             Dim Literal As LiteralExpressionSyntax = SyntaxFactory.NumericLiteralExpression(CurrentToken)
             GetNextToken()
@@ -213,9 +211,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Private Function ParseDateLiteral() As LiteralExpressionSyntax
 
-            Debug.Assert(
-            CurrentToken.Kind = SyntaxKind.DateLiteralToken,
-            "must be at a date literal.")
+            Debug.Assert(CurrentToken.Kind = SyntaxKind.DateLiteralToken, "must be at a date literal.")
 
             Dim Literal As LiteralExpressionSyntax = SyntaxFactory.DateLiteralExpression(CurrentToken)
 

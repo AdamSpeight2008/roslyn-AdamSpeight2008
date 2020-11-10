@@ -10,10 +10,37 @@
 Imports System.Globalization
 Imports Microsoft.CodeAnalysis.Syntax.InternalSyntax
 Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.SyntaxFactory
+Imports System.Runtime.CompilerServices
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
     Partial Friend Class Parser
+
+        Private Sub Contract_ExpectedKeyword( expectedKind As SyntaxKind,
+                                        ByRef keyword As KeywordSyntax,
+                                     Optional consume As Boolean = True,
+                  <CallerMemberName> Optional caller As String = Nothing)
+            Dim valid = TryParse_Keyword(expectedKind, keyword, consume)
+            Debug.Assert(valid, $"{caller} was called on unexpected kind ({CurrentToken.Kind} expected:{expectedKind}).")
+        End Sub
+
+        Private Function TryParse_Keyword(expectedKind As SyntaxKind,
+                                    ByRef keyword As KeywordSyntax,
+                                 Optional consume As Boolean = True
+                                        ) As Boolean
+            Dim actualKind = CurrentToken.Kind
+            Dim valid = actualKind = expectedKind
+            If valid Then
+                keyword = DirectCast(CurrentToken, KeywordSyntax)
+                If  consume Then GetNextToken()
+            End if
+            Return valid
+        End Function
+
+        Private FUnction IsPossibleKeywordKind(kind As SyntaxKind) As Boolean
+            Dim ok = CurrentToken.Kind = SyntaxKind.IdentifierToken AndAlso DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind = kind
+            Return ok
+        End FUnction
 
         ' File: Parser.cpp
         ' Lines: 18978 - 18978
@@ -21,8 +48,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
 
         Friend Function ParseConditionalCompilationStatement() As DirectiveTriviaSyntax
             ' # may be actually scanned as a date literal. This is an error.
-            If CurrentToken.Kind = SyntaxKind.DateLiteralToken OrElse
-                CurrentToken.Kind = SyntaxKind.BadToken Then
+            If IsToken(CurrentToken, SyntaxKind.DateLiteralToken, SyntaxKind.BadToken) Then
 
                 Dim missingHash = InternalSyntaxFactory.MissingPunctuation(SyntaxKind.HashToken)
                 missingHash = missingHash.AddLeadingSyntax(New CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of SyntaxToken)(CurrentToken))
@@ -39,55 +65,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             GetNextToken()
 
             Select Case CurrentToken.Kind
-
-                Case SyntaxKind.ElseKeyword
-
-                    statement = ParseElseDirective(hashToken)
-
-                Case SyntaxKind.IfKeyword
-
-                    statement = ParseIfDirective(hashToken, Nothing)
-
-                Case SyntaxKind.ElseIfKeyword
-
-                    statement = ParseElseIfDirective(hashToken)
-
-                Case SyntaxKind.EndKeyword
-
-                    statement = ParseEndDirective(hashToken)
-
-                Case SyntaxKind.EndIfKeyword
-
-                    statement = ParseAnachronisticEndIfDirective(hashToken)
-
-                Case SyntaxKind.ConstKeyword
-
-                    statement = ParseConstDirective(hashToken)
-
-                Case SyntaxKind.IdentifierToken
-                    Select Case DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind
-
-                        Case SyntaxKind.ExternalSourceKeyword
-                            statement = ParseExternalSourceDirective(hashToken)
-
-                        Case SyntaxKind.ExternalChecksumKeyword
-                            statement = ParseExternalChecksumDirective(hashToken)
-
-                        Case SyntaxKind.RegionKeyword
-                            statement = ParseRegionDirective(hashToken)
-
-                        Case SyntaxKind.EnableKeyword, SyntaxKind.DisableKeyword
-                            statement = ParseWarningDirective(hashToken)
-
-                        Case SyntaxKind.ReferenceKeyword
-                            statement = ParseReferenceDirective(hashToken)
-
-                        Case Else
-                            statement = ParseBadDirective(hashToken)
-                    End Select
-
-                Case Else
-                    statement = ParseBadDirective(hashToken)
+                   Case SyntaxKind.ElseKeyword     : statement = ParseElseDirective(hashToken)
+                   Case SyntaxKind.IfKeyword       : statement = ParseIfDirective(hashToken, Nothing)
+                   Case SyntaxKind.ElseIfKeyword   : statement = ParseElseIfDirective(hashToken)
+                   Case SyntaxKind.EndKeyword      : statement = ParseEndDirective(hashToken)
+                   Case SyntaxKind.EndIfKeyword    : statement = ParseAnachronisticEndIfDirective(hashToken)
+                   Case SyntaxKind.ConstKeyword    : statement = ParseConstDirective(hashToken)
+                   Case SyntaxKind.IdentifierToken
+                        Select Case DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind
+                               Case SyntaxKind.ExternalSourceKeyword    : statement = ParseExternalSourceDirective(hashToken)
+                               Case SyntaxKind.ExternalChecksumKeyword  : statement = ParseExternalChecksumDirective(hashToken)
+                               Case SyntaxKind.RegionKeyword            : statement = ParseRegionDirective(hashToken)
+                               Case SyntaxKind.EnableKeyword,
+                                    SyntaxKind.DisableKeyword           : statement = ParseWarningDirective(hashToken)
+                               Case SyntaxKind.ReferenceKeyword         : statement = ParseReferenceDirective(hashToken)
+                               Case Else
+                                    statement = ParseBadDirective(hashToken)
+                        End Select
+                   Case Else
+                        statement = ParseBadDirective(hashToken)
 
             End Select
 
@@ -110,23 +106,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseElseDirective(hashToken As PunctuationSyntax) As DirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ElseKeyword)
+            Dim elseKeyword As KeywordSyntax = Nothing
+            Contract_ExpectedKeyword(SyntaxKind.ElseKeyword, elseKeyword)
 
-            Dim elseKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
-
-            If CurrentToken.Kind <> SyntaxKind.IfKeyword Then
-
-                Dim statement = SyntaxFactory.ElseDirectiveTrivia(hashToken, elseKeyword)
-
-                Return statement
-
+            If CurrentToken.Kind = SyntaxKind.IfKeyword Then
+                Return ParseIfDirective(hashToken, elseKeyword) ' // Accept Else If as a synonym for ElseIf.
             Else
-                ' // Accept Else If as a synonym for ElseIf.
-
-                Return ParseIfDirective(hashToken, elseKeyword)
-            End If
-
+                Return SyntaxFactory.ElseDirectiveTrivia(hashToken, elseKeyword)
+            End if
         End Function
 
         Private Function ParseElseIfDirective(hashToken As PunctuationSyntax) As DirectiveTriviaSyntax
@@ -137,10 +124,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseIfDirective(hashToken As PunctuationSyntax, elseKeyword As KeywordSyntax) As IfDirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IfKeyword OrElse CurrentToken.Kind = SyntaxKind.ElseIfKeyword)
+            Debug.Assert(IsToken(CurrentToken, SyntaxKind.IfKeyword, SyntaxKind.ElseIfKeyword))
 
-            Dim ifKeyword As KeywordSyntax = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            Dim ifKeyword As KeywordSyntax = Nothing
+            Dim ok = TryParse_Keyword(SyntaxKind.IfKeyword, ifKeyword) OrElse TryParse_Keyword(SyntaxKind.ElseIfKeyword, ifKeyword)
+
 
             Dim expression = ParseConditionalCompilationExpression()
 
@@ -149,10 +137,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
             End If
 
             Dim thenKeyword As KeywordSyntax = Nothing
-            If CurrentToken.Kind = SyntaxKind.ThenKeyword Then
-                thenKeyword = DirectCast(CurrentToken, KeywordSyntax)
-                GetNextToken()
-            End If
+            TryParse_Keyword(SyntaxKind.ThenKeyword, thenKeyword)
 
             Dim statement As IfDirectiveTriviaSyntax
 
@@ -208,10 +193,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseAnachronisticEndIfDirective(hashToken As PunctuationSyntax) As DirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.EndIfKeyword)
-
-            Dim endIfKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+            Dim endIfKeyword As KeywordSyntax = Nothing
+            Contract_ExpectedKeyword(SyntaxKind.EndIfKeyword, endIfKeyword)
 
             Dim endKeyword = InternalSyntaxFactory.MissingKeyword(SyntaxKind.EndKeyword)
             endKeyword = endKeyword.AddLeadingSyntax(endIfKeyword, ERRID.ERR_ObsoleteEndIf)
@@ -223,10 +206,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseConstDirective(hashToken As PunctuationSyntax) As ConstDirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.ConstKeyword)
-
-            Dim constKeyword = DirectCast(CurrentToken, KeywordSyntax)
-            GetNextToken()
+           Dim constKeyword As KeywordSyntax = Nothing
+            Contract_ExpectedKeyword(SyntaxKind.ConstKeyword, constKeyword)
 
             Dim Name = ParseIdentifier()
 
@@ -253,8 +234,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseRegionDirective(hashToken As PunctuationSyntax) As RegionDirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken AndAlso DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind = SyntaxKind.RegionKeyword,
-                         NameOf(ParseRegionDirective) & " called with wrong token.")
+            Debug.Assert(IsPossibleKeywordKind(SyntaxKind.RegionKeyword), NameOf(ParseRegionDirective) & " called with wrong token.")
 
             Dim identifier = DirectCast(CurrentToken, IdentifierTokenSyntax)
             GetNextToken()
@@ -267,8 +247,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseExternalSourceDirective(hashToken As PunctuationSyntax) As ExternalSourceDirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken AndAlso DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind = SyntaxKind.ExternalSourceKeyword,
-                         NameOf(ParseExternalSourceDirective) & " called with wrong token")
+            Debug.Assert(IsPossibleKeywordKind(SyntaxKind.ExternalSourceKeyword), NameOf(ParseExternalSourceDirective) & " called with wrong token")
 
             Dim identifier = DirectCast(CurrentToken, IdentifierTokenSyntax)
             Dim externalSourceKeyword = _scanner.MakeKeyword(identifier)
@@ -314,8 +293,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseExternalChecksumDirective(hashToken As PunctuationSyntax) As ExternalChecksumDirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken AndAlso DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind = SyntaxKind.ExternalChecksumKeyword,
-                          NameOf(ParseExternalChecksumDirective) & " called with wrong token")
+            Debug.Assert(IsPossibleKeywordKind(SyntaxKind.ExternalChecksumKeyword), NameOf(ParseExternalChecksumDirective) & " called with wrong token")
 
             Dim identifier = DirectCast(CurrentToken, IdentifierTokenSyntax)
             Dim externalChecksumKeyword = _scanner.MakeKeyword(identifier)
@@ -382,13 +360,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
         End Function
 
         Private Function ParseWarningDirective(hashToken As PunctuationSyntax) As DirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken,
-                         NameOf(ParseWarningDirective) & " called with token that is not an " & NameOf(SyntaxKind.IdentifierToken))
+            Debug.Assert(IsPossibleKeywordKind(SyntaxKind.EnableKeyword) OrElse
+                         IsPossibleKeywordKind(SyntaxKind.DisableKeyword),
+                         NameOf(ParseWarningDirective) & " called with token that is neither " & NameOf(SyntaxKind.EnableKeyword) & " nor " & NameOf(SyntaxKind.DisableKeyword))
+
             Dim identifier = DirectCast(CurrentToken, IdentifierTokenSyntax)
 
-            Debug.Assert((identifier.PossibleKeywordKind = SyntaxKind.EnableKeyword) OrElse
-                         (identifier.PossibleKeywordKind = SyntaxKind.DisableKeyword),
-                         NameOf(ParseWarningDirective) & " called with token that is neither " & NameOf(SyntaxKind.EnableKeyword) & " nor " & NameOf(SyntaxKind.DisableKeyword))
             Dim enableOrDisableKeyword = _scanner.MakeKeyword(identifier)
 
             GetNextToken()
@@ -428,26 +405,25 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
                 Loop
             End If
 
+            Dim errorCodesList = errorCodes.ToListAndFree(_pool)
             Dim statement As DirectiveTriviaSyntax = Nothing
             If enableOrDisableKeyword.Kind = SyntaxKind.EnableKeyword Then
                 statement = SyntaxFactory.EnableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodesList)
             ElseIf enableOrDisableKeyword.Kind = SyntaxKind.DisableKeyword Then
                 statement = SyntaxFactory.DisableWarningDirectiveTrivia(
-                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodes.ToList)
+                    hashToken, enableOrDisableKeyword, warningKeyword, errorCodesList)
             End If
 
             If statement IsNot Nothing Then
                 statement = CheckFeatureAvailability(Feature.WarningDirectives, statement)
             End If
 
-            Me._pool.Free(errorCodes)
             Return statement
         End Function
 
         Private Function ParseReferenceDirective(hashToken As PunctuationSyntax) As DirectiveTriviaSyntax
-            Debug.Assert(CurrentToken.Kind = SyntaxKind.IdentifierToken AndAlso DirectCast(CurrentToken, IdentifierTokenSyntax).PossibleKeywordKind = SyntaxKind.ReferenceKeyword,
-                         NameOf(ParseReferenceDirective) & " called with wrong token.")
+            Debug.Assert(IsPossibleKeywordKind(SyntaxKind.ReferenceKeyword), NameOf(ParseReferenceDirective) & " called with wrong token.")
 
             Dim identifier = DirectCast(CurrentToken, IdentifierTokenSyntax)
             GetNextToken()

@@ -16,6 +16,42 @@ Imports InternalSyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.Syntax.Intern
 Namespace Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax
     Friend Module ParserExtensions
 
+        <Extension>
+        Friend Function IsIn(kind As SyntaxKind, kind0 As SyntaxKind) As Boolean
+            Return (kind = kind0)
+        End Function
+        <Extension>
+        Friend Function IsIn(kind As SyntaxKind, kind0 As SyntaxKind, kind1 As SyntaxKind) As Boolean
+            Return (kind = kind0) Or (kind = kind1)
+        End Function
+
+        <Extension>
+        Friend Function IsIn(kind As SyntaxKind, kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                                 kind2 As SyntaxKind) As Boolean
+            Return (kind = kind0)  Or (kind = kind1) Or (kind = kind2)
+        End Function
+
+        <Extension>
+        Friend Function IsIn(kind As SyntaxKind, kind0 As SyntaxKind, kind1 As SyntaxKind,
+                                                 kind2 As SyntaxKind, kind3 As SyntaxKind) As Boolean
+            Return (kind = kind0) Or (kind = kind1) Or (kind = kind2) Or (kind = kind3)
+        End Function
+        <Extension()>
+        Friend Function ToListAndFree(Of T As GreenNode)(thisBuilder As CodeAnalysis.Syntax.InternalSyntax.SyntaxListBuilder(Of T),
+                                            thisPool as SyntaxListPool) As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of T)
+            Dim list = thisBuilder.ToList()
+            thisPool.Free(thisBuilder)
+            Return list
+        End Function
+
+        <Extension()>
+        Friend Function ToListAndFree(Of T As GreenNode)(thisBuilder As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxListBuilder(Of T),
+                                            thisPool as SyntaxListPool) As CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList(Of T)
+            Dim list = thisBuilder.ToList()
+            thisPool.Free(thisBuilder)
+            Return list
+        End Function
+
         <Extension()>
         Friend Function Any(Of T As VisualBasicSyntaxNode)(this As CodeAnalysis.Syntax.InternalSyntax.SyntaxList(Of T),
                                                     ParamArray kinds As SyntaxKind()) As Boolean
